@@ -1,8 +1,8 @@
 # Build log digest
 
 - Log: `build.log`
-- Lines: 25
-- Errors: 2
+- Lines: 63
+- Errors: 3
 - Warnings: 0
 
 **Verdict: the build failed, the errors are below.**
@@ -10,14 +10,16 @@
 ## Errors, first 40
 
 ```
-code\client\cl_ui.cpp(793,2): error: cannot initialize a member subobject of type 'void (*)(void *, int, fileHandle_t)' (aka 'void (*)(void *, int, int)') with an lvalue of type 'int (void *, int, fileHandle_t)' (aka 'int (void *, int, int)'): different return type ('void' vs 'int')
-scons: *** [build\release\wolf\code\client\cl_ui.obj] Error 1
+code\server\sv_game.cpp(309,2): error: no viable conversion from '(lambda at code/server/sv_game.cpp:309:2)' to 'int (*)(const char *, const char *)'
+code\server\sv_game.cpp(343,2): error: no viable conversion from '(lambda at code/server/sv_game.cpp:343:2)' to 'qboolean (*)(char *, int)' (aka 'int (*)(char *, int)')
+scons: *** [build\release\wolf\code\server\sv_game.obj] Error 1
 ```
 
 ## Errors that repeat, top 30
 
 | Count | Error |
 | --- | --- |
-| 1 | code\client\cl_ui.cpp(N,N): error: cannot initialize a member subobject of type 'file' (aka 'file') with an lvalue of type 'file' (aka 'file'): different return type ('file' vs 'file') |
-| 1 | scons: *** [build\release\wolf\code\client\cl_ui.obj] Error N |
+| 1 | code\server\sv_game.cpp(N,N): error: no viable conversion from 'file' to 'file' |
+| 1 | code\server\sv_game.cpp(N,N): error: no viable conversion from 'file' to 'file' (aka 'file') |
+| 1 | scons: *** [build\release\wolf\code\server\sv_game.obj] Error N |
 
