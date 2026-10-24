@@ -148,12 +148,8 @@ typedef enum {
 	UIMENU_TEAM,
 	UIMENU_PREGAME, //----(SA)	added
 	UIMENU_POSTGAME,
-	UIMENU_NOTEBOOK,
 	UIMENU_CLIPBOARD,
 	UIMENU_HELP,
-	UIMENU_BOOK1,           //----(SA)	added
-	UIMENU_BOOK2,           //----(SA)	added
-	UIMENU_BOOK3,           //----(SA)	added
 	UIMENU_WM_PICKTEAM,     // NERVE - SMF - for multiplayer only
 	UIMENU_WM_PICKPLAYER,   // NERVE - SMF - for multiplayer only
 	UIMENU_WM_QUICKMESSAGE, // NERVE - SMF

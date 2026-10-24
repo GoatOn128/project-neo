@@ -6730,22 +6730,6 @@ void _UI_SetActiveMenu( uiMenuCommand_t menu ) {
 			Menus_ActivateByName( "pregame" );
 			return;
 
-		case UIMENU_NOTEBOOK:
-			trap_Cvar_Set( "cl_paused", "1" );
-			trap_Key_SetCatcher( KEYCATCH_UI );
-			Menus_CloseAll();
-			Menus_ActivateByName( "notebook" );
-			return;
-
-		case UIMENU_BOOK1:
-		case UIMENU_BOOK2:
-		case UIMENU_BOOK3:
-//			trap_Cvar_Set( "cl_paused", "1" );
-			trap_Key_SetCatcher( KEYCATCH_UI );
-			Menus_CloseAll();
-			Menus_ActivateByName( va( "hbook%d", ( menu - UIMENU_BOOK1 ) + 1 ) );
-			return;
-
 		case UIMENU_CLIPBOARD:
 			trap_Cvar_Set( "cl_paused", "1" );
 			trap_Key_SetCatcher( KEYCATCH_UI );
@@ -7097,7 +7081,6 @@ vmCvar_t ui_actualNetGameType;
 vmCvar_t ui_joinGameType;
 vmCvar_t ui_dedicated;
 
-vmCvar_t ui_notebookCurrentPage;        //----(SA)	added
 vmCvar_t ui_clipboardName;          // the name of the group for the current clipboard item //----(SA)	added
 vmCvar_t ui_hudAlpha;
 vmCvar_t ui_hunkUsed;       //----(SA)	added
@@ -7209,7 +7192,6 @@ cvarTable_t cvarTable[] = {
 	{ &ui_joinGameType, "ui_joinGametype", "0", CVAR_ARCHIVE },
 	{ &ui_netGameType, "ui_netGametype", "3", CVAR_ARCHIVE },
 	{ &ui_actualNetGameType, "ui_actualNetGametype", "0", CVAR_ARCHIVE },
-	{ &ui_notebookCurrentPage, "ui_notebookCurrentPage", "1", CVAR_ROM},
 	{ &ui_clipboardName, "cg_clipboardName", "", CVAR_ROM },
 
 	// NERVE - SMF - multiplayer cvars

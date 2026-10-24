@@ -109,7 +109,6 @@ extern vmCvar_t ui_netGameType;
 extern vmCvar_t ui_actualNetGameType;
 extern vmCvar_t ui_joinGameType;
 extern vmCvar_t ui_dedicated;
-extern vmCvar_t ui_notebookCurrentPage;
 extern vmCvar_t ui_clipboardName;
 extern vmCvar_t ui_hudAlpha;
 extern vmCvar_t ui_hunkUsed;    //----(SA)	added
