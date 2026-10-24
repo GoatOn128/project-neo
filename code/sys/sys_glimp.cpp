@@ -445,7 +445,7 @@ void GLimp_EndFrame( void ) {
 ** initializes the extensions.
 */
 void GLimp_Init( void ) {
-	cvar_t *lastValidRenderer = ri.Cvar_Get( "r_lastValidRenderer", "(uninitialized)", CVAR_ARCHIVE );
+	ri.Cvar_Get( "r_lastValidRenderer", "(uninitialized)", CVAR_ARCHIVE );
 
 	ri.Printf( PRINT_ALL, "Initializing OpenGL subsystem\n" );
 

@@ -581,9 +581,9 @@ static void RB_RenderVfxPass(bool flamePass) {
     compositeProgram.Bind();
     RB_BindVfxTexture(0, particleColor);
     if (bloomStrength > 0) {
-        qglActiveTextureARB(GL_TEXTURE0_ARB + 2);
+        qglActiveTextureARB(GL_TEXTURE0 + 2);
         qglBindTexture(GL_TEXTURE_2D, bloomColor[1]);
-        qglActiveTextureARB(GL_TEXTURE0_ARB + glState.currenttmu);
+        qglActiveTextureARB(GL_TEXTURE0 + glState.currenttmu);
     }
     compositeProgram.SetFloat(compositeUniforms.bloomScale, bloomStrength);
     compositeProgram.SetVec2(compositeUniforms.screenSize, sceneWidth, sceneHeight);
