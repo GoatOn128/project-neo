@@ -373,9 +373,7 @@ typedef enum {
 
 
 	// Rafael - mg42		// (SA) I don't understand these here.  can someone explain?
-	PERS_HWEAPON_USE,
-	// Rafael wolfkick
-	PERS_WOLFKICK
+	PERS_HWEAPON_USE
 
 } persEnum_t;
 
@@ -490,9 +488,6 @@ typedef enum {
 //	HI_ELECTRIC,
 //	HI_FIRE,
 	HI_STAMINA,
-	HI_BOOK1,   //----(SA)	added
-	HI_BOOK2,   //----(SA)	added
-	HI_BOOK3,   //----(SA)	added
 	HI_11,
 	HI_12,
 	HI_13,
@@ -809,9 +804,6 @@ typedef enum {
 	EV_SNOW_OFF,
 	EV_MISSILE_MISS_SMALL,
 	EV_MISSILE_MISS_LARGE,
-	EV_WOLFKICK_HIT_FLESH,
-	EV_WOLFKICK_HIT_WALL,
-	EV_WOLFKICK_MISS,
 	EV_SPIT_HIT,
 	EV_SPIT_MISS,
 	EV_SHARD,
@@ -837,8 +829,6 @@ typedef enum {
 	EV_FLAMETHROWER_EFFECT,
 	EV_SNIPER_SOUND,
 	EV_POPUP,
-	EV_POPUPBOOK,
-	EV_GIVEPAGE,    //----(SA)	added
 	EV_CLOSEMENU,   //----(SA)	added
 	EV_SPAWN_SPIRIT,
 

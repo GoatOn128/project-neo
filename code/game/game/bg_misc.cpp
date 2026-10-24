@@ -497,7 +497,6 @@ gitem_t bg_itemlist[] =
 /*QUAKED item_clipboard (1 1 0) (-8 -8 -8) (8 8 8) SUSPENDED SPIN PERSISTANT
 "model" - model to display in the world.  defaults to 'models/powerups/clipboard/clipboard.md3' (the clipboard laying flat is 'clipboard2.md3')
 "popup" - menu to popup.  no default since you won't want the same clipboard laying around. (clipboard will display a 'put popup here' message)
-"notebookpage" - when clipboard is picked up, this page (menu) will be added to your notebook (FIXME: TODO: more info goes here)
 
 We currently use:
 clip_interrogation
@@ -2738,82 +2737,6 @@ model="models/powerups/holdable/stamina.md3"
 
 
 
-/*QUAKED holdable_book1(.3 .3 1) (-8 -8 -8) (8 8 8) SUSPENDED SPIN - RESPAWN
--------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY --------
-model="models/powerups/holdable/venom_book.md3"
-*/
-	{
-		"holdable_book1",
-		"sound/pickup/holdable/get_book1.wav",
-		{
-			"models/powerups/holdable/venom_book.md3",
-			0, 0, 0
-			,   0
-		},
-		"icons/icon_vbook",              // icon
-		NULL,                       // ammo icon
-		"Venom Tech Manual",     // pickup
-		1,
-		IT_HOLDABLE,
-		HI_BOOK1,
-		0,
-		0,
-		"",                              // precache
-		"sound/pickup/holdable/use_book.wav",    // sounds
-		{0,0,0,0}
-	},
-
-
-/*QUAKED holdable_book2(.3 .3 1) (-8 -8 -8) (8 8 8) SUSPENDED SPIN - RESPAWN
--------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY --------
-model="models/powerups/holdable/paranormal_book.md3"
-*/
-	{
-		"holdable_book2",
-		"sound/pickup/holdable/get_book2.wav",
-		{
-			"models/powerups/holdable/paranormal_book.md3",
-			0, 0, 0
-			,   0
-		},
-		"icons/icon_pbook",              // icon
-		NULL,                           // ammo icon
-		"Project Book",                  // pickup
-		1,
-		IT_HOLDABLE,
-		HI_BOOK2,
-		0,
-		0,
-		"",                              // precache
-		"sound/pickup/holdable/use_book.wav",    // sounds
-		{0,0,0,0}
-	},
-
-
-/*QUAKED holdable_book3(.3 .3 1) (-8 -8 -8) (8 8 8) SUSPENDED SPIN - RESPAWN
--------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY --------
-model="models/powerups/holdable/zemphr_book.md3"
-*/
-	{
-		"holdable_book3",
-		"sound/pickup/holdable/get_book3.wav",
-		{
-			"models/powerups/holdable/zemphr_book.md3",
-			0, 0, 0
-			,   0
-		},
-		"icons/icon_zbook",              // icon
-		NULL,                       // ammo icon
-		"Dr. Zemph's Journal",       // pickup
-		1,
-		IT_HOLDABLE,
-		HI_BOOK3,
-		0,
-		0,
-		"",                              // precache
-		"sound/pickup/holdable/use_book.wav",    // sounds
-		{0,0,0,0}
-	},
 
 
 
@@ -4324,9 +4247,6 @@ char *eventnames[] = {
 	"EV_SNOW_OFF",
 	"EV_MISSILE_MISS_SMALL",
 	"EV_MISSILE_MISS_LARGE",
-	"EV_WOLFKICK_HIT_FLESH",
-	"EV_WOLFKICK_HIT_WALL",
-	"EV_WOLFKICK_MISS",
 	"EV_SPIT_HIT",
 	"EV_SPIT_MISS",
 	"EV_SHARD",
@@ -4352,8 +4272,6 @@ char *eventnames[] = {
 	"EV_FLAMETHROWER_EFFECT",
 	"EV_SNIPER_SOUND",
 	"EV_POPUP",
-	"EV_POPUPBOOK",
-	"EV_GIVEPAGE",
 	"EV_CLOSEMENU",
 
 	"EV_MAX_EVENTS"
