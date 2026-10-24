@@ -767,468 +767,114 @@ static int GetConfigString( int index, char *buf, int size ) {
 	return qtrue;
 }
 
-static void UI_Print( const char * a1 ) {
-	Com_Printf( "%s", a1 );
-}
-
-static void UI_Error( const char * a1 ) {
-	Com_Error( ERR_DROP, "%s", a1 );
-}
-
-static int UI_Milliseconds(  ) {
-	return Sys_Milliseconds();
-}
-
-static void UI_Cvar_Register( vmCvar_t * a1, const char * a2, const char * a3, int a4 ) {
-	Cvar_Register((vmCvar_t *)( a1),(const char *)( a2),(const char *)( a3), a4 );
-}
-
-static void UI_Cvar_Update( vmCvar_t * a1 ) {
-	Cvar_Update((vmCvar_t *)( a1 ));
-}
-
-static void UI_Cvar_Set( const char * a1, const char * a2 ) {
-	Cvar_Set((const char *)( a1),(const char *)( a2 ));
-}
-
-static float UI_Cvar_VariableValue( const char * a1 ) {
-	return Cvar_VariableValue((const char *)( a1 ) );
-}
-
-static void UI_Cvar_VariableStringBuffer( const char * a1, char * a2, int a3 ) {
-	Cvar_VariableStringBuffer((const char *)( a1),(char *)( a2), a3 );
-}
-
-static void UI_Cvar_SetValue( const char * a1, float a2 ) {
-	Cvar_SetValue((const char *)( a1), a2 );
-}
-
-static void UI_Cvar_Reset( const char * a1 ) {
-	Cvar_Reset((const char *)( a1 ));
-}
-
-static void UI_Cvar_Create( const char * a1, const char * a2, int a3 ) {
-	Cvar_Get((const char *)( a1),(const char *)( a2), a3 );
-}
-
-static void UI_Cvar_InfoStringBuffer( int a1, char * a2, int a3 ) {
-	Cvar_InfoStringBuffer( a1,(char *)( a2), a3 );
-}
-
-static int UI_Argc(  ) {
-	return Cmd_Argc();
-}
-
-static void UI_Argv( int a1, char * a2, int a3 ) {
-	Cmd_ArgvBuffer( a1,(char *)( a2), a3 );
-}
-
-static void UI_Cmd_ExecuteText( int a1, const char * a2 ) {
-	Cbuf_ExecuteText( a1,(const char *)( a2 ));
-}
-
-static int UI_FS_FOpenFile( const char * a1, fileHandle_t * a2, fsMode_t a3 ) {
-	return FS_FOpenFileByMode((const char *)( a1),(fileHandle_t *)( a2),(fsMode_t)( a3 ));
-}
-
-static void UI_FS_Read( void * a1, int a2, fileHandle_t a3 ) {
-	FS_Read( a1, a2, a3 );
-}
-
-static void UI_FS_Seek( fileHandle_t a1, long a2, int a3 ) {
-	FS_Seek( a1, a2, a3 );
-}
-
-static void UI_FS_Write( const void * a1, int a2, fileHandle_t a3 ) {
-	FS_Write( a1, a2, a3 );
-}
-
-static void UI_FS_FCloseFile( fileHandle_t a1 ) {
-	FS_FCloseFile( a1 );
-}
-
-static int UI_FS_GetFileList( const char * a1, const char * a2, char * a3, int a4 ) {
-	return FS_GetFileList((const char *)( a1),(const char *)( a2),(char *)( a3), a4 );
-}
-
-static int UI_FS_Delete( const char * a1 ) {
-	return FS_Delete((char *)( a1 ));
-}
-
-static qhandle_t UI_R_RegisterModel( const char * a1 ) {
-	return re.RegisterModel( (const char *)(a1) );
-}
-
-static qhandle_t UI_R_RegisterSkin( const char * a1 ) {
-	return re.RegisterSkin( (const char *)(a1) );
-}
-
-static void UI_R_RegisterFont( const char * a1, int a2, fontInfo_t * a3 ) {
-	re.RegisterFont( (const char *)(a1), a2, (fontInfo_t *)(a3) );
-}
-
-static qhandle_t UI_R_RegisterShaderNoMip( const char * a1 ) {
-	return re.RegisterShaderNoMip( (const char *)(a1) );
-}
-
-static void UI_R_ClearScene(  ) {
-	re.ClearScene();
-}
-
-static void UI_R_AddRefEntityToScene( const refEntity_t * a1 ) {
-	re.AddRefEntityToScene( (const refEntity_t *)(a1) );
-}
-
-static void UI_R_AddPolyToScene( qhandle_t a1, int a2, const polyVert_t * a3 ) {
-	re.AddPolyToScene( a1, a2, (const polyVert_t *)(a3) );
-}
-
-static void UI_R_AddLightToScene( const vec3_t a1, float a2, float a3, float a4, float a5, int a6 ) {
-	re.AddLightToScene( (const vec_t *)(a1), a2, a3, a4, a5, a6 );
-}
-
-static void UI_R_AddCoronaToScene( const vec3_t a1, float a2, float a3, float a4, float a5, int a6, int a7 ) {
-	re.AddCoronaToScene( (const vec_t *)(a1), a2, a3, a4, a5, a6, a7 );
-}
-
-static void UI_R_RenderScene( const refdef_t * a1 ) {
-	re.RenderScene( (const refdef_t *)(a1) );
-}
-
-static void UI_R_SetColor( const float * a1 ) {
-	re.SetColor( (const float *)(a1) );
-}
-
-static void UI_R_DrawStretchPic( float a1, float a2, float a3, float a4, float a5, float a6, float a7, float a8, qhandle_t a9 ) {
-	re.DrawStretchPic( a1, a2, a3, a4, a5, a6, a7, a8, a9 );
-}
-
-static void UI_R_ModelBounds( clipHandle_t a1, vec3_t a2, vec3_t a3 ) {
-	re.ModelBounds( a1, (vec_t *)(a2), (vec_t *)(a3) );
-}
-
-static void UI_UpdateScreen(  ) {
-	SCR_UpdateScreen();
-}
-
-static int UI_CM_LerpTag( orientation_t * a1, const refEntity_t * a2, const char * a3, int a4 ) {
-	return re.LerpTag( (orientation_t *)(a1), (const refEntity_t *)(a2), (const char *)(a3), a4 );
-}
-
-static void UI_S_StartLocalSound( sfxHandle_t a1, int a2 ) {
-	S_StartLocalSound( a1, a2 );
-}
-
-static sfxHandle_t UI_S_RegisterSound( const char * a1 ) {
-	#ifdef DOOMSOUND    ///// (SA) DOOMSOUND
-	return S_RegisterSound( a1 );
-	#else
-	return S_RegisterSound((const char *)( a1), qfalse );
-	#endif  ///// (SA) DOOMSOUND
-}
-
-static void UI_S_FadeBackgroundTrack( float a1, int a2, int a3 ) {
-	S_FadeStreamingSound( a1, a2, a3 );
-}
-
-static void UI_S_FadeAllSound( float a1, int a2 ) {
-	S_FadeAllSounds( a1, a2 );
-}
-
-static void UI_Key_KeynumToStringBuf( int a1, char * a2, int a3 ) {
-	Key_KeynumToStringBuf( a1,(char *)( a2), a3 );
-}
-
-static void UI_Key_GetBindingBuf( int a1, char * a2, int a3 ) {
-	Key_GetBindingBuf( a1,(char *)( a2), a3 );
-}
-
-static void UI_Key_SetBinding( int a1, const char * a2 ) {
-	Key_SetBinding( a1,(const char *)( a2 ));
-}
-
-static qboolean UI_Key_IsDown( int a1 ) {
-	return Key_IsDown( a1 );
-}
-
-static qboolean UI_Key_GetOverstrikeMode(  ) {
-	return Key_GetOverstrikeMode();
-}
-
-static void UI_Key_SetOverstrikeMode( qboolean a1 ) {
-	Key_SetOverstrikeMode( a1 );
-}
-
-static void UI_Key_ClearStates(  ) {
-	Key_ClearStates();
-}
-
-static int UI_Key_GetCatcher(  ) {
-	return Key_GetCatcher();
-}
-
-static void UI_Key_SetCatcher( int a1 ) {
-	Key_SetCatcher( a1 );
-}
-
-static void UI_GetClipboardData( char * a1, int a2 ) {
-	GetClipboardData((char *)( a1), a2 );
-}
-
-static void UI_GetClientState( uiClientState_t * a1 ) {
-	GetClientState((uiClientState_t *)( a1 ));
-}
-
-static void UI_GetGlconfig( glconfig_t * a1 ) {
-	CL_GetGlconfig((glconfig_t *)( a1 ));
-}
-
-static int UI_GetConfigString( int a1, char* a2, int a3 ) {
-	return GetConfigString( a1,(char *)( a2), a3 );
-}
-
-static int UI_LAN_GetPingQueueCount(  ) {
-	return LAN_GetPingQueueCount();
-}
-
-static void UI_LAN_ClearPing( int a1 ) {
-	LAN_ClearPing( a1 );
-}
-
-static void UI_LAN_GetPing( int a1, char * a2, int a3, int * a4 ) {
-	LAN_GetPing( a1,(char *)( a2), a3,(int *)( a4 ));
-}
-
-static void UI_LAN_GetPingInfo( int a1, char * a2, int a3 ) {
-	LAN_GetPingInfo( a1,(char *)( a2), a3 );
-}
-
-static qboolean UI_LAN_UpdateVisiblePings( int a1 ) {
-	return LAN_UpdateVisiblePings( a1 );
-}
-
-static int UI_LAN_GetServerCount( int a1 ) {
-	return LAN_GetServerCount( a1 );
-}
-
-static int UI_LAN_CompareServers( int a1, int a2, int a3, int a4, int a5 ) {
-	return LAN_CompareServers( a1, a2, a3, a4, a5 );
-}
-
-static void UI_LAN_GetServerAddressString( int a1, int a2, char * a3, int a4 ) {
-	LAN_GetServerAddressString( a1, a2,(char *)( a3), a4 );
-}
-
-static void UI_LAN_GetServerInfo( int a1, int a2, char * a3, int a4 ) {
-	LAN_GetServerInfo( a1, a2,(char *)( a3), a4 );
-}
-
-static int UI_LAN_AddServer( int a1, const char * a2, const char * a3 ) {
-	return LAN_AddServer( a1,(const char *)( a2),(const char *)( a3 ));
-}
-
-static void UI_LAN_RemoveServer( int a1, const char * a2 ) {
-	LAN_RemoveServer( a1,(const char *)( a2 ));
-}
-
-static int UI_LAN_GetServerPing( int a1, int a2 ) {
-	return LAN_GetServerPing( a1, a2 );
-}
-
-static int UI_LAN_ServerIsVisible( int a1, int a2 ) {
-	return LAN_ServerIsVisible( a1, a2 );
-}
-
-static int UI_LAN_ServerStatus( const char * a1, char * a2, int a3 ) {
-	return LAN_GetServerStatus((char *)( a1),(char *)( a2), a3 );
-}
-
-static void UI_LAN_SaveCachedServers(  ) {
-	LAN_SaveServersToCache();
-}
-
-static void UI_LAN_LoadCachedServers(  ) {
-	LAN_LoadCachedServers();
-}
-
-static void UI_LAN_MarkServerVisible( int a1, int a2, qboolean a3 ) {
-	LAN_MarkServerVisible( a1, a2, a3 );
-}
-
-static void UI_LAN_ResetPings( int a1 ) {
-	LAN_ResetPings( a1 );
-}
-
-static int UI_MemoryRemaining(  ) {
-	return Hunk_MemoryRemaining();
-}
-
-static void UI_GetCDKey( char * a1, int a2 ) {
-	CLUI_GetCDKey((char *)( a1), a2 );
-}
-
-static void UI_SetCDKey( char * a1 ) {
-	CLUI_SetCDKey((char *)( a1 ));
-}
-
-static int UI_PC_AddGlobalDefine( char * a1 ) {
-	return botlib_export->PC_AddGlobalDefine( (char *)(a1) );
-}
-
-static int UI_PC_LoadSource( const char * a1 ) {
-	return botlib_export->PC_LoadSourceHandle( (const char *)(a1) );
-}
-
-static int UI_PC_FreeSource( int a1 ) {
-	return botlib_export->PC_FreeSourceHandle( a1 );
-}
-
-static int UI_PC_ReadToken( int a1, pc_token_t * a2 ) {
-	return botlib_export->PC_ReadTokenHandle( a1, (pc_token_t *)(a2) );
-}
-
-static int UI_PC_SourceFileAndLine( int a1, char * a2, int * a3 ) {
-	return botlib_export->PC_SourceFileAndLine( a1, (char *)(a2), (int *)(a3) );
-}
-
-static void UI_S_StopBackgroundTrack(  ) {
-	S_StopBackgroundTrack();
-}
-
-static void UI_S_StartBackgroundTrack( const char * a1, const char * a2, int a3 ) {
-	S_StartBackgroundTrack((const char *)( a1),(const char *)( a2), a3 );   //----(SA)	added fadeup time
-}
-
-static int UI_RealTime( qtime_t * a1 ) {
-	return Com_RealTime((qtime_t *)( a1 ));
-}
-
-static int UI_CIN_PlayCinematic( const char * a1, int a2, int a3, int a4, int a5, int a6 ) {
-	Com_DPrintf( "UI_CIN_PlayCinematic\n" );
-	return CIN_PlayCinematic((const char *)( a1), a2, a3, a4, a5, a6 );
-}
-
-static e_status UI_CIN_StopCinematic( int a1 ) {
-	return CIN_StopCinematic( a1 );
-}
-
-static e_status UI_CIN_RunCinematic( int a1 ) {
-	return CIN_RunCinematic( a1 );
-}
-
-static void UI_CIN_DrawCinematic( int a1 ) {
-	CIN_DrawCinematic( a1 );
-}
-
-static void UI_CIN_SetExtents( int a1, int a2, int a3, int a4, int a5 ) {
-	CIN_SetExtents( a1, a2, a3, a4, a5 );
-}
-
-static void UI_R_RemapShader( const char * a1, const char * a2, const char * a3 ) {
-	re.RemapShader( (const char *)(a1), (const char *)(a2), (const char *)(a3) );
-}
-
-static qboolean UI_VerifyCDKey( const char * a1, const char * a2 ) {
-	return CL_CDKeyValidate((const char *)( a1),(const char *)( a2 ));
-}
-
-static qboolean UI_GetLimboString( int a1, char * a2 ) {
-	return CL_GetLimboString( a1,(char *)( a2 ));
-}
-
+// The import table lists the engine functions directly. Inline lambdas only
+// adapt the signatures that differ from what the ui module expects.
 static const uiImport_t uiImportTable = {
 	UI_API_VERSION,
-	UI_Print,
-	UI_Error,
-	UI_Milliseconds,
-	UI_Cvar_Register,
-	UI_Cvar_Update,
-	UI_Cvar_Set,
-	UI_Cvar_VariableValue,
-	UI_Cvar_VariableStringBuffer,
-	UI_Cvar_SetValue,
-	UI_Cvar_Reset,
-	UI_Cvar_Create,
-	UI_Cvar_InfoStringBuffer,
-	UI_Argc,
-	UI_Argv,
-	UI_Cmd_ExecuteText,
-	UI_FS_FOpenFile,
-	UI_FS_Read,
-	UI_FS_Seek,
-	UI_FS_Write,
-	UI_FS_FCloseFile,
-	UI_FS_GetFileList,
-	UI_FS_Delete,
-	UI_R_RegisterModel,
-	UI_R_RegisterSkin,
-	UI_R_RegisterFont,
-	UI_R_RegisterShaderNoMip,
-	UI_R_ClearScene,
-	UI_R_AddRefEntityToScene,
-	UI_R_AddPolyToScene,
-	UI_R_AddLightToScene,
-	UI_R_AddCoronaToScene,
-	UI_R_RenderScene,
-	UI_R_SetColor,
-	UI_R_DrawStretchPic,
-	UI_R_ModelBounds,
-	UI_UpdateScreen,
-	UI_CM_LerpTag,
-	UI_S_StartLocalSound,
-	UI_S_RegisterSound,
-	UI_S_FadeBackgroundTrack,
-	UI_S_FadeAllSound,
-	UI_Key_KeynumToStringBuf,
-	UI_Key_GetBindingBuf,
-	UI_Key_SetBinding,
-	UI_Key_IsDown,
-	UI_Key_GetOverstrikeMode,
-	UI_Key_SetOverstrikeMode,
-	UI_Key_ClearStates,
-	UI_Key_GetCatcher,
-	UI_Key_SetCatcher,
-	UI_GetClipboardData,
-	UI_GetClientState,
-	UI_GetGlconfig,
-	UI_GetConfigString,
-	UI_LAN_GetPingQueueCount,
-	UI_LAN_ClearPing,
-	UI_LAN_GetPing,
-	UI_LAN_GetPingInfo,
-	UI_LAN_UpdateVisiblePings,
-	UI_LAN_GetServerCount,
-	UI_LAN_CompareServers,
-	UI_LAN_GetServerAddressString,
-	UI_LAN_GetServerInfo,
-	UI_LAN_AddServer,
-	UI_LAN_RemoveServer,
-	UI_LAN_GetServerPing,
-	UI_LAN_ServerIsVisible,
-	UI_LAN_ServerStatus,
-	UI_LAN_SaveCachedServers,
-	UI_LAN_LoadCachedServers,
-	UI_LAN_MarkServerVisible,
-	UI_LAN_ResetPings,
-	UI_MemoryRemaining,
-	UI_GetCDKey,
-	UI_SetCDKey,
-	UI_PC_AddGlobalDefine,
-	UI_PC_LoadSource,
-	UI_PC_FreeSource,
-	UI_PC_ReadToken,
-	UI_PC_SourceFileAndLine,
-	UI_S_StopBackgroundTrack,
-	UI_S_StartBackgroundTrack,
-	UI_RealTime,
-	UI_CIN_PlayCinematic,
-	UI_CIN_StopCinematic,
-	UI_CIN_RunCinematic,
-	UI_CIN_DrawCinematic,
-	UI_CIN_SetExtents,
-	UI_R_RemapShader,
-	UI_VerifyCDKey,
-	UI_GetLimboString,
+
+	// Com_Printf and Com_Error are variadic, the table takes plain strings
+	[]( const char *msg ) { Com_Printf( "%s", msg ); },
+	[]( const char *msg ) { Com_Error( ERR_DROP, "%s", msg ); },
+	Sys_Milliseconds,
+	Cvar_Register,
+	Cvar_Update,
+	Cvar_Set,
+	Cvar_VariableValue,
+	Cvar_VariableStringBuffer,
+	Cvar_SetValue,
+	Cvar_Reset,
+	// the engine creator returns the cvar, the module does not want it
+	[]( const char *varName, const char *varValue, int flags ) { Cvar_Get( varName, varValue, flags ); },
+	Cvar_InfoStringBuffer,
+	Cmd_Argc,
+	Cmd_ArgvBuffer,
+	Cbuf_ExecuteText,
+	FS_FOpenFileByMode,
+	FS_Read,
+	[]( fileHandle_t f, long offset, int origin ) { FS_Seek( f, offset, origin ); },
+	[]( const void *buffer, int len, fileHandle_t f ) { FS_Write( buffer, len, f ); },
+	FS_FCloseFile,
+	FS_GetFileList,
+	[]( const char *filename ) { return FS_Delete( (char *)filename ); },
+	[]( const char *name ) { return re.RegisterModel( name ); },
+	[]( const char *name ) { return re.RegisterSkin( name ); },
+	[]( const char *fontName, int pointSize, fontInfo_t *font ) { re.RegisterFont( fontName, pointSize, font ); },
+	[]( const char *name ) { return re.RegisterShaderNoMip( name ); },
+	[]() { re.ClearScene(); },
+	[]( const refEntity_t *rentity ) { re.AddRefEntityToScene( rentity ); },
+	[]( qhandle_t hShader, int numVerts, const polyVert_t *verts ) { re.AddPolyToScene( hShader, numVerts, verts ); },
+	[]( const vec3_t org, float intensity, float r, float g, float b, int overdraw ) { re.AddLightToScene( org, intensity, r, g, b, overdraw ); },
+	[]( const vec3_t org, float r, float g, float b, float scale, int id, int flags ) { re.AddCoronaToScene( org, r, g, b, scale, id, flags ); },
+	[]( const refdef_t *fd ) { re.RenderScene( fd ); },
+	[]( const float *rgba ) { re.SetColor( rgba ); },
+	[]( float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader ) { re.DrawStretchPic( x, y, w, h, s1, t1, s2, t2, hShader ); },
+	[]( clipHandle_t model, vec3_t mins, vec3_t maxs ) { re.ModelBounds( model, mins, maxs ); },
+	SCR_UpdateScreen,
+	[]( orientation_t *tag, const refEntity_t *refent, const char *tagName, int startIndex ) { return re.LerpTag( tag, refent, tagName, startIndex ); },
+	S_StartLocalSound,
+	// DOOMSOUND skips the loading flag the engine variant takes
+	[]( const char *sample ) {
+#ifdef DOOMSOUND
+		return S_RegisterSound( sample );
+#else
+		return S_RegisterSound( sample, qfalse );
+#endif
+	},
+	[]( float targetvol, int time, int num ) { S_FadeStreamingSound( targetvol, time, num ); },
+	[]( float targetvol, int time ) { S_FadeAllSounds( targetvol, time ); },
+	Key_KeynumToStringBuf,
+	Key_GetBindingBuf,
+	Key_SetBinding,
+	Key_IsDown,
+	Key_GetOverstrikeMode,
+	Key_SetOverstrikeMode,
+	Key_ClearStates,
+	Key_GetCatcher,
+	Key_SetCatcher,
+	GetClipboardData,
+	GetClientState,
+	CL_GetGlconfig,
+	GetConfigString,
+	LAN_GetPingQueueCount,
+	LAN_ClearPing,
+	LAN_GetPing,
+	LAN_GetPingInfo,
+	LAN_UpdateVisiblePings,
+	LAN_GetServerCount,
+	LAN_CompareServers,
+	LAN_GetServerAddressString,
+	LAN_GetServerInfo,
+	LAN_AddServer,
+	LAN_RemoveServer,
+	LAN_GetServerPing,
+	LAN_ServerIsVisible,
+	[]( const char *serverAddress, char *serverStatus, int maxLen ) { return LAN_GetServerStatus( (char *)serverAddress, serverStatus, maxLen ); },
+	[]() { LAN_SaveServersToCache(); },
+	LAN_LoadCachedServers,
+	LAN_MarkServerVisible,
+	LAN_ResetPings,
+	Hunk_MemoryRemaining,
+	CLUI_GetCDKey,
+	CLUI_SetCDKey,
+	[]( char *define ) { return botlib_export->PC_AddGlobalDefine( define ); },
+	[]( const char *filename ) { return botlib_export->PC_LoadSourceHandle( filename ); },
+	[]( int handle ) { return botlib_export->PC_FreeSourceHandle( handle ); },
+	[]( int handle, pc_token_t *token ) { return botlib_export->PC_ReadTokenHandle( handle, token ); },
+	[]( int handle, char *filename, int *line ) { return botlib_export->PC_SourceFileAndLine( handle, filename, line ); },
+	S_StopBackgroundTrack,
+	S_StartBackgroundTrack,
+	Com_RealTime,
+	[]( const char *arg0, int xpos, int ypos, int width, int height, int bits ) {
+		Com_DPrintf( "UI_CIN_PlayCinematic\n" );
+		return CIN_PlayCinematic( arg0, xpos, ypos, width, height, bits );
+	},
+	CIN_StopCinematic,
+	CIN_RunCinematic,
+	CIN_DrawCinematic,
+	CIN_SetExtents,
+	[]( const char *oldShader, const char *newShader, const char *timeOffset ) { re.RemapShader( oldShader, newShader, timeOffset ); },
+	CL_CDKeyValidate,
+	CL_GetLimboString,
 };
 
 /*

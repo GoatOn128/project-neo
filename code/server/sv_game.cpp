@@ -291,959 +291,209 @@ void SV_GetUsercmd( int clientNum, usercmd_t *cmd ) {
 }
 
 
-static void G_Printf( const char * a1 ) {
-	Com_Printf( "%s", a1 );
-}
-
-static void G_Error( const char * a1 ) {
-	Com_Error( ERR_DROP, "%s", a1 );
-}
-
-static void G_Endgame(  ) {
-	Com_Error( ERR_ENDGAME, "endgame" );  // no message, no error print
-}
-
-static int G_Milliseconds(  ) {
-	return Sys_Milliseconds();
-}
-
-static int G_Argc(  ) {
-	return Cmd_Argc();
-}
-
-static void G_Argv( int a1, char * a2, int a3 ) {
-	Cmd_ArgvBuffer( a1,(char *)( a2), a3 );
-}
-
-static int G_FS_FOpenFile( const char * a1, fileHandle_t * a2, fsMode_t a3 ) {
-	return FS_FOpenFileByMode((const char *)( a1),(fileHandle_t *)( a2),(fsMode_t)( a3 ));
-}
-
-static void G_FS_Read( void * a1, int a2, fileHandle_t a3 ) {
-	FS_Read( a1, a2, a3 );
-}
-
-static int G_FS_Write( const void * a1, int a2, fileHandle_t a3 ) {
-	return FS_Write( a1, a2, a3 );
-}
-
-static int G_FS_Rename( const char * a1, const char * a2 ) {
-	FS_Rename((const char *)( a1),(const char *)( a2 ));
-	return 0;
-}
-
-static void G_FS_FCloseFile( fileHandle_t a1 ) {
-	FS_FCloseFile( a1 );
-}
-
-static void G_FS_CopyFile( char * a1, char * a2 ) {
-	FS_CopyFileOS((char *)( a1),(char *)( a2 ));    //DAJ
-}
-
-static int G_FS_GetFileList( const char * a1, const char * a2, char * a3, int a4 ) {
-	return FS_GetFileList((const char *)( a1),(const char *)( a2),(char *)( a3), a4 );
-}
-
-static void G_SendConsoleCommand( int a1, const char * a2 ) {
-	Cbuf_ExecuteText( a1,(const char *)( a2 ));
-}
-
-static void G_Cvar_Register( vmCvar_t * a1, const char * a2, const char * a3, int a4 ) {
-	Cvar_Register((vmCvar_t *)( a1),(const char *)( a2),(const char *)( a3), a4 );
-}
-
-static void G_Cvar_Update( vmCvar_t * a1 ) {
-	Cvar_Update((vmCvar_t *)( a1 ));
-}
-
-static void G_Cvar_Set( const char * a1, const char * a2 ) {
-	Cvar_Set( (const char *)a1, (const char *)a2 );
-}
-
-static int G_Cvar_VariableIntegerValue( const char * a1 ) {
-	return Cvar_VariableIntegerValue( (const char *)a1 );
-}
-
-static void G_Cvar_VariableStringBuffer( const char * a1, char * a2, int a3 ) {
-	Cvar_VariableStringBuffer((const char *)( a1),(char *)( a2), a3 );
-}
-
-static void G_LocateGameData( void * a1, int a2, int a3, playerState_t * a4, int a5 ) {
-	SV_LocateGameData((sharedEntity_t *)( a1), a2, a3,(playerState_t *)( a4), a5 );
-}
-
-static void G_DropClient( int a1, const char * a2 ) {
-	SV_GameDropClient( a1,(const char *)( a2 ));
-}
-
-static void G_SendServerCommand( int a1, const char * a2 ) {
-	SV_GameSendServerCommand( a1,(const char *)( a2 ));
-}
-
-static void G_SetConfigstring( int a1, const char * a2 ) {
-	SV_SetConfigstring( a1,(const char *)( a2 ));
-}
-
-static void G_GetConfigstring( int a1, char * a2, int a3 ) {
-	SV_GetConfigstring( a1,(char *)( a2), a3 );
-}
-
-static void G_GetUserinfo( int a1, char * a2, int a3 ) {
-	SV_GetUserinfo( a1,(char *)( a2), a3 );
-}
-
-static void G_SetUserinfo( int a1, const char * a2 ) {
-	SV_SetUserinfo( a1,(const char *)( a2 ));
-}
-
-static void G_GetServerinfo( char * a1, int a2 ) {
-	SV_GetServerinfo((char *)( a1), a2 );
-}
-
-static void G_SetBrushModel( void * a1, const char * a2 ) {
-	SV_SetBrushModel((sharedEntity_t *)( a1),(const char *)( a2 ));
-}
-
-static void G_Trace( trace_t * a1, const vec3_t a2, const vec3_t a3, const vec3_t a4, const vec3_t a5, int a6, int a7 ) {
-	SV_Trace((trace_t *)( a1),(const vec_t *)( a2),(const vec_t *)( a3),(const vec_t *)( a4),(const vec_t *)( a5), a6, a7, /* int capsule */ qfalse );
-}
-
-static void G_TraceCapsule( trace_t * a1, const vec3_t a2, const vec3_t a3, const vec3_t a4, const vec3_t a5, int a6, int a7 ) {
-	SV_Trace((trace_t *)( a1),(const vec_t *)( a2),(const vec_t *)( a3),(const vec_t *)( a4),(const vec_t *)( a5), a6, a7, /* int capsule */ qtrue );
-}
-
-static int G_PointContents( const vec3_t a1, int a2 ) {
-	return SV_PointContents((const vec_t *)( a1), a2 );
-}
-
-static qboolean G_InPVS( const vec3_t a1, const vec3_t a2 ) {
-	return SV_inPVS((const vec_t *)( a1),(const vec_t *)( a2 ));
-}
-
-static qboolean G_InPVSIgnorePortals( const vec3_t a1, const vec3_t a2 ) {
-	return SV_inPVSIgnorePortals((const vec_t *)( a1),(const vec_t *)( a2 ));
-}
-
-static void G_AdjustAreaPortalState( void * a1, qboolean a2 ) {
-	SV_AdjustAreaPortalState((sharedEntity_t *)( a1), a2 );
-}
-
-static qboolean G_AreasConnected( int a1, int a2 ) {
-	return CM_AreasConnected( a1, a2 );
-}
-
-static void G_LinkEntity( void * a1 ) {
-	SV_LinkEntity((sharedEntity_t *)( a1 ));
-}
-
-static void G_UnlinkEntity( void * a1 ) {
-	SV_UnlinkEntity((sharedEntity_t *)( a1 ));
-}
-
-static int G_EntitiesInBox( const vec3_t a1, const vec3_t a2, int * a3, int a4 ) {
-	return SV_AreaEntities((const vec_t *)( a1),(const vec_t *)( a2),(int *)( a3), a4 );
-}
-
-static qboolean G_EntityContact( const vec3_t a1, const vec3_t a2, const void * a3 ) {
-	return SV_EntityContact((const vec_t *)( a1),(const vec_t *)( a2),(const sharedEntity_t *)( a3), /* int capsule */ qfalse );
-}
-
-static qboolean G_EntityContactCapsule( const vec3_t a1, const vec3_t a2, const void * a3 ) {
-	return SV_EntityContact((const vec_t *)( a1),(const vec_t *)( a2),(const sharedEntity_t *)( a3), /* int capsule */ qtrue );
-}
-
-static int G_BotAllocateClient(  ) {
-	return SV_BotAllocateClient();
-}
-
-static void G_BotFreeClient( int a1 ) {
-	SV_BotFreeClient( a1 );
-}
-
-static void G_GetUsercmd( int a1, usercmd_t * a2 ) {
-	SV_GetUsercmd( a1,(usercmd_t *)( a2 ));
-}
-
-static qboolean G_GetEntityToken( char * a1, int a2 ) {
-	{
-	const char  *s;
-
-	s = COM_Parse( &sv.entityParsePoint );
-	Q_strncpyz((char *)( a1), s, a2 );
-	if ( !sv.entityParsePoint && !s[0] ) {
-	return qfalse;
-	} else {
-	return qtrue;
-	}
-	}
-}
-
-static int G_DebugPolygonCreate( int a1, int a2, vec3_t * a3 ) {
-	return BotImport_DebugPolygonCreate( a1, a2,(vec3_t *)( a3 ));
-}
-
-static void G_DebugPolygonDelete( int a1 ) {
-	BotImport_DebugPolygonDelete( a1 );
-}
-
-static int G_RealTime( qtime_t * a1 ) {
-	return Com_RealTime((qtime_t *)( a1 ));
-}
-
-static void G_SnapVector( float * a1 ) {
-	Sys_SnapVector((float *)( a1 ));
-}
-
-static qboolean G_GetTag( int a1, char * a2, orientation_t * a3 ) {
-	return SV_GetTag( a1,(char *)( a2),(orientation_t *)( a3 ));
-}
-
-static int G_BotLibSetup(  ) {
-	return SV_BotLibSetup();
-}
-
-static int G_BotLibShutdown(  ) {
-	return SV_BotLibShutdown();
-}
-
-static int G_BotLibVarSet( char * a1, char * a2 ) {
-	return botlib_export->BotLibVarSet( (char *)(a1), (char *)(a2) );
-}
-
-static int G_BotLibVarGet( char * a1, char * a2, int a3 ) {
-	return botlib_export->BotLibVarGet( (char *)(a1), (char *)(a2), a3 );
-}
-
-static int G_BotLibDefine( char * a1 ) {
-	return botlib_export->PC_AddGlobalDefine( (char *)(a1) );
-}
-
-static int G_BotLibStartFrame( float a1 ) {
-	return botlib_export->BotLibStartFrame( a1 );
-}
-
-static int G_BotLibLoadMap( const char * a1 ) {
-	return botlib_export->BotLibLoadMap( (const char *)(a1) );
-}
-
-static int G_BotLibUpdateEntity( int a1, void * a2 ) {
-	return botlib_export->BotLibUpdateEntity( a1, (bot_entitystate_t *)(a2) );
-}
-
-static int G_BotLibTest( int a1, char * a2, vec3_t a3, vec3_t a4 ) {
-	return botlib_export->Test( a1, (char *)(a2), (vec_t *)(a3), (vec_t *)(a4) );
-}
-
-static int G_BotGetSnapshotEntity( int a1, int a2 ) {
-	return SV_BotGetSnapshotEntity( a1, a2 );
-}
-
-static int G_BotGetServerCommand( int a1, char * a2, int a3 ) {
-	return SV_BotGetConsoleMessage( a1,(char *)( a2), a3 );
-}
-
-static void G_BotUserCommand( int a1, usercmd_t * a2 ) {
-	SV_ClientThink( &svs.clients[a1],(usercmd_t *)( a2 ));
-}
-
-static void G_AAS_EntityInfo( int a1, void * a2 ) {
-	botlib_export->aas.AAS_EntityInfo( a1, (struct aas_entityinfo_s *)(a2) );
-}
-
-static int G_AAS_Initialized(  ) {
-	return botlib_export->aas.AAS_Initialized();
-}
-
-static void G_AAS_PresenceTypeBoundingBox( int a1, vec3_t a2, vec3_t a3 ) {
-	botlib_export->aas.AAS_PresenceTypeBoundingBox( a1, (vec_t *)(a2), (vec_t *)(a3) );
-}
-
-static float G_AAS_Time(  ) {
-	return  botlib_export->aas.AAS_Time() ;
-}
-
-static void G_AAS_SetCurrentWorld( int a1 ) {
-	botlib_export->aas.AAS_SetCurrentWorld( a1 );
-}
-
-static int G_AAS_PointAreaNum( vec3_t a1 ) {
-	return botlib_export->aas.AAS_PointAreaNum( (vec_t *)(a1) );
-}
-
-static int G_AAS_TraceAreas( vec3_t a1, vec3_t a2, int * a3, vec3_t * a4, int a5 ) {
-	return botlib_export->aas.AAS_TraceAreas( (vec_t *)(a1), (vec_t *)(a2), (int *)(a3), (vec3_t *)(a4), a5 );
-}
-
-static int G_AAS_PointContents( vec3_t a1 ) {
-	return botlib_export->aas.AAS_PointContents( (vec_t *)(a1) );
-}
-
-static int G_AAS_NextBSPEntity( int a1 ) {
-	return botlib_export->aas.AAS_NextBSPEntity( a1 );
-}
-
-static int G_AAS_ValueForBSPEpairKey( int a1, char * a2, char * a3, int a4 ) {
-	return botlib_export->aas.AAS_ValueForBSPEpairKey( a1, (char *)(a2), (char *)(a3), a4 );
-}
-
-static int G_AAS_VectorForBSPEpairKey( int a1, char * a2, vec3_t a3 ) {
-	return botlib_export->aas.AAS_VectorForBSPEpairKey( a1, (char *)(a2), (vec_t *)(a3) );
-}
-
-static int G_AAS_FloatForBSPEpairKey( int a1, char * a2, float * a3 ) {
-	return botlib_export->aas.AAS_FloatForBSPEpairKey( a1, (char *)(a2), (float *)(a3) );
-}
-
-static int G_AAS_IntForBSPEpairKey( int a1, char * a2, int * a3 ) {
-	return botlib_export->aas.AAS_IntForBSPEpairKey( a1, (char *)(a2), (int *)(a3) );
-}
-
-static int G_AAS_AreaReachability( int a1 ) {
-	return botlib_export->aas.AAS_AreaReachability( a1 );
-}
-
-static int G_AAS_AreaTravelTimeToGoalArea( int a1, vec3_t a2, int a3, int a4 ) {
-	return botlib_export->aas.AAS_AreaTravelTimeToGoalArea( a1, (vec_t *)(a2), a3, a4 );
-}
-
-static int G_AAS_Swimming( vec3_t a1 ) {
-	return botlib_export->aas.AAS_Swimming( (vec_t *)(a1) );
-}
-
-static int G_AAS_PredictClientMovement( void * a1, int a2, vec3_t a3, int a4, int a5, vec3_t a6, vec3_t a7, int a8, int a9, float a10, int a11, int a12, int a13 ) {
-	return botlib_export->aas.AAS_PredictClientMovement( (struct aas_clientmove_s *)(a1), a2, (vec_t *)(a3), a4, a5,
-	(vec_t *)(a6), (vec_t *)(a7), a8, a9, a10, a11, a12, a13 );
-}
-
-static void G_AAS_RT_ShowRoute( vec3_t a1, int a2, int a3 ) {
-	botlib_export->aas.AAS_RT_ShowRoute( (vec_t *)(a1), a2, a3 );
-}
-
-static qboolean G_AAS_RT_GetHidePos( vec3_t a1, int a2, int a3, vec3_t a4, int a5, int a6, vec3_t a7 ) {
-	return botlib_export->aas.AAS_RT_GetHidePos( (vec_t *)(a1), a2, a3, (vec_t *)(a4), a5, a6, (vec_t *)(a7) );
-}
-
-static int G_AAS_FindAttackSpotWithinRange( int a1, int a2, int a3, float a4, int a5, float * a6 ) {
-	return botlib_export->aas.AAS_FindAttackSpotWithinRange( a1, a2, a3, a4, a5, (float *)(a6) );
-}
-
-static qboolean G_AAS_GetRouteFirstVisPos( vec3_t a1, vec3_t a2, int a3, vec3_t a4 ) {
-	return botlib_export->aas.AAS_GetRouteFirstVisPos((vec_t *)(a1), (vec_t *)(a2),
-	a3, (vec_t *)(a4));
-}
-
-static void G_AAS_SetAASBlockingEntity( vec3_t a1, vec3_t a2, qboolean a3 ) {
-	botlib_export->aas.AAS_SetAASBlockingEntity( (vec_t *)(a1), (vec_t *)(a2), a3 );
-}
-
-static void G_EA_Say( int a1, char * a2 ) {
-	botlib_export->ea.EA_Say( a1, (char *)(a2) );
-}
-
-static void G_EA_SayTeam( int a1, char * a2 ) {
-	botlib_export->ea.EA_SayTeam( a1, (char *)(a2) );
-}
-
-static void G_EA_UseItem( int a1, char * a2 ) {
-	botlib_export->ea.EA_UseItem( a1, (char *)(a2) );
-}
-
-static void G_EA_DropItem( int a1, char * a2 ) {
-	botlib_export->ea.EA_DropItem( a1, (char *)(a2) );
-}
-
-static void G_EA_UseInv( int a1, char * a2 ) {
-	botlib_export->ea.EA_UseInv( a1, (char *)(a2) );
-}
-
-static void G_EA_DropInv( int a1, char * a2 ) {
-	botlib_export->ea.EA_DropInv( a1, (char *)(a2) );
-}
-
-static void G_EA_Gesture( int a1 ) {
-	botlib_export->ea.EA_Gesture( a1 );
-}
-
-static void G_EA_Command( int a1, char * a2 ) {
-	botlib_export->ea.EA_Command( a1, (char *)(a2) );
-}
-
-static void G_EA_SelectWeapon( int a1, int a2 ) {
-	botlib_export->ea.EA_SelectWeapon( a1, a2 );
-}
-
-static void G_EA_Talk( int a1 ) {
-	botlib_export->ea.EA_Talk( a1 );
-}
-
-static void G_EA_Attack( int a1 ) {
-	botlib_export->ea.EA_Attack( a1 );
-}
-
-static void G_EA_Reload( int a1 ) {
-	botlib_export->ea.EA_Reload( a1 );
-}
-
-static void G_EA_Use( int a1 ) {
-	botlib_export->ea.EA_Use( a1 );
-}
-
-static void G_EA_Respawn( int a1 ) {
-	botlib_export->ea.EA_Respawn( a1 );
-}
-
-static void G_EA_Jump( int a1 ) {
-	botlib_export->ea.EA_Jump( a1 );
-}
-
-static void G_EA_DelayedJump( int a1 ) {
-	botlib_export->ea.EA_DelayedJump( a1 );
-}
-
-static void G_EA_Crouch( int a1 ) {
-	botlib_export->ea.EA_Crouch( a1 );
-}
-
-static void G_EA_MoveUp( int a1 ) {
-	botlib_export->ea.EA_MoveUp( a1 );
-}
-
-static void G_EA_MoveDown( int a1 ) {
-	botlib_export->ea.EA_MoveDown( a1 );
-}
-
-static void G_EA_MoveForward( int a1 ) {
-	botlib_export->ea.EA_MoveForward( a1 );
-}
-
-static void G_EA_MoveBack( int a1 ) {
-	botlib_export->ea.EA_MoveBack( a1 );
-}
-
-static void G_EA_MoveLeft( int a1 ) {
-	botlib_export->ea.EA_MoveLeft( a1 );
-}
-
-static void G_EA_MoveRight( int a1 ) {
-	botlib_export->ea.EA_MoveRight( a1 );
-}
-
-static void G_EA_Move( int a1, vec3_t a2, float a3 ) {
-	botlib_export->ea.EA_Move( a1, (vec_t *)(a2), a3 );
-}
-
-static void G_EA_View( int a1, vec3_t a2 ) {
-	botlib_export->ea.EA_View( a1, (vec_t *)(a2) );
-}
-
-static void G_EA_EndRegular( int a1, float a2 ) {
-	botlib_export->ea.EA_EndRegular( a1, a2 );
-}
-
-static void G_EA_GetInput( int a1, float a2, void * a3 ) {
-	botlib_export->ea.EA_GetInput( a1, a2, (bot_input_t *)(a3) );
-}
-
-static void G_EA_ResetInput( int a1, void * a2 ) {
-	botlib_export->ea.EA_ResetInput( a1, (bot_input_t *)(a2) );
-}
-
-static int G_BotLoadCharacter( char * a1, int a2 ) {
-	return botlib_export->ai.BotLoadCharacter( (char *)(a1), a2 );
-}
-
-static void G_BotFreeCharacter( int a1 ) {
-	botlib_export->ai.BotFreeCharacter( a1 );
-}
-
-static float G_Characteristic_Float( int a1, int a2 ) {
-	return  botlib_export->ai.Characteristic_Float( a1, a2 ) ;
-}
-
-static float G_Characteristic_BFloat( int a1, int a2, float a3, float a4 ) {
-	return  botlib_export->ai.Characteristic_BFloat( a1, a2, a3, a4 ) ;
-}
-
-static int G_Characteristic_Integer( int a1, int a2 ) {
-	return botlib_export->ai.Characteristic_Integer( a1, a2 );
-}
-
-static int G_Characteristic_BInteger( int a1, int a2, int a3, int a4 ) {
-	return botlib_export->ai.Characteristic_BInteger( a1, a2, a3, a4 );
-}
-
-static void G_Characteristic_String( int a1, int a2, char * a3, int a4 ) {
-	botlib_export->ai.Characteristic_String( a1, a2, (char *)(a3), a4 );
-}
-
-static int G_BotAllocChatState(  ) {
-	return botlib_export->ai.BotAllocChatState();
-}
-
-static void G_BotFreeChatState( int a1 ) {
-	botlib_export->ai.BotFreeChatState( a1 );
-}
-
-static void G_BotQueueConsoleMessage( int a1, int a2, char * a3 ) {
-	botlib_export->ai.BotQueueConsoleMessage( a1, a2, (char *)(a3) );
-}
-
-static void G_BotRemoveConsoleMessage( int a1, int a2 ) {
-	botlib_export->ai.BotRemoveConsoleMessage( a1, a2 );
-}
-
-static int G_BotNextConsoleMessage( int a1, void * a2 ) {
-	return botlib_export->ai.BotNextConsoleMessage( a1, (struct bot_consolemessage_s *)(a2) );
-}
-
-static int G_BotNumConsoleMessages( int a1 ) {
-	return botlib_export->ai.BotNumConsoleMessages( a1 );
-}
-
-static void G_BotInitialChat( int a1, char * a2, int a3, char * a4, char * a5, char * a6, char * a7, char * a8, char * a9, char * a10, char * a11 ) {
-	botlib_export->ai.BotInitialChat( a1, (char *)(a2), a3, (char *)(a4), (char *)(a5), (char *)(a6), (char *)(a7), (char *)(a8), (char *)(a9), (char *)(a10), (char *)(a11) );
-}
-
-static int G_BotNumInitialChats( int a1, char * a2 ) {
-	return botlib_export->ai.BotNumInitialChats( a1, (char *)(a2) );
-}
-
-static int G_BotReplyChat( int a1, char * a2, int a3, int a4, char * a5, char * a6, char * a7, char * a8, char * a9, char * a10, char * a11, char * a12 ) {
-	return botlib_export->ai.BotReplyChat( a1, (char *)(a2), a3, a4, (char *)(a5), (char *)(a6), (char *)(a7), (char *)(a8), (char *)(a9), (char *)(a10), (char *)(a11), (char *)(a12) );
-}
-
-static int G_BotChatLength( int a1 ) {
-	return botlib_export->ai.BotChatLength( a1 );
-}
-
-static void G_BotEnterChat( int a1, int a2, int a3 ) {
-	botlib_export->ai.BotEnterChat( a1, a2, a3 );
-}
-
-static void G_BotGetChatMessage( int a1, char * a2, int a3 ) {
-	botlib_export->ai.BotGetChatMessage( a1, (char *)(a2), a3 );
-}
-
-static int G_StringContains( char * a1, char * a2, int a3 ) {
-	return botlib_export->ai.StringContains( (char *)(a1), (char *)(a2), a3 );
-}
-
-static int G_BotFindMatch( char * a1, void * a2, unsigned long int a3 ) {
-	return botlib_export->ai.BotFindMatch( (char *)(a1), (struct bot_match_s *)(a2), a3 );
-}
-
-static void G_BotMatchVariable( void * a1, int a2, char * a3, int a4 ) {
-	botlib_export->ai.BotMatchVariable( (struct bot_match_s *)(a1), a2, (char *)(a3), a4 );
-}
-
-static void G_UnifyWhiteSpaces( char * a1 ) {
-	botlib_export->ai.UnifyWhiteSpaces( (char *)(a1) );
-}
-
-static void G_BotReplaceSynonyms( char * a1, unsigned long int a2 ) {
-	botlib_export->ai.BotReplaceSynonyms( (char *)(a1), a2 );
-}
-
-static int G_BotLoadChatFile( int a1, char * a2, char * a3 ) {
-	return botlib_export->ai.BotLoadChatFile( a1, (char *)(a2), (char *)(a3) );
-}
-
-static void G_BotSetChatGender( int a1, int a2 ) {
-	botlib_export->ai.BotSetChatGender( a1, a2 );
-}
-
-static void G_BotSetChatName( int a1, char * a2 ) {
-	botlib_export->ai.BotSetChatName( a1, (char *)(a2) );
-}
-
-static void G_BotResetGoalState( int a1 ) {
-	botlib_export->ai.BotResetGoalState( a1 );
-}
-
-static void G_BotResetAvoidGoals( int a1 ) {
-	botlib_export->ai.BotResetAvoidGoals( a1 );
-}
-
-static void G_BotRemoveFromAvoidGoals( int a1, int a2 ) {
-	botlib_export->ai.BotRemoveFromAvoidGoals( a1, a2 );
-}
-
-static void G_BotPushGoal( int a1, void * a2 ) {
-	botlib_export->ai.BotPushGoal( a1, (struct bot_goal_s *)(a2) );
-}
-
-static void G_BotPopGoal( int a1 ) {
-	botlib_export->ai.BotPopGoal( a1 );
-}
-
-static void G_BotEmptyGoalStack( int a1 ) {
-	botlib_export->ai.BotEmptyGoalStack( a1 );
-}
-
-static void G_BotDumpAvoidGoals( int a1 ) {
-	botlib_export->ai.BotDumpAvoidGoals( a1 );
-}
-
-static void G_BotDumpGoalStack( int a1 ) {
-	botlib_export->ai.BotDumpGoalStack( a1 );
-}
-
-static void G_BotGoalName( int a1, char * a2, int a3 ) {
-	botlib_export->ai.BotGoalName( a1, (char *)(a2), a3 );
-}
-
-static int G_BotGetTopGoal( int a1, void * a2 ) {
-	return botlib_export->ai.BotGetTopGoal( a1, (struct bot_goal_s *)(a2) );
-}
-
-static int G_BotGetSecondGoal( int a1, void * a2 ) {
-	return botlib_export->ai.BotGetSecondGoal( a1, (struct bot_goal_s *)(a2) );
-}
-
-static int G_BotChooseLTGItem( int a1, vec3_t a2, int * a3, int a4 ) {
-	return botlib_export->ai.BotChooseLTGItem( a1, (vec_t *)(a2), (int *)(a3), a4 );
-}
-
-static int G_BotChooseNBGItem( int a1, vec3_t a2, int * a3, int a4, void * a5, float a6 ) {
-	return botlib_export->ai.BotChooseNBGItem( a1, (vec_t *)(a2), (int *)(a3), a4, (struct bot_goal_s *)(a5), a6 );
-}
-
-static int G_BotTouchingGoal( vec3_t a1, void * a2 ) {
-	return botlib_export->ai.BotTouchingGoal( (vec_t *)(a1), (struct bot_goal_s *)(a2) );
-}
-
-static int G_BotItemGoalInVisButNotVisible( int a1, vec3_t a2, vec3_t a3, void * a4 ) {
-	return botlib_export->ai.BotItemGoalInVisButNotVisible( a1, (vec_t *)(a2), (vec_t *)(a3), (struct bot_goal_s *)(a4) );
-}
-
-static int G_BotGetLevelItemGoal( int a1, char * a2, void * a3 ) {
-	return botlib_export->ai.BotGetLevelItemGoal( a1, (char *)(a2), (struct bot_goal_s *)(a3) );
-}
-
-static int G_BotGetNextCampSpotGoal( int a1, void * a2 ) {
-	return botlib_export->ai.BotGetNextCampSpotGoal( a1, (struct bot_goal_s *)(a2) );
-}
-
-static int G_BotGetMapLocationGoal( char * a1, void * a2 ) {
-	return botlib_export->ai.BotGetMapLocationGoal( (char *)(a1), (struct bot_goal_s *)(a2) );
-}
-
-static float G_BotAvoidGoalTime( int a1, int a2 ) {
-	return  botlib_export->ai.BotAvoidGoalTime( a1, a2 ) ;
-}
-
-static void G_BotInitLevelItems(  ) {
-	botlib_export->ai.BotInitLevelItems();
-}
-
-static void G_BotUpdateEntityItems(  ) {
-	botlib_export->ai.BotUpdateEntityItems();
-}
-
-static int G_BotLoadItemWeights( int a1, char * a2 ) {
-	return botlib_export->ai.BotLoadItemWeights( a1, (char *)(a2) );
-}
-
-static void G_BotFreeItemWeights( int a1 ) {
-	botlib_export->ai.BotFreeItemWeights( a1 );
-}
-
-static void G_BotInterbreedGoalFuzzyLogic( int a1, int a2, int a3 ) {
-	botlib_export->ai.BotInterbreedGoalFuzzyLogic( a1, a2, a3 );
-}
-
-static void G_BotSaveGoalFuzzyLogic( int a1, char * a2 ) {
-	botlib_export->ai.BotSaveGoalFuzzyLogic( a1, (char *)(a2) );
-}
-
-static void G_BotMutateGoalFuzzyLogic( int a1, float a2 ) {
-	botlib_export->ai.BotMutateGoalFuzzyLogic( a1, a2 );
-}
-
-static int G_BotAllocGoalState( int a1 ) {
-	return botlib_export->ai.BotAllocGoalState( a1 );
-}
-
-static void G_BotFreeGoalState( int a1 ) {
-	botlib_export->ai.BotFreeGoalState( a1 );
-}
-
-static void G_BotResetMoveState( int a1 ) {
-	botlib_export->ai.BotResetMoveState( a1 );
-}
-
-static void G_BotMoveToGoal( void * a1, int a2, void * a3, int a4 ) {
-	botlib_export->ai.BotMoveToGoal( (struct bot_moveresult_s *)(a1), a2, (struct bot_goal_s *)(a3), a4 );
-}
-
-static int G_BotMoveInDirection( int a1, vec3_t a2, float a3, int a4 ) {
-	return botlib_export->ai.BotMoveInDirection( a1, (vec_t *)(a2), a3, a4 );
-}
-
-static void G_BotResetAvoidReach( int a1 ) {
-	botlib_export->ai.BotResetAvoidReach( a1 );
-}
-
-static void G_BotResetLastAvoidReach( int a1 ) {
-	botlib_export->ai.BotResetLastAvoidReach( a1 );
-}
-
-static int G_BotReachabilityArea( vec3_t a1, int a2 ) {
-	return botlib_export->ai.BotReachabilityArea( (vec_t *)(a1), a2 );
-}
-
-static int G_BotMovementViewTarget( int a1, void * a2, int a3, float a4, vec3_t a5 ) {
-	return botlib_export->ai.BotMovementViewTarget( a1, (struct bot_goal_s *)(a2), a3, a4, (vec_t *)(a5) );
-}
-
-static int G_BotPredictVisiblePosition( vec3_t a1, int a2, void * a3, int a4, vec3_t a5 ) {
-	return botlib_export->ai.BotPredictVisiblePosition( (vec_t *)(a1), a2, (struct bot_goal_s *)(a3), a4, (vec_t *)(a5) );
-}
-
-static int G_BotAllocMoveState(  ) {
-	return botlib_export->ai.BotAllocMoveState();
-}
-
-static void G_BotFreeMoveState( int a1 ) {
-	botlib_export->ai.BotFreeMoveState( a1 );
-}
-
-static void G_BotInitMoveState( int a1, void * a2 ) {
-	botlib_export->ai.BotInitMoveState( a1, (struct bot_initmove_s *)(a2) );
-}
-
-static void G_BotInitAvoidReach( int a1 ) {
-	botlib_export->ai.BotInitAvoidReach( a1 );
-}
-
-static int G_BotChooseBestFightWeapon( int a1, int * a2 ) {
-	return botlib_export->ai.BotChooseBestFightWeapon( a1, (int *)(a2) );
-}
-
-static void G_BotGetWeaponInfo( int a1, int a2, void * a3 ) {
-	botlib_export->ai.BotGetWeaponInfo( a1, a2, (struct weaponinfo_s *)(a3) );
-}
-
-static int G_BotLoadWeaponWeights( int a1, char * a2 ) {
-	return botlib_export->ai.BotLoadWeaponWeights( a1, (char *)(a2) );
-}
-
-static int G_BotAllocWeaponState(  ) {
-	return botlib_export->ai.BotAllocWeaponState();
-}
-
-static void G_BotFreeWeaponState( int a1 ) {
-	botlib_export->ai.BotFreeWeaponState( a1 );
-}
-
-static void G_BotResetWeaponState( int a1 ) {
-	botlib_export->ai.BotResetWeaponState( a1 );
-}
-
-static int G_GeneticParentsAndChildSelection( int a1, float * a2, int * a3, int * a4, int * a5 ) {
-	return botlib_export->ai.GeneticParentsAndChildSelection( a1, (float *)(a2), (int *)(a3), (int *)(a4), (int *)(a5) );
-}
-
-static qboolean G_AAS_Route( vec3_t a1, vec3_t a2, int a3, vec3_t a4 ) {
-	return botlib_export->aas.AAS_Route(static_cast<float *>(a1),
-	static_cast<float *>(a2), a3,
-	static_cast<float *>(a4));
-}
-
-static qboolean G_AAS_DoomPlayerRoute( vec3_t a1, vec3_t a2, int a3, void * a4 ) {
-	return botlib_export->aas.AAS_DoomPlayerRoute(static_cast<float *>(a1),
-	static_cast<float *>(a2), a3, static_cast<doomAasRoute_t *>(a4));
-}
-
+// The import table lists the engine functions directly. Inline lambdas only
+// adapt the signatures that differ from what the game module expects.
 static const gameImport_t gameImportTable = {
 	GAME_API_VERSION,
-	G_Printf,
-	G_Error,
-	G_Endgame,
-	G_Milliseconds,
-	G_Argc,
-	G_Argv,
-	G_FS_FOpenFile,
-	G_FS_Read,
-	G_FS_Write,
-	G_FS_Rename,
-	G_FS_FCloseFile,
-	G_FS_CopyFile,
-	G_FS_GetFileList,
-	G_SendConsoleCommand,
-	G_Cvar_Register,
-	G_Cvar_Update,
-	G_Cvar_Set,
-	G_Cvar_VariableIntegerValue,
-	G_Cvar_VariableStringBuffer,
-	G_LocateGameData,
-	G_DropClient,
-	G_SendServerCommand,
-	G_SetConfigstring,
-	G_GetConfigstring,
-	G_GetUserinfo,
-	G_SetUserinfo,
-	G_GetServerinfo,
-	G_SetBrushModel,
-	G_Trace,
-	G_TraceCapsule,
-	G_PointContents,
-	G_InPVS,
-	G_InPVSIgnorePortals,
-	G_AdjustAreaPortalState,
-	G_AreasConnected,
-	G_LinkEntity,
-	G_UnlinkEntity,
-	G_EntitiesInBox,
-	G_EntityContact,
-	G_EntityContactCapsule,
-	G_BotAllocateClient,
-	G_BotFreeClient,
-	G_GetUsercmd,
-	G_GetEntityToken,
-	G_DebugPolygonCreate,
-	G_DebugPolygonDelete,
-	G_RealTime,
-	G_SnapVector,
-	G_GetTag,
-	G_BotLibSetup,
-	G_BotLibShutdown,
-	G_BotLibVarSet,
-	G_BotLibVarGet,
-	G_BotLibDefine,
-	G_BotLibStartFrame,
-	G_BotLibLoadMap,
-	G_BotLibUpdateEntity,
-	G_BotLibTest,
-	G_BotGetSnapshotEntity,
-	G_BotGetServerCommand,
-	G_BotUserCommand,
-	G_AAS_EntityInfo,
-	G_AAS_Initialized,
-	G_AAS_PresenceTypeBoundingBox,
-	G_AAS_Time,
-	G_AAS_SetCurrentWorld,
-	G_AAS_PointAreaNum,
-	G_AAS_TraceAreas,
-	G_AAS_PointContents,
-	G_AAS_NextBSPEntity,
-	G_AAS_ValueForBSPEpairKey,
-	G_AAS_VectorForBSPEpairKey,
-	G_AAS_FloatForBSPEpairKey,
-	G_AAS_IntForBSPEpairKey,
-	G_AAS_AreaReachability,
-	G_AAS_AreaTravelTimeToGoalArea,
-	G_AAS_Swimming,
-	G_AAS_PredictClientMovement,
-	G_AAS_RT_ShowRoute,
-	G_AAS_RT_GetHidePos,
-	G_AAS_FindAttackSpotWithinRange,
-	G_AAS_GetRouteFirstVisPos,
-	G_AAS_SetAASBlockingEntity,
-	G_EA_Say,
-	G_EA_SayTeam,
-	G_EA_UseItem,
-	G_EA_DropItem,
-	G_EA_UseInv,
-	G_EA_DropInv,
-	G_EA_Gesture,
-	G_EA_Command,
-	G_EA_SelectWeapon,
-	G_EA_Talk,
-	G_EA_Attack,
-	G_EA_Reload,
-	G_EA_Use,
-	G_EA_Respawn,
-	G_EA_Jump,
-	G_EA_DelayedJump,
-	G_EA_Crouch,
-	G_EA_MoveUp,
-	G_EA_MoveDown,
-	G_EA_MoveForward,
-	G_EA_MoveBack,
-	G_EA_MoveLeft,
-	G_EA_MoveRight,
-	G_EA_Move,
-	G_EA_View,
-	G_EA_EndRegular,
-	G_EA_GetInput,
-	G_EA_ResetInput,
-	G_BotLoadCharacter,
-	G_BotFreeCharacter,
-	G_Characteristic_Float,
-	G_Characteristic_BFloat,
-	G_Characteristic_Integer,
-	G_Characteristic_BInteger,
-	G_Characteristic_String,
-	G_BotAllocChatState,
-	G_BotFreeChatState,
-	G_BotQueueConsoleMessage,
-	G_BotRemoveConsoleMessage,
-	G_BotNextConsoleMessage,
-	G_BotNumConsoleMessages,
-	G_BotInitialChat,
-	G_BotNumInitialChats,
-	G_BotReplyChat,
-	G_BotChatLength,
-	G_BotEnterChat,
-	G_BotGetChatMessage,
-	G_StringContains,
-	G_BotFindMatch,
-	G_BotMatchVariable,
-	G_UnifyWhiteSpaces,
-	G_BotReplaceSynonyms,
-	G_BotLoadChatFile,
-	G_BotSetChatGender,
-	G_BotSetChatName,
-	G_BotResetGoalState,
-	G_BotResetAvoidGoals,
-	G_BotRemoveFromAvoidGoals,
-	G_BotPushGoal,
-	G_BotPopGoal,
-	G_BotEmptyGoalStack,
-	G_BotDumpAvoidGoals,
-	G_BotDumpGoalStack,
-	G_BotGoalName,
-	G_BotGetTopGoal,
-	G_BotGetSecondGoal,
-	G_BotChooseLTGItem,
-	G_BotChooseNBGItem,
-	G_BotTouchingGoal,
-	G_BotItemGoalInVisButNotVisible,
-	G_BotGetLevelItemGoal,
-	G_BotGetNextCampSpotGoal,
-	G_BotGetMapLocationGoal,
-	G_BotAvoidGoalTime,
-	G_BotInitLevelItems,
-	G_BotUpdateEntityItems,
-	G_BotLoadItemWeights,
-	G_BotFreeItemWeights,
-	G_BotInterbreedGoalFuzzyLogic,
-	G_BotSaveGoalFuzzyLogic,
-	G_BotMutateGoalFuzzyLogic,
-	G_BotAllocGoalState,
-	G_BotFreeGoalState,
-	G_BotResetMoveState,
-	G_BotMoveToGoal,
-	G_BotMoveInDirection,
-	G_BotResetAvoidReach,
-	G_BotResetLastAvoidReach,
-	G_BotReachabilityArea,
-	G_BotMovementViewTarget,
-	G_BotPredictVisiblePosition,
-	G_BotAllocMoveState,
-	G_BotFreeMoveState,
-	G_BotInitMoveState,
-	G_BotInitAvoidReach,
-	G_BotChooseBestFightWeapon,
-	G_BotGetWeaponInfo,
-	G_BotLoadWeaponWeights,
-	G_BotAllocWeaponState,
-	G_BotFreeWeaponState,
-	G_BotResetWeaponState,
-	G_GeneticParentsAndChildSelection,
-	G_AAS_Route,
-	G_AAS_DoomPlayerRoute,
+
+	// Com_Printf and Com_Error are variadic, the table takes plain strings
+	[]( const char *msg ) { Com_Printf( "%s", msg ); },
+	[]( const char *msg ) { Com_Error( ERR_DROP, "%s", msg ); },
+	[]() { Com_Error( ERR_ENDGAME, "endgame" ); }, // no message, no error print
+	Sys_Milliseconds,
+	Cmd_Argc,
+	Cmd_ArgvBuffer,
+	FS_FOpenFileByMode,
+	FS_Read,
+	FS_Write,
+	[]( const char *from, const char *to ) { FS_Rename( from, to ); },
+	FS_FCloseFile,
+	FS_CopyFileOS,
+	FS_GetFileList,
+	Cbuf_ExecuteText,
+	Cvar_Register,
+	Cvar_Update,
+	Cvar_Set,
+	Cvar_VariableIntegerValue,
+	Cvar_VariableStringBuffer,
+	[]( void *gEnts, int numGEntities, int sizeofGEntity_t, playerState_t *clients, int sizeofGameClient ) { SV_LocateGameData( (sharedEntity_t *)gEnts, numGEntities, sizeofGEntity_t, clients, sizeofGameClient ); },
+	SV_GameDropClient,
+	SV_GameSendServerCommand,
+	SV_SetConfigstring,
+	SV_GetConfigstring,
+	SV_GetUserinfo,
+	SV_SetUserinfo,
+	SV_GetServerinfo,
+	[]( void *ent, const char *name ) { SV_SetBrushModel( (sharedEntity_t *)ent, name ); },
+	[]( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) { SV_Trace( results, start, mins, maxs, end, passEntityNum, contentmask, qfalse ); },
+	[]( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) { SV_Trace( results, start, mins, maxs, end, passEntityNum, contentmask, qtrue ); },
+	SV_PointContents,
+	SV_inPVS,
+	SV_inPVSIgnorePortals,
+	[]( void *ent, qboolean open ) { SV_AdjustAreaPortalState( (sharedEntity_t *)ent, open ); },
+	CM_AreasConnected,
+	[]( void *ent ) { SV_LinkEntity( (sharedEntity_t *)ent ); },
+	[]( void *ent ) { SV_UnlinkEntity( (sharedEntity_t *)ent ); },
+	SV_AreaEntities,
+	[]( const vec3_t mins, const vec3_t maxs, const void *ent ) { return SV_EntityContact( mins, maxs, (const sharedEntity_t *)ent, qfalse ); },
+	[]( const vec3_t mins, const vec3_t maxs, const void *ent ) { return SV_EntityContact( mins, maxs, (const sharedEntity_t *)ent, qtrue ); },
+	SV_BotAllocateClient,
+	SV_BotFreeClient,
+	SV_GetUsercmd,
+	[]( char *buffer, int bufferSize ) {
+		const char *s = COM_Parse( &sv.entityParsePoint );
+		Q_strncpyz( buffer, s, bufferSize );
+		if ( !sv.entityParsePoint && !s[0] ) {
+			return qfalse;
+		}
+		return qtrue;
+	},
+	BotImport_DebugPolygonCreate,
+	BotImport_DebugPolygonDelete,
+	Com_RealTime,
+	[]( float *v ) { Sys_SnapVector( v ); },
+	SV_GetTag,
+	SV_BotLibSetup,
+	SV_BotLibShutdown,
+	[]( char *var_name, char *value ) { return botlib_export->BotLibVarSet( var_name, value ); },
+	[]( char *var_name, char *value, int size ) { return botlib_export->BotLibVarGet( var_name, value, size ); },
+	[]( char *string ) { return botlib_export->PC_AddGlobalDefine( string ); },
+	[]( float time ) { return botlib_export->BotLibStartFrame( time ); },
+	[]( const char *mapname ) { return botlib_export->BotLibLoadMap( mapname ); },
+	[]( int ent, void *bue ) { return botlib_export->BotLibUpdateEntity( ent, (bot_entitystate_t *)bue ); },
+	[]( int parm0, char *parm1, vec3_t parm2, vec3_t parm3 ) { return botlib_export->Test( parm0, parm1, (vec_t *)parm2, (vec_t *)parm3 ); },
+	SV_BotGetSnapshotEntity,
+	SV_BotGetConsoleMessage,
+	[]( int clientNum, usercmd_t *ucmd ) { SV_ClientThink( &svs.clients[clientNum], ucmd ); },
+	[]( int entnum, void *info ) { botlib_export->aas.AAS_EntityInfo( entnum, (struct aas_entityinfo_s *)info ); },
+	[]() { return botlib_export->aas.AAS_Initialized(); },
+	[]( int presencetype, vec3_t mins, vec3_t maxs ) { botlib_export->aas.AAS_PresenceTypeBoundingBox( presencetype, (vec_t *)mins, (vec_t *)maxs ); },
+	[]() { return botlib_export->aas.AAS_Time(); },
+	[]( int index ) { botlib_export->aas.AAS_SetCurrentWorld( index ); },
+	[]( vec3_t point ) { return botlib_export->aas.AAS_PointAreaNum( (vec_t *)point ); },
+	[]( vec3_t start, vec3_t end, int *areas, vec3_t *points, int maxareas ) { return botlib_export->aas.AAS_TraceAreas( (vec_t *)start, (vec_t *)end, areas, points, maxareas ); },
+	[]( vec3_t point ) { return botlib_export->aas.AAS_PointContents( (vec_t *)point ); },
+	[]( int ent ) { return botlib_export->aas.AAS_NextBSPEntity( ent ); },
+	[]( int ent, char *key, char *value, int size ) { return botlib_export->aas.AAS_ValueForBSPEpairKey( ent, key, value, size ); },
+	[]( int ent, char *key, vec3_t v ) { return botlib_export->aas.AAS_VectorForBSPEpairKey( ent, key, (vec_t *)v ); },
+	[]( int ent, char *key, float *value ) { return botlib_export->aas.AAS_FloatForBSPEpairKey( ent, key, value ); },
+	[]( int ent, char *key, int *value ) { return botlib_export->aas.AAS_IntForBSPEpairKey( ent, key, value ); },
+	[]( int areanum ) { return botlib_export->aas.AAS_AreaReachability( areanum ); },
+	[]( int areanum, vec3_t origin, int goalareanum, int travelflags ) { return botlib_export->aas.AAS_AreaTravelTimeToGoalArea( areanum, (vec_t *)origin, goalareanum, travelflags ); },
+	[]( vec3_t origin ) { return botlib_export->aas.AAS_Swimming( (vec_t *)origin ); },
+	[]( void *move, int entnum, vec3_t origin, int presencetype, int onground, vec3_t velocity, vec3_t cmdmove, int cmdframes, int maxframes, float frametime, int stopevent, int stopareanum, int visualize ) {
+		return botlib_export->aas.AAS_PredictClientMovement( (struct aas_clientmove_s *)move, entnum, (vec_t *)origin, presencetype, onground,
+															(vec_t *)velocity, (vec_t *)cmdmove, cmdframes, maxframes, frametime, stopevent, stopareanum, visualize );
+	},
+	[]( vec3_t srcpos, int srcnum, int destnum ) { botlib_export->aas.AAS_RT_ShowRoute( (vec_t *)srcpos, srcnum, destnum ); },
+	[]( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos ) { return botlib_export->aas.AAS_RT_GetHidePos( (vec_t *)srcpos, srcnum, srcarea, (vec_t *)destpos, destnum, destarea, (vec_t *)returnPos ); },
+	[]( int srcnum, int rangenum, int enemynum, float rangedist, int travelflags, float *outpos ) { return botlib_export->aas.AAS_FindAttackSpotWithinRange( srcnum, rangenum, enemynum, rangedist, travelflags, outpos ); },
+	[]( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos ) { return botlib_export->aas.AAS_GetRouteFirstVisPos( (vec_t *)srcpos, (vec_t *)destpos, travelflags, (vec_t *)retpos ); },
+	[]( vec3_t absmin, vec3_t absmax, qboolean blocking ) { botlib_export->aas.AAS_SetAASBlockingEntity( (vec_t *)absmin, (vec_t *)absmax, blocking ); },
+	[]( int client, char *str ) { botlib_export->ea.EA_Say( client, str ); },
+	[]( int client, char *str ) { botlib_export->ea.EA_SayTeam( client, str ); },
+	[]( int client, char *it ) { botlib_export->ea.EA_UseItem( client, it ); },
+	[]( int client, char *it ) { botlib_export->ea.EA_DropItem( client, it ); },
+	[]( int client, char *inv ) { botlib_export->ea.EA_UseInv( client, inv ); },
+	[]( int client, char *inv ) { botlib_export->ea.EA_DropInv( client, inv ); },
+	[]( int client ) { botlib_export->ea.EA_Gesture( client ); },
+	[]( int client, char *command ) { botlib_export->ea.EA_Command( client, command ); },
+	[]( int client, int weapon ) { botlib_export->ea.EA_SelectWeapon( client, weapon ); },
+	[]( int client ) { botlib_export->ea.EA_Talk( client ); },
+	[]( int client ) { botlib_export->ea.EA_Attack( client ); },
+	[]( int client ) { botlib_export->ea.EA_Reload( client ); },
+	[]( int client ) { botlib_export->ea.EA_Use( client ); },
+	[]( int client ) { botlib_export->ea.EA_Respawn( client ); },
+	[]( int client ) { botlib_export->ea.EA_Jump( client ); },
+	[]( int client ) { botlib_export->ea.EA_DelayedJump( client ); },
+	[]( int client ) { botlib_export->ea.EA_Crouch( client ); },
+	[]( int client ) { botlib_export->ea.EA_MoveUp( client ); },
+	[]( int client ) { botlib_export->ea.EA_MoveDown( client ); },
+	[]( int client ) { botlib_export->ea.EA_MoveForward( client ); },
+	[]( int client ) { botlib_export->ea.EA_MoveBack( client ); },
+	[]( int client ) { botlib_export->ea.EA_MoveLeft( client ); },
+	[]( int client ) { botlib_export->ea.EA_MoveRight( client ); },
+	[]( int client, vec3_t dir, float speed ) { botlib_export->ea.EA_Move( client, (vec_t *)dir, speed ); },
+	[]( int client, vec3_t viewangles ) { botlib_export->ea.EA_View( client, (vec_t *)viewangles ); },
+	[]( int client, float thinktime ) { botlib_export->ea.EA_EndRegular( client, thinktime ); },
+	[]( int client, float thinktime, void *input ) { botlib_export->ea.EA_GetInput( client, thinktime, (bot_input_t *)input ); },
+	[]( int client, void *init ) { botlib_export->ea.EA_ResetInput( client, (bot_input_t *)init ); },
+	[]( char *charfile, int skill ) { return botlib_export->ai.BotLoadCharacter( charfile, skill ); },
+	[]( int character ) { botlib_export->ai.BotFreeCharacter( character ); },
+	[]( int character, int index ) { return botlib_export->ai.Characteristic_Float( character, index ); },
+	[]( int character, int index, float min, float max ) { return botlib_export->ai.Characteristic_BFloat( character, index, min, max ); },
+	[]( int character, int index ) { return botlib_export->ai.Characteristic_Integer( character, index ); },
+	[]( int character, int index, int min, int max ) { return botlib_export->ai.Characteristic_BInteger( character, index, min, max ); },
+	[]( int character, int index, char *buf, int size ) { botlib_export->ai.Characteristic_String( character, index, buf, size ); },
+	[]() { return botlib_export->ai.BotAllocChatState(); },
+	[]( int handle ) { botlib_export->ai.BotFreeChatState( handle ); },
+	[]( int chatstate, int type, char *message ) { botlib_export->ai.BotQueueConsoleMessage( chatstate, type, message ); },
+	[]( int chatstate, int handle ) { botlib_export->ai.BotRemoveConsoleMessage( chatstate, handle ); },
+	[]( int chatstate, void *cm ) { return botlib_export->ai.BotNextConsoleMessage( chatstate, (struct bot_consolemessage_s *)cm ); },
+	[]( int chatstate ) { return botlib_export->ai.BotNumConsoleMessages( chatstate ); },
+	[]( int chatstate, char *type, int mcontext, char *var0, char *var1, char *var2, char *var3, char *var4, char *var5, char *var6, char *var7 ) { botlib_export->ai.BotInitialChat( chatstate, type, mcontext, var0, var1, var2, var3, var4, var5, var6, var7 ); },
+	[]( int chatstate, char *type ) { return botlib_export->ai.BotNumInitialChats( chatstate, type ); },
+	[]( int chatstate, char *message, int mcontext, int vcontext, char *var0, char *var1, char *var2, char *var3, char *var4, char *var5, char *var6, char *var7 ) { return botlib_export->ai.BotReplyChat( chatstate, message, mcontext, vcontext, var0, var1, var2, var3, var4, var5, var6, var7 ); },
+	[]( int chatstate ) { return botlib_export->ai.BotChatLength( chatstate ); },
+	[]( int chatstate, int client, int sendto ) { botlib_export->ai.BotEnterChat( chatstate, client, sendto ); },
+	[]( int chatstate, char *buf, int size ) { botlib_export->ai.BotGetChatMessage( chatstate, buf, size ); },
+	[]( char *str1, char *str2, int casesensitive ) { return botlib_export->ai.StringContains( str1, str2, casesensitive ); },
+	[]( char *str, void *match, unsigned long int context ) { return botlib_export->ai.BotFindMatch( str, (struct bot_match_s *)match, context ); },
+	[]( void *match, int variable, char *buf, int size ) { botlib_export->ai.BotMatchVariable( (struct bot_match_s *)match, variable, buf, size ); },
+	[]( char *string ) { botlib_export->ai.UnifyWhiteSpaces( string ); },
+	[]( char *string, unsigned long int context ) { botlib_export->ai.BotReplaceSynonyms( string, context ); },
+	[]( int chatstate, char *chatfile, char *chatname ) { return botlib_export->ai.BotLoadChatFile( chatstate, chatfile, chatname ); },
+	[]( int chatstate, int gender ) { botlib_export->ai.BotSetChatGender( chatstate, gender ); },
+	[]( int chatstate, char *name ) { botlib_export->ai.BotSetChatName( chatstate, name ); },
+	[]( int goalstate ) { botlib_export->ai.BotResetGoalState( goalstate ); },
+	[]( int goalstate ) { botlib_export->ai.BotResetAvoidGoals( goalstate ); },
+	[]( int goalstate, int number ) { botlib_export->ai.BotRemoveFromAvoidGoals( goalstate, number ); },
+	[]( int goalstate, void *goal ) { botlib_export->ai.BotPushGoal( goalstate, (struct bot_goal_s *)goal ); },
+	[]( int goalstate ) { botlib_export->ai.BotPopGoal( goalstate ); },
+	[]( int goalstate ) { botlib_export->ai.BotEmptyGoalStack( goalstate ); },
+	[]( int goalstate ) { botlib_export->ai.BotDumpAvoidGoals( goalstate ); },
+	[]( int goalstate ) { botlib_export->ai.BotDumpGoalStack( goalstate ); },
+	[]( int number, char *name, int size ) { botlib_export->ai.BotGoalName( number, name, size ); },
+	[]( int goalstate, void *goal ) { return botlib_export->ai.BotGetTopGoal( goalstate, (struct bot_goal_s *)goal ); },
+	[]( int goalstate, void *goal ) { return botlib_export->ai.BotGetSecondGoal( goalstate, (struct bot_goal_s *)goal ); },
+	[]( int goalstate, vec3_t origin, int *inventory, int travelflags ) { return botlib_export->ai.BotChooseLTGItem( goalstate, (vec_t *)origin, inventory, travelflags ); },
+	[]( int goalstate, vec3_t origin, int *inventory, int travelflags, void *ltg, float maxtime ) { return botlib_export->ai.BotChooseNBGItem( goalstate, (vec_t *)origin, inventory, travelflags, (struct bot_goal_s *)ltg, maxtime ); },
+	[]( vec3_t origin, void *goal ) { return botlib_export->ai.BotTouchingGoal( (vec_t *)origin, (struct bot_goal_s *)goal ); },
+	[]( int viewer, vec3_t eye, vec3_t viewangles, void *goal ) { return botlib_export->ai.BotItemGoalInVisButNotVisible( viewer, (vec_t *)eye, (vec_t *)viewangles, (struct bot_goal_s *)goal ); },
+	[]( int index, char *classname, void *goal ) { return botlib_export->ai.BotGetLevelItemGoal( index, classname, (struct bot_goal_s *)goal ); },
+	[]( int num, void *goal ) { return botlib_export->ai.BotGetNextCampSpotGoal( num, (struct bot_goal_s *)goal ); },
+	[]( char *name, void *goal ) { return botlib_export->ai.BotGetMapLocationGoal( name, (struct bot_goal_s *)goal ); },
+	[]( int goalstate, int number ) { return botlib_export->ai.BotAvoidGoalTime( goalstate, number ); },
+	[]() { botlib_export->ai.BotInitLevelItems(); },
+	[]() { botlib_export->ai.BotUpdateEntityItems(); },
+	[]( int goalstate, char *filename ) { return botlib_export->ai.BotLoadItemWeights( goalstate, filename ); },
+	[]( int goalstate ) { botlib_export->ai.BotFreeItemWeights( goalstate ); },
+	[]( int parent1, int parent2, int child ) { botlib_export->ai.BotInterbreedGoalFuzzyLogic( parent1, parent2, child ); },
+	[]( int goalstate, char *filename ) { botlib_export->ai.BotSaveGoalFuzzyLogic( goalstate, filename ); },
+	[]( int goalstate, float range ) { botlib_export->ai.BotMutateGoalFuzzyLogic( goalstate, range ); },
+	[]( int state ) { return botlib_export->ai.BotAllocGoalState( state ); },
+	[]( int handle ) { botlib_export->ai.BotFreeGoalState( handle ); },
+	[]( int movestate ) { botlib_export->ai.BotResetMoveState( movestate ); },
+	[]( void *result, int movestate, void *goal, int travelflags ) { botlib_export->ai.BotMoveToGoal( (struct bot_moveresult_s *)result, movestate, (struct bot_goal_s *)goal, travelflags ); },
+	[]( int movestate, vec3_t dir, float speed, int type ) { return botlib_export->ai.BotMoveInDirection( movestate, (vec_t *)dir, speed, type ); },
+	[]( int movestate ) { botlib_export->ai.BotResetAvoidReach( movestate ); },
+	[]( int movestate ) { botlib_export->ai.BotResetLastAvoidReach( movestate ); },
+	[]( vec3_t origin, int testground ) { return botlib_export->ai.BotReachabilityArea( (vec_t *)origin, testground ); },
+	[]( int movestate, void *goal, int travelflags, float lookahead, vec3_t target ) { return botlib_export->ai.BotMovementViewTarget( movestate, (struct bot_goal_s *)goal, travelflags, lookahead, (vec_t *)target ); },
+	[]( vec3_t origin, int areanum, void *goal, int travelflags, vec3_t target ) { return botlib_export->ai.BotPredictVisiblePosition( (vec_t *)origin, areanum, (struct bot_goal_s *)goal, travelflags, (vec_t *)target ); },
+	[]() { return botlib_export->ai.BotAllocMoveState(); },
+	[]( int handle ) { botlib_export->ai.BotFreeMoveState( handle ); },
+	[]( int handle, void *initmove ) { botlib_export->ai.BotInitMoveState( handle, (struct bot_initmove_s *)initmove ); },
+	[]( int handle ) { botlib_export->ai.BotInitAvoidReach( handle ); },
+	[]( int weaponstate, int *inventory ) { return botlib_export->ai.BotChooseBestFightWeapon( weaponstate, inventory ); },
+	[]( int weaponstate, int weapon, void *weaponinfo ) { botlib_export->ai.BotGetWeaponInfo( weaponstate, weapon, (struct weaponinfo_s *)weaponinfo ); },
+	[]( int weaponstate, char *filename ) { return botlib_export->ai.BotLoadWeaponWeights( weaponstate, filename ); },
+	[]() { return botlib_export->ai.BotAllocWeaponState(); },
+	[]( int weaponstate ) { botlib_export->ai.BotFreeWeaponState( weaponstate ); },
+	[]( int weaponstate ) { botlib_export->ai.BotResetWeaponState( weaponstate ); },
+	[]( int numranks, float *ranks, int *parent1, int *parent2, int *child ) { return botlib_export->ai.GeneticParentsAndChildSelection( numranks, ranks, parent1, parent2, child ); },
+	[]( vec3_t origin, vec3_t goal, int flags, vec3_t point ) { return botlib_export->aas.AAS_Route( origin, goal, flags, point ); },
+	[]( vec3_t origin, vec3_t goal, int flags, void *route ) { return botlib_export->aas.AAS_DoomPlayerRoute( origin, goal, flags, (doomAasRoute_t *)route ); },
 };
 //==============================================
 
