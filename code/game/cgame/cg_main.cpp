@@ -265,9 +265,6 @@ vmCvar_t cg_expectedhunkusage;
 
 vmCvar_t cg_showAIState;
 
-vmCvar_t cg_notebook;
-vmCvar_t cg_notebookpages;          // bitflags for the currently accessable pages.  if they wanna cheat, let 'em.  Most won't, or will wait 'til they actually play it.
-
 vmCvar_t cg_currentSelectedPlayer;
 vmCvar_t cg_currentSelectedPlayerName;
 vmCvar_t cg_cameraMode;
@@ -466,10 +463,7 @@ cvarTable_t cvarTable[] = {
 	{ &cg_redlimbotime,         "g_redlimbotime","30000", 0 }, // communicated by systeminfo
 	// jpw
 
-	{ &cg_notebook, "cl_notebook", "0", CVAR_ROM },
-	{ &cg_notebookpages, "cg_notebookpages", "0", CVAR_ROM},
-//	{ &cg_youGotMail, "cg_youGotMail", "0", CVAR_ROM},	// used to display notebook new-info icon
-	{ &cg_youGotMail, "cg_youGotMail", "0", 0},   // used to display notebook new-info icon
+	{ &cg_youGotMail, "cg_youGotMail", "0", 0},   // used to display the objective complete icon
 
 	{ &cg_animState, "cg_animState", "0", CVAR_CHEAT},
 	{ &cg_missionStats, "g_missionStats", "0", CVAR_ROM},
@@ -903,12 +897,6 @@ void CG_RegisterSounds( void ) {
 	cgs.media.fbarrelexp1 = trap_S_RegisterSound( "sound/weapons/flamebarrel/fbarrela.wav" );
 	cgs.media.fbarrelexp2 = trap_S_RegisterSound( "sound/weapons/flamebarrel/fbarrelb.wav" );
 
-
-	cgs.media.fkickwall = trap_S_RegisterSound( "sound/weapons/melee/fstatck.wav" );
-	cgs.media.fkickflesh = trap_S_RegisterSound( "sound/weapons/melee/fstatck.wav" );
-	cgs.media.fkickmiss = trap_S_RegisterSound( "sound/weapons/melee/fstmiss.wav" );
-
-
 	cgs.media.noAmmoSound = trap_S_RegisterSound( "sound/weapons/noammo.wav" );
 
 	cgs.media.talkSound = trap_S_RegisterSound( "sound/player/talk.wav" );
@@ -1032,7 +1020,6 @@ void CG_RegisterSounds( void ) {
 	cgs.media.fireSound = trap_S_RegisterSound( "sound/items/use_fire.wav" );
 	cgs.media.waterSound = trap_S_RegisterSound( "sound/items/use_water.wav" );
 	cgs.media.wineSound = trap_S_RegisterSound( "sound/pickup/holdable/use_wine.wav" );       //----(SA)	modified
-	cgs.media.bookSound = trap_S_RegisterSound( "sound/pickup/holdable/use_book.wav" );       //----(SA)	added
 	cgs.media.staminaSound = trap_S_RegisterSound( "sound/pickup/holdable/use_stamina.wav" ); //----(SA)	added
 	cgs.media.quadSound = trap_S_RegisterSound( "sound/items/damage3.wav" );
 	cgs.media.sfx_ric1 = trap_S_RegisterSound( "sound/weapons/machinegun/ric1.wav" );
@@ -1246,7 +1233,6 @@ void CG_RegisterGraphics( void ) {
 
 //	cgs.media.hintShaders[HINT_BUILD]				= trap_R_RegisterShader( "gfx/2d/buildHint" );		// DHM - Nerve
 
-	cgs.media.youGotMailShader      = trap_R_RegisterShader( "gfx/2d/yougotmail" );    //----(SA)	added
 	cgs.media.youGotObjectiveShader = trap_R_RegisterShader( "gfx/2d/yougotobjective" );   //----(SA)	added
 
 //----(SA)	end

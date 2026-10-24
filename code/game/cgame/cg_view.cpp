@@ -34,10 +34,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "cg_doomhud.h"
 #include "cg_damageview.h"
 
-//========================
-extern int notebookModel;
-//========================
-
 /*
 =============================================================================
 
@@ -680,15 +676,6 @@ static void CG_OffsetFirstPersonView( void ) {
 	CG_StepOffset();
 
 	CG_ZoomSway();
-
-	// adjust for 'lean'
-	if ( cg.predictedPlayerState.leanf != 0 ) {
-		//add leaning offset
-		vec3_t right;
-		cg.refdefViewAngles[2] += cg.predictedPlayerState.leanf / 2.0f;
-		AngleVectors( cg.refdefViewAngles, NULL, right, NULL );
-		VectorMA( cg.refdef.vieworg, cg.predictedPlayerState.leanf, right, cg.refdef.vieworg );
-	}
 
 	// add kick offset
 

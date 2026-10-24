@@ -272,10 +272,6 @@ void CG_Respawn( void ) {
 
 	// dhm - end
 
-	trap_Cvar_Set( "cg_notebookpages", "3" );           // (SA) TEMP: clear notebook pages on spawn (cept for page 1&2)  this is temporary
-	trap_Cvar_Set( "ui_notebookCurrentPage", "0" ); // (SA) TEMP: clear notebook pages on spawn (cept for page 1)  this is temporary
-
-
 //	trap_S_FadeAllSound(1.0f, 1000);	// make sure sound fades up
 
 }

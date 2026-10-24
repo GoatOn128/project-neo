@@ -1103,7 +1103,6 @@ typedef struct {
 	// would be nice to specify these in the menu scripts instead of permanent handles...
 	qhandle_t hintShaders[HINT_NUM_HINTS];
 
-	qhandle_t youGotMailShader;         // '!' - new entry in notebook
 	qhandle_t youGotObjectiveShader;    // '<checkmark> - you completed objective
 //----(SA)	end
 
@@ -1371,7 +1370,6 @@ typedef struct {
 	sfxHandle_t underWaterSound;
 	sfxHandle_t medkitSound;
 	sfxHandle_t wineSound;
-	sfxHandle_t bookSound;      //----(SA)	added
 	sfxHandle_t staminaSound;   //----(SA)	added
 	sfxHandle_t elecSound;
 	sfxHandle_t fireSound;
@@ -1446,10 +1444,6 @@ typedef struct {
 
 	sfxHandle_t fbarrelexp1;
 	sfxHandle_t fbarrelexp2;
-
-	sfxHandle_t fkickwall;
-	sfxHandle_t fkickflesh;
-	sfxHandle_t fkickmiss;
 
 	int bulletHitFleshScript;
 	int bulletHitFleshMetalScript;
@@ -1770,9 +1764,6 @@ extern vmCvar_t cg_expectedhunkusage;
 
 extern vmCvar_t cg_showAIState;
 
-extern vmCvar_t cg_notebook;
-extern vmCvar_t cg_notebookpages;           // bitflags for the currently accessable pages.  if they wanna cheat, let 'em.  Most won't, or will wait 'til they actually play it.
-
 extern vmCvar_t cg_animState;
 extern vmCvar_t cg_missionStats;
 extern vmCvar_t cg_waitForFire;
@@ -2021,7 +2012,7 @@ void CG_MissileHitPlayer( centity_t *cent, int weapon, vec3_t origin, vec3_t dir
 //----(SA)
 void CG_VenomFire( entityState_t *es, qboolean fullmode );
 //----(SA)
-void CG_Bullet( vec3_t origin, int sourceEntityNum, vec3_t normal, qboolean flesh, int fleshEntityNum, qboolean wolfkick, int otherEntNum2 );
+void CG_Bullet( vec3_t origin, int sourceEntityNum, vec3_t normal, qboolean flesh, int fleshEntityNum, int otherEntNum2 );
 
 void CG_RailTrail( clientInfo_t *ci, vec3_t start, vec3_t end, int type );   //----(SA)	added 'type'
 void CG_GrappleTrail( centity_t *ent, const weaponInfo_t *wi );
