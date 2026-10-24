@@ -1164,6 +1164,7 @@ static qboolean IsMirror( const drawSurf_t *drawSurf, int entityNum ) {
 static qboolean SurfIsOffscreen( const drawSurf_t *drawSurf, vec4_t clipDest[128] ) {
 	float shortest = 100000000;
 	int entityNum;
+	int dlighted;
 	int numTriangles;
 	shader_t *shader;
 	int fogNum;

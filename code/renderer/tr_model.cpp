@@ -140,13 +140,6 @@ qhandle_t RE_RegisterModel( const char *name ) {
 	// only set the name after the model has been successfully loaded
 	Q_strncpyz( mod->name, name, sizeof( mod->name ) );
 
-// GR - by default models are not tessellated
-	mod->ATI_tess = qfalse;
-// GR - check if can be tessellated...
-//		make sure to tessellate model heads
-	if ( strstr( name, "head" ) ) {
-		mod->ATI_tess = qtrue;
-	}
 
 	// make sure the render thread is stopped
 	R_SyncRenderThread();
