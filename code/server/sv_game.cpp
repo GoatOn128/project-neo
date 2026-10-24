@@ -304,7 +304,7 @@ static const gameImport_t gameImportTable = {
 	Cmd_Argc,
 	Cmd_ArgvBuffer,
 	FS_FOpenFileByMode,
-	FS_Read,
+	[]( void *buffer, int len, fileHandle_t f ) { FS_Read( buffer, len, f ); },
 	FS_Write,
 	[]( const char *from, const char *to ) { FS_Rename( from, to ); },
 	FS_FCloseFile,

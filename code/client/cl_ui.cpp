@@ -790,7 +790,7 @@ static const uiImport_t uiImportTable = {
 	Cmd_ArgvBuffer,
 	Cbuf_ExecuteText,
 	FS_FOpenFileByMode,
-	FS_Read,
+	[]( void *buffer, int len, fileHandle_t f ) { FS_Read( buffer, len, f ); },
 	[]( fileHandle_t f, long offset, int origin ) { FS_Seek( f, offset, origin ); },
 	[]( const void *buffer, int len, fileHandle_t f ) { FS_Write( buffer, len, f ); },
 	FS_FCloseFile,
