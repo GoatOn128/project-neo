@@ -2152,13 +2152,7 @@ void BG_AnimUpdatePlayerStateConditions( pmove_t *pmove ) {
 	BG_UpdateConditionValue( ps->clientNum, ANIM_COND_UNDERHAND, ps->viewangles[0] > 0, qtrue );
 
 	// LEANING
-	if ( ps->leanf > 0 ) {
-		BG_UpdateConditionValue( ps->clientNum, ANIM_COND_LEANING, LEANING_RIGHT, qtrue );
-	} else if ( ps->leanf < 0 ) {
-		BG_UpdateConditionValue( ps->clientNum, ANIM_COND_LEANING, LEANING_LEFT, qtrue );
-	} else {
-		BG_UpdateConditionValue( ps->clientNum, ANIM_COND_LEANING, LEANING_UNUSED, qtrue );
-	}
+	BG_UpdateConditionValue( ps->clientNum, ANIM_COND_LEANING, LEANING_UNUSED, qtrue );
 
 	if ( ps->viewheight == ps->crouchViewHeight ) {
 		ps->eFlags |= EF_CROUCHING;

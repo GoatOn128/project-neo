@@ -2853,10 +2853,7 @@ static void PM_Weapon( void ) {
 
 				if ( item && ( pm->ps->holdable[pm->cmd.holdable] >= item->quantity ) ) { // ->quantity being how much 'ammo' is taken per use
 					PM_AddEvent( EV_USE_ITEM0 + pm->cmd.holdable );
-					// don't take books away when used
-					if ( pm->cmd.holdable < HI_BOOK1 || pm->cmd.holdable > HI_BOOK3 ) {
-						pm->ps->holdable[ pm->cmd.holdable ] -= item->quantity;
-					}
+					pm->ps->holdable[ pm->cmd.holdable ] -= item->quantity;
 
 					if ( pm->ps->holdable[pm->cmd.holdable] <= 0 ) {   // empty
 						PM_AddEvent( EV_NOITEM );
@@ -3118,11 +3115,6 @@ if ( gameReloading ) {
 
 // player is zooming - no fire
 if ( pm->ps->eFlags & EF_ZOOMING ) {
-	return;
-}
-
-// player is leaning - no fire
-if ( pm->ps->leanf != 0 && pm->ps->weapon != WP_GRENADE_LAUNCHER && pm->ps->weapon != WP_GRENADE_PINEAPPLE && pm->ps->weapon != WP_DYNAMITE ) {
 	return;
 }
 
@@ -3612,120 +3604,6 @@ static void PM_DropTimers( void ) {
 
 
 
-#define LEAN_MAX    28.0f
-#define LEAN_TIME_TO    280.0f  // time to get to full lean
-#define LEAN_TIME_FR    350.0f  // time to get from full lean
-
-/*
-==============
-PM_CalcLean
-
-==============
-*/
-void PM_UpdateLean( playerState_t *ps, usercmd_t *cmd, pmove_t *tpm ) {
-	vec3_t start, end, tmins, tmaxs, right;
-	int leaning = 0;            // -1 left, 1 right
-	float leanofs = 0;
-	vec3_t viewangles;
-	trace_t trace;
-
-	if ( ps->aiChar ) {
-		return;
-	}
-
-	if ( ( cmd->wbuttons & ( WBUTTON_LEANLEFT | WBUTTON_LEANRIGHT ) )  && !cmd->forwardmove && cmd->upmove <= 0 ) {
-		// if both are pressed, result is no lean
-		if ( cmd->wbuttons & WBUTTON_LEANLEFT ) {
-			leaning -= 1;
-		}
-		if ( cmd->wbuttons & WBUTTON_LEANRIGHT ) {
-			leaning += 1;
-		}
-	}
-
-	// not allowed when...
-	if ( ( ps->eFlags & ( EF_MELEE_ACTIVE |   // ...holding a chair
-						  EF_MG42_ACTIVE  | // ...on mg42
-						  EF_FIRING ) ) ) { // ...firing
-		leaning = 0;
-	}
-
-	leanofs = ps->leanf;
-
-	if ( !leaning ) {  // go back to center position
-		if ( leanofs > 0 ) {        // right
-			//FIXME: play lean anim backwards?
-			leanofs -= ( ( (float)pml.msec / LEAN_TIME_FR ) * LEAN_MAX );
-			if ( leanofs < 0 ) {
-				leanofs = 0;
-			}
-		} else if ( leanofs < 0 )   { // left
-			//FIXME: play lean anim backwards?
-			leanofs += ( ( (float)pml.msec / LEAN_TIME_FR ) * LEAN_MAX );
-			if ( leanofs > 0 ) {
-				leanofs = 0;
-			}
-		}
-	}
-
-	if ( leaning ) {
-		if ( leaning > 0 ) {   // right
-			if ( leanofs < LEAN_MAX ) {
-				leanofs += ( ( (float)pml.msec / LEAN_TIME_TO ) * LEAN_MAX );
-			}
-
-			if ( leanofs > LEAN_MAX ) {
-				leanofs = LEAN_MAX;
-			}
-
-		} else {              // left
-			if ( leanofs > -LEAN_MAX ) {
-				leanofs -= ( ( (float)pml.msec / LEAN_TIME_TO ) * LEAN_MAX );
-			}
-
-			if ( leanofs < -LEAN_MAX ) {
-				leanofs = -LEAN_MAX;
-			}
-
-		}
-	}
-
-	ps->leanf = leanofs;
-
-	if ( leaning ) {
-		VectorCopy( ps->origin, start );
-		start[2] += ps->viewheight;
-		VectorCopy( ps->viewangles, viewangles );
-		viewangles[ROLL] = 0;
-		AngleVectors( ps->viewangles, NULL, right, NULL );
-		VectorNormalize( right );
-		right[2] = ( leanofs < 0 ) ? 0.25 : -0.25;
-		VectorMA( start, leanofs, right, end );
-//		VectorSet( tmins, -8, -8, -4 );
-//		VectorSet( tmaxs, 8, 8, 4 );
-		VectorSet( tmins, -12, -12, -6 );
-		VectorSet( tmaxs, 12, 12, 10 );
-
-//	(SA) there's a problem with this tpm.trace (crashes)
-//		tpm.trace = (void *)&trace;
-//		tpm.trace (&trace, start, tmins, tmaxs, end, ps->clientNum, MASK_PLAYERSOLID);
-		if ( pm ) {
-			pm->trace( &trace, start, tmins, tmaxs, end, ps->clientNum, MASK_PLAYERSOLID );
-		} else {
-			tpm->trace( &trace, start, tmins, tmaxs, end, ps->clientNum, MASK_PLAYERSOLID );
-		}
-
-		ps->leanf *= trace.fraction;
-	}
-
-
-	if ( ps->leanf ) {
-		cmd->rightmove = 0;     // also disallowed in cl_input ~391
-
-	}
-}
-
-
 
 /*
 ================
@@ -3738,7 +3616,6 @@ are being updated isntead of a full move
 void PM_UpdateViewAngles( playerState_t *ps, usercmd_t *cmd, void( trace ) ( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask ) ) {   //----(SA)	modified
 	short temp;
 	int i;
-	pmove_t tpm;
 
 	if ( pm->ps->pm_type == PM_FREEZE ) {
 		return;
@@ -3767,12 +3644,6 @@ void PM_UpdateViewAngles( playerState_t *ps, usercmd_t *cmd, void( trace ) ( tra
 		}
 		ps->viewangles[i] = SHORT2ANGLE( temp );
 	}
-
-
-	tpm.trace = (void (*)(trace_t *, const vec_t *, const vec_t *, const vec_t *, const vec_t *, int, int))((void *)&trace);
-//	tpm.trace (&trace, start, tmins, tmaxs, end, ps->clientNum, MASK_PLAYERSOLID);
-
-	PM_UpdateLean( ps, cmd, &tpm );
 }
 
 /*
@@ -4345,7 +4216,6 @@ int Pmove( pmove_t *pmove ) {
 		pmove->cmd.upmove = 0;
 		pmove->cmd.buttons = 0;
 		pmove->cmd.wbuttons = 0;
-		pmove->cmd.wolfkick = 0;
 	}
 	// done.
 
