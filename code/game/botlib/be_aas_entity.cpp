@@ -106,19 +106,19 @@ int AAS_UpdateEntity( int entnum, bot_entitystate_t *state ) {
 	//number of the entity
 	ent->i.number = entnum;
 	//updated so set valid flag
-	ent->i.valid = qtrue;
+	ent->i.valid = true;
 	//link everything the first frame
 
 	if ( ( *defaultaasworld ).numframes == 1 ) {
-		relink = qtrue;
-	} else { relink = qfalse;}
+		relink = true;
+	} else { relink = false;}
 
 	//
 	if ( ent->i.solid == SOLID_BSP ) {
 		//if the angles of the model changed
 		if ( !VectorCompare( state->angles, ent->i.angles ) ) {
 			VectorCopy( state->angles, ent->i.angles );
-			relink = qtrue;
+			relink = true;
 		} //end if
 		  //get the mins and maxs of the model
 		  //FIXME: rotate mins and maxs
@@ -130,13 +130,13 @@ int AAS_UpdateEntity( int entnum, bot_entitystate_t *state ) {
 			 !VectorCompare( state->maxs, ent->i.maxs ) ) {
 			VectorCopy( state->mins, ent->i.mins );
 			VectorCopy( state->maxs, ent->i.maxs );
-			relink = qtrue;
+			relink = true;
 		} //end if
 	} //end if
 	  //if the origin changed
 	if ( !VectorCompare( state->origin, ent->i.origin ) ) {
 		VectorCopy( state->origin, ent->i.origin );
-		relink = qtrue;
+		relink = true;
 	} //end if
 	  //if the entity should be relinked
 	if ( relink ) {
@@ -257,11 +257,11 @@ int AAS_OriginOfEntityWithModelNum( int modelnum, vec3_t origin ) {
 		if ( ent->i.type == ET_MOVER ) {
 			if ( ent->i.modelindex == modelnum ) {
 				VectorCopy( ent->i.origin, origin );
-				return qtrue;
+				return true;
 			} //end if
 		}
 	} //end for
-	return qfalse;
+	return false;
 } //end of the function AAS_OriginOfEntityWithModelNum
 //===========================================================================
 //
@@ -326,7 +326,7 @@ void AAS_InvalidateEntities( void ) {
 	int i;
 	for ( i = 0; i < ( *defaultaasworld ).maxentities; i++ )
 	{
-		( *defaultaasworld ).entities[i].i.valid = qfalse;
+		( *defaultaasworld ).entities[i].i.valid = false;
 		( *defaultaasworld ).entities[i].i.number = i;
 	} //end for
 } //end of the function AAS_InvalidateEntities
@@ -410,7 +410,7 @@ int AAS_IsEntityInArea( int entnumIgnore, int entnumIgnore2, int areanum ) {
 //	int i;
 
 	// RF, not functional (doesnt work with multiple areas)
-	return qfalse;
+	return false;
 
 	for ( link = ( *aasworld ).arealinkedentities[areanum]; link; link = link->next_ent )
 	{
@@ -429,7 +429,7 @@ int AAS_IsEntityInArea( int entnumIgnore, int entnumIgnore2, int areanum ) {
 		if ( !ent->i.solid ) {
 			continue;
 		}
-		return qtrue;
+		return true;
 	}
 /*
 	ent = (*defaultaasworld).entities;
@@ -447,12 +447,12 @@ int AAS_IsEntityInArea( int entnumIgnore, int entnumIgnore2, int areanum ) {
 		{
 			if (link->areanum == areanum)
 			{
-				return qtrue;
+				return true;
 			} //end if
 		} //end for
 	}
 */
-	return qfalse;
+	return false;
 }
 
 /*
@@ -461,7 +461,7 @@ AAS_SetAASBlockingEntity
 =============
 */
 int AAS_EnableRoutingArea( int areanum, int enable );
-void AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, qboolean blocking ) {
+void AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, bool blocking ) {
 	int areas[128];
 	int numareas, i, w;
 	//
@@ -475,7 +475,7 @@ void AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, qboolean blocking )
 			}
 			// now clear blocking status
 			for ( i = 1; i < ( *aasworld ).numareas; i++ ) {
-				AAS_EnableRoutingArea( i, qtrue );
+				AAS_EnableRoutingArea( i, true );
 			}
 		}
 		//

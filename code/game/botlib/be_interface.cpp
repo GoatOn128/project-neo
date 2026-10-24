@@ -64,8 +64,8 @@ botlib_export_t be_botlib_export;
 botlib_import_t botimport;
 //
 int bot_developer;
-//qtrue if the library is setup
-int botlibsetup = qfalse;
+//true if the library is setup
+int botlibsetup = false;
 
 //===========================================================================
 //
@@ -91,12 +91,12 @@ int Sys_MilliSeconds( void ) {
 // Ridah, faster Win32 code
 #ifdef _WIN32
 	int sys_curtime;
-	static qboolean initialized = qfalse;
+	static bool initialized = false;
 	static int sys_timeBase;
 
 	if ( !initialized ) {
 		sys_timeBase = timeGetTime();
-		initialized = qtrue;
+		initialized = true;
 	}
 	sys_curtime = timeGetTime() - sys_timeBase;
 
@@ -111,14 +111,14 @@ int Sys_MilliSeconds( void ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean ValidClientNumber( int num, char *str ) {
+bool ValidClientNumber( int num, char *str ) {
 	if ( num < 0 || num > botlibglobals.maxclients ) {
 		//weird: the disabled stuff results in a crash
 		botimport.Print( PRT_ERROR, "%s: invalid client number %d, [0, %d]\n",
 						 str, num, botlibglobals.maxclients );
-		return qfalse;
+		return false;
 	} //end if
-	return qtrue;
+	return true;
 } //end of the function BotValidateClientNumber
 //===========================================================================
 //
@@ -126,13 +126,13 @@ qboolean ValidClientNumber( int num, char *str ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean ValidEntityNumber( int num, char *str ) {
+bool ValidEntityNumber( int num, char *str ) {
 	if ( num < 0 || num > botlibglobals.maxentities ) {
 		botimport.Print( PRT_ERROR, "%s: invalid entity number %d, [0, %d]\n",
 						 str, num, botlibglobals.maxentities );
-		return qfalse;
+		return false;
 	} //end if
-	return qtrue;
+	return true;
 } //end of the function BotValidateClientNumber
 //===========================================================================
 //
@@ -140,14 +140,14 @@ qboolean ValidEntityNumber( int num, char *str ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean BotLibSetup( char *str ) {
-//	return qtrue;
+bool BotLibSetup( char *str ) {
+//	return true;
 
 	if ( !botlibglobals.botlibsetup ) {
 		botimport.Print( PRT_ERROR, "%s: bot library used before being setup\n", str );
-		return qfalse;
+		return false;
 	} //end if
-	return qtrue;
+	return true;
 } //end of the function BotLibSetup
 //===========================================================================
 //
@@ -187,8 +187,8 @@ int Export_BotLibSetup( void ) {
 		return errnum;
 	}
 
-	botlibsetup = qtrue;
-	botlibglobals.botlibsetup = qtrue;
+	botlibsetup = true;
+	botlibglobals.botlibsetup = true;
 
 	return BLERR_NOERROR;
 } //end of the function Export_BotLibSetup
@@ -227,8 +227,8 @@ int Export_BotLibShutdown( void ) {
 	// shut down library log file
 	Log_Shutdown();
 	//
-	botlibsetup = qfalse;
-	botlibglobals.botlibsetup = qfalse;
+	botlibsetup = false;
+	botlibglobals.botlibsetup = false;
 	recursive = 0;
 	// print any files still open
 	PC_CheckOpenSourceHandles();
@@ -354,11 +354,11 @@ int AAS_NearestHideArea( int srcnum, vec3_t origin, int areanum, int enemynum, v
 
 int AAS_FindAttackSpotWithinRange( int srcnum, int rangenum, int enemynum, float rangedist, int travelflags, float *outpos );
 
-qboolean AAS_Route(vec3_t origin, vec3_t goal, int flags, vec3_t point);
-qboolean AAS_DoomPlayerRoute(vec3_t origin, vec3_t goal, int flags, doomAasRoute_t *route);
-qboolean AAS_GetRouteFirstVisPos( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos );
+bool AAS_Route(vec3_t origin, vec3_t goal, int flags, vec3_t point);
+bool AAS_DoomPlayerRoute(vec3_t origin, vec3_t goal, int flags, doomAasRoute_t *route);
+bool AAS_GetRouteFirstVisPos( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos );
 
-void AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, qboolean blocking );
+void AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, bool blocking );
 
 int BotExportTest( int parm0, char *parm1, vec3_t parm2, vec3_t parm3 ) {
 
@@ -424,11 +424,11 @@ int BotExportTest( int parm0, char *parm1, vec3_t parm2, vec3_t parm3 ) {
 		}
 
 		//area we are currently in
-		AAS_ShowAreaPolygons( newarea, 1, qtrue );
+		AAS_ShowAreaPolygons( newarea, 1, true );
 		//enemy position
-		AAS_ShowAreaPolygons( botlibglobals.goalareanum, 2, qtrue );
+		AAS_ShowAreaPolygons( botlibglobals.goalareanum, 2, true );
 		//area we should go hide
-		AAS_ShowAreaPolygons( hideposarea, 4, qtrue );
+		AAS_ShowAreaPolygons( hideposarea, 4, true );
 		return 0;
 	}
 
@@ -446,12 +446,12 @@ int BotExportTest( int parm0, char *parm1, vec3_t parm2, vec3_t parm3 ) {
 		AAS_ClearShownDebugLines();
 		AAS_GetRouteFirstVisPos( botlibglobals.goalorigin, origin, TFL_DEFAULT, eye );
 		//area we are currently in
-		AAS_ShowAreaPolygons( newarea, 1, qtrue );
+		AAS_ShowAreaPolygons( newarea, 1, true );
 		//enemy position
-		AAS_ShowAreaPolygons( botlibglobals.goalareanum, 2, qtrue );
+		AAS_ShowAreaPolygons( botlibglobals.goalareanum, 2, true );
 		//area that is visible in path from enemy pos
 		hideposarea = BotFuzzyPointReachabilityArea( eye );
-		AAS_ShowAreaPolygons( hideposarea, 4, qtrue );
+		AAS_ShowAreaPolygons( hideposarea, 4, true );
 		return 0;
 	}
 
@@ -473,7 +473,7 @@ int BotExportTest( int parm0, char *parm1, vec3_t parm2, vec3_t parm3 ) {
 
 	botimport.Print( PRT_MESSAGE, "\rtravel time to goal (%d) = %d  ", botlibglobals.goalareanum,
 					 AAS_AreaTravelTimeToGoalArea( newarea, origin, botlibglobals.goalareanum, TFL_DEFAULT ) );
-	//newarea = BotReachabilityArea(origin, qtrue);
+	//newarea = BotReachabilityArea(origin, true);
 	if ( newarea != area ) {
 		botimport.Print( PRT_MESSAGE, "origin = %f, %f, %f\n", origin[0], origin[1], origin[2] );
 		area = newarea;
@@ -554,8 +554,8 @@ int BotExportTest( int parm0, char *parm1, vec3_t parm2, vec3_t parm3 ) {
 	{
 		AAS_ReachabilityFromNum(reachnum, &reach);
 		AAS_ClearShownDebugLines();
-		AAS_ShowArea(area, qtrue);
-		AAS_ShowArea(reach.areanum, qtrue);
+		AAS_ShowArea(area, true);
+		AAS_ShowArea(reach.areanum, true);
 		AAS_DrawCross(reach.start, 6, LINECOLOR_BLUE);
 		AAS_DrawCross(reach.end, 6, LINECOLOR_RED);
 		//
