@@ -2274,6 +2274,9 @@ void QDECL CL_RefPrintf( int print_level, const char *fmt, ... ) {
 
 
 
+// handle of the renderer module, kept so vid_restart can unload and reload it
+static void *rendererHandle = NULL;
+
 /*
 ============
 CL_ShutdownRef
@@ -2351,9 +2354,6 @@ void CL_StartHunkUsers( void ) {
 int CL_ScaledMilliseconds( void ) {
 	return Sys_Milliseconds() * com_timescale->value;
 }
-
-// handle of the renderer module, kept so vid_restart can unload and reload it
-static void *rendererHandle = NULL;
 
 // the renderer publishes the native window handle through the import
 // table; the editor bridge reads it
