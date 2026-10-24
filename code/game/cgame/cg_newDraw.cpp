@@ -545,19 +545,11 @@ CG_DrawMessageIcon
 //----(SA)	added
 
 static void CG_DrawMessageIcon( rectDef_t *rect ) {
-	int icon;
-
-	if ( !cg_youGotMail.integer ) {
+	if ( cg_youGotMail.integer != 2 ) {
 		return;
 	}
 
-	if ( cg_youGotMail.integer == 2 ) {
-		icon = cgs.media.youGotObjectiveShader;
-	} else {
-		icon = cgs.media.youGotMailShader;
-	}
-
-	CG_DrawPic( rect->x, rect->y, rect->w, rect->h, icon );
+	CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cgs.media.youGotObjectiveShader );
 }
 
 

@@ -378,10 +378,6 @@ static void CG_UseItem( centity_t *cent ) {
 				cg.holdableSelectTime = cg.time;    // show remaining items
 
 				switch ( itemNum ) {
-				case HI_BOOK1:
-				case HI_BOOK2:
-				case HI_BOOK3:
-					break;
 				case HI_WINE:
 					CG_CenterPrint( "drankwine", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
 					break;
@@ -397,12 +393,6 @@ static void CG_UseItem( centity_t *cent ) {
 	default:
 	case HI_NONE:
 		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.useNothingSound );
-		break;
-
-	case HI_BOOK1:
-	case HI_BOOK2:
-	case HI_BOOK3:
-		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.bookSound );
 		break;
 
 	case HI_WINE:
@@ -2237,34 +2227,12 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	case EV_BULLET_HIT_WALL:
 		DEBUGNAME( "EV_BULLET_HIT_WALL" );
 		ByteToDir( es->eventParm, dir );
-		CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, qfalse, ENTITYNUM_WORLD, qfalse, es->otherEntityNum2 );
+		CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, qfalse, ENTITYNUM_WORLD, es->otherEntityNum2 );
 		break;
 
 	case EV_BULLET_HIT_FLESH:
 		DEBUGNAME( "EV_BULLET_HIT_FLESH" );
-		CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, qtrue, es->eventParm, qfalse, es->otherEntityNum2 );
-		break;
-
-	case EV_WOLFKICK_HIT_WALL:
-		DEBUGNAME( "EV_WOLFKICK_HIT_WALL" );
-		ByteToDir( es->eventParm, dir );
-		CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, qfalse, ENTITYNUM_WORLD, qtrue, es->otherEntityNum2 );
-		trap_S_StartSound( NULL, es->number, CHAN_AUTO, cgs.media.fkickwall );
-		break;
-
-	case EV_WOLFKICK_HIT_FLESH:
-		DEBUGNAME( "EV_WOLFKICK_HIT_FLESH" );
-		CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, qtrue, es->eventParm, qtrue, es->otherEntityNum2 );
-		trap_S_StartSound( NULL, es->number, CHAN_AUTO, cgs.media.fkickflesh );
-		break;
-
-	case EV_WOLFKICK_MISS:
-		DEBUGNAME( "EV_WOLFKICK_MISS" );
-		trap_S_StartSound( NULL, es->number, CHAN_AUTO, cgs.media.fkickmiss );
-		break;
-
-	case EV_POPUPBOOK:
-		trap_UI_Popup( va( "hbook%d", es->eventParm ) );
+		CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, qtrue, es->eventParm, es->otherEntityNum2 );
 		break;
 
 	case EV_POPUP:
@@ -2277,15 +2245,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	case EV_CLOSEMENU:
 		Menus_CloseAll();
 		break;
-
-	case EV_GIVEPAGE:
-	{
-		int havepages = cg_notebookpages.integer;
-		havepages |= es->eventParm;
-		trap_Cvar_Set( "cg_notebookpages", va( "%d", havepages ) );  // store new current page name for the ui to pick up
-		trap_Cvar_Set( "cg_youGotMail", "1" );  //----(SA)	added
-	}
-	break;
 
 	case EV_GENERAL_SOUND:
 		DEBUGNAME( "EV_GENERAL_SOUND" );

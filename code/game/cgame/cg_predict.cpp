@@ -335,12 +335,7 @@ static void CG_TouchItem( centity_t *cent ) {
 
 	item = &bg_itemlist[ cent->currentState.modelindex ];
 
-	// (SA) no prediction of books/clipboards
-	if ( item->giType == IT_HOLDABLE ) {
-		if ( item->giTag >= HI_BOOK1 && item->giTag <= HI_BOOK3 ) {
-			return;
-		}
-	}
+	// (SA) no prediction of clipboards
 	if ( item->giType == IT_CLIPBOARD ) {
 		return;
 	}
@@ -726,7 +721,6 @@ void CG_PredictPlayerState( void ) {
 			cg_pmove.cmd.rightmove = 0;
 			cg_pmove.cmd.upmove = 0;
 			cg_pmove.cmd.wbuttons = 0;
-			cg_pmove.cmd.wolfkick = 0;
 			cg_pmove.cmd.angles[0] = cg_pmove.oldcmd.angles[0];
 			cg_pmove.cmd.angles[1] = cg_pmove.oldcmd.angles[1];
 			cg_pmove.cmd.angles[2] = cg_pmove.oldcmd.angles[2];
