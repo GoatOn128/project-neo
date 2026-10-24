@@ -815,8 +815,6 @@ typedef struct model_s {
 
 	int numLods;
 
-// GR - model tessellation capability flag
-	int ATI_tess;
 } model_t;
 
 
@@ -874,11 +872,6 @@ removed	: used to be clipped flag
 #define QSORT_ENTITYNUM_SHIFT   11
 #define QSORT_FOGNUM_SHIFT      2
 
-// GR - tessellation flag in bit 8
-#define QSORT_ATI_TESS_SHIFT    8
-// GR - TruForm flags
-#define ATI_TESS_TRUFORM    1
-#define ATI_TESS_NONE       0
 
 extern int gl_filter_min, gl_filter_max;
 
@@ -1128,22 +1121,7 @@ extern cvar_t   *r_fullscreen;
 extern cvar_t   *r_gamma;
 extern cvar_t   *r_displayRefresh;      // optional display refresh option
 
-extern cvar_t   *r_allowExtensions;             // global enable/disable of OpenGL extensions
 extern cvar_t   *r_ext_compressed_textures;     // these control use of specific extensions
-extern cvar_t   *r_ext_texenv_op;
-extern cvar_t   *r_ext_multitexture;
-extern cvar_t   *r_ext_compiled_vertex_array;
-extern cvar_t   *r_ext_texture_env_add;
-//----(SA)	added
-extern cvar_t   *r_ext_ATI_pntriangles;
-extern cvar_t   *r_ati_truform_tess;
-extern cvar_t   *r_ati_truform_pointmode;   //----(SA)
-extern cvar_t   *r_ati_truform_normalmode;  //----(SA)
-extern cvar_t   *r_ati_fsaa_samples;        //DAJ
-extern cvar_t   *r_ext_texture_filter_anisotropic;
-extern cvar_t   *r_ext_NV_fog_dist;
-extern cvar_t   *r_nv_fogdist_mode;
-//----(SA)	end
 
 extern cvar_t  *r_waterFogColor;        //----(SA)	added
 extern cvar_t  *r_mapFogColor;          //----(SA)	added
@@ -1172,7 +1150,6 @@ extern cvar_t  *r_lightmap;                     // render lightmaps only
 extern cvar_t  *r_vertexLight;                  // vertex lighting mode for better performance
 extern cvar_t  *r_uiFullScreen;                 // ui is running fullscreen
 
-extern cvar_t  *r_logFile;                      // number of frames to emit GL logs
 extern cvar_t  *r_showtris;                     // enables wireframe rendering of the world
 extern cvar_t  *r_showsky;                      // forces sky in front of all surfaces
 extern cvar_t  *r_shownormals;                  // draws wireframe normals
@@ -1242,12 +1219,10 @@ void R_TagInfo_f( void );
 
 void R_AddPolygonSurfaces( void );
 
-// GR - add tessellation flag
 void R_DecomposeSort( unsigned sort, int *entityNum, shader_t **shader,
-					  int *fogNum, int *dlightMap, int *atiTess );
+					  int *fogNum, int *dlightMap );
 
-// GR - add tessellation flag
-void R_AddDrawSurf( surfaceType_t *surface, shader_t *shader, int fogIndex, int dlightMap, int atiTess );
+void R_AddDrawSurf( surfaceType_t *surface, shader_t *shader, int fogIndex, int dlightMap );
 
 
 #define CULL_IN     0       // completely unclipped
@@ -1434,8 +1409,6 @@ typedef struct shaderCommands_s
 
 	int numIndexes;
 	int numVertexes;
-
-	qboolean ATI_tess;
 
 	// info extracted from current shader
 	int numPasses;

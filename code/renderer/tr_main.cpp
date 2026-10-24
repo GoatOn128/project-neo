@@ -139,13 +139,6 @@ void R_Fog( glfog_t *curfog ) {
 	}
 
 
-//----(SA)	added
-	// NV fog mode
-	if ( glConfig.NVFogAvailable ) {
-		qglFogi( GL_FOG_DISTANCE_MODE_NV, glConfig.NVFogMode );
-	}
-//----(SA)	end
-
 	setfog.registered = qtrue;
 
 	qglClearColor( curfog->color[0], curfog->color[1], curfog->color[2], curfog->color[3] );
@@ -1174,9 +1167,6 @@ static qboolean SurfIsOffscreen( const drawSurf_t *drawSurf, vec4_t clipDest[128
 	int numTriangles;
 	shader_t *shader;
 	int fogNum;
-	int dlighted;
-// GR - tessellation flag
-	int atiTess;
 	vec4_t clip, eye;
 	int i;
 	unsigned int pointAnd = (unsigned int)~0;
@@ -1186,9 +1176,7 @@ static qboolean SurfIsOffscreen( const drawSurf_t *drawSurf, vec4_t clipDest[128
 	}
 
 	R_RotateForViewer();
-
-// GR - decompose with tessellation flag
-	R_DecomposeSort( drawSurf->sort, &entityNum, &shader, &fogNum, &dlighted, &atiTess );
+	R_DecomposeSort( drawSurf->sort, &entityNum, &shader, &fogNum, &dlighted );
 	RB_BeginSurface( shader, fogNum );
 	rb_surfaceTable[ *drawSurf->surface ]( drawSurf->surface );
 
@@ -1557,7 +1545,7 @@ R_AddDrawSurf
 =================
 */
 void R_AddDrawSurf( surfaceType_t *surface, shader_t *shader,
-					int fogIndex, int dlightMap, int atiTess ) {
+					int fogIndex, int dlightMap ) {
 	int index;
 
 	// instead of checking for overflow, we just mask the index
@@ -1565,9 +1553,7 @@ void R_AddDrawSurf( surfaceType_t *surface, shader_t *shader,
 	index = tr.refdef.numDrawSurfs & DRAWSURF_MASK;
 	// the sort data is packed into a single 32 bit value so it can be
 	// compared quickly during the qsorting process
-// GR - add tesselation flag to the sort
 	tr.refdef.drawSurfs[index].sort = ( shader->sortedIndex << QSORT_SHADERNUM_SHIFT )
-									  | ( atiTess << QSORT_ATI_TESS_SHIFT )
 									  | tr.shiftedEntityNum | ( fogIndex << QSORT_FOGNUM_SHIFT ) | (int)dlightMap;
 	tr.refdef.drawSurfs[index].surface = surface;
 	tr.refdef.numDrawSurfs++;
@@ -1578,16 +1564,13 @@ void R_AddDrawSurf( surfaceType_t *surface, shader_t *shader,
 R_DecomposeSort
 =================
 */
-// GR - decompose  with tessellation flag
 void R_DecomposeSort( unsigned sort, int *entityNum, shader_t **shader,
-					  int *fogNum, int *dlightMap, int *atiTess ) {
+					  int *fogNum, int *dlightMap ) {
 	*fogNum = ( sort >> QSORT_FOGNUM_SHIFT ) & 31;
 	*shader = tr.sortedShaders[ ( sort >> QSORT_SHADERNUM_SHIFT ) & ( MAX_SHADERS - 1 ) ];
 //	*entityNum = ( sort >> QSORT_ENTITYNUM_SHIFT ) & 1023;
 	*entityNum = ( sort >> QSORT_ENTITYNUM_SHIFT ) & ( MAX_GENTITIES - 1 );   // (SA) uppded entity count for Wolf to 11 bits
 	*dlightMap = sort & 3;
-//GR - extract tessellation flag
-	*atiTess = ( sort >> QSORT_ATI_TESS_SHIFT ) & 1;
 }
 
 /*
@@ -1601,8 +1584,6 @@ void R_SortDrawSurfs( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	int entityNum;
 	int dlighted;
 	int i;
-// GR - tessellation flag
-	int atiTess;
 
 	// it is possible for some views to not have any surfaces
 	if ( numDrawSurfs < 1 ) {
@@ -1625,7 +1606,7 @@ void R_SortDrawSurfs( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	// may cause another view to be rendered first
 	for ( i = 0 ; i < numDrawSurfs ; i++ ) {
 // GR - decompose with tessellation flag
-		R_DecomposeSort( ( drawSurfs + i )->sort, &entityNum, &shader, &fogNum, &dlighted, &atiTess );
+		R_DecomposeSort( ( drawSurfs + i )->sort, &entityNum, &shader, &fogNum, &dlighted );
 
 		if ( shader->sort > SS_PORTAL ) {
 			break;
@@ -1707,7 +1688,7 @@ void R_AddEntitySurfaces( void ) {
 			}
 			shader = R_GetShaderByHandle( ent->e.customShader );
 // GR - these entities are not tessellated
-			R_AddDrawSurf( &entitySurface, shader, R_SpriteFogNum( ent ), 0, ATI_TESS_NONE );
+			R_AddDrawSurf( &entitySurface, shader, R_SpriteFogNum( ent ), 0 );
 			break;
 
 		case RT_MODEL:
@@ -1717,7 +1698,7 @@ void R_AddEntitySurfaces( void ) {
 			tr.currentModel = R_GetModelByHandle( ent->e.hModel );
 			if ( !tr.currentModel ) {
 // GR - not tessellated
-				R_AddDrawSurf( &entitySurface, tr.defaultShader, 0, 0, ATI_TESS_NONE );
+				R_AddDrawSurf( &entitySurface, tr.defaultShader, 0, 0 );
 			} else {
 				switch ( tr.currentModel->type ) {
 				case MOD_MESH:
@@ -1740,7 +1721,7 @@ void R_AddEntitySurfaces( void ) {
 					}
 					shader = R_GetShaderByHandle( ent->e.customShader );
 // GR - not tessellated
-					R_AddDrawSurf( &entitySurface, tr.defaultShader, 0, 0, ATI_TESS_NONE );
+					R_AddDrawSurf( &entitySurface, tr.defaultShader, 0, 0 );
 					break;
 				default:
 					ri.Error( ERR_DROP, "R_AddEntitySurfaces: Bad modeltype" );

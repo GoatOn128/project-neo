@@ -125,7 +125,7 @@ void R_AddPolygonSurfaces( void ) {
             R_LightDoomPoly(poly);
         }
 // GR - not tessellated
-		R_AddDrawSurf((surfaceType_t *)( ( void * )poly), sh, poly->fogIndex, qfalse, ATI_TESS_NONE );
+		R_AddDrawSurf((surfaceType_t *)( ( void * )poly), sh, poly->fogIndex, qfalse );
 	}
 }
 

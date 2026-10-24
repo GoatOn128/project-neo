@@ -52,12 +52,6 @@ typedef enum {
 
 static qboolean s_windowMaximized = qfalse;
 
-//
-// function declaration
-//
-void     QGL_EnableLogging( qboolean enable );
-qboolean QGL_Init( const char *dllname );
-void     QGL_Shutdown( void );
 
 //
 // variable declarations
@@ -211,6 +205,8 @@ static qboolean GLW_CreateContext( int colorbits, int depthbits, int stencilbits
 	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, colorbits / 4 );
 	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, colorbits / 4 );
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, depthbits );
+	SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
+	SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
 	SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, stencilbits );
 
 	if ( stereo ) {
@@ -364,154 +360,32 @@ static qboolean GLW_StartDriverAndSetMode( const char *drivername,
 static void GLW_InitExtensions( void ) {
 
 	glConfig.textureCompression = TC_NONE;
-	glConfig.textureEnvAddAvailable = qfalse;
-	qglMultiTexCoord2fARB = NULL;
-	qglActiveTextureARB = NULL;
-	qglClientActiveTextureARB = NULL;
-	qglLockArraysEXT = NULL;
-	qglUnlockArraysEXT = NULL;
-	qglPNTrianglesiATI = NULL;
-	qglPNTrianglesfATI = NULL;
-	glConfig.anisotropicAvailable = qfalse;
-	glConfig.NVFogAvailable = qfalse;
-	glConfig.NVFogMode = 0;
 
-	if ( !r_allowExtensions->integer ) {
-		ri.Printf( PRINT_ALL, "*** IGNORING OPENGL EXTENSIONS ***\n" );
-		return;
-	}
+	// the GL_ADD texture environment is core since OpenGL 1.3
+	glConfig.textureEnvAddAvailable = qtrue;
 
 	ri.Printf( PRINT_ALL, "Initializing OpenGL extensions\n" );
 
-	// GL_S3_s3tc
-	// RF, check for GL_EXT_texture_compression_s3tc
+	// GL_EXT_texture_compression_s3tc
 	if ( strstr( glConfig.extensions_string, "GL_EXT_texture_compression_s3tc" ) ) {
 		if ( r_ext_compressed_textures->integer ) {
 			glConfig.textureCompression = TC_EXT_COMP_S3TC;
 			ri.Printf( PRINT_ALL, "...using GL_EXT_texture_compression_s3tc\n" );
-		} else
-		{
+		} else {
 			glConfig.textureCompression = TC_NONE;
 			ri.Printf( PRINT_ALL, "...ignoring GL_EXT_texture_compression_s3tc\n" );
 		}
-	} else
-	{
+	} else {
 		ri.Printf( PRINT_ALL, "...GL_EXT_texture_compression_s3tc not found\n" );
 	}
 
-	// GL_EXT_texture_env_add
-	if ( strstr( glConfig.extensions_string, "EXT_texture_env_add" ) ) {
-		if ( r_ext_texture_env_add->integer ) {
-			glConfig.textureEnvAddAvailable = qtrue;
-			ri.Printf( PRINT_ALL, "...using GL_EXT_texture_env_add\n" );
-		} else
-		{
-			glConfig.textureEnvAddAvailable = qfalse;
-			ri.Printf( PRINT_ALL, "...ignoring GL_EXT_texture_env_add\n" );
-		}
-	} else
-	{
-		ri.Printf( PRINT_ALL, "...GL_EXT_texture_env_add not found\n" );
-	}
+	// multitexture is core since OpenGL 1.3
+	qglGetIntegerv( GL_MAX_TEXTURE_UNITS, &glConfig.maxActiveTextures );
+	ri.Printf( PRINT_ALL, "...using GL_ARB_multitexture (%i texture units)\n", glConfig.maxActiveTextures );
 
 	// swap control goes through SDL_GL_SetSwapInterval now, force a set
 	ri.Printf( PRINT_ALL, "...using SDL swap control\n" );
 	r_swapInterval->modified = qtrue;   // force a set next frame
-
-	// GL_ARB_multitexture
-	if ( strstr( glConfig.extensions_string, "GL_ARB_multitexture" ) ) {
-		if ( r_ext_multitexture->integer ) {
-			qglMultiTexCoord2fARB = ( PFNGLMULTITEXCOORD2FARBPROC )SDL_GL_GetProcAddress( "glMultiTexCoord2fARB" );
-			qglActiveTextureARB = ( PFNGLACTIVETEXTUREARBPROC )SDL_GL_GetProcAddress( "glActiveTextureARB" );
-			qglClientActiveTextureARB = ( PFNGLCLIENTACTIVETEXTUREARBPROC )SDL_GL_GetProcAddress( "glClientActiveTextureARB" );
-
-			if ( qglActiveTextureARB ) {
-				qglGetIntegerv( GL_MAX_ACTIVE_TEXTURES_ARB, &glConfig.maxActiveTextures );
-
-				if ( glConfig.maxActiveTextures > 1 ) {
-					ri.Printf( PRINT_ALL, "...using GL_ARB_multitexture\n" );
-				} else
-				{
-					qglMultiTexCoord2fARB = NULL;
-					qglActiveTextureARB = NULL;
-					qglClientActiveTextureARB = NULL;
-					ri.Printf( PRINT_ALL, "...not using GL_ARB_multitexture, < 2 texture units\n" );
-				}
-			}
-		} else
-		{
-			ri.Printf( PRINT_ALL, "...ignoring GL_ARB_multitexture\n" );
-		}
-	} else
-	{
-		ri.Printf( PRINT_ALL, "...GL_ARB_multitexture not found\n" );
-	}
-
-	// GL_EXT_compiled_vertex array
-	if ( strstr( glConfig.extensions_string, "GL_EXT_compiled_vertex_array" ) && ( glConfig.hardwareType != GLHW_RIVA128 ) ) {
-		if ( r_ext_compiled_vertex_array->integer ) {
-			ri.Printf( PRINT_ALL, "...using GL_EXT_compiled_vertex_array\n" );
-			qglLockArraysEXT = ( void ( APIENTRY * )( int, int ) )SDL_GL_GetProcAddress( "glLockArraysEXT" );
-			qglUnlockArraysEXT = ( void ( APIENTRY * )( void ) )SDL_GL_GetProcAddress( "glUnlockArraysEXT" );
-			if ( !qglLockArraysEXT || !qglUnlockArraysEXT ) {
-				ri.Error( ERR_FATAL, "bad getprocaddress" );
-			}
-		} else
-		{
-			ri.Printf( PRINT_ALL, "...ignoring GL_EXT_compiled_vertex array\n" );
-		}
-	} else
-	{
-		ri.Printf( PRINT_ALL, "...GL_EXT_compiled_vertex array not found\n" );
-	}
-
-//----(SA) added
-
-	// GL_ATI_pn_triangles - ATI PN-Triangles
-	if ( strstr( glConfig.extensions_string, "GL_ATI_pn_triangles" ) ) {
-		if ( r_ext_ATI_pntriangles->integer ) {
-			ri.Printf( PRINT_ALL, "...using GL_ATI_pn_triangles\n" );
-
-			qglPNTrianglesiATI = ( PFNGLPNTRIANGLESIATIPROC )SDL_GL_GetProcAddress( "glPNTrianglesiATI" );
-			qglPNTrianglesfATI = ( PFNGLPNTRIANGLESFATIPROC )SDL_GL_GetProcAddress( "glPNTrianglesfATI" );
-
-			if ( !qglPNTrianglesiATI || !qglPNTrianglesfATI ) {
-				ri.Error( ERR_FATAL, "bad getprocaddress 0" );
-			}
-		} else {
-			ri.Printf( PRINT_ALL, "...ignoring GL_ATI_pn_triangles\n" );
-			ri.Cvar_Set( "r_ext_ATI_pntriangles", "0" );
-		}
-	} else {
-		ri.Printf( PRINT_ALL, "...GL_ATI_pn_triangles not found\n" );
-		ri.Cvar_Set( "r_ext_ATI_pntriangles", "0" );
-	}
-
-	// GL_EXT_texture_filter_anisotropic
-	if ( strstr( glConfig.extensions_string, "GL_EXT_texture_filter_anisotropic" ) ) {
-		// always ignored.  unsupported.
-		glConfig.anisotropicAvailable = qfalse;
-		ri.Printf( PRINT_ALL, "...ignoring GL_EXT_texture_filter_anisotropic\n" );
-		ri.Cvar_Set( "r_ext_texture_filter_anisotropic", "0" );
-	} else {
-		ri.Cvar_Set( "r_ext_texture_filter_anisotropic", "0" );
-	}
-
-	// GL_NV_fog_distance
-	if ( strstr( glConfig.extensions_string, "GL_NV_fog_distance" ) ) {
-		if ( r_ext_NV_fog_dist->integer ) {
-			glConfig.NVFogAvailable = qtrue;
-			ri.Printf( PRINT_ALL, "...using GL_NV_fog_distance\n" );
-		} else {
-			ri.Printf( PRINT_ALL, "...ignoring GL_NV_fog_distance\n" );
-			ri.Cvar_Set( "r_ext_NV_fog_dist", "0" );
-		}
-	} else {
-		ri.Printf( PRINT_ALL, "...GL_NV_fog_distance not found\n" );
-		ri.Cvar_Set( "r_ext_NV_fog_dist", "0" );
-	}
-
-//----(SA) end
 }
 
 
@@ -560,8 +434,6 @@ void GLimp_EndFrame( void ) {
 		SDL_GL_SwapWindow( glw_state.window );
 	}
 
-	// check logging
-	QGL_EnableLogging( r_logFile->integer );
 }
 
 
@@ -569,11 +441,10 @@ void GLimp_EndFrame( void ) {
 ** GLimp_Init
 
 ** This is the platform specific OpenGL initialization function. It sets up
-** the SDL window and the GL context, reads the config strings, applies the
-** chipset workarounds and initializes the extensions.
+** the SDL window and the GL context, reads the config strings and
+** initializes the extensions.
 */
 void GLimp_Init( void ) {
-	char buf[1024];
 	cvar_t *lastValidRenderer = ri.Cvar_Get( "r_lastValidRenderer", "(uninitialized)", CVAR_ARCHIVE );
 
 	ri.Printf( PRINT_ALL, "Initializing OpenGL subsystem\n" );
@@ -584,9 +455,9 @@ void GLimp_Init( void ) {
 	// create the window and the context
 	GLW_StartOpenGL();
 
-	// bind the GL function pointers through the live context
-	if ( !QGL_Init( NULL ) ) {
-		ri.Error( ERR_FATAL, "GLimp_Init() - could not bind the OpenGL functions\n" );
+	// bind the OpenGL entry points through glad
+	if ( !gladLoadGLLoader( (GLADloadproc)SDL_GL_GetProcAddress ) ) {
+		ri.Error( ERR_FATAL, "GLimp_Init() - could not load the OpenGL entry points\n" );
 	}
 
 	// get our config strings
@@ -595,65 +466,12 @@ void GLimp_Init( void ) {
 	Q_strncpyz( glConfig.version_string,(const char *)( qglGetString( GL_VERSION )), sizeof( glConfig.version_string ) );
 	Q_strncpyz( glConfig.extensions_string,(const char *)( qglGetString( GL_EXTENSIONS )), sizeof( glConfig.extensions_string ) );
 
-	//
-	// chipset specific configuration
-	//
-	Q_strncpyz( buf, glConfig.renderer_string, sizeof( buf ) );
-	Q_strlwr( buf );
-
-	//
-	// NOTE: if changing cvars, do it within this block.  This allows them
-	// to be overridden when testing driver fixes, etc. but only sets
-	// them to their default state when the hardware is first installed/run.
-	//
-	if ( Q_stricmp( lastValidRenderer->string, glConfig.renderer_string ) ) {
-		glConfig.hardwareType = GLHW_GENERIC;
-
-		ri.Cvar_Set( "r_textureMode", "GL_NEAREST" );
-
-		// VOODOO GRAPHICS w/ 2MB
-		if ( strstr( buf, "voodoo graphics/1 tmu/2 mb" ) ) {
-			ri.Cvar_Set( "r_picmip", "2" );
-			ri.Cvar_Get( "r_picmip", "1", CVAR_ARCHIVE | CVAR_LATCH );
-		} else if ( strstr( buf, "matrox" ) ) {
-			ri.Cvar_Set( "r_allowExtensions", "0" );
-		} else {
-			if ( strstr( buf, "rage 128" ) || strstr( buf, "rage128" ) ) {
-				ri.Cvar_Set( "r_finish", "0" );
-			}
-			// Savage3D and Savage4 should always have trilinear enabled
-			else if ( strstr( buf, "savage3d" ) || strstr( buf, "s3 savage4" ) ) {
-				ri.Cvar_Set( "r_texturemode", "GL_LINEAR_MIPMAP_LINEAR" );
-			}
-		}
+	// OpenGL 3.3 compatibility is the minimum this renderer supports
+	if ( !GLAD_GL_VERSION_3_3 ) {
+		ri.Error( ERR_FATAL, "OpenGL 3.3 or newer is required, this system reports %s\n", glConfig.version_string );
 	}
 
-	//
-	// this is where hardware specific workarounds that should be
-	// detected/initialized every startup should go.
-	//
-	if ( strstr( buf, "banshee" ) || strstr( buf, "voodoo3" ) ) {
-		glConfig.hardwareType = GLHW_3DFX_2D3D;
-	}
-	// VOODOO GRAPHICS w/ 2MB
-	else if ( strstr( buf, "voodoo graphics/1 tmu/2 mb" ) ) {
-	} else if ( strstr( buf, "glzicd" ) )    {
-	} else if ( strstr( buf, "rage pro" ) || strstr( buf, "Rage Pro" ) || strstr( buf, "ragepro" ) )       {
-		glConfig.hardwareType = GLHW_RAGEPRO;
-	} else if ( strstr( buf, "rage 128" ) )    {
-	} else if ( strstr( buf, "permedia2" ) )    {
-		glConfig.hardwareType = GLHW_PERMEDIA2;
-	} else if ( strstr( buf, "riva 128" ) )    {
-		glConfig.hardwareType = GLHW_RIVA128;
-	} else if ( strstr( buf, "riva tnt " ) )    {
-	}
-
-	if ( strstr( buf, "geforce" ) || strstr( buf, "ge-force" ) || strstr( buf, "radeon" ) || strstr( buf, "nv20" ) || strstr( buf, "nv30" )
-		 || strstr( buf, "quadro" ) ) {
-		ri.Cvar_Set( "r_highQualityVideo", "1" );
-	} else {
-		ri.Cvar_Set( "r_highQualityVideo", "0" );
-	}
+	glConfig.hardwareType = GLHW_GENERIC;
 
 	ri.Cvar_Set( "r_lastValidRenderer", glConfig.renderer_string );
 
@@ -688,14 +506,6 @@ void GLimp_Shutdown( void ) {
 		glw_state.cdsFullscreen = qfalse;
 	}
 
-	// close the r_logFile
-	if ( glw_state.log_fp ) {
-		fclose( glw_state.log_fp );
-		glw_state.log_fp = 0;
-	}
-
-	// shutdown QGL subsystem
-	QGL_Shutdown();
 
 	memset( &glConfig, 0, sizeof( glConfig ) );
 	memset( &glState, 0, sizeof( glState ) );

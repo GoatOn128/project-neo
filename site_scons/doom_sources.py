@@ -283,7 +283,7 @@ RENDERER_SOURCES = fix_paths([
     'game/q_math.cpp',
     'game/q_shared.cpp',
     'sys/sys_glimp.cpp',
-    'sys/sys_qgl.cpp',
+    'renderer/glad/glad.c',
 ])
 
 RENDERER_EXTRA_SOURCES = fix_paths([

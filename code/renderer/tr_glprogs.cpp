@@ -54,9 +54,9 @@ bool ValidProc(PROC address) {
 
 template <typename T>
 bool LoadProc(T &destination, const char *name, const char *extension = nullptr) {
-    PROC address = qwglGetProcAddress(name);
+    PROC address = (PROC)SDL_GL_GetProcAddress(name);
     if (!ValidProc(address) && extension) {
-        address = qwglGetProcAddress(extension);
+        address = (PROC)SDL_GL_GetProcAddress(extension);
     }
     destination = ValidProc(address) ? reinterpret_cast<T>(address) : nullptr;
     if (!destination) {

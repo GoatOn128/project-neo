@@ -300,18 +300,6 @@ typedef struct {
 
 	textureCompression_t textureCompression;
 	qboolean textureEnvAddAvailable;
-	qboolean anisotropicAvailable;                  //----(SA)	added
-	float maxAnisotropy;                            //----(SA)	added
-
-	// vendor-specific support
-	// NVidia
-	qboolean NVFogAvailable;                    //----(SA)	added
-	int NVFogMode;                                  //----(SA)	added
-	// ATI
-	int ATIMaxTruformTess;                          // for truform support
-	int ATINormalMode;                          // for truform support
-	int ATIPointMode;                           // for truform support
-
 
 	int vidWidth, vidHeight;
 	// aspect is the screen's physical width / height, which may be different
@@ -328,7 +316,6 @@ typedef struct {
 	qboolean stereoEnabled;
 	qboolean smpActive;                     // dual processor
 
-	qboolean textureFilterAnisotropicAvailable;                 //DAJ
 } glconfig_t;
 
 

@@ -110,29 +110,9 @@ cvar_t  *r_facePlaneCull;
 cvar_t  *r_showcluster;
 cvar_t  *r_nocurves;
 
-cvar_t  *r_allowExtensions;
-
 cvar_t  *r_ext_compressed_textures;
-cvar_t  *r_ext_multitexture;
-cvar_t  *r_ext_compiled_vertex_array;
-cvar_t  *r_ext_texture_env_add;
-
-//----(SA)	added
-cvar_t  *r_ext_texture_filter_anisotropic;
-
-cvar_t  *r_ext_NV_fog_dist;
-cvar_t  *r_nv_fogdist_mode;
-
-cvar_t  *r_ext_ATI_pntriangles;
-cvar_t  *r_ati_truform_tess;        //
-cvar_t  *r_ati_truform_normalmode;  // linear/quadratic
-cvar_t  *r_ati_truform_pointmode;   // linear/cubic
-//----(SA)	end
-
-cvar_t  *r_ati_fsaa_samples;        //DAJ valids are 1, 2, 4
 
 cvar_t  *r_ignoreGLErrors;
-cvar_t  *r_logFile;
 
 cvar_t  *r_stencilbits;
 cvar_t  *r_depthbits;
@@ -223,54 +203,6 @@ cvar_t  *r_maxpolys;
 int max_polys;
 cvar_t  *r_maxpolyverts;
 int max_polyverts;
-
-void ( APIENTRY * qglMultiTexCoord2fARB )( GLenum texture, GLfloat s, GLfloat t );
-void ( APIENTRY * qglActiveTextureARB )( GLenum texture );
-void ( APIENTRY * qglClientActiveTextureARB )( GLenum texture );
-
-void ( APIENTRY * qglLockArraysEXT )( GLint, GLint );
-void ( APIENTRY * qglUnlockArraysEXT )( void );
-
-//----(SA)	added
-void ( APIENTRY * qglPNTrianglesiATI )( GLenum pname, GLint param );
-void ( APIENTRY * qglPNTrianglesfATI )( GLenum pname, GLfloat param );
-/*
-The tessellation level and normal generation mode are specified with:
-
-	void qglPNTriangles{if}ATI(enum pname, T param)
-
-	If <pname> is:
-		GL_PN_TRIANGLES_NORMAL_MODE_ATI -
-			<param> must be one of the symbolic constants:
-				- GL_PN_TRIANGLES_NORMAL_MODE_LINEAR_ATI or
-				- GL_PN_TRIANGLES_NORMAL_MODE_QUADRATIC_ATI
-			which will select linear or quadratic normal interpolation respectively.
-		GL_PN_TRIANGLES_POINT_MODE_ATI -
-			<param> must be one of the symbolic  constants:
-				- GL_PN_TRIANGLES_POINT_MODE_LINEAR_ATI or
-				- GL_PN_TRIANGLES_POINT_MODE_CUBIC_ATI
-			which will select linear or cubic interpolation respectively.
-		GL_PN_TRIANGLES_TESSELATION_LEVEL_ATI -
-			<param> should be a value specifying the number of evaluation points on each edge.  This value must be
-			greater than 0 and less than or equal to the value given by GL_MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI.
-
-	An INVALID_VALUE error will be generated if the value for <param> is less than zero or greater than the max value.
-
-Associated 'gets':
-Get Value                               Get Command Type     Minimum Value								Attribute
----------                               ----------- ----     ------------								---------
-PN_TRIANGLES_ATI						IsEnabled   B		False                                       PN Triangles/enable
-PN_TRIANGLES_NORMAL_MODE_ATI			GetIntegerv Z2		PN_TRIANGLES_NORMAL_MODE_QUADRATIC_ATI		PN Triangles
-PN_TRIANGLES_POINT_MODE_ATI				GetIntegerv Z2		PN_TRIANGLES_POINT_MODE_CUBIC_ATI			PN Triangles
-PN_TRIANGLES_TESSELATION_LEVEL_ATI		GetIntegerv Z+		1											PN Triangles
-MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI	GetIntegerv Z+		1											-
-
-
-
-
-*/
-//----(SA)	end
-
 
 static void AssertCvarRange( cvar_t *cv, float minVal, float maxVal, qboolean shouldBeIntegral ) {
 	if ( shouldBeIntegral ) {
@@ -779,8 +711,8 @@ void GL_SetDefaultState( void ) {
 	qglShadeModel( GL_SMOOTH );
 	qglDepthFunc( GL_LEQUAL );
 
-	// the vertex array is always enabled, but the color and texture
-	// arrays are enabled and disabled around the compiled vertex array call
+	// the vertex array is always enabled, the color and texture arrays are
+	// managed by the stage iterators
 	qglEnableClientState( GL_VERTEX_ARRAY );
 
 	//
@@ -795,37 +727,6 @@ void GL_SetDefaultState( void ) {
 	qglDisable( GL_CULL_FACE );
 	qglDisable( GL_BLEND );
 
-//----(SA)	added.
-	// ATI pn_triangles
-	if ( qglPNTrianglesiATI ) {
-		int maxtess;
-		// get max supported tesselation
-		qglGetIntegerv( GL_MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI, (GLint*)&maxtess );
-#ifdef __MACOS__
-		glConfig.ATIMaxTruformTess = 7;
-#else
-		glConfig.ATIMaxTruformTess = maxtess;
-#endif
-		// cap if necessary
-		if ( r_ati_truform_tess->value > maxtess ) {
-			ri.Cvar_Set( "r_ati_truform_tess", va( "%d", maxtess ) );
-		}
-
-		// set Wolf defaults
-		qglPNTrianglesiATI( GL_PN_TRIANGLES_TESSELATION_LEVEL_ATI, r_ati_truform_tess->value );
-	}
-
-	if ( glConfig.anisotropicAvailable ) {
-		float maxAnisotropy;
-
-		qglGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
-		glConfig.maxAnisotropy = maxAnisotropy;
-
-		// set when rendering
-//	   qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, glConfig.maxAnisotropy);
-	}
-
-//----(SA)	end
 }
 
 
@@ -850,14 +751,21 @@ void GfxInfo_f( void ) {
 	ri.Printf( PRINT_ALL, "\nGL_VENDOR: %s\n", glConfig.vendor_string );
 	ri.Printf( PRINT_ALL, "GL_RENDERER: %s\n", glConfig.renderer_string );
 	ri.Printf( PRINT_ALL, "GL_VERSION: %s\n", glConfig.version_string );
-    // Keep individual print calls below the engine's fixed diagnostic buffer.
-    ri.Printf(PRINT_ALL, "GL_EXTENSIONS:\n");
-    for (int offset = 0; offset < static_cast<int>(strlen(glConfig.extensions_string));
-         offset += 512) {
-        ri.Printf(PRINT_ALL, "%.*s\n", 512, glConfig.extensions_string + offset);
+	// Summarize the extension list instead of dumping every name.
+	ri.Printf( PRINT_ALL, "GL_EXTENSIONS: " );
+	{
+		int numExtensions = 1;
+		for ( const char *s = glConfig.extensions_string; *s; s++ ) {
+			if ( *s == ' ' ) {
+				numExtensions++;
+			}
+		}
+		ri.Printf( PRINT_ALL, "%d\n", numExtensions );
+		ri.Printf( PRINT_ALL, "%.512s%s\n", glConfig.extensions_string,
+			strlen( glConfig.extensions_string ) > 512 ? " ..." : "" );
     }
     ri.Printf(PRINT_ALL, "GL_MAX_TEXTURE_SIZE: %d\n", glConfig.maxTextureSize);
-    ri.Printf( PRINT_ALL, "GL_MAX_ACTIVE_TEXTURES_ARB: %d\n", glConfig.maxActiveTextures );
+    ri.Printf( PRINT_ALL, "GL_MAX_TEXTURE_UNITS: %d\n", glConfig.maxActiveTextures );
 	ri.Printf( PRINT_ALL, "\nPIXELFORMAT: color(%d-bits) Z(%d-bit) stencil(%d-bits)\n", glConfig.colorBits, glConfig.depthBits, glConfig.stencilBits );
 	ri.Printf( PRINT_ALL, "MODE: %d, %d x %d %s hz:", r_mode->integer, glConfig.vidWidth, glConfig.vidHeight, fsstrings[r_fullscreen->integer == 1] );
 	if ( glConfig.displayFrequency ) {
@@ -873,15 +781,11 @@ void GfxInfo_f( void ) {
 	{
 		int primitives;
 
-		// default is to use triangles if compiled vertex arrays are present
+		// default is a single glDrawElements call
 		ri.Printf( PRINT_ALL, "rendering primitives: " );
 		primitives = r_primitives->integer;
 		if ( primitives == 0 ) {
-			if ( qglLockArraysEXT ) {
-				primitives = 2;
-			} else {
-				primitives = 1;
-			}
+			primitives = 2;
 		}
 		if ( primitives == -1 ) {
 			ri.Printf( PRINT_ALL, "none\n" );
@@ -899,31 +803,12 @@ void GfxInfo_f( void ) {
 	ri.Printf( PRINT_ALL, "picmip2: %d\n", r_picmip2->integer );
 	ri.Printf( PRINT_ALL, "texture bits: %d\n", r_texturebits->integer );
 	ri.Printf( PRINT_ALL, "multitexture: %s\n", enablestrings[qglActiveTextureARB != 0] );
-	ri.Printf( PRINT_ALL, "compiled vertex arrays: %s\n", enablestrings[qglLockArraysEXT != 0 ] );
 	ri.Printf( PRINT_ALL, "texenv add: %s\n", enablestrings[glConfig.textureEnvAddAvailable != 0] );
 	ri.Printf( PRINT_ALL, "compressed textures: %s\n", enablestrings[glConfig.textureCompression != TC_NONE] );
 
-	ri.Printf( PRINT_ALL, "ATI truform: %s\n", enablestrings[qglPNTrianglesiATI != 0] );
-	if ( qglPNTrianglesiATI ) {
-//DAJ bogus at this point		ri.Printf( PRINT_ALL, "MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI: %d\n", glConfig.ATIMaxTruformTess );
-		ri.Printf( PRINT_ALL, "Truform Tess: %d\n", r_ati_truform_tess->integer );
-		ri.Printf( PRINT_ALL, "Truform Point Mode: %s\n", r_ati_truform_pointmode->string );
-		ri.Printf( PRINT_ALL, "Truform Normal Mode: %s\n", r_ati_truform_normalmode->string );
-	}
 
-	ri.Printf( PRINT_ALL, "NV distance fog: %s\n", enablestrings[glConfig.NVFogAvailable != 0] );
-	if ( glConfig.NVFogAvailable ) {
-		ri.Printf( PRINT_ALL, "Fog Mode: %s\n", r_nv_fogdist_mode->string );
-	}
-
-	if ( r_vertexLight->integer || glConfig.hardwareType == GLHW_PERMEDIA2 ) {
+	if ( r_vertexLight->integer ) {
 		ri.Printf( PRINT_ALL, "HACK: using vertex lightmap approximation\n" );
-	}
-	if ( glConfig.hardwareType == GLHW_RAGEPRO ) {
-		ri.Printf( PRINT_ALL, "HACK: ragePro approximations\n" );
-	}
-	if ( glConfig.hardwareType == GLHW_RIVA128 ) {
-		ri.Printf( PRINT_ALL, "HACK: riva128 approximations\n" );
 	}
 	if ( glConfig.smpActive ) {
 		ri.Printf( PRINT_ALL, "Using dual processor acceleration\n" );
@@ -946,32 +831,8 @@ void R_Register( void ) {
 	// latched and archived variables
 	//
 	r_glDriver = ri.Cvar_Get( "r_glDriver", OPENGL_DRIVER_NAME, CVAR_ARCHIVE | CVAR_LATCH );
-	r_allowExtensions = ri.Cvar_Get( "r_allowExtensions", "1", CVAR_ARCHIVE | CVAR_LATCH );
 	r_ext_compressed_textures = ri.Cvar_Get( "r_ext_compressed_textures", "1", CVAR_ARCHIVE | CVAR_LATCH );   // (SA) ew, a spelling change I missed from the missionpack
-	r_ext_multitexture = ri.Cvar_Get( "r_ext_multitexture", "1", CVAR_ARCHIVE | CVAR_LATCH );
-	r_ext_compiled_vertex_array = ri.Cvar_Get( "r_ext_compiled_vertex_array", "1", CVAR_ARCHIVE | CVAR_LATCH );
 	r_glIgnoreWicked3D = ri.Cvar_Get( "r_glIgnoreWicked3D", "0", CVAR_ARCHIVE | CVAR_LATCH );
-
-//----(SA)	added
-	r_ext_ATI_pntriangles           = ri.Cvar_Get( "r_ext_ATI_pntriangles", "0", CVAR_ARCHIVE | CVAR_LATCH );   //----(SA)	default to '0'
-	r_ati_truform_tess              = ri.Cvar_Get( "r_ati_truform_tess", "1", CVAR_ARCHIVE );
-// GR - Change default mode -- linear doesn't do much...
-	r_ati_truform_normalmode        = ri.Cvar_Get( "r_ati_truform_normalmode", "QUADRATIC", CVAR_ARCHIVE );
-	r_ati_truform_pointmode         = ri.Cvar_Get( "r_ati_truform_pointmode", "CUBIC", CVAR_ARCHIVE );
-
-	r_ati_fsaa_samples              = ri.Cvar_Get( "r_ati_fsaa_samples", "1", CVAR_ARCHIVE );       //DAJ valids are 1, 2, 4
-
-	r_ext_texture_filter_anisotropic    = ri.Cvar_Get( "r_ext_texture_filter_anisotropic", "0", CVAR_ARCHIVE );
-
-	r_ext_NV_fog_dist                   = ri.Cvar_Get( "r_ext_NV_fog_dist", "1", CVAR_ARCHIVE | CVAR_LATCH );
-	r_nv_fogdist_mode                   = ri.Cvar_Get( "r_nv_fogdist_mode", "GL_EYE_RADIAL_NV", CVAR_ARCHIVE );    // default to 'looking good'
-//----(SA)	end
-
-#ifdef __linux__ // broken on linux
-	r_ext_texture_env_add = ri.Cvar_Get( "r_ext_texture_env_add", "0", CVAR_ARCHIVE | CVAR_LATCH );
-#else
-	r_ext_texture_env_add = ri.Cvar_Get( "r_ext_texture_env_add", "1", CVAR_ARCHIVE | CVAR_LATCH );
-#endif
 
 	r_picmip = ri.Cvar_Get( "r_picmip", "1", CVAR_ARCHIVE | CVAR_LATCH );
 	r_picmip2 = ri.Cvar_Get( "r_picmip2", "2", CVAR_ARCHIVE | CVAR_LATCH );   // used for character skins picmipping at a different level from the rest of the game
@@ -1123,7 +984,6 @@ void R_Register( void ) {
 	r_showcluster = ri.Cvar_Get( "r_showcluster", "0", CVAR_CHEAT );
 	r_speeds = ri.Cvar_Get( "r_speeds", "0", CVAR_CHEAT );
 	r_verbose = ri.Cvar_Get( "r_verbose", "0", CVAR_CHEAT );
-	r_logFile = ri.Cvar_Get( "r_logFile", "0", CVAR_CHEAT );
 	r_debugSurface = ri.Cvar_Get( "r_debugSurface", "0", CVAR_CHEAT );
 	r_nobind = ri.Cvar_Get( "r_nobind", "0", CVAR_CHEAT );
 	r_showtris = ri.Cvar_Get( "r_showtris", "0", CVAR_CHEAT );
