@@ -1244,109 +1244,6 @@ void Script_Clipboard( itemDef_t *item, char **args ) {
 
 
 
-#define NOTEBOOK_MAX_PAGES 6    // this will not be a define
-
-
-/*
-==============
-Script_NotebookShowpage
-	hide all notebook pages and show just the active one
-
-	inc == 0	- show current page
-	inc == val	- turn inc pages in the notebook (negative numbers are backwards)
-	inc == 999	- key number.  +999 is jump to last page, -999 is jump to cover page
-==============
-*/
-void Script_NotebookShowpage( itemDef_t *item, char **args ) {
-	int i, inc, curpage, newpage = 0, pages;
-
-	pages = DC->getCVarValue( "cg_notebookpages" );
-
-	if ( Int_Parse( args, &inc ) ) {
-
-		curpage = DC->getCVarValue( "ui_notebookCurrentPage" );
-
-
-		if ( inc == 0 ) {  // opening
-			if ( pages && !curpage ) { // only open to cover if no pages exist
-				inc = 1;    // otherwise, go to first available page
-			}
-		}
-
-		if ( inc == 999 ) {            // jump to end
-//			newpage = NOTEBOOK_MAX_PAGES;	// = lastpage;
-			curpage = 0;
-			inc = -1;
-		} else if ( inc == -999 ) {    // jump to start
-			curpage = 0;
-			inc = 0;
-		} else if ( inc > 500 ) {
-//			curpage = DEBRIEFING_BASE + (inc - 500);
-			curpage = inc;
-			inc = 0;
-		}
-
-		if ( inc ) {
-
-			if ( inc > 0 ) {
-				for ( i = 1; i < NOTEBOOK_MAX_PAGES; i++ ) {
-					newpage = curpage + i;
-					if ( newpage > NOTEBOOK_MAX_PAGES ) {
-						newpage = newpage % NOTEBOOK_MAX_PAGES;
-					}
-
-					if ( newpage == 0 ) {
-						continue;
-					}
-
-					if ( pages & ( 1 << ( newpage - 1 ) ) ) {
-//						if(dec == inc)
-//							break;
-						break;
-					}
-				}
-				if ( i < NOTEBOOK_MAX_PAGES ) {  // a valid page was found
-					curpage = newpage;
-				}
-
-			} else {
-				for ( i = 1; i < NOTEBOOK_MAX_PAGES; i++ ) {
-					newpage = curpage - i;
-					if ( newpage <= 0 ) {
-						newpage = newpage + NOTEBOOK_MAX_PAGES;
-					}
-
-					if ( pages & ( 1 << ( newpage - 1 ) ) ) {
-						break;
-					}
-				}
-				if ( i < NOTEBOOK_MAX_PAGES ) {  // a valid page was found
-					curpage = newpage;
-				}
-
-			}
-		}
-
-
-		// hide all the pages
-//		Menu_ShowItemByName(item->parent, "page_*", qfalse);
-		Menu_ShowItemByName((menuDef_t *)( item->parent), "cover", qfalse );
-		for ( i = 1; i <= NOTEBOOK_MAX_PAGES; i++ ) {
-			Menu_ShowItemByName((menuDef_t *)( item->parent), va( "page%d", i ), qfalse );
-		}
-
-		// show the visible one
-
-		if ( curpage ) {
-			Menu_ShowItemByName((menuDef_t *)( item->parent), va( "page%d", curpage ), qtrue );
-		} else {
-			Menu_ShowItemByName((menuDef_t *)( item->parent), "cover", qtrue );
-		}
-
-		DC->setCVar( "ui_notebookCurrentPage", va( "%d", curpage ) ); // store new current page
-
-	}
-}
 
 
 
@@ -1506,7 +1403,6 @@ commandDef_t commandList[] =
 	{"open", &Script_Open},                      // menu
 	{"close", &Script_Close},                    // menu
 	{"clipboard", &Script_Clipboard},            // show the current clipboard group by name
-	{"showpage", &Script_NotebookShowpage},          //
 	{"setasset", &Script_SetAsset},              // works on this
 	{"setbackground", &Script_SetBackground},    // works on this
 	{"setitemcolor", &Script_SetItemColor},      // group/name
@@ -3549,13 +3445,9 @@ static bind_t g_bindings[] =
 	{"+activate",        -1,             -1, -1, -1},
 	{"zoomin",           -1,             -1, -1, -1},
 	{"zoomout",          -1,             -1, -1, -1},
-	{"+kick",            -1,             -1, -1, -1},
 	{"+reload",      -1,             -1, -1, -1},
 	{"+sprint",      -1,             -1, -1, -1},
-	{"notebook",     K_TAB,          -1, -1, -1},
 //	{"help",			K_F1,           -1, -1, -1},
-	{"+leanleft",        -1,             -1, -1, -1},
-	{"+leanright",       -1,             -1, -1, -1},
 	{"kill",         -1,             -1, -1, -1}
 };
 
