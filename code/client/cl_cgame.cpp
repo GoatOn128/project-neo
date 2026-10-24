@@ -437,7 +437,7 @@ static const cgameImport_t cgameImportTable = {
 	Cmd_ArgvBuffer,
 	Cmd_ArgsBuffer,
 	FS_FOpenFileByMode,
-	FS_Read,
+	[]( void *buffer, int len, fileHandle_t f ) { FS_Read( buffer, len, f ); },
 	[]( const void *buffer, int len, fileHandle_t f ) { FS_Write( buffer, len, f ); },
 	FS_FCloseFile,
 	Cbuf_AddText,
@@ -530,7 +530,7 @@ static const cgameImport_t cgameImportTable = {
 			cl.cameraMode = qfalse;
 		}
 	},
-	getCameraInfo,
+	[]( int camNum, int time, vec3_t *origin, vec3_t *angles, float *fov ) { return (qboolean)getCameraInfo( camNum, time, *origin, *angles, fov ); },
 	Key_IsDown,
 	Key_GetCatcher,
 	Key_SetCatcher,
