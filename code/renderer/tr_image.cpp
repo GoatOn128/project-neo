@@ -263,7 +263,7 @@ void R_FreeImageBuffer( void ) {
 	int bufferType;
 	for ( bufferType = 0; bufferType < BUFFER_MAX_TYPES; bufferType++ ) {
 		if ( !imageBufferPtr[bufferType] ) {
-			return;
+			continue;
 		}
 		free( imageBufferPtr[bufferType] );
 		imageBufferSize[bufferType] = 0;
@@ -1385,8 +1385,14 @@ static void LoadPCX( const char *filename, byte **pic, byte **palette, int *widt
 				runLength = 1;
 			}
 
-			while ( runLength-- > 0 )
-				pix[x++] = dataByte;
+			while ( runLength-- > 0 ) {
+				// a malformed run must not write past the row and off
+				// the buffer on the last line
+				if ( x <= xmax ) {
+					pix[x] = dataByte;
+				}
+				x++;
+			}
 		}
 
 	}

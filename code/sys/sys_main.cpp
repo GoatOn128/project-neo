@@ -657,22 +657,6 @@ void * QDECL Sys_LoadDll( const char *name, void **dllHandle, const char *entryN
 		}
 	}
 
-	// the build puts the modules into bin/base, next to the engine
-	{
-		const char *exeDir = SDL_GetBasePath();
-
-		if ( exeDir ) {
-			char exePath[MAX_OSPATH];
-
-			Com_sprintf( exePath, sizeof( exePath ), "%sbase\\%s", exeDir, filename );
-			SDL_free( (void *)exeDir );
-			libHandle = SDL_LoadObject( exePath );
-			if ( libHandle ) {
-				goto found_dll;
-			}
-		}
-	}
-
 	basepath = Cvar_VariableString( "fs_basepath" );
 	cdpath = Cvar_VariableString( "fs_cdpath" );
 	gamedir = Cvar_VariableString( "fs_game" );
