@@ -857,6 +857,18 @@ void Field_KeyDownEvent( field_t *edit, int key ) {
 		return;
 	}
 
+	if ( key == K_BACKSPACE ) {
+		if ( edit->cursor > 0 ) {
+			memmove( edit->buffer + edit->cursor - 1,
+					 edit->buffer + edit->cursor, len + 1 - edit->cursor );
+			edit->cursor--;
+			if ( edit->cursor < edit->scroll ) {
+				edit->scroll--;
+			}
+		}
+		return;
+	}
+
 	if ( key == K_RIGHTARROW ) {
 		if ( edit->cursor < len ) {
 			edit->cursor++;

@@ -426,15 +426,12 @@ void Sys_EventLoop( void ) {
 
 		case SDL_EVENT_KEY_DOWN:
 			// alt-enter toggles fullscreen, like the old WM_SYSKEYDOWN path
-			if ( e.key.scancode == SDL_SCANCODE_RETURN && ( e.key.mod & SDL_KMOD_ALT ) ) {
+			if ( !e.key.repeat && e.key.scancode == SDL_SCANCODE_RETURN && ( e.key.mod & SDL_KMOD_ALT ) ) {
 				cvar_t *r_fullscreen = Sys_FullscreenCvar();
 				if ( r_fullscreen ) {
 					Cvar_SetValue( "r_fullscreen", !r_fullscreen->integer );
 					Cbuf_AddText( "vid_restart\n" );
 				}
-				break;
-			}
-			if ( e.key.repeat ) {
 				break;
 			}
 			g_sv.sysMsgTime = Sys_Milliseconds();

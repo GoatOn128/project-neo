@@ -2356,6 +2356,20 @@ qboolean Item_TextField_HandleKey( itemDef_t *item, int key ) {
 				return qtrue;
 			}
 
+			// backspace only arrives as a key event under SDL3, the text
+			// input events never carry control characters
+			if ( key == K_BACKSPACE ) {
+				if ( item->cursorPos > 0 ) {
+					memmove( &buff[item->cursorPos - 1], &buff[item->cursorPos], len + 1 - item->cursorPos );
+					item->cursorPos--;
+					if ( item->cursorPos < editPtr->paintOffset ) {
+						editPtr->paintOffset--;
+					}
+				}
+				DC->setCVar( item->cvar, buff );
+				return qtrue;
+			}
+
 			if ( key == K_RIGHTARROW || key == K_KP_RIGHTARROW ) {
 				if ( editPtr->maxPaintChars && item->cursorPos >= editPtr->maxPaintChars && item->cursorPos < len ) {
 					item->cursorPos++;
@@ -6326,5 +6340,6 @@ static qboolean Menu_OverActiveItem( menuDef_t *menu, float x, float y ) {
 	}
 	return qfalse;
 }
+
 
 
