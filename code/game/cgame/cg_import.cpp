@@ -161,7 +161,7 @@ void trap_S_StartLocalSound( sfxHandle_t sfx, int channelNum ) {
 	cgameImports->S_StartLocalSound( sfx, channelNum );
 }
 
-void trap_S_ClearLoopingSounds( qboolean killall ) {
+void trap_S_ClearLoopingSounds( bool killall ) {
 	cgameImports->S_ClearLoopingSounds( killall );
 }
 
@@ -227,7 +227,7 @@ qhandle_t trap_R_RegisterModel( const char * name ) {
 	return cgameImports->R_RegisterModel( name );
 }
 
-qboolean trap_R_GetSkinModel( qhandle_t skinid, const char * type, char * name ) {
+bool trap_R_GetSkinModel( qhandle_t skinid, const char * type, char * name ) {
 	return cgameImports->R_GetSkinModel( skinid, type, name );
 }
 
@@ -326,11 +326,11 @@ void trap_GetCurrentSnapshotNumber( int * snapshotNumber, int * serverTime ) {
 	cgameImports->GetCurrentSnapshotNumber( snapshotNumber, serverTime );
 }
 
-qboolean trap_GetSnapshot( int snapshotNumber, snapshot_t * snapshot ) {
+bool trap_GetSnapshot( int snapshotNumber, snapshot_t * snapshot ) {
 	return cgameImports->GetSnapshot( snapshotNumber, snapshot );
 }
 
-qboolean trap_GetServerCommand( int serverCommandNumber ) {
+bool trap_GetServerCommand( int serverCommandNumber ) {
 	return cgameImports->GetServerCommand( serverCommandNumber );
 }
 
@@ -338,7 +338,7 @@ int trap_GetCurrentCmdNumber(  ) {
 	return cgameImports->GetCurrentCmdNumber();
 }
 
-qboolean trap_GetUserCmd( int cmdNumber, usercmd_t * ucmd ) {
+bool trap_GetUserCmd( int cmdNumber, usercmd_t * ucmd ) {
 	return cgameImports->GetUserCmd( cmdNumber, ucmd );
 }
 
@@ -350,7 +350,7 @@ int trap_MemoryRemaining(  ) {
 	return cgameImports->MemoryRemaining();
 }
 
-qboolean trap_loadCamera( int camNum, const char * name ) {
+bool trap_loadCamera( int camNum, const char * name ) {
 	return cgameImports->loadCamera( camNum, name );
 }
 
@@ -362,11 +362,11 @@ void trap_stopCamera( int camNum ) {
 	cgameImports->stopCamera( camNum );
 }
 
-qboolean trap_getCameraInfo( int camNum, int time, vec3_t * origin, vec3_t * angles, float * fov ) {
+bool trap_getCameraInfo( int camNum, int time, vec3_t * origin, vec3_t * angles, float * fov ) {
 	return cgameImports->getCameraInfo( camNum, time, origin, angles, fov );
 }
 
-qboolean trap_Key_IsDown( int keynum ) {
+bool trap_Key_IsDown( int keynum ) {
 	return cgameImports->Key_IsDown( keynum );
 }
 
@@ -438,7 +438,7 @@ void trap_CIN_SetExtents( int handle, int x, int y, int w, int h ) {
 	cgameImports->CIN_SetExtents( handle, x, y, w, h );
 }
 
-qboolean trap_GetEntityToken( char * buffer, int bufferSize ) {
+bool trap_GetEntityToken( char * buffer, int bufferSize ) {
 	return cgameImports->GetEntityToken( buffer, bufferSize );
 }
 
@@ -454,7 +454,7 @@ void trap_UI_ClosePopup( const char * arg0 ) {
 	cgameImports->UI_ClosePopup( arg0 );
 }
 
-qboolean trap_GetModelInfo( int clientNum, char * modelName, animModelInfo_t ** modelInfo ) {
+bool trap_GetModelInfo( int clientNum, char * modelName, animModelInfo_t ** modelInfo ) {
 	return cgameImports->GetModelInfo( clientNum, modelName, (void **)( modelInfo ) );
 }
 

@@ -66,11 +66,11 @@ static void Export_Shutdown( void ) {
 	CG_Shutdown();
 }
 
-static qboolean Export_ConsoleCommand( void ) {
+static bool Export_ConsoleCommand( void ) {
 	return CG_ConsoleCommand();
 }
 
-static void Export_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demoPlayback ) {
+static void Export_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, bool demoPlayback ) {
 	CG_DrawActiveFrame( serverTime, stereoView, demoPlayback );
 }
 
@@ -82,7 +82,7 @@ static int Export_LastAttacker( void ) {
 	return CG_LastAttacker();
 }
 
-static void Export_KeyEvent( int key, qboolean down ) {
+static void Export_KeyEvent( int key, bool down ) {
 	CG_KeyEvent( key, down );
 }
 
@@ -96,7 +96,7 @@ static void Export_EventHandling( int type ) {
 	CG_EventHandling( type );
 }
 
-static qboolean Export_GetTag( int clientNum, char * tagName, orientation_t * or ) {
+static bool Export_GetTag( int clientNum, char * tagName, orientation_t * or ) {
 	return CG_GetTag( clientNum, tagName, or );
 }
 
@@ -648,7 +648,7 @@ void CG_SetupDlightstyles( void ) {
 	int entnum;
 	centity_t   *cent;
 
-	cg.lightstylesInited = qtrue;
+	cg.lightstylesInited = true;
 
 	for ( i = 1; i < MAX_DLIGHT_CONFIGSTRINGS; i++ )
 	{
@@ -785,7 +785,7 @@ static void CG_LoadPickupNames( void ) {
 	text = buffer;
 
 	for ( i = 0; i < bg_numItems; i++ ) {
-		token = COM_ParseExt( &text, qtrue );
+		token = COM_ParseExt( &text, true );
 		if ( !token[0] ) {
 			break;
 		}
@@ -830,7 +830,7 @@ static void CG_LoadTranslationStrings( void ) {
 	numStrings = sizeof( translateStrings ) / sizeof( translateStrings[0] ) - 1;
 
 	for ( i = 0; i < numStrings; i++ ) {
-		token = COM_ParseExt( &text, qtrue );
+		token = COM_ParseExt( &text, true );
 		if ( !token[0] ) {
 			break;
 		}
@@ -1645,31 +1645,31 @@ char *CG_GetMenuBuffer( const char *filename ) {
 // new hud stuff ( mission pack )
 // ==============================
 //
-qboolean CG_Asset_Parse( int handle ) {
+bool CG_Asset_Parse( int handle ) {
 	pc_token_t token;
 	const char *tempStr;
 
 	if ( !trap_PC_ReadToken( handle, &token ) ) {
-		return qfalse;
+		return false;
 	}
 	if ( Q_stricmp( token.string, "{" ) != 0 ) {
-		return qfalse;
+		return false;
 	}
 
 	while ( 1 ) {
 		if ( !trap_PC_ReadToken( handle, &token ) ) {
-			return qfalse;
+			return false;
 		}
 
 		if ( Q_stricmp( token.string, "}" ) == 0 ) {
-			return qtrue;
+			return true;
 		}
 
 		// font
 		if ( Q_stricmp( token.string, "font" ) == 0 ) {
 			int pointSize;
 			if ( !PC_String_Parse( handle, &tempStr ) || !PC_Int_Parse( handle, &pointSize ) ) {
-				return qfalse;
+				return false;
 			}
 			cgDC.registerFont( tempStr, pointSize, &cgDC.Assets.textFont );
 			continue;
@@ -1679,7 +1679,7 @@ qboolean CG_Asset_Parse( int handle ) {
 		if ( Q_stricmp( token.string, "smallFont" ) == 0 ) {
 			int pointSize;
 			if ( !PC_String_Parse( handle, &tempStr ) || !PC_Int_Parse( handle, &pointSize ) ) {
-				return qfalse;
+				return false;
 			}
 			cgDC.registerFont( tempStr, pointSize, &cgDC.Assets.smallFont );
 			continue;
@@ -1689,7 +1689,7 @@ qboolean CG_Asset_Parse( int handle ) {
 		if ( Q_stricmp( token.string, "bigfont" ) == 0 ) {
 			int pointSize;
 			if ( !PC_String_Parse( handle, &tempStr ) || !PC_Int_Parse( handle, &pointSize ) ) {
-				return qfalse;
+				return false;
 			}
 			cgDC.registerFont( tempStr, pointSize, &cgDC.Assets.bigFont );
 			continue;
@@ -1699,7 +1699,7 @@ qboolean CG_Asset_Parse( int handle ) {
 		if ( Q_stricmp( token.string, "handwritingFont" ) == 0 ) {
 			int pointSize;
 			if ( !PC_String_Parse( handle, &tempStr ) || !PC_Int_Parse( handle, &pointSize ) ) {
-				return qfalse;
+				return false;
 			}
 			cgDC.registerFont( tempStr, pointSize, &cgDC.Assets.handwritingFont );
 			continue;
@@ -1708,7 +1708,7 @@ qboolean CG_Asset_Parse( int handle ) {
 		// gradientbar
 		if ( Q_stricmp( token.string, "gradientbar" ) == 0 ) {
 			if ( !PC_String_Parse( handle, &tempStr ) ) {
-				return qfalse;
+				return false;
 			}
 			cgDC.Assets.gradientBar = trap_R_RegisterShaderNoMip( tempStr );
 			continue;
@@ -1717,7 +1717,7 @@ qboolean CG_Asset_Parse( int handle ) {
 		// enterMenuSound
 		if ( Q_stricmp( token.string, "menuEnterSound" ) == 0 ) {
 			if ( !PC_String_Parse( handle, &tempStr ) ) {
-				return qfalse;
+				return false;
 			}
 			cgDC.Assets.menuEnterSound = trap_S_RegisterSound( tempStr );
 			continue;
@@ -1726,7 +1726,7 @@ qboolean CG_Asset_Parse( int handle ) {
 		// exitMenuSound
 		if ( Q_stricmp( token.string, "menuExitSound" ) == 0 ) {
 			if ( !PC_String_Parse( handle, &tempStr ) ) {
-				return qfalse;
+				return false;
 			}
 			cgDC.Assets.menuExitSound = trap_S_RegisterSound( tempStr );
 			continue;
@@ -1735,7 +1735,7 @@ qboolean CG_Asset_Parse( int handle ) {
 		// itemFocusSound
 		if ( Q_stricmp( token.string, "itemFocusSound" ) == 0 ) {
 			if ( !PC_String_Parse( handle, &tempStr ) ) {
-				return qfalse;
+				return false;
 			}
 			cgDC.Assets.itemFocusSound = trap_S_RegisterSound( tempStr );
 			continue;
@@ -1744,7 +1744,7 @@ qboolean CG_Asset_Parse( int handle ) {
 		// menuBuzzSound
 		if ( Q_stricmp( token.string, "menuBuzzSound" ) == 0 ) {
 			if ( !PC_String_Parse( handle, &tempStr ) ) {
-				return qfalse;
+				return false;
 			}
 			cgDC.Assets.menuBuzzSound = trap_S_RegisterSound( tempStr );
 			continue;
@@ -1752,7 +1752,7 @@ qboolean CG_Asset_Parse( int handle ) {
 
 		if ( Q_stricmp( token.string, "cursor" ) == 0 ) {
 			if ( !PC_String_Parse( handle, &cgDC.Assets.cursorStr ) ) {
-				return qfalse;
+				return false;
 			}
 			cgDC.Assets.cursor = trap_R_RegisterShaderNoMip( cgDC.Assets.cursorStr );
 			continue;
@@ -1760,48 +1760,48 @@ qboolean CG_Asset_Parse( int handle ) {
 
 		if ( Q_stricmp( token.string, "fadeClamp" ) == 0 ) {
 			if ( !PC_Float_Parse( handle, &cgDC.Assets.fadeClamp ) ) {
-				return qfalse;
+				return false;
 			}
 			continue;
 		}
 
 		if ( Q_stricmp( token.string, "fadeCycle" ) == 0 ) {
 			if ( !PC_Int_Parse( handle, &cgDC.Assets.fadeCycle ) ) {
-				return qfalse;
+				return false;
 			}
 			continue;
 		}
 
 		if ( Q_stricmp( token.string, "fadeAmount" ) == 0 ) {
 			if ( !PC_Float_Parse( handle, &cgDC.Assets.fadeAmount ) ) {
-				return qfalse;
+				return false;
 			}
 			continue;
 		}
 
 		if ( Q_stricmp( token.string, "shadowX" ) == 0 ) {
 			if ( !PC_Float_Parse( handle, &cgDC.Assets.shadowX ) ) {
-				return qfalse;
+				return false;
 			}
 			continue;
 		}
 
 		if ( Q_stricmp( token.string, "shadowY" ) == 0 ) {
 			if ( !PC_Float_Parse( handle, &cgDC.Assets.shadowY ) ) {
-				return qfalse;
+				return false;
 			}
 			continue;
 		}
 
 		if ( Q_stricmp( token.string, "shadowColor" ) == 0 ) {
 			if ( !PC_Color_Parse( handle, &cgDC.Assets.shadowColor ) ) {
-				return qfalse;
+				return false;
 			}
 			cgDC.Assets.shadowFadeClamp = cgDC.Assets.shadowColor[3];
 			continue;
 		}
 	}
-	//return qfalse;
+	//return false;
 }
 
 void CG_ParseMenu( const char *menuFile ) {
@@ -1852,30 +1852,30 @@ void CG_ParseMenu( const char *menuFile ) {
 	trap_PC_FreeSource( handle );
 }
 
-qboolean CG_Load_Menu( char **p ) {
+bool CG_Load_Menu( char **p ) {
 	char *token;
 
-	token = COM_ParseExt( p, qtrue );
+	token = COM_ParseExt( p, true );
 
 	if ( token[0] != '{' ) {
-		return qfalse;
+		return false;
 	}
 
 	while ( 1 ) {
 
-		token = COM_ParseExt( p, qtrue );
+		token = COM_ParseExt( p, true );
 
 		if ( Q_stricmp( token, "}" ) == 0 ) {
-			return qtrue;
+			return true;
 		}
 
 		if ( !token || token[0] == 0 ) {
-			return qfalse;
+			return false;
 		}
 
 		CG_ParseMenu( token );
 	}
-	return qfalse;
+	return false;
 }
 
 
@@ -1915,7 +1915,7 @@ void CG_LoadMenus( const char *menuFile ) {
 	p = buf;
 
 	while ( 1 ) {
-		token = COM_ParseExt( &p, qtrue );
+		token = COM_ParseExt( &p, true );
 		if ( !token || token[0] == 0 || token[0] == '}' ) {
 			break;
 		}
@@ -1949,8 +1949,8 @@ void CG_LoadMenus( const char *menuFile ) {
 
 
 
-static qboolean CG_OwnerDrawHandleKey( int ownerDraw, int flags, float *special, int key ) {
-	return qfalse;
+static bool CG_OwnerDrawHandleKey( int ownerDraw, int flags, float *special, int key ) {
+	return false;
 }
 
 
@@ -2355,7 +2355,7 @@ void CG_Init( int serverMessageNum, int serverCommandSequence ) {
 
 	String_Init();
 
-	cg.loading = qtrue;     // force players to load instead of defer
+	cg.loading = true;     // force players to load instead of defer
 
 	CG_LoadingString( "sounds" );
 
@@ -2375,7 +2375,7 @@ void CG_Init( int serverMessageNum, int serverCommandSequence ) {
     // No Wolf HUD widgets are used by the Doom interface.
 	CG_LoadHudMenu();      // load new hud stuff
 
-	cg.loading = qfalse;    // future players will be deferred
+	cg.loading = false;    // future players will be deferred
 
 	CG_InitLocalEntities();
 
@@ -2392,7 +2392,7 @@ void CG_Init( int serverMessageNum, int serverCommandSequence ) {
 	CG_SetConfigValues();
 
 
-	cg.lightstylesInited = qfalse;
+	cg.lightstylesInited = false;
 
 	CG_LoadingString( "" );
 

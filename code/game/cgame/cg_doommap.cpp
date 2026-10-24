@@ -124,11 +124,11 @@ void CG_DoomMapUpdate() {
         }
     }
 }
-qboolean CG_DoomMapVisible() {
+bool CG_DoomMapVisible() {
     if (!cg.showScores || !cg.snap || !cg.snap->ps.stats[STAT_DOOM_WEAPONS] || !lineCount) {
-        return qfalse;
+        return false;
     }
-    return qtrue;
+    return true;
 }
 void CG_DrawDoomMap() {
     if (!CG_DoomMapVisible()) {

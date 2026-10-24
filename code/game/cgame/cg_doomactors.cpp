@@ -56,14 +56,14 @@ void CG_DoomActorsInit() {
     memset(marineTeamShaders, 0, sizeof(marineTeamShaders));
 }
 
-qboolean CG_DoomActor(centity_t *entity) {
+bool CG_DoomActor(centity_t *entity) {
     const auto &state = entity->currentState;
     if (!doommonster::IsSprite(state.density)) {
-        return qfalse;
+        return false;
     }
     if ((state.eFlags & EF_NODRAW) || (state.number == cg.snap->ps.clientNum &&
                                        !cg.renderingThirdPerson && state.eType == ET_PLAYER)) {
-        return qtrue;
+        return true;
     }
     const int type = state.density - doommonster::NetworkBase;
     Load(type);
@@ -113,5 +113,5 @@ qboolean CG_DoomActor(centity_t *entity) {
         }
     }
     trap_R_AddPolyToScene(shader, 4, vertices);
-    return qtrue;
+    return true;
 }

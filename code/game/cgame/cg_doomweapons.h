@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-qboolean CG_ParseWeaponConfig(const char *filename, weaponInfo_t *weapon);
+bool CG_ParseWeaponConfig(const char *filename, weaponInfo_t *weapon);
 void CG_WeaponAnimation(playerState_t *ps, weaponInfo_t *weapon, int *oldFrame, int *frame,
                         float *backlerp);
 void CG_DoomWeaponsInit();

@@ -226,7 +226,7 @@ void CG_FragmentBounceMark( localEntity_t *le, trace_t *trace ) {
 		if ( !( lastBloodMark > cg.time || lastBloodMark > cg.time - 100 ) ) {
 			radius = 16 + ( rand() & 31 );
 			CG_ImpactMark( cgs.media.bloodDotShaders[rand() % 5], trace->endpos, trace->plane.normal, random() * 360,
-						   1,1,1,1, qtrue, radius, qfalse, cg_bloodTime.integer * 1000 );
+						   1,1,1,1, true, radius, false, cg_bloodTime.integer * 1000 );
 
 			lastBloodMark = cg.time;
 		}
@@ -417,7 +417,7 @@ void CG_AddFragment( localEntity_t *le ) {
 	refEntity_t     *re;
 	float flameAlpha = 0.0f;   // TTimo: init
 	vec3_t flameDir;
-	qboolean hasFlame = qfalse;
+	bool hasFlame = false;
 	int i;
 	int contents;
 
@@ -434,7 +434,7 @@ void CG_AddFragment( localEntity_t *le ) {
 
 	// Ridah, flaming gibs
 	if ( le->onFireStart && ( le->onFireStart < cg.time && le->onFireEnd > cg.time ) ) {
-		hasFlame = qtrue;
+		hasFlame = true;
 		// calc the alpha
 		flameAlpha = 1.0 - ( (float)( cg.time - le->onFireStart ) / (float)( le->onFireEnd - le->onFireStart ) );
 		if ( flameAlpha < 0.0 ) {

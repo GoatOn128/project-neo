@@ -45,6 +45,6 @@ bool CG_DoomFxBloodWall(const vec3_t exitOrigin, const vec3_t travel, int victim
     }
     const float proximity = 1.0f - trace.fraction;
     CG_ImpactMark(shader, trace.endpos, trace.plane.normal, random() * 360, .42f, .012f, .006f, .9f,
-                  qtrue, radius * (.8f + .2f * proximity), qfalse, 45000);
+                  true, radius * (.8f + .2f * proximity), false, 45000);
     return true;
 }

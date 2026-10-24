@@ -98,7 +98,7 @@ static void CG_Viewpos_f( void ) {
 
 static void CG_ScoresDown_f( void ) {
     if (cg.snap && cg.snap->ps.stats[STAT_DOOM_WEAPONS]) {
-        cg.showScores = qtrue;
+        cg.showScores = true;
         return;
     }
     if (cg.scoresRequestTime + 2000 < cg.time) {
@@ -110,19 +110,19 @@ static void CG_ScoresDown_f( void ) {
 		// leave the current scores up if they were already
 		// displayed, but if this is the first hit, clear them out
 		if ( !cg.showScores ) {
-			cg.showScores = qtrue;
+			cg.showScores = true;
 			cg.numScores = 0;
 		}
     } else {
         // show the cached contents even if they just pressed if it
 		// is within two seconds
-		cg.showScores = qtrue;
+		cg.showScores = true;
     }
 }
 
 static void CG_ScoresUp_f( void ) {
 	if ( cg.showScores ) {
-		cg.showScores = qfalse;
+		cg.showScores = false;
 		cg.scoreFadeTime = cg.time;
 	}
 }
@@ -153,18 +153,18 @@ static void CG_LoadHud_f( void ) {
 /*
 static void CG_scrollScoresDown_f( void) {
 	if (menuScoreboard && cg.scoreBoardShowing) {
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_SCOREBOARD, qtrue);
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_REDTEAM_LIST, qtrue);
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_BLUETEAM_LIST, qtrue);
+		Menu_ScrollFeeder(menuScoreboard, FEEDER_SCOREBOARD, true);
+		Menu_ScrollFeeder(menuScoreboard, FEEDER_REDTEAM_LIST, true);
+		Menu_ScrollFeeder(menuScoreboard, FEEDER_BLUETEAM_LIST, true);
 	}
 }
 
 
 static void CG_scrollScoresUp_f( void) {
 	if (menuScoreboard && cg.scoreBoardShowing) {
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_SCOREBOARD, qfalse);
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_REDTEAM_LIST, qfalse);
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_BLUETEAM_LIST, qfalse);
+		Menu_ScrollFeeder(menuScoreboard, FEEDER_SCOREBOARD, false);
+		Menu_ScrollFeeder(menuScoreboard, FEEDER_REDTEAM_LIST, false);
+		Menu_ScrollFeeder(menuScoreboard, FEEDER_BLUETEAM_LIST, false);
 	}
 }
 
@@ -194,11 +194,11 @@ static void CG_spLose_f( void) {
 
 //----(SA)	item (key/pickup) drawing
 static void CG_InventoryDown_f( void ) {
-	cg.showItems = qtrue;
+	cg.showItems = true;
 }
 
 static void CG_InventoryUp_f( void ) {
-	cg.showItems = qfalse;
+	cg.showItems = false;
 	cg.itemFadeTime = cg.time;
 }
 
@@ -248,14 +248,14 @@ static void CG_PrevTeamMember_f( void ) {
 /////////// cameras
 
 #define MAX_CAMERAS 64  // matches define in splines.cpp
-qboolean cameraInuse[MAX_CAMERAS];
+bool cameraInuse[MAX_CAMERAS];
 
 int CG_LoadCamera( const char *name ) {
 	int i;
 	for ( i = 1; i < MAX_CAMERAS; i++ ) {    // start at '1' since '0' is always taken by the cutscene camera
 		if ( !cameraInuse[i] ) {
 			if ( trap_loadCamera( i, name ) ) {
-				cameraInuse[i] = qtrue;
+				cameraInuse[i] = true;
 				return i;
 			}
 		}
@@ -264,7 +264,7 @@ int CG_LoadCamera( const char *name ) {
 }
 
 void CG_FreeCamera( int camNum ) {
-	cameraInuse[camNum] = qfalse;
+	cameraInuse[camNum] = false;
 }
 
 /*
@@ -272,7 +272,7 @@ void CG_FreeCamera( int camNum ) {
 CG_StartCamera
 ==============
 */
-void CG_StartCamera( const char *name, qboolean startBlack ) {
+void CG_StartCamera( const char *name, bool startBlack ) {
 	char lname[MAX_QPATH];
 
 	//if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 )	// don't allow camera to start if you're dead
@@ -282,7 +282,7 @@ void CG_StartCamera( const char *name, qboolean startBlack ) {
 	strcat( lname, ".camera" );
 
 	if ( trap_loadCamera( CAM_PRIMARY, va( "cameras/%s", lname ) ) ) {
-		cg.cameraMode = qtrue;                  // camera on in cgame
+		cg.cameraMode = true;                  // camera on in cgame
 		if ( startBlack ) {
 			CG_Fade( 0, 0, 0, 255, cg.time, 0 );  // go black
 		}
@@ -291,7 +291,7 @@ void CG_StartCamera( const char *name, qboolean startBlack ) {
 		trap_startCamera( CAM_PRIMARY, cg.time ); // camera on in client
 	} else {
 //----(SA)	removed check for cams in main dir
-		cg.cameraMode = qfalse;                 // camera off in cgame
+		cg.cameraMode = false;                 // camera off in cgame
 		trap_SendClientCommand( "stopCamera" );    // camera off in game
 		trap_stopCamera( CAM_PRIMARY );           // camera off in client
 		CG_Fade( 0, 0, 0, 0, cg.time, 0 );        // ensure fadeup
@@ -306,7 +306,7 @@ CG_SopCamera
 ==============
 */
 void CG_StopCamera( void ) {
-	cg.cameraMode = qfalse;                 // camera off in cgame
+	cg.cameraMode = false;                 // camera off in cgame
 	trap_SendClientCommand( "stopCamera" );    // camera off in game
 	trap_stopCamera( CAM_PRIMARY );           // camera off in client
 	trap_Cvar_Set( "cg_letterbox", "0" );
@@ -321,7 +321,7 @@ static void CG_Camera_f( void ) {
 	char name[MAX_QPATH];
 	trap_Argv( 1, name, sizeof( name ) );
 
-	CG_StartCamera( name, qfalse );
+	CG_StartCamera( name, false );
 }
 
 static void CG_Fade_f( void ) {
@@ -480,7 +480,7 @@ The string has been tokenized and can be retrieved with
 Cmd_Argc() / Cmd_Argv()
 =================
 */
-qboolean CG_ConsoleCommand( void ) {
+bool CG_ConsoleCommand( void ) {
 	const char  *cmd;
 	int i;
 
@@ -489,11 +489,11 @@ qboolean CG_ConsoleCommand( void ) {
 	for ( i = 0 ; i < sizeof( commands ) / sizeof( commands[0] ) ; i++ ) {
 		if ( !Q_stricmp( cmd, commands[i].cmd ) ) {
 			commands[i].function();
-			return qtrue;
+			return true;
 		}
 	}
 
-	return qfalse;
+	return false;
 }
 
 

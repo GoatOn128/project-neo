@@ -115,9 +115,9 @@ void CG_DoomHudInit() {
     oldHealth=-1; faceUntil=nextLook=look=fireStart=0;
     memset(oldWeapons,0,sizeof(oldWeapons)); expression[0]=0;
 }
-qboolean CG_DoomHudVisible() {
+bool CG_DoomHudVisible() {
     return cg_draw2D.integer && cg_drawStatus.integer && cg.snap && !cg.levelShot && !cg.cameraMode &&
-        cg.snap->ps.pm_type!=PM_INTERMISSION && cg.snap->ps.persistant[PERS_TEAM]!=TEAM_SPECTATOR ? qtrue:qfalse;
+        cg.snap->ps.pm_type!=PM_INTERMISSION && cg.snap->ps.persistant[PERS_TEAM]!=TEAM_SPECTATOR ? true:false;
 }
 int CG_DoomHudHeight() { return CG_DoomHudVisible() ? (int)(cgs.glconfig.vidHeight*.16f):0; }
 void CG_DrawDoomHud() {

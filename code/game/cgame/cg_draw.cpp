@@ -1137,7 +1137,7 @@ static float CG_DrawTeamOverlay( float y ) {
 			xx = x + TINYCHAR_WIDTH;
 
 			CG_DrawStringExt( xx, y,
-							  ci->name, hcolor, qfalse, qfalse,
+							  ci->name, hcolor, false, false,
 							  TINYCHAR_WIDTH, TINYCHAR_HEIGHT, TEAM_OVERLAY_MAXNAME_WIDTH );
 
 			if ( lwidth ) {
@@ -1153,7 +1153,7 @@ static float CG_DrawTeamOverlay( float y ) {
 				xx = x + TINYCHAR_WIDTH * 2 + TINYCHAR_WIDTH * pwidth +
 					 ( ( lwidth / 2 - len / 2 ) * TINYCHAR_WIDTH );
 				CG_DrawStringExt( xx, y,
-								  p, hcolor, qfalse, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT,
+								  p, hcolor, false, false, TINYCHAR_WIDTH, TINYCHAR_HEIGHT,
 								  TEAM_OVERLAY_MAXLOCATION_WIDTH );
 			}
 
@@ -1165,7 +1165,7 @@ static float CG_DrawTeamOverlay( float y ) {
 				 TINYCHAR_WIDTH * pwidth + TINYCHAR_WIDTH * lwidth;
 
 			CG_DrawStringExt( xx, y,
-							  st, hcolor, qfalse, qfalse,
+							  st, hcolor, false, false,
 							  TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 0 );
 
 			// draw weapon icon
@@ -1304,7 +1304,7 @@ static float CG_DrawScores( float y ) {
 //----(SA) don't show frag count/limit in sp
 	} else if ( cgs.gametype != GT_SINGLE_PLAYER && cg_drawFrags.integer ) {
 //----(SA) end
-		qboolean spectator;
+		bool spectator;
 
 		x = 640;
 		score = cg.snap->ps.persistant[PERS_SCORE];
@@ -1558,7 +1558,7 @@ static void CG_DrawTeamInfo( void ) {
 		for ( i = cgs.teamChatPos - 1; i >= cgs.teamLastChatPos; i-- ) {
 			CG_DrawStringExt( CHATLOC_X + TINYCHAR_WIDTH,
 							  CHATLOC_Y - ( cgs.teamChatPos - i ) * TINYCHAR_HEIGHT,
-							  cgs.teamChatMsgs[i % chatHeight], hcolor, qfalse, qfalse,
+							  cgs.teamChatMsgs[i % chatHeight], hcolor, false, false,
 							  TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 0 );
 //			CG_DrawSmallString( CHATLOC_X + SMALLCHAR_WIDTH,
 //				CHATLOC_Y - (cgs.teamChatPos - i)*SMALLCHAR_HEIGHT,
@@ -1609,7 +1609,7 @@ static void CG_DrawPickupItem( void ) {
 			//----(SA)	trying smaller text
 			color[0] = color[1] = color[2] = 1.0;
 			color[3] = fadeColor[0];
-			CG_DrawStringExt2( ICON_SIZE + 16, 398, pickupText, color, qfalse, qtrue, 10, 10, 0 );
+			CG_DrawStringExt2( ICON_SIZE + 16, 398, pickupText, color, false, true, 10, 10, 0 );
 //			CG_Text_Paint(ICON_SIZE + 16, 398, 2, 0.3f, color, pickupText, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
 
 
@@ -2006,7 +2006,7 @@ static void CG_DrawCenterString( void ) {
 
 		x = ( SCREEN_WIDTH - w ) / 2;
 
-		CG_DrawStringExt( x, y, linebuffer, color, qfalse, qtrue, cg.centerPrintCharWidth, (int)( cg.centerPrintCharWidth * 1.5 ), 0 );
+		CG_DrawStringExt( x, y, linebuffer, color, false, true, cg.centerPrintCharWidth, (int)( cg.centerPrintCharWidth * 1.5 ), 0 );
 //		CG_Text_Paint(x, y, 2, 0.3f, color, linebuffer, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
 
 //		y += cg.centerPrintCharWidth * 1.5;
@@ -2195,7 +2195,7 @@ static void CG_DrawCrosshair( void ) {
 	float x, y;
 	int weapnum;                // DHM - Nerve
 	vec4_t hcolor = {1, 1, 1, 0};
-	qboolean friendInSights = qfalse;
+	bool friendInSights = false;
 
 	if ( cg.renderingThirdPerson ) {
 		return;
@@ -2224,7 +2224,7 @@ static void CG_DrawCrosshair( void ) {
 		return;
 	}
 
-	friendInSights = (qboolean)( cg.snap->ps.serverCursorHint == HINT_PLYR_FRIEND );  //----(SA)	added
+	friendInSights = (bool)( cg.snap->ps.serverCursorHint == HINT_PLYR_FRIEND );  //----(SA)	added
 
 	// DHM - Nerve :: show reticle in limbo and spectator
 	if ( cgs.gametype == GT_WOLF && cg.snap->ps.pm_flags & PMF_FOLLOW ) {
@@ -2587,7 +2587,7 @@ static void CG_DrawVote( void ) {
 
 	// play a talk beep whenever it is modified
 	if ( cgs.voteModified ) {
-		cgs.voteModified = qfalse;
+		cgs.voteModified = false;
 		trap_S_StartLocalSound( cgs.media.talkSound, CHAN_LOCAL_SOUND );
 	}
 
@@ -2624,8 +2624,8 @@ CG_ActivateLimboMenu
 // TTimo: unused
 /*
 static void CG_ActivateLimboMenu( void ) {
-	static qboolean latch = qfalse;
-	qboolean test;
+	static bool latch = false;
+	bool test;
 	char buf[32];
 
 	if ( cgs.gametype != GT_WOLF )
@@ -2637,21 +2637,21 @@ static void CG_ActivateLimboMenu( void ) {
 	if ( test && !latch ) {
 		trap_SendConsoleCommand( "startLimboMode\n" );
 		trap_SendConsoleCommand( "OpenLimboMenu\n" );
-		latch = qtrue;
+		latch = true;
 	}
 	else if ( !test && latch ) {
 		trap_SendConsoleCommand( "stopLimboMode\n" );
 		trap_SendConsoleCommand( "CloseLimboMenu\n" );
-		latch = qfalse;
+		latch = false;
 	}
 
 	// set the limbo state
 	trap_Cvar_VariableStringBuffer( "ui_limboMode", buf, sizeof( buf ) );
 
 	if ( atoi( buf ) )
-		cg.limboMenu = qtrue;
+		cg.limboMenu = true;
 	else
-		cg.limboMenu = qfalse;
+		cg.limboMenu = false;
 }
 */
 // -NERVE - SMF
@@ -2661,14 +2661,14 @@ static void CG_ActivateLimboMenu( void ) {
 CG_DrawFollow
 =================
 */
-static qboolean CG_DrawFollow( void ) {
+static bool CG_DrawFollow( void ) {
 	float x;
 	vec4_t color;
 	const char  *name;
 	char deploytime[128];        // JPW NERVE
 
 	if ( !( cg.snap->ps.pm_flags & PMF_FOLLOW ) ) {
-		return qfalse;
+		return false;
 	}
 	color[0] = 1;
 	color[1] = 1;
@@ -2687,10 +2687,10 @@ static qboolean CG_DrawFollow( void ) {
 		}
 
 		x = 0.5 * ( 640 - BIGCHAR_WIDTH * strlen( deploytime ) ); //CG_DrawStrlen( deploytime ) );
-		CG_DrawStringExt( x, 24, deploytime, color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+		CG_DrawStringExt( x, 24, deploytime, color, true, true, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
 		sprintf( deploytime,"(Following %s)",cgs.clientinfo[ cg.snap->ps.clientNum ].name );
 		x = 0.5 * ( 640 - BIGCHAR_WIDTH * strlen( deploytime ) ); //CG_DrawStrlen( deploytime ) );
-		CG_DrawStringExt( x, 48, deploytime, color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+		CG_DrawStringExt( x, 48, deploytime, color, true, true, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
 
 	} else {
 // jpw
@@ -2700,9 +2700,9 @@ static qboolean CG_DrawFollow( void ) {
 
 		x = 0.5 * ( 640 - GIANT_WIDTH * CG_DrawStrlen( name ) );
 
-		CG_DrawStringExt( x, 40, name, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+		CG_DrawStringExt( x, 40, name, color, true, true, GIANT_WIDTH, GIANT_HEIGHT, 0 );
 	} // JPW NERVE
-	return qtrue;
+	return true;
 }
 
 
@@ -2791,7 +2791,7 @@ static void CG_DrawWarmup( void ) {
 			cw = GIANT_WIDTH;
 		}
 		CG_DrawStringExt( 320 - w * cw / 2, 20,s, colorWhite,
-						  qfalse, qtrue, cw, (int)( cw * 1.5 ), 0 );
+						  false, true, cw, (int)( cw * 1.5 ), 0 );
 	}
 
 
@@ -2833,7 +2833,7 @@ static void CG_DrawWarmup( void ) {
 
 	w = CG_DrawStrlen( s );
 	CG_DrawStringExt( 320 - w * cw / 2, 70, s, colorWhite,
-					  qfalse, qtrue, cw, (int)( cw * 1.5 ), 0 );
+					  false, true, cw, (int)( cw * 1.5 ), 0 );
 }
 
 //==================================================================================
@@ -3203,7 +3203,7 @@ static void CG_DrawObjectiveInfo( void ) {
 
 		x = OID_LEFT;
 
-		CG_DrawStringExt( x, y, linebuffer, color, qfalse, qtrue,
+		CG_DrawStringExt( x, y, linebuffer, color, false, true,
 						  cg.oidPrintCharWidth, (int)( cg.oidPrintCharWidth * 1.5 ), 0 );
 
 		y += cg.oidPrintCharWidth * 1.5;

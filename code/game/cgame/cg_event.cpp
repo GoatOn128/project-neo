@@ -420,7 +420,7 @@ A new item was picked up this frame
 static void CG_ItemPickup( int itemNum ) {
 	int itemid;
 	int wpbank_cur, wpbank_pickup;
-	qboolean selectIt;
+	bool selectIt;
 
 	itemid = bg_itemlist[itemNum].giTag;
 
@@ -432,7 +432,7 @@ static void CG_ItemPickup( int itemNum ) {
 	if ( bg_itemlist[itemNum].giType == IT_WEAPON ) {
 		int weapon;
 
-		selectIt = qfalse;
+		selectIt = false;
 
 		weapon = itemid;
 
@@ -456,11 +456,11 @@ static void CG_ItemPickup( int itemNum ) {
 
 				// no weap currently selected, always just select the new one
 				if ( !cg.weaponSelect ) {
-					selectIt = qtrue;
+					selectIt = true;
 				}
 				// 1 - "Always Switch" - always switch to new weap (Q3A default)
 				else if ( cg_autoswitch.integer == 1 ) {
-					selectIt = qtrue;
+					selectIt = true;
 				} else {
 
 					// 2 - "If New" - switch to weap if it's not already in the player's inventory (Wolf default)
@@ -471,7 +471,7 @@ static void CG_ItemPickup( int itemNum ) {
 					//			manual pickups (activate item)
 					if ( cg_autoswitch.integer == 2 || cg_autoswitch.integer == 4 || cg_autoswitch.integer == 5 ) {
 						if ( !COM_BitCheck( cg.snap->ps.weapons, weapon ) ) {
-							selectIt = qtrue;
+							selectIt = true;
 						}
 					}   // end 2/4/5
 
@@ -485,14 +485,14 @@ static void CG_ItemPickup( int itemNum ) {
 								if ( wpbank_pickup > wpbank_cur ) {
 									if ( cg_autoswitch.integer == 5 ) {    // 'new /and/ better'
 										if ( !selectIt ) {
-											selectIt = qfalse;  // if it isn't selected because it's new, then this isn't "both" new /and/ better
+											selectIt = false;  // if it isn't selected because it's new, then this isn't "both" new /and/ better
 										}
 									} else {
-										selectIt = qtrue;
+										selectIt = true;
 									}
 								} else {    // not better
 									if ( cg_autoswitch.integer == 5 ) {
-										selectIt = qfalse;
+										selectIt = false;
 									}
 								}
 							}
@@ -508,7 +508,7 @@ static void CG_ItemPickup( int itemNum ) {
 		// only select one-handed weaps if you've got a chair
 		if ( cg.snap->ps.eFlags & EF_MELEE_ACTIVE ) {
 			if ( !( ( 1 << weapon ) & WEAPS_ONE_HANDED ) ) {
-				selectIt = qfalse;
+				selectIt = false;
 			}
 		}
 
@@ -543,7 +543,7 @@ typedef struct {
 
 #define PEFOFS( x ) ( (int)&( ( (playerEntity_t *)0 )->x ) )
 
-void CG_PainEvent( centity_t *cent, int health, qboolean crouching ) {
+void CG_PainEvent( centity_t *cent, int health, bool crouching ) {
 	char    *snd;
 
 	#define STUNNED_ANIM    BOTH_PAIN8
@@ -673,7 +673,7 @@ CG_Explode
 
 
 
-void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound, int forceLowGrav, qhandle_t shader, int parent, qboolean damage );
+void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound, int forceLowGrav, qhandle_t shader, int parent, bool damage );
 
 /*
 ==============
@@ -722,7 +722,7 @@ CG_Explodef
 	made this more generic for spawning hits and breaks without needing a *cent
 ==============
 */
-void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound, int forceLowGrav, qhandle_t shader, int parent, qboolean damage ) {
+void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound, int forceLowGrav, qhandle_t shader, int parent, bool damage ) {
 	int i;
 	localEntity_t   *le;
 	refEntity_t     *re;
@@ -943,7 +943,7 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 			//			re->axis[2][2] = scale;
 			//
 			//			if(scale != 1.0)
-			//				re->nonNormalizedAxes = qtrue;
+			//				re->nonNormalizedAxes = true;
 
 			le->sizeScale = scale;
 
@@ -1100,7 +1100,7 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 
 		trap_S_StartSound( origin, ENTITYNUM_WORLD, CHAN_AUTO, cgs.media.sfx_dynamiteexp );
 		trap_S_StartLocalSound( cgs.media.sfx_dynamiteexpDist, CHAN_AUTO );
-		CG_ImpactMark( cgs.media.burnMarkShader, origin, dir, random() * 360, 1,1,1,1, qfalse, 64, qfalse, -1 );
+		CG_ImpactMark( cgs.media.burnMarkShader, origin, dir, random() * 360, 1,1,1,1, false, 64, false, -1 );
 	}
 
 	// (SA) right now force smoke on any explosions
@@ -1140,7 +1140,7 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 //						// 15 + rand()%5 );	// count
 //						7 + rand()%2 );	// count
 
-		CG_ImpactMark( cgs.media.burnMarkShader, origin, dir, random() * 360, 1,1,1,1, qfalse, 64, qfalse, 0xffffffff );
+		CG_ImpactMark( cgs.media.burnMarkShader, origin, dir, random() * 360, 1,1,1,1, false, 64, false, 0xffffffff );
 	}
 
 
@@ -1230,7 +1230,7 @@ void CG_Shard( centity_t *cent, vec3_t origin, vec3_t dir ) {
 	int i;
 	int rval;
 
-	qboolean isflyingdebris = qfalse;
+	bool isflyingdebris = false;
 
 	type = cent->currentState.density;
 	howmany = cent->currentState.frame;
@@ -1256,7 +1256,7 @@ void CG_Shard( centity_t *cent, vec3_t origin, vec3_t dir ) {
 			re->fadeEndTime         = le->endTime;
 			type = 1;
 
-			isflyingdebris = qtrue;
+			isflyingdebris = true;
 		}
 
 
@@ -1889,11 +1889,11 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		//
 	case EV_VENOM:
 		DEBUGNAME( "EV_VENOM" );
-		CG_VenomFire( es, qfalse );
+		CG_VenomFire( es, false );
 		break;
 	case EV_VENOMFULL:
 		DEBUGNAME( "EV_VENOMFULL" );
-		CG_VenomFire( es, qtrue );
+		CG_VenomFire( es, true );
 		break;
 
 	case EV_NOITEM:
@@ -2003,9 +2003,9 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		DEBUGNAME( "EV_FIRE_WEAPON" );
 		CG_FireWeapon( cent );
 		if ( event == EV_FIRE_WEAPONB ) {  // akimbo firing colt
-			cent->akimboFire = qtrue;
+			cent->akimboFire = true;
 		} else {
-			cent->akimboFire = qfalse;
+			cent->akimboFire = false;
 		}
 		break;
 	case EV_FIRE_WEAPON_LASTSHOT:
@@ -2227,12 +2227,12 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	case EV_BULLET_HIT_WALL:
 		DEBUGNAME( "EV_BULLET_HIT_WALL" );
 		ByteToDir( es->eventParm, dir );
-		CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, qfalse, ENTITYNUM_WORLD, es->otherEntityNum2 );
+		CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, false, ENTITYNUM_WORLD, es->otherEntityNum2 );
 		break;
 
 	case EV_BULLET_HIT_FLESH:
 		DEBUGNAME( "EV_BULLET_HIT_FLESH" );
-		CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, qtrue, es->eventParm, es->otherEntityNum2 );
+		CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, true, es->eventParm, es->otherEntityNum2 );
 		break;
 
 	case EV_POPUP:
@@ -2298,7 +2298,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		// so ignore events on the player
 		DEBUGNAME( "EV_PAIN" );
 		if ( cent->currentState.number != cg.snap->ps.clientNum ) {
-			CG_PainEvent( cent, es->eventParm, qfalse );
+			CG_PainEvent( cent, es->eventParm, false );
 		}
 		break;
 
@@ -2307,7 +2307,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		// so ignore events on the player
 		DEBUGNAME( "EV_PAIN" );
 		if ( cent->currentState.number != cg.snap->ps.clientNum ) {
-			CG_PainEvent( cent, es->eventParm, qtrue );
+			CG_PainEvent( cent, es->eventParm, true );
 		}
 		break;
 
@@ -2327,7 +2327,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		DEBUGNAME( "EV_ENTDEATH" );
 		switch ( es->eventParm ) {
 //			case ET_SPOTLIGHT:
-//				CG_Explodef(cent->lerpOrigin, normalized_direction, 50, 1, cgs.media.sfx_bullet_glasshit[0], 1, 0, cent->currentState.number, qfalse);
+//				CG_Explodef(cent->lerpOrigin, normalized_direction, 50, 1, cgs.media.sfx_bullet_glasshit[0], 1, 0, cent->currentState.number, false);
 //				break;
 
 		case ET_ALARMBOX:
@@ -2475,8 +2475,8 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		// (SA) this first one doesn't seem to do anything.  ?
 
 //			if ((cg.time+cent->currentState.number*100)%1000 > 200) {
-//				CG_FireFlameChunks( cent, cent->currentState.origin, cent->lerpAngles, 0.1, qfalse, 1 );
-//				CG_FireFlameChunks( cent, cent->currentState.origin, cent->currentState.apos.trBase, 0.1, qfalse, 1 );
+//				CG_FireFlameChunks( cent, cent->currentState.origin, cent->lerpAngles, 0.1, false, 1 );
+//				CG_FireFlameChunks( cent, cent->currentState.origin, cent->currentState.apos.trBase, 0.1, false, 1 );
 //			}
 //			else
 //				CG_FireFlameChunks( cent, cent->currentState.origin, cent->lerpAngles, 0.6, 2, 1 );
@@ -2623,11 +2623,11 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 
 		// Rafael snow pvs check
 	case EV_SNOW_ON:
-		CG_SnowLink( cent, qtrue );
+		CG_SnowLink( cent, true );
 		break;
 
 	case EV_SNOW_OFF:
-		CG_SnowLink( cent, qfalse );
+		CG_SnowLink( cent, false );
 		break;
 
 

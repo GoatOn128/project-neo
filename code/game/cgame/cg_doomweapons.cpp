@@ -200,7 +200,7 @@ void CG_RegisterDoomWeapon(int weapon) {
         }
     }
     info.flashSound[0] = trap_S_RegisterSound(va("sound/doom/weapons/%s.wav", definition->sound));
-    info.registered = qtrue;
+    info.registered = true;
 }
 void CG_DrawDoomWeapon() {
     auto &ps = cg.predictedPlayerState;
