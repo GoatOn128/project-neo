@@ -48,6 +48,21 @@ static qboolean s_windowMinimized;
 
 /*
 ==================
+Sys_GameWindow
+
+The renderer DLL owns the SDL window. This asks the ref export for it and
+returns NULL before the renderer has started or after it shut down.
+==================
+*/
+SDL_Window *Sys_GameWindow( void ) {
+	if ( !re.GetMainWindow ) {
+		return NULL;
+	}
+	return re.GetMainWindow();
+}
+
+/*
+==================
 Sys_UpdateWindowSize
 
 Follow a window resize: tell the renderer and the console about the new
@@ -55,14 +70,15 @@ client size. Called from the SDL event loop and from the main loop.
 ==================
 */
 void Sys_UpdateWindowSize() {
-    if (!glw_state.window || !cls.rendererStarted || !re.ResizeWindow) {
+    SDL_Window *window = Sys_GameWindow();
+    if (!window || !cls.rendererStarted || !re.ResizeWindow) {
         return;
     }
-    if (SDL_GetWindowFlags(glw_state.window) & SDL_WINDOW_MINIMIZED) {
+    if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) {
         return;
     }
     int width = 0, height = 0;
-    SDL_GetWindowSize(glw_state.window, &width, &height);
+    SDL_GetWindowSize(window, &width, &height);
     if (width > 0 && height > 0 &&
         (width != cls.glconfig.vidWidth || height != cls.glconfig.vidHeight)) {
         re.ResizeWindow(width, height, &cls.glconfig);
@@ -321,6 +337,9 @@ void Sys_EventLoop( void ) {
 	vid_xpos = Cvar_Get( "vid_xpos", "3", CVAR_ARCHIVE );
 	vid_ypos = Cvar_Get( "vid_ypos", "22", CVAR_ARCHIVE );
 
+	// the renderer owns the window; fetch it once per pump
+	SDL_Window *window = Sys_GameWindow();
+
 	while ( SDL_PollEvent( &e ) ) {
 		// While the editor is shown it consumes the input events; everything
 		// else still reaches the engine translation below.
@@ -334,15 +353,15 @@ void Sys_EventLoop( void ) {
 			break;
 
 		case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
-			if ( glw_state.window && e.window.windowID == SDL_GetWindowID( glw_state.window ) ) {
+			if ( window && e.window.windowID == SDL_GetWindowID( window ) ) {
 				Cbuf_ExecuteText( EXEC_APPEND, "quit\n" );
 			}
 			break;
 
 		case SDL_EVENT_WINDOW_FOCUS_GAINED:
-			if ( glw_state.window && e.window.windowID == SDL_GetWindowID( glw_state.window ) ) {
+			if ( window && e.window.windowID == SDL_GetWindowID( window ) ) {
 				s_windowActive = qtrue;
-				s_windowMinimized = ( SDL_GetWindowFlags( glw_state.window ) & SDL_WINDOW_MINIMIZED ) != 0;
+				s_windowMinimized = ( SDL_GetWindowFlags( window ) & SDL_WINDOW_MINIMIZED ) != 0;
 				g_sv.sysMsgTime = Sys_Milliseconds();
 				VID_AppActivate( qtrue, s_windowMinimized );
 				SNDDMA_Activate();
@@ -350,7 +369,7 @@ void Sys_EventLoop( void ) {
 			break;
 
 		case SDL_EVENT_WINDOW_FOCUS_LOST:
-			if ( glw_state.window && e.window.windowID == SDL_GetWindowID( glw_state.window ) ) {
+			if ( window && e.window.windowID == SDL_GetWindowID( window ) ) {
 				s_windowActive = qfalse;
 				g_sv.sysMsgTime = Sys_Milliseconds();
 				VID_AppActivate( qfalse, g_sv.isMinimized );
@@ -359,7 +378,7 @@ void Sys_EventLoop( void ) {
 			break;
 
 		case SDL_EVENT_WINDOW_MINIMIZED:
-			if ( glw_state.window && e.window.windowID == SDL_GetWindowID( glw_state.window ) ) {
+			if ( window && e.window.windowID == SDL_GetWindowID( window ) ) {
 				s_windowMinimized = qtrue;
 				g_sv.sysMsgTime = Sys_Milliseconds();
 				VID_AppActivate( qfalse, qtrue );
@@ -367,7 +386,7 @@ void Sys_EventLoop( void ) {
 			break;
 
 		case SDL_EVENT_WINDOW_RESTORED:
-			if ( glw_state.window && e.window.windowID == SDL_GetWindowID( glw_state.window ) ) {
+			if ( window && e.window.windowID == SDL_GetWindowID( window ) ) {
 				s_windowMinimized = qfalse;
 				g_sv.sysMsgTime = Sys_Milliseconds();
 				VID_AppActivate( s_windowActive, qfalse );
@@ -376,17 +395,17 @@ void Sys_EventLoop( void ) {
 
 		case SDL_EVENT_WINDOW_RESIZED:
 		case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
-			if ( glw_state.window && e.window.windowID == SDL_GetWindowID( glw_state.window ) ) {
+			if ( window && e.window.windowID == SDL_GetWindowID( window ) ) {
 				g_sv.sysMsgTime = Sys_Milliseconds();
 				Sys_UpdateWindowSize();
 			}
 			break;
 
 		case SDL_EVENT_WINDOW_MOVED:
-			if ( glw_state.window && e.window.windowID == SDL_GetWindowID( glw_state.window ) ) {
+			if ( window && e.window.windowID == SDL_GetWindowID( window ) ) {
 				if ( !r_fullscreen->integer ) {
 					int xPos, yPos;
-					SDL_GetWindowPosition( glw_state.window, &xPos, &yPos );
+					SDL_GetWindowPosition( window, &xPos, &yPos );
 					Cvar_SetValue( "vid_xpos", xPos );
 					Cvar_SetValue( "vid_ypos", yPos );
 					if ( vid_xpos ) {
@@ -469,3 +488,4 @@ void Sys_EventLoop( void ) {
 		}
 	}
 }
+

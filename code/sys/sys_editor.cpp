@@ -82,10 +82,17 @@ bool loadEditor() {
         editor = nullptr;
         return false;
     }
+    // The editor shares the renderer's window and GL context, so it needs a
+    // running renderer to start from.
+    SDL_Window *window = Sys_GameWindow();
+    if (!window || !re.GetMainContext || !re.GetMainContext()) {
+        Com_Printf("Cannot open the editor without a running renderer\n");
+        return false;
+    }
     const DoomEditorHost host{DoomEditorAPIVersion,
                               sizeof(DoomEditorHost),
-                              glw_state.window,
-                              glw_state.context,
+                              window,
+                              re.GetMainContext(),
                               projectRoot,
                               copyMessage,
                               requestReturn,
@@ -187,7 +194,7 @@ void Sys_EditorFrame() {
             S_SetEditorPaused(qfalse);
             pausedByEditor = false;
         }
-        SDL_Window *window = glw_state.window;
+        SDL_Window *window = Sys_GameWindow();
         if (window && !Cvar_VariableIntegerValue("r_hiddenWindow")) {
             if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) {
                 SDL_RestoreWindow(window);
@@ -213,7 +220,7 @@ void Sys_EditorDraw(int width, int height) {
     if (!editor || !editor->visible()) {
         return;
     }
-    SDL_Window *window = glw_state.window;
+    SDL_Window *window = Sys_GameWindow();
     if (!window || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) {
         return;
     }
@@ -250,3 +257,4 @@ void Sys_ShutdownEditor() {
     Cmd_RemoveCommand("dmap");
     Cmd_RemoveCommand("aasbuild");
 }
+

@@ -280,6 +280,8 @@ RENDERER_SOURCES = fix_paths([
     'renderer/tr_sky.cpp',
     'renderer/tr_surface.cpp',
     'renderer/tr_world.cpp',
+    'game/q_math.cpp',
+    'game/q_shared.cpp',
     'sys/sys_glimp.cpp',
     'sys/sys_qgl.cpp',
 ])
@@ -291,7 +293,8 @@ RENDERER_EXTRA_SOURCES = fix_paths([
     'renderer/tr_decals.cpp',
     'renderer/tr_hbao.cpp',
     'renderer/tr_editor.cpp',
-    'sys/sys_png.cpp',
+    'renderer/tr_png.cpp',
+    'renderer/ref_trin.def',
 ])
 
 SPLINES_SOURCES = fix_paths([
@@ -487,8 +490,8 @@ TESTS = [
     },
     {
         'name': 'doom_png_tests',
-        'sources': ['test/renderer/png_tests.cpp', 'sys/sys_png.cpp'],
-        # win_png.cpp carries the stb_image implementation and the fixtures
+        'sources': ['test/renderer/png_tests.cpp', 'renderer/tr_png.cpp'],
+        # tr_png.cpp carries the stb_image implementation and the fixtures
         # are hand rolled, so the test needs no extra libraries.
     },
     {
@@ -747,6 +750,7 @@ TESTS = [
         'syslibs': ['windowscodecs', 'ole32'],
     },
 ]
+
 
 
 

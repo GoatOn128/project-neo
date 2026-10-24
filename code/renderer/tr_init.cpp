@@ -32,6 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "tr_local.h"
 #include "tr_vfx.h"
 #include "tr_hbao.h"
+#include "sys_local.h"
 
 //#ifdef __USEA3D
 //// Defined in snd_a3dg_refcommon.cpp
@@ -1351,7 +1352,7 @@ void RE_EndRegistration( void ) {
 	R_SyncRenderThread();
     // Texture-thrashing diagnostics clear the framebuffer. Keep the completed
     // loading screen visible until the first world snapshot is ready.
-    if (r_showImages->integer && !Sys_LowPhysicalMemory()) {
+    if (r_showImages->integer) {
         RB_ShowImages();
     }
 }
@@ -1363,18 +1364,46 @@ GetRefAPI
 
 @@@@@@@@@@@@@@@@@@@@@
 */
-refexport_t *GetRefAPI( int apiVersion, refimport_t *rimp ) {
+
+// The renderer is a DLL now, so the shared helpers that used to come from
+// the engine executable live here and forward through the import table.
+// The pattern matches the glue the cgame and ui modules use.
+void QDECL Com_Printf( const char *msg, ... ) {
+	va_list argptr;
+	char text[4096];
+
+	va_start( argptr, msg );
+	vsnprintf( text, sizeof( text ), msg, argptr );
+	va_end( argptr );
+
+	ri.Printf( PRINT_ALL, "%s", text );
+}
+
+void QDECL Com_Error( int level, const char *error, ... ) {
+	va_list argptr;
+	char text[4096];
+
+	va_start( argptr, error );
+	vsnprintf( text, sizeof( text ), error, argptr );
+	va_end( argptr );
+
+	ri.Error( level, "%s", text );
+}
+
+void Com_Memset( void *dest, const int val, const size_t count ) {
+	memset( dest, val, count );
+}
+
+void Com_Memcpy( void *dest, const void *src, const size_t count ) {
+	memcpy( dest, src, count );
+}
+
+extern "C" refexport_t *GetRefAPI( refimport_t *rimp ) {
 	static refexport_t re;
 
 	ri = *rimp;
 
 	memset( &re, 0, sizeof( re ) );
-
-	if ( apiVersion != REF_API_VERSION ) {
-		ri.Printf( PRINT_ALL, "Mismatched REF_API_VERSION: expected %i, got %i\n",
-				   REF_API_VERSION, apiVersion );
-		return NULL;
-	}
 
 	// the RE_ functions are Renderer Entry points
 
@@ -1434,6 +1463,9 @@ refexport_t *GetRefAPI( int apiVersion, refimport_t *rimp ) {
 	re.SetDoomSectorLight = RE_SetDoomSectorLight;
 	re.SetDoomSwitches = RE_SetDoomSwitches;
     re.editor = R_EditorRenderAPI();
+	re.GetMainWindow = RE_GetMainWindow;
+	re.GetMainContext = RE_GetMainContext;
 	return &re;
 }
+
 

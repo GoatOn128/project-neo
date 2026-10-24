@@ -100,8 +100,9 @@ void IN_ActivateMouse( void ) {
 	s_smv.mouseActive = qtrue;
 
 	// grab the mouse and hide the cursor while the game has focus
-	if ( glw_state.window ) {
-		SDL_SetWindowRelativeMouseMode( glw_state.window, true );
+	SDL_Window *window = Sys_GameWindow();
+	if ( window ) {
+		SDL_SetWindowRelativeMouseMode( window, true );
 		SDL_HideCursor();
 	}
 }
@@ -123,8 +124,9 @@ void IN_DeactivateMouse( void ) {
 	}
 	s_smv.mouseActive = qfalse;
 
-	if ( glw_state.window ) {
-		SDL_SetWindowRelativeMouseMode( glw_state.window, false );
+	SDL_Window *window = Sys_GameWindow();
+	if ( window ) {
+		SDL_SetWindowRelativeMouseMode( window, false );
 		SDL_ShowCursor();
 	}
 }
@@ -313,8 +315,9 @@ void IN_Frame( void ) {
 	// Only capture the mouse while the game window really is the
 	// foreground window, otherwise the cursor stays hidden while
 	// another application has focus.
-	if ( glw_state.window &&
-		 !( SDL_GetWindowFlags( glw_state.window ) & SDL_WINDOW_INPUT_FOCUS ) ) {
+	SDL_Window *window = Sys_GameWindow();
+	if ( window &&
+		 !( SDL_GetWindowFlags( window ) & SDL_WINDOW_INPUT_FOCUS ) ) {
 		IN_DeactivateMouse();
 		return;
 	}
@@ -513,3 +516,4 @@ void IN_JoyMove( void ) {
 	}
 	joy.oldpovstate = povstate;
 }
+

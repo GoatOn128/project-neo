@@ -64,6 +64,16 @@ void     QGL_Shutdown( void );
 //
 glwstate_t glw_state;
 
+// exported through GetRefAPI so the engine can reach the window the
+// renderer owns
+SDL_Window *RE_GetMainWindow( void ) {
+	return glw_state.window;
+}
+
+SDL_GLContext RE_GetMainContext( void ) {
+	return glw_state.context;
+}
+
 cvar_t  *r_allowSoftwareGL;     // don't abort out if the pixelformat claims software
 cvar_t  *r_maskMinidriver;      // kept for compatibility, SDL owns the driver now
 
@@ -163,7 +173,7 @@ static rserr_t GLW_SetMode( const char *drivername,
 		SDL_SetWindowMinimumSize( glw_state.window, 640, 480 );
 
 		// publish the native handle for the editor bridge
-		Win_SetGameWindow( (HWND)SDL_GetPointerProperty(
+		ri.SetGameWindow( SDL_GetPointerProperty(
 			SDL_GetWindowProperties( glw_state.window ),
 			SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL ) );
 
@@ -339,7 +349,7 @@ static qboolean GLW_StartDriverAndSetMode( const char *drivername,
 		if ( glw_state.window ) {
 			SDL_DestroyWindow( glw_state.window );
 			glw_state.window = NULL;
-			Win_SetGameWindow( NULL );
+			ri.SetGameWindow( NULL );
 		}
 		return qfalse;
 	}
@@ -674,7 +684,7 @@ void GLimp_Shutdown( void ) {
 		ri.Printf( PRINT_ALL, "...destroying window\n" );
 		SDL_DestroyWindow( glw_state.window );
 		glw_state.window = NULL;
-		Win_SetGameWindow( NULL );
+		ri.SetGameWindow( NULL );
 		glw_state.cdsFullscreen = qfalse;
 	}
 
@@ -803,3 +813,4 @@ void GLimp_WakeRenderer( void *data ) {
 
 	WaitForSingleObject( renderActiveEvent, INFINITE );
 }
+

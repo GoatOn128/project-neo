@@ -31,8 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../cgame/tr_types.h"
 #include "editor_render.h"
-
-#define REF_API_VERSION 13 // Window resizing updates renderer/client dimensions together.
+#include <SDL3/SDL_video.h>
 
 //
 // these are the functions exported by the refresh module
@@ -121,6 +120,11 @@ typedef struct {
     void (*SetDoomSwitches)(const char *state);
     EditorRenderAPI editor;
     void (*ResizeWindow)(int width, int height, glconfig_t *config);
+
+    // The renderer module owns the SDL window and the GL context. The sys
+    // layer and the editor share them through these.
+    SDL_Window *(*GetMainWindow)(void);
+    SDL_GLContext (*GetMainContext)(void);
 } refexport_t;
 
 //
@@ -177,12 +181,22 @@ typedef struct {
 	int ( *CIN_PlayCinematic )( const char *arg0, int xpos, int ypos, int width, int height, int bits );
 	e_status ( *CIN_RunCinematic )( int handle );
 
+	// the renderer publishes the native window handle for the editor bridge
+	void ( *SetGameWindow )( void *hwnd );
+
 } refimport_t;
 
 
 // this is the only function actually exported at the linker level
 // If the module can't init to a valid rendering state, NULL will be
 // returned.
-refexport_t*GetRefAPI( int apiVersion, refimport_t *rimp );
+#ifdef __cplusplus
+extern "C" {
+#endif
+refexport_t *GetRefAPI( refimport_t *rimp );
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // __TR_PUBLIC_H
+

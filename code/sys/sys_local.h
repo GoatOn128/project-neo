@@ -107,4 +107,15 @@ typedef struct
 
 extern glwstate_t glw_state;
 
+// Window access for the engine side. The renderer DLL owns the SDL window
+// and the GL context; sys_glimp.cpp implements these and GetRefAPI exports
+// them through the ref module.
+SDL_Window *RE_GetMainWindow( void );
+SDL_GLContext RE_GetMainContext( void );
+
+// The game window as the sys layer sees it, NULL before the renderer DLL
+// has created it. Defined in sys_events.cpp.
+SDL_Window *Sys_GameWindow( void );
+
 #endif
+

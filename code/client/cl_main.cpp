@@ -31,6 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "client.h"
 #include "console_font.h"
 #include "../sys/sys_editor.h"
+#include "../sys/win32/win_local.h"
 #include <limits.h>
 
 cvar_t  *cl_nodelta;
@@ -2285,6 +2286,8 @@ void CL_ShutdownRef( void ) {
 	}
 	re.Shutdown( qtrue );
 	memset( &re, 0, sizeof( re ) );
+	Sys_UnloadDll( rendererHandle );
+	rendererHandle = NULL;
 }
 
 /*
@@ -2349,6 +2352,15 @@ int CL_ScaledMilliseconds( void ) {
 	return Sys_Milliseconds() * com_timescale->value;
 }
 
+// handle of the renderer module, kept so vid_restart can unload and reload it
+static void *rendererHandle = NULL;
+
+// the renderer publishes the native window handle through the import
+// table; the editor bridge reads it
+static void CL_RefSetGameWindow( void *window ) {
+	Win_SetGameWindow( (HWND)window );
+}
+
 /*
 ============
 CL_InitRef
@@ -2393,7 +2405,9 @@ void CL_InitRef( void ) {
 	ri.CIN_PlayCinematic = CIN_PlayCinematic;
 	ri.CIN_RunCinematic = CIN_RunCinematic;
 
-	ret = GetRefAPI( REF_API_VERSION, &ri );
+	ri.SetGameWindow = CL_RefSetGameWindow;
+
+	ret = (refexport_t *)Sys_LoadDll( "ref_trin_gl", &rendererHandle, "GetRefAPI", &ri );
 
 #if 0 // MrE defined __USEA3D && defined __A3D_GEOM
 	hA3Dg_ExportRenderGeom( ret );
@@ -2402,7 +2416,7 @@ void CL_InitRef( void ) {
 	Com_Printf( "-------------------------------\n" );
 
 	if ( !ret ) {
-		Com_Error( ERR_FATAL, "Couldn't initialize refresh" );
+		Com_Error( ERR_FATAL, "Sys_LoadDll on ref_trin_gl failed" );
 	}
 
 	re = *ret;
@@ -3622,5 +3636,6 @@ qboolean CL_GetLimboString( int index, char *buf ) {
 	return qtrue;
 }
 // -NERVE - SMF
+
 
 

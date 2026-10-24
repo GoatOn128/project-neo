@@ -1004,8 +1004,9 @@ int main( int argc, char *argv[] ) {
 		Sys_ShowConsole( 0, qfalse );
 	}
 
-	if ( glw_state.window ) {
-		SDL_RaiseWindow( glw_state.window );
+	SDL_Window *window = Sys_GameWindow();
+	if ( window ) {
+		SDL_RaiseWindow( window );
 	}
 
 	// main game loop
@@ -1036,3 +1037,4 @@ int main( int argc, char *argv[] ) {
 
 	// never gets here
 }
+

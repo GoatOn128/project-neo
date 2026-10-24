@@ -135,10 +135,14 @@ renderer_env.Append(
     CPPPATH=[
         '#code', '#code/third-party/stb', '#code/third-party/miniz',
         generated_target])
-renderer = renderer_env.StaticLibrary(
-    build_target + '/renderer',
+
+# The renderer is a DLL the engine loads with Sys_LoadDll, like the game
+# modules. It links SDL3 (window and context code) and opengl32 directly.
+renderer = renderer_env.SharedLibrary(
+    '#bin/base/ref_trin_glx86',
     [renderer_variant + '/' + p for p in
-     doom_sources.RENDERER_SOURCES + doom_sources.RENDERER_EXTRA_SOURCES])
+     doom_sources.RENDERER_SOURCES + doom_sources.RENDERER_EXTRA_SOURCES],
+    LIBS=[SDL3, 'opengl32'])
 
 botlib_env, botlib_variant = module_env('botlib')
 botlib_env.Append(CPPDEFINES=['BOTLIB'])
@@ -281,7 +285,7 @@ wolf = wolf_env.Program(
     '#bin/Doom',
     [wolf_variant + '/' + p for p in
      doom_sources.WOLF_SOURCES + doom_sources.WOLF_EXTRA_SOURCES] + [wolf_res],
-    LIBS=[renderer, botlib, splines, OpenAL32, SDL3, doom_opl,
+    LIBS=[botlib, splines, OpenAL32, SDL3, doom_opl,
           doom_miniz,
           'winmm', 'ole32', 'oleaut32', 'wsock32', 'user32', 'gdi32', 'shell32', 'advapi32'])
 
@@ -316,8 +320,9 @@ if os.path.exists(os.path.join(fluidsynth_bin, 'libfluidsynth-3.dll')):
             fluidsynth_copies.append(
                 env.InstallAs('#bin/tests/' + dll, '#' + source))
 
-# The engine is not finished until the modules are built too.
-engine_extra = [cgame, qagame, ui_dll]
+# The engine is not finished until the modules are built too. The renderer
+# DLL is part of that list because the engine loads it at startup.
+engine_extra = [renderer, cgame, qagame, ui_dll]
 if build_editor:
     engine_extra += [editor_dll] + aas_copies
 env.Depends(wolf, engine_extra)
@@ -418,3 +423,4 @@ Options:
 print('Config: %s, arch: %s, editor: %s' % (config, arch, build_editor))
 print('Binaries go to bin/, the build files live in build/%s/' % config)
 print('The game modules go to base/, bin/base links to it.')
+
