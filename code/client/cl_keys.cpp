@@ -1829,22 +1829,6 @@ void CL_KeyEvent( int key, qboolean down, unsigned time ) {
 			if ( key != K_MOUSE1 ) {
 				return; // eat all keys except mouse click
 			}
-		} else {
-
-			// when in the notebook, check for the key bound to "notebook" and allow that as an escape key
-
-			if ( kb ) {
-				if ( !Q_stricmp( "notebook", kb ) ) {
-					if ( uiExport->GetActiveMenu() == UIMENU_NOTEBOOK ) {
-						key = K_ESCAPE;
-					}
-				}
-
-//				if(!Q_stricmp("help", kb)) {
-//					if(VM_Call( uivm, UI_GET_ACTIVE_MENU) == UIMENU_HELP)
-//						key = K_ESCAPE;
-///				}
-			}
 		}
 
 		if ( uiExport ) {

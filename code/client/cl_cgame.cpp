@@ -565,12 +565,6 @@ static const cgameImport_t cgameImportTable = {
 				uiExport->SetActiveMenu( UIMENU_WM_QUICKMESSAGE );
 			} else if ( name && !Q_stricmp( name, "UIMENU_WM_LIMBO" ) ) {
 				uiExport->SetActiveMenu( UIMENU_WM_LIMBO );
-			} else if ( name && !Q_stricmp( name, "hbook1" ) ) {
-				uiExport->SetActiveMenu( UIMENU_BOOK1 );
-			} else if ( name && !Q_stricmp( name, "hbook2" ) ) {
-				uiExport->SetActiveMenu( UIMENU_BOOK2 );
-			} else if ( name && !Q_stricmp( name, "hbook3" ) ) {
-				uiExport->SetActiveMenu( UIMENU_BOOK3 );
 			} else if ( name && !Q_stricmp( name, "pregame" ) ) {
 				uiExport->SetActiveMenu( UIMENU_PREGAME );
 			} else {

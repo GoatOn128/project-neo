@@ -80,9 +80,6 @@ cvar_t  *com_noErrorInterrupt;
 #endif
 cvar_t  *com_recommendedSet;
 
-// Rafael Notebook
-cvar_t  *cl_notebook;
-
 cvar_t  *com_hunkused;      // Ridah
 
 // com_speeds times
