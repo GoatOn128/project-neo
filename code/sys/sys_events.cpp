@@ -41,7 +41,12 @@ extern cvar_t       *k_language;
 // Console variables that we need to access from this module
 cvar_t      *vid_xpos;          // X coordinate of window position
 cvar_t      *vid_ypos;          // Y coordinate of window position
-extern cvar_t *r_fullscreen;
+
+// The renderer DLL registers r_fullscreen, so ask the cvar system for it
+// instead of linking against the renderer's copy of the pointer.
+static cvar_t *Sys_FullscreenCvar( void ) {
+	return Cvar_Get( "r_fullscreen", "1", 0 );
+}
 
 static qboolean s_windowActive;
 static qboolean s_windowMinimized;
@@ -403,7 +408,8 @@ void Sys_EventLoop( void ) {
 
 		case SDL_EVENT_WINDOW_MOVED:
 			if ( window && e.window.windowID == SDL_GetWindowID( window ) ) {
-				if ( !r_fullscreen->integer ) {
+				cvar_t *r_fullscreen = Sys_FullscreenCvar();
+				if ( r_fullscreen && !r_fullscreen->integer ) {
 					int xPos, yPos;
 					SDL_GetWindowPosition( window, &xPos, &yPos );
 					Cvar_SetValue( "vid_xpos", xPos );
@@ -421,6 +427,7 @@ void Sys_EventLoop( void ) {
 		case SDL_EVENT_KEY_DOWN:
 			// alt-enter toggles fullscreen, like the old WM_SYSKEYDOWN path
 			if ( e.key.scancode == SDL_SCANCODE_RETURN && ( e.key.mod & SDL_KMOD_ALT ) ) {
+				cvar_t *r_fullscreen = Sys_FullscreenCvar();
 				if ( r_fullscreen ) {
 					Cvar_SetValue( "r_fullscreen", !r_fullscreen->integer );
 					Cbuf_AddText( "vid_restart\n" );

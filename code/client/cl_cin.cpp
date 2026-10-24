@@ -67,7 +67,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #define MAX_VIDEO_HANDLES   16
 
-extern glconfig_t glConfig;
 extern int s_paintedtime;
 extern int s_soundtime;
 extern int s_rawend[];          //DAJ added [] to match definition
@@ -1108,7 +1107,7 @@ static void readQuadInfo( byte *qData ) {
 	cinTable[currentHandle].drawY = cinTable[currentHandle].CIN_HEIGHT;
 
 	// rage pro is very slow at 512 wide textures, voodoo can't do it at all
-	if ( glConfig.hardwareType == GLHW_RAGEPRO || glConfig.maxTextureSize <= 256 ) {
+	if ( cls.glconfig.hardwareType == GLHW_RAGEPRO || cls.glconfig.maxTextureSize <= 256 ) {
 		if ( cinTable[currentHandle].drawX > 256 ) {
 			cinTable[currentHandle].drawX = 256;
 		}
@@ -1872,6 +1871,7 @@ void CIN_UploadCinematic( int handle ) {
 		}
 	}
 }
+
 
 
 
