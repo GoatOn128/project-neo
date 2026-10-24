@@ -137,9 +137,12 @@ renderer_env.Append(
         generated_target])
 
 # The renderer is a DLL the engine loads with Sys_LoadDll, like the game
-# modules. It links SDL3 (window and context code) and opengl32 directly.
+# modules. It is an engine binary, not game data, so it is built next to
+# the engine in bin/ instead of the game folder. Sys_LoadDll finds it
+# through its current folder search when the engine runs from bin/.
+# It links SDL3 (window and context code) and opengl32 directly.
 renderer = renderer_env.SharedLibrary(
-    '#bin/base/ref_trin_glx86',
+    '#bin/ref_trin_glx86',
     [renderer_variant + '/' + p for p in
      doom_sources.RENDERER_SOURCES + doom_sources.RENDERER_EXTRA_SOURCES],
     LIBS=[SDL3, 'opengl32'])
