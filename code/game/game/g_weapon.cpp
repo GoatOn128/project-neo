@@ -1544,23 +1544,6 @@ DOOM_SAVE_CALLBACK("Weapon_LightningFire", Weapon_LightningFire);
 
 
 /*
-==============
-AddLean
-	add leaning offset
-==============
-*/
-void AddLean( gentity_t *ent, vec3_t point ) {
-	if ( ent->client ) {
-		if ( ent->client->ps.leanf ) {
-			vec3_t right;
-			AngleVectors( ent->client->ps.viewangles, NULL, right, NULL );
-			VectorMA( point, ent->client->ps.leanf, right, point );
-		}
-	}
-}
-DOOM_SAVE_CALLBACK("AddLean", AddLean);
-
-/*
 ===============
 LogAccuracyHit
 ===============
@@ -1636,11 +1619,6 @@ void CalcMuzzlePoint( gentity_t *ent, int weapon, vec3_t forward, vec3_t right, 
 
 	// done.
 
-	// (SA) actually, this is sort of moot right now since
-	// you're not allowed to fire when leaning.  Leave in
-	// in case we decide to enable some lean-firing.
-	AddLean( ent, muzzlePoint );
-
 	// snap to integer coordinates for more efficient network bandwidth usage
 	SnapVector( muzzlePoint );
 }
@@ -1651,8 +1629,6 @@ void CalcMuzzlePointForActivate( gentity_t *ent, vec3_t forward, vec3_t right, v
 
 	VectorCopy( ent->s.pos.trBase, muzzlePoint );
 	muzzlePoint[2] += ent->client->ps.viewheight;
-
-	AddLean( ent, muzzlePoint );
 
 	// snap to integer coordinates for more efficient network bandwidth usage
 //	SnapVector( muzzlePoint );

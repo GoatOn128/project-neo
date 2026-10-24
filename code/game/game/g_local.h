@@ -1040,7 +1040,6 @@ void G_WriteSessionData( void );
 
 // g_cmd.cpp
 void Cmd_Activate_f( gentity_t *ent );
-int Cmd_WolfKick_f( gentity_t *ent );
 // Ridah
 
 // g_save.cpp

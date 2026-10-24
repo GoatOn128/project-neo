@@ -705,9 +705,6 @@ void ClientEvents( gentity_t *ent, int oldEventSequence ) {
 		case EV_USE_ITEM5:      // ( HI_ELECTRIC )	protection from electric attacks
 		case EV_USE_ITEM6:      // ( HI_FIRE )		protection from fire attacks
 		case EV_USE_ITEM7:      // ( HI_STAMINA )	restores fatigue bar and sets "nofatigue" for a time period
-		case EV_USE_ITEM8:      // ( HI_BOOK1 )
-		case EV_USE_ITEM9:      // ( HI_BOOK2 )
-		case EV_USE_ITEM10:     // ( HI_BOOK3 )
 			UseHoldableItem( ent, event - EV_USE_ITEM0 );
 			break;
 //----(SA)	end
@@ -799,11 +796,6 @@ void ClientThink_real( gentity_t *ent ) {
 	//int i;
 	int monsterslick = 0;
 	vec3_t muzzlebounce;      // JPW NERVE
-
-
-	// Rafael wolfkick
-	int validkick;
-	static int wolfkicktimer = 0;
 
 	client = ent->client;
 
@@ -964,7 +956,6 @@ void ClientThink_real( gentity_t *ent ) {
 			ucmd->rightmove = 0;
 			ucmd->upmove = 0;
 			ucmd->wbuttons = 0;
-			ucmd->wolfkick = 0;
 
 		} else {    // age their play time
 
@@ -981,7 +972,6 @@ void ClientThink_real( gentity_t *ent ) {
 		ucmd->rightmove = 0;
 		ucmd->upmove = 0;
 		ucmd->wbuttons = 0;
-		ucmd->wolfkick = 0;
 
 		// freeze player (RELOAD_FAILED still allowed to move/look)
 		if ( client->cameraPortal || ( g_reloading.integer & ( RELOAD_NEXTMAP_WAITING | RELOAD_ENDGAME ) ) ) {
@@ -1241,46 +1231,10 @@ void ClientThink_real( gentity_t *ent ) {
 	// get this for the clients
 	ent->s.animMovetype = BG_GetConditionValue( ent->s.number, ANIM_COND_MOVETYPE, qtrue );
 
-	// Rafael Kick
-	if ( ucmd->wolfkick && ent->health > 0 ) {
-		validkick = Cmd_WolfKick_f( ent );
-
-		if ( validkick ) {
-			wolfkicktimer = level.time + 1000;
-		}
+	// keep a held chair prop in its idle state
+	if ( ent->melee ) {
+		ent->melee->s.density = 1;
 	}
-
-	if ( ent->client->ps.persistant[PERS_WOLFKICK] && !ent->melee && !( ent->active ) ) {
-		if ( wolfkicktimer < level.time ) {
-			ent->client->ps.persistant[PERS_WOLFKICK] = 0;
-		} else
-		{
-			ent->client->ps.persistant[PERS_WOLFKICK] = (int) ( 22 - ( ( wolfkicktimer - level.time ) / 50 ) );
-
-			if ( ent->client->ps.persistant[PERS_WOLFKICK] > 8 ) {
-				ent->client->ps.persistant[PERS_WOLFKICK] = 0;
-			}
-		}
-	} else if ( ent->melee )     {
-		if ( wolfkicktimer > level.time ) {
-			ent->client->ps.persistant[PERS_WOLFKICK] = 0;
-			if ( ent->health <= 0 ) {
-				ent->melee = NULL;
-				ent->client->ps.eFlags &= ~EF_MELEE_ACTIVE;
-			} else {
-
-				ent->melee->s.density = (int) ( 22 - ( ( wolfkicktimer - level.time ) / 50 ) );
-
-				if ( ent->melee->s.density > 12 ) {
-					ent->melee->s.density = 1;
-				}
-			}
-		} else {
-			ent->melee->s.density = 1;
-		}
-	}
-
-	// done
 
 	// Ridah, allow AI Cast's to evaluate results of their pmove's
 	// DHM - Nerve :: Don't do this in multiplayer

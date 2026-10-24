@@ -229,12 +229,6 @@ void UseHoldableItem( gentity_t *ent, int item ) {
 		//					current status of your fatigue) rather than snapping back to 'full')
 		ent->client->ps.powerups[PW_NOFATIGUE] = 60000;
 		break;
-
-	case HI_BOOK1:
-	case HI_BOOK2:
-	case HI_BOOK3:
-		G_AddEvent( ent, EV_POPUPBOOK, ( item - HI_BOOK1 ) + 1 );
-		break;
 	}
 }
 DOOM_SAVE_CALLBACK("UseHoldableItem", UseHoldableItem);
@@ -710,9 +704,6 @@ void Touch_Item( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 		// send the event to the client to request that the UI draw a popup
 		// (specified by the configstring in ent->s.density).
 		G_AddEvent( other, EV_POPUP, ent->s.density );
-		if ( ent->key ) {
-			G_AddEvent( other, EV_GIVEPAGE, ent->key );
-		}
 		break;
 	default:
 		return;
@@ -976,9 +967,6 @@ void FinishSpawningItem( gentity_t *ent ) {
 
 		ent->touch = Touch_Item;    // no auto-pickup, only activate
 	} else if ( ent->item->giType == IT_HOLDABLE )      {
-		if ( ent->item->giTag >= HI_BOOK1 && ent->item->giTag <= HI_BOOK3 ) {
-			G_FindConfigstringIndex( va( "hbook%d", ent->item->giTag - HI_BOOK1 ), CS_CLIPBOARDS, MAX_CLIPBOARD_CONFIGSTRINGS, qtrue );
-		}
 //		ent->touch = Touch_Item;	// no auto-pickup, only activate
 	}
 
@@ -1168,7 +1156,6 @@ be on an entity that hasn't spawned yet.
 */
 void G_SpawnItem( gentity_t *ent, gitem_t *item ) {
 	char    *noise;
-	int page;
 
 	G_SpawnFloat( "random", "0", &ent->random );
 	G_SpawnFloat( "wait", "0", &ent->wait );
@@ -1188,12 +1175,6 @@ void G_SpawnItem( gentity_t *ent, gitem_t *item ) {
 
 	if ( ent->model ) {
 		ent->s.modelindex2 = G_ModelIndex( ent->model );
-	}
-
-	if ( item->giType == IT_CLIPBOARD ) {
-		if ( G_SpawnInt( "notebookpage", "1", &page ) ) {
-			ent->key = page;
-		}
 	}
 
 	if ( item->giType == IT_POWERUP ) {
