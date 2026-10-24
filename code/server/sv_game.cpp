@@ -306,7 +306,7 @@ static const gameImport_t gameImportTable = {
 	FS_FOpenFileByMode,
 	[]( void *buffer, int len, fileHandle_t f ) { FS_Read( buffer, len, f ); },
 	FS_Write,
-	[]( const char *from, const char *to ) { FS_Rename( from, to ); },
+	[]( const char *from, const char *to ) { FS_Rename( from, to ); return 0; },
 	FS_FCloseFile,
 	FS_CopyFileOS,
 	FS_GetFileList,
@@ -340,13 +340,14 @@ static const gameImport_t gameImportTable = {
 	SV_BotAllocateClient,
 	SV_BotFreeClient,
 	SV_GetUsercmd,
+	// the enum literals need casts so the lambda deduces qboolean, not the enum type
 	[]( char *buffer, int bufferSize ) {
 		const char *s = COM_Parse( &sv.entityParsePoint );
 		Q_strncpyz( buffer, s, bufferSize );
 		if ( !sv.entityParsePoint && !s[0] ) {
-			return qfalse;
+			return (qboolean)qfalse;
 		}
-		return qtrue;
+		return (qboolean)qtrue;
 	},
 	BotImport_DebugPolygonCreate,
 	BotImport_DebugPolygonDelete,
