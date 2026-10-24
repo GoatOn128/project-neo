@@ -335,7 +335,7 @@ void Sys_EventLoop( void ) {
 
 		case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
 			if ( glw_state.window && e.window.windowID == SDL_GetWindowID( glw_state.window ) ) {
-				Cbuf_ExecuteText( EXEC_APPEND, "quit" );
+				Cbuf_ExecuteText( EXEC_APPEND, "quit\n" );
 			}
 			break;
 
@@ -456,11 +456,11 @@ void Sys_EventLoop( void ) {
 
 		case SDL_EVENT_MOUSE_WHEEL:
 			if ( e.wheel.y > 0 ) {
-				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELUP, qtrue, 0, NULL );
-				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELUP, qfalse, 0, NULL );
+				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELUP, qtrue, 0, 0, NULL );
+				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELUP, qfalse, 0, 0, NULL );
 			} else if ( e.wheel.y < 0 )      {
-				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELDOWN, qtrue, 0, NULL );
-				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELDOWN, qfalse, 0, NULL );
+				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELDOWN, qtrue, 0, 0, NULL );
+				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELDOWN, qfalse, 0, 0, NULL );
 			}
 			break;
 
