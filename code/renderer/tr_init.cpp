@@ -1398,6 +1398,32 @@ void Com_Memcpy( void *dest, const void *src, const size_t count ) {
 	memcpy( dest, src, count );
 }
 
+// The renderer has no zone allocator, so string copies live on the hunk,
+// the same lifetime the shader text they belong to already has.
+char *CopyString( const char *in ) {
+	char    *out;
+
+	out = (char *)ri.Hunk_Alloc( strlen( in ) + 1, h_low );
+	strcpy( out, in );
+	return out;
+}
+
+// Copied from the engine's common.cpp: the msvc acos does not always return
+// a value between -PI and PI.
+float Q_acos( float c ) {
+	float angle;
+
+	angle = acos( c );
+
+	if ( angle > M_PI ) {
+		return (float)M_PI;
+	}
+	if ( angle < -M_PI ) {
+		return (float)M_PI;
+	}
+	return angle;
+}
+
 extern "C" refexport_t *GetRefAPI( refimport_t *rimp ) {
 	static refexport_t re;
 
