@@ -199,7 +199,7 @@ void DrawBrushList( bspbrush_t *brush, node_t *node ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void WriteBrushList( char *name, bspbrush_t *brush, qboolean onlyvis ) {
+void WriteBrushList( char *name, bspbrush_t *brush, bool onlyvis ) {
 	int i;
 	side_t  *s;
 	FILE    *f;
@@ -724,7 +724,7 @@ int QuickTestBrushToPlanenum( bspbrush_t *brush, int planenum, int *numsplits ) 
 // Changes Globals:		-
 //===========================================================================
 int TestBrushToPlanenum( bspbrush_t *brush, int planenum,
-						 int *numsplits, qboolean *hintsplit, int *epsilonbrush ) {
+						 int *numsplits, bool *hintsplit, int *epsilonbrush ) {
 	int i, j, num;
 	plane_t *plane;
 	int s = 0;
@@ -855,7 +855,7 @@ int TestBrushToPlanenum( bspbrush_t *brush, int planenum,
 // Changes Globals:		-
 //===========================================================================
 #define EDGE_LENGTH 0.2
-qboolean WindingIsTiny( winding_t *w ) {
+bool WindingIsTiny( winding_t *w ) {
 #if 0
 	if ( WindingArea( w ) < 1 ) {
 		return true;
@@ -890,7 +890,7 @@ qboolean WindingIsTiny( winding_t *w ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean WindingIsHuge( winding_t *w ) {
+bool WindingIsHuge( winding_t *w ) {
 	int i, j;
 
 	for ( i = 0 ; i < w->numpoints ; i++ )
@@ -980,9 +980,9 @@ bool CheckPlaneAgainstParents(int pnum, node_t *node) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean CheckPlaneAgainstVolume( int pnum, node_t *node ) {
+bool CheckPlaneAgainstVolume( int pnum, node_t *node ) {
 	bspbrush_t  *front, *back;
-	qboolean good;
+	bool good;
 
 	SplitBrush( node->volume, pnum, &front, &back );
 
@@ -1027,7 +1027,7 @@ side_t *SelectSplitSide( bspbrush_t *brushes, node_t *node ) {
 	int front, back, facing, splits;
 	int bsplits;
 	int epsilonbrush;
-	qboolean hintsplit = false;
+	bool hintsplit = false;
 
 	bestside = NULL;
 	bestvalue = -99999;

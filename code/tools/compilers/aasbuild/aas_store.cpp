@@ -384,7 +384,7 @@ unsigned AAS_HashVec( vec3_t vec ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_GetVertex( vec3_t v, int *vnum ) {
+bool AAS_GetVertex( vec3_t v, int *vnum ) {
 	int i;
 #ifndef VERTEX_HASHING
 	float diff;
@@ -495,7 +495,7 @@ void AAS_AddEdgeToHash( int edgenum ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_FindHashedEdge( int v1num, int v2num, int *edgenum ) {
+bool AAS_FindHashedEdge( int v1num, int v2num, int *edgenum ) {
 	int e, hash;
 	aas_edge_t *edge;
 
@@ -529,9 +529,9 @@ qboolean AAS_FindHashedEdge( int v1num, int v2num, int *edgenum ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_GetEdge( vec3_t v1, vec3_t v2, int *edgenum ) {
+bool AAS_GetEdge( vec3_t v1, vec3_t v2, int *edgenum ) {
 	int v1num, v2num;
-	qboolean found;
+	bool found;
 
 	//the first edge is a dummy
 	if ( ( *aasworld ).numedges == 0 ) {
@@ -671,7 +671,7 @@ int AAS_PlaneEqual( vec3_t normal, float dist, int planenum ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_FindPlane( vec3_t normal, float dist, int *planenum ) {
+bool AAS_FindPlane( vec3_t normal, float dist, int *planenum ) {
 	int i;
 
 	for ( i = 0; i < ( *aasworld ).numplanes; i++ )
@@ -689,7 +689,7 @@ qboolean AAS_FindPlane( vec3_t normal, float dist, int *planenum ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_FindHashedPlane( vec3_t normal, float dist, int *planenum ) {
+bool AAS_FindHashedPlane( vec3_t normal, float dist, int *planenum ) {
 	int i, p;
 	int hash, h;
 
@@ -716,7 +716,7 @@ qboolean AAS_FindHashedPlane( vec3_t normal, float dist, int *planenum ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_GetPlane( vec3_t normal, vec_t dist, int *planenum ) {
+bool AAS_GetPlane( vec3_t normal, vec_t dist, int *planenum ) {
 	aas_plane_t *plane, temp;
 
 	//if (AAS_FindPlane(normal, dist, planenum)) return true;
@@ -775,7 +775,7 @@ qboolean AAS_GetPlane( vec3_t normal, vec_t dist, int *planenum ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_GetFace( winding_t *w, plane_t *p, int side, int *facenum ) {
+bool AAS_GetFace( winding_t *w, plane_t *p, int side, int *facenum ) {
 	int edgenum, i, j;
 	aas_face_t *face;
 
@@ -831,12 +831,12 @@ qboolean AAS_GetFace( winding_t *w, plane_t *p, int side, int *facenum ) {
 // Changes Globals:		-
 //===========================================================================
 /*
-qboolean AAS_GetFace(winding_t *w, plane_t *p, int side, int *facenum)
+bool AAS_GetFace(winding_t *w, plane_t *p, int side, int *facenum)
 {
 	aas_edgeindex_t edges[1024];
 	int planenum, numedges, i;
 	int j, edgenum;
-	qboolean foundplane, foundedges;
+	bool foundplane, foundedges;
 	aas_face_t *face;
 
 	//face zero is a dummy, because of the face index with negative numbers

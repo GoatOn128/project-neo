@@ -343,7 +343,7 @@ void AAS_FixMapBrush( mapbrush_t *brush ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_MakeBrushWindings( mapbrush_t *ob ) {
+bool AAS_MakeBrushWindings( mapbrush_t *ob ) {
 	int i, j;
 	winding_t   *w;
 	side_t      *side;
@@ -469,7 +469,7 @@ int AAS_AlwaysTriggered( char *targetname ) {
     }
     // Hexen II buttons and doors can form cycles in their target chains.
     // Walk each activator once instead of recursing indefinitely through them.
-    qboolean visited[MAX_MAP_ENTITIES] = {};
+    bool visited[MAX_MAP_ENTITIES] = {};
     const char *pending[MAX_MAP_ENTITIES + 1];
     int head = 0, tail = 1;
     pending[0] = targetname;

@@ -35,6 +35,6 @@ If you have questions concerning this license or the applicable additional terms
 // Tab Size:     3
 //===========================================================================
 
-qboolean AAS_WriteAASFile( char *filename );
-qboolean AAS_LoadAASFile( char *filename, int fpoffset, int fplength );
+bool AAS_WriteAASFile( char *filename );
+bool AAS_LoadAASFile( char *filename, int fpoffset, int fplength );
 

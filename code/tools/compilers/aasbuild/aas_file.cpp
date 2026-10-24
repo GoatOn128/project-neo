@@ -256,7 +256,7 @@ void AAS_DData( unsigned char *data, int size ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_LoadAASFile( char *filename, int fpoffset, int fplength ) {
+bool AAS_LoadAASFile( char *filename, int fpoffset, int fplength ) {
 	FILE *fp;
 	aas_header_t header;
 	int offset, length;
@@ -509,7 +509,7 @@ void AAS_ShowTotals( void ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_WriteAASFile( char *filename ) {
+bool AAS_WriteAASFile( char *filename ) {
 	aas_header_t header;
 	FILE *fp;
 

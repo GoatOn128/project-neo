@@ -51,7 +51,7 @@ If you have questions concerning this license or the applicable additional terms
 //#define BSPC
 
 extern botlib_import_t botimport;
-extern qboolean capsule_collision;
+extern bool capsule_collision;
 
 //#define AAS_MOVE_DEBUG
 
@@ -281,7 +281,7 @@ void AAS_CalcReachAndClusters( struct quakefile_s *qf ) {
 		strcpy( qf->pakfile, qf->filename );
 	}
 	//load the map
-	CM_LoadMap( (char *) qf, qfalse, &( *aasworld ).bspchecksum );
+	CM_LoadMap( (char *) qf, false, &( *aasworld ).bspchecksum );
 	//get a handle to the world model
 	worldmodel = CM_InlineModel( 0 );     // 0 = world, 1 + are bmodels
 	//initialize bot import structure

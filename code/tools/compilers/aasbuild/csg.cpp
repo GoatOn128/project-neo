@@ -465,7 +465,7 @@ bspbrush_t *IntersectBrush( bspbrush_t *a, bspbrush_t *b ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean BrushesDisjoint( bspbrush_t *a, bspbrush_t *b ) {
+bool BrushesDisjoint( bspbrush_t *a, bspbrush_t *b ) {
 	int i, j;
 
 	// check bounding boxes
@@ -742,7 +742,7 @@ void WriteBrushMap(char *name, bspbrush_t *list)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean BrushGE( bspbrush_t *b1, bspbrush_t *b2 ) {
+bool BrushGE( bspbrush_t *b1, bspbrush_t *b2 ) {
 #ifdef ME
 	if ( create_aas ) {
 		if ( b1->original->expansionbbox != b2->original->expansionbbox ) {

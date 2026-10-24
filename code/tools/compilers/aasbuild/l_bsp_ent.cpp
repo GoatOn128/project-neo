@@ -98,7 +98,7 @@ epair_t *ParseEpair( script_t *script ) {
 ParseEntity
 ================
 */
-qboolean    ParseEntity( script_t *script ) {
+bool    ParseEntity( script_t *script ) {
 	epair_t *e;
 	entity_t    *mapent;
 	token_t token;
