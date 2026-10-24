@@ -2406,6 +2406,8 @@ void CL_InitRef( void ) {
 	ri.CIN_RunCinematic = CIN_RunCinematic;
 
 	ri.SetGameWindow = CL_RefSetGameWindow;
+	ri.CopyString = CopyString;
+	ri.Q_acos = Q_acos;
 
 	ret = (refexport_t *)Sys_LoadDll( "ref_trin_gl", &rendererHandle, "GetRefAPI", &ri );
 

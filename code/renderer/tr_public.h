@@ -184,6 +184,10 @@ typedef struct {
 	// the renderer publishes the native window handle for the editor bridge
 	void ( *SetGameWindow )( void *hwnd );
 
+	// shared helpers the renderer used to get from the executable
+	char *( *CopyString )( const char *str );
+	float ( *Q_acos )( float c );
+
 } refimport_t;
 
 
