@@ -38,10 +38,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "cg_doomweapons.h"
 #include "../game/bg_doomweapons.h"
 
-int wolfkickModel;
 int hWeaponSnd;
 int hflakWeaponSnd;
-int notebookModel;
 int propellerModel;
 
 vec3_t ejectBrassCasingOrigin;
@@ -1353,12 +1351,9 @@ void CG_RegisterItemVisuals( int itemNum ) {
 
 	itemInfo->registered = qtrue;   //----(SA)	moved this down after the registerweapon()
 
-	wolfkickModel = trap_R_RegisterModel( "models/weapons2/foot/v_wolfoot_10f.md3" );
 	hWeaponSnd = trap_S_RegisterSound( "sound/weapons/mg42/37mm.wav" );
 
 	hflakWeaponSnd = trap_S_RegisterSound( "sound/weapons/flak/flak.wav" );
-
-	notebookModel = trap_R_RegisterModel( "models/mapobjects/book/book.md3" );
 
 	propellerModel = trap_R_RegisterModel( "models/mapobjects/vehicles/m109_prop.md3" );
 
@@ -1465,55 +1460,10 @@ CG_CalculateWeaponPosition
 static void CG_CalculateWeaponPosition( vec3_t origin, vec3_t angles ) {
 	float scale;
 	int delta;
-	float fracsin, leanscale;
+	float fracsin;
 
 	VectorCopy( cg.refdef.vieworg, origin );
 	VectorCopy( cg.refdefViewAngles, angles );
-
-	// adjust 'lean' into weapon
-	if ( cg.predictedPlayerState.leanf != 0 ) {
-		vec3_t right, up;
-
-		leanscale = 1.0f;
-
-		switch ( cg.predictedPlayerState.weapon ) {
-		case WP_GARAND:
-			leanscale = 3.0f;
-			break;
-		case WP_FLAMETHROWER:
-		case WP_TESLA:
-		case WP_MAUSER:
-			leanscale = 2.0f;
-			break;
-
-			// never adjust
-		case WP_KNIFE:
-		case WP_GRENADE_LAUNCHER:
-		case WP_GRENADE_PINEAPPLE:
-			break;
-
-			// adjust when leaning right (in case of reload)
-		default:
-			if ( cg.predictedPlayerState.leanf > 0 ) {
-				leanscale = 1.3f;
-			}
-			break;
-		}
-
-		// reverse the roll on the weapon so it stays relatively level
-		angles[ROLL] -= cg.predictedPlayerState.leanf / ( leanscale * 2.0f );
-		AngleVectors( angles, NULL, right, up );
-		VectorMA( origin, angles[ROLL], right, origin );
-
-		// pitch the gun down a bit to show that firing is not allowed when leaning
-		angles[PITCH] += ( fabs( cg.predictedPlayerState.leanf ) / 2.0f );
-
-		// this gives you some impression that the weapon stays in relatively the same
-		// position while you lean, so you appear to 'peek' over the weapon
-		AngleVectors( cg.refdefViewAngles, NULL, right, NULL );
-		VectorMA( origin, -cg.predictedPlayerState.leanf / 4.0f, right, origin );
-	}
-
 
 	// on odd legs, invert some angles
 	if ( cg.bobcycle & 1 ) {
@@ -2630,56 +2580,6 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	}
 }
 
-void CG_AddPlayerFoot( refEntity_t *parent, playerState_t *ps, centity_t *cent ) {
-	refEntity_t wolfkick;
-	vec3_t kickangle;
-	int frame;
-
-	if ( !( cg.snap->ps.persistant[PERS_WOLFKICK] ) ) {
-		return;
-	}
-
-	memset( &wolfkick, 0, sizeof( wolfkick ) );
-
-	VectorCopy( parent->lightingOrigin, wolfkick.lightingOrigin );
-	wolfkick.shadowPlane = parent->shadowPlane;
-
-	// note to self we want this to lerp and advance frame
-	wolfkick.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON;;
-	wolfkick.hModel = wolfkickModel;
-
-	VectorCopy( cg.refdef.vieworg, wolfkick.origin );
-	//----(SA)	allow offsets for testing boot model
-	if ( cg_gun_x.value ) {
-		VectorMA( wolfkick.origin, cg_gun_x.value,  cg.refdef.viewaxis[0], wolfkick.origin );
-	}
-	if ( cg_gun_y.value ) {
-		VectorMA( wolfkick.origin, cg_gun_y.value,  cg.refdef.viewaxis[1], wolfkick.origin );
-	}
-	if ( cg_gun_z.value ) {
-		VectorMA( wolfkick.origin, cg_gun_z.value,  cg.refdef.viewaxis[2], wolfkick.origin );
-	}
-	//----(SA)	end
-
-
-	VectorCopy( cg.refdefViewAngles, kickangle );
-	if ( kickangle[0] < 0 ) {
-		kickangle[0] = 0;                       //----(SA)	avoid "Rockette" syndrome :)
-	}
-	AnglesToAxis( kickangle, wolfkick.axis );
-
-
-	frame = cg.snap->ps.persistant[PERS_WOLFKICK];
-
-//	CG_Printf("frame: %d\n", frame);
-
-	wolfkick.frame = frame;
-	wolfkick.oldframe = frame - 1;
-	wolfkick.backlerp = 1 - cg.frameInterpolation;
-	trap_R_AddRefEntityToScene( &wolfkick );
-
-}
-
 /*
 ==============
 CG_AddViewWeapon
@@ -2802,10 +2702,6 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 		// Ridah
 
 	}   // end  "if ( ps->weapon > WP_NONE)"
-
-	// Rafael
-	// add the foot
-	CG_AddPlayerFoot( &hand, ps, &cg.predictedPlayerEntity );
 
 	cg.predictedPlayerEntity.lastWeaponClientFrame = cg.clientFrame;
 }
@@ -5822,7 +5718,7 @@ CG_Bullet
 Renders bullet effects.
 ======================
 */
-void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, int fleshEntityNum, qboolean wolfkick, int otherEntNum2 ) {
+void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, int fleshEntityNum, int otherEntNum2 ) {
 	trace_t trace;
 	int sourceContentType = 0, destContentType = 0; // TTimo: init
 	vec3_t dir;
@@ -5863,7 +5759,7 @@ void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, 
 			// if not flesh, then do a moving tracer
 			if ( flesh ) {
 				// draw a tracer
-				if ( !wolfkick && random() < cg_tracerChance.value ) {
+				if ( random() < cg_tracerChance.value ) {
 					CG_Tracer( start, end, 0 );
 				}
 			} else {    // (not flesh)
@@ -5955,11 +5851,6 @@ void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, 
 
 		if ( !fromweap || cg_entities[sourceEntityNum].currentState.eFlags & EF_MG42_ACTIVE ) { // mounted
 			fromweap = WP_MP40;
-		}
-
-		// TODO: not sure what kind of effect were going to do
-		if ( wolfkick ) {
-			return;
 		}
 
 		// if we didn't hit flesh, spawn a moving tracer

@@ -2257,9 +2257,7 @@ static void CG_DrawCrosshair( void ) {
 		}
 
 		if ( !friendInSights ) {
-			if ( !cg.snap->ps.leanf ) {     // no crosshair while leaning
-				CG_FillRect( 319, 239, 2, 2, hcolor );      // dot
-			}
+			CG_FillRect( 319, 239, 2, 2, hcolor );      // dot
 			return;
 		}
 
@@ -2305,11 +2303,6 @@ static void CG_DrawCrosshair( void ) {
 
 
 	if ( !cg_drawCrosshair.integer ) {  //----(SA)	moved down so it doesn't keep the scoped weaps from drawing reticles
-		return;
-	}
-
-	// no crosshair while leaning
-	if ( cg.snap->ps.leanf ) {
 		return;
 	}
 
