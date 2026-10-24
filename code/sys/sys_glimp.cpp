@@ -173,6 +173,9 @@ static rserr_t GLW_SetMode( const char *drivername,
 		ri.Printf( PRINT_ALL, "...window already present, SDL_CreateWindow skipped\n" );
 	}
 
+	// SDL only delivers text input events while they are enabled on the window
+	SDL_StartTextInput( glw_state.window );
+
 	// SDL flips the window to the desktop resolution in fullscreen, so the
 	// exact requested mode is a borderless desktop window either way
 	glConfig.isFullscreen = cdsFullscreen;
@@ -434,7 +437,7 @@ static void GLW_InitExtensions( void ) {
 		ri.Printf( PRINT_ALL, "...GL_ARB_multitexture not found\n" );
 	}
 
-	// GL_EXT_compiled_vertex_array
+	// GL_EXT_compiled_vertex array
 	if ( strstr( glConfig.extensions_string, "GL_EXT_compiled_vertex_array" ) && ( glConfig.hardwareType != GLHW_RIVA128 ) ) {
 		if ( r_ext_compiled_vertex_array->integer ) {
 			ri.Printf( PRINT_ALL, "...using GL_EXT_compiled_vertex_array\n" );
@@ -445,11 +448,11 @@ static void GLW_InitExtensions( void ) {
 			}
 		} else
 		{
-			ri.Printf( PRINT_ALL, "...ignoring GL_EXT_compiled_vertex_array\n" );
+			ri.Printf( PRINT_ALL, "...ignoring GL_EXT_compiled_vertex array\n" );
 		}
 	} else
 	{
-		ri.Printf( PRINT_ALL, "...GL_EXT_compiled_vertex_array not found\n" );
+		ri.Printf( PRINT_ALL, "...GL_EXT_compiled_vertex array not found\n" );
 	}
 
 //----(SA) added
