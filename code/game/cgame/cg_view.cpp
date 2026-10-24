@@ -105,7 +105,7 @@ void CG_TestModel_f( void ) {
 	angles[ROLL] = 0;
 
 	AnglesToAxis( angles, cg.testModelEntity.axis );
-	cg.testGun = qfalse;
+	cg.testGun = false;
 }
 
 /*
@@ -117,7 +117,7 @@ Replaces the current view weapon with the given model
 */
 void CG_TestGun_f( void ) {
 	CG_TestModel_f();
-	cg.testGun = qtrue;
+	cg.testGun = true;
 	cg.testModelEntity.renderfx = RF_MINLIGHT | RF_DEPTHHACK | RF_FIRST_PERSON;
 }
 
@@ -759,14 +759,14 @@ void CG_Zoom( void ) {
 		if ( cg.zoomedBinoc ) {
 			return;
 		}
-		cg.zoomedBinoc  = qtrue;
+		cg.zoomedBinoc  = true;
 		cg.zoomTime = cg.time;
 		cg.zoomval = cg_zoomDefaultBinoc.value;
 	} else {
 		if ( !cg.zoomedBinoc ) {
 			return;
 		}
-		cg.zoomedBinoc  = qfalse;
+		cg.zoomedBinoc  = false;
 		cg.zoomTime = cg.time;
 
 		// check for scope wepon in use, and switch to if necessary
@@ -802,17 +802,17 @@ static int CG_CalcFov( void ) {
 	float zoomFov;
 	float f;
 	int inwater;
-	qboolean dead;
+	bool dead;
 
 	CG_Zoom();
 
 	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
-		dead = qtrue;
-		cg.zoomedBinoc = qfalse;
+		dead = true;
+		cg.zoomedBinoc = false;
 		cg.zoomTime = 0;
 		cg.zoomval = 0;
 	} else {
-		dead = qfalse;
+		dead = false;
 	}
 
 	if ( cg.predictedPlayerState.pm_type == PM_INTERMISSION ) {
@@ -892,11 +892,11 @@ static int CG_CalcFov( void ) {
 		v = WAVE_AMPLITUDE * sin( phase );
 		fov_x += v;
 		fov_y -= v;
-		inwater = qtrue;
+		inwater = true;
 		cg.refdef.rdflags |= RDF_UNDERWATER;
 	} else {
 		cg.refdef.rdflags &= ~RDF_UNDERWATER;
-		inwater = qfalse;
+		inwater = false;
 	}
 
 	contents = CG_PointContents( cg.refdef.vieworg, -1 );
@@ -998,7 +998,7 @@ static int CG_CalcViewValues( void ) {
 			return 0;
 
 		} else {
-			cg.cameraMode = qfalse;                 // camera off in cgame
+			cg.cameraMode = false;                 // camera off in cgame
 			trap_Cvar_Set( "cg_letterbox", "0" );
 			trap_SendClientCommand( "stopCamera" );    // camera off in game
 			trap_stopCamera( CAM_PRIMARY );           // camera off in client
@@ -1136,7 +1136,7 @@ void CG_DrawSkyBoxPortal( void ) {
 	char *token;
 	float zoomFov;
 	float f;
-	static qboolean foginited = qfalse; // only set the portal fog values once
+	static bool foginited = false; // only set the portal fog values once
 
 	if ( !( cstr = (char *)CG_ConfigString( CS_SKYBOXORG ) ) || !strlen( cstr ) ) {
 		// no skybox in this map
@@ -1153,25 +1153,25 @@ void CG_DrawSkyBoxPortal( void ) {
 	backuprefdef = cg.refdef;
 
 	if ( cg_skybox.integer ) {
-		token = COM_ParseExt( &cstr, qfalse );
+		token = COM_ParseExt( &cstr, false );
 		if ( !token || !token[0] ) {
 			CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring\n" );
 		}
 		cg.refdef.vieworg[0] = atof( token );
 
-		token = COM_ParseExt( &cstr, qfalse );
+		token = COM_ParseExt( &cstr, false );
 		if ( !token || !token[0] ) {
 			CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring\n" );
 		}
 		cg.refdef.vieworg[1] = atof( token );
 
-		token = COM_ParseExt( &cstr, qfalse );
+		token = COM_ParseExt( &cstr, false );
 		if ( !token || !token[0] ) {
 			CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring\n" );
 		}
 		cg.refdef.vieworg[2] = atof( token );
 
-		token = COM_ParseExt( &cstr, qfalse );
+		token = COM_ParseExt( &cstr, false );
 		if ( !token || !token[0] ) {
 			CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring\n" );
 		}
@@ -1183,7 +1183,7 @@ void CG_DrawSkyBoxPortal( void ) {
 
 
 		// setup fog the first time, ignore this part of the configstring after that
-		token = COM_ParseExt( &cstr, qfalse );
+		token = COM_ParseExt( &cstr, false );
 		if ( !token || !token[0] ) {
 			CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring.  No fog state\n" );
 		} else {
@@ -1193,32 +1193,32 @@ void CG_DrawSkyBoxPortal( void ) {
 			if ( atoi( token ) ) {   // this camera has fog
 				//			if(!foginited) {
 				if ( 1 ) {
-					token = COM_ParseExt( &cstr, qfalse );
+					token = COM_ParseExt( &cstr, false );
 					if ( !token || !token[0] ) {
 						CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring.  No fog[0]\n" );
 					}
 					fogColor[0] = atof( token );
 
-					token = COM_ParseExt( &cstr, qfalse );
+					token = COM_ParseExt( &cstr, false );
 					if ( !token || !token[0] ) {
 						CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring.  No fog[1]\n" );
 					}
 					fogColor[1] = atof( token );
 
-					token = COM_ParseExt( &cstr, qfalse );
+					token = COM_ParseExt( &cstr, false );
 					if ( !token || !token[0] ) {
 						CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring.  No fog[2]\n" );
 					}
 					fogColor[2] = atof( token );
 
-					token = COM_ParseExt( &cstr, qfalse );
+					token = COM_ParseExt( &cstr, false );
 					if ( !token || !token[0] ) {
 						fogStart = 0;
 					} else {
 						fogStart = atoi( token );
 					}
 
-					token = COM_ParseExt( &cstr, qfalse );
+					token = COM_ParseExt( &cstr, false );
 					if ( !token || !token[0] ) {
 						fogEnd = 0;
 					} else {
@@ -1226,12 +1226,12 @@ void CG_DrawSkyBoxPortal( void ) {
 					}
 
 					trap_R_SetFog( FOG_PORTALVIEW, fogStart, fogEnd, fogColor[0], fogColor[1], fogColor[2], 1.1 );
-					foginited = qtrue;
+					foginited = true;
 				}
 			} else {
 				if ( !foginited ) {
 					trap_R_SetFog( FOG_PORTALVIEW, 0,0,0,0,0,0 ); // init to null
-					foginited = qtrue;
+					foginited = true;
 				}
 			}
 		}
@@ -1348,7 +1348,7 @@ CG_DrawActiveFrame
 Generates and draws a game scene and status information at the given time.
 =================
 */
-void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demoPlayback ) {
+void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, bool demoPlayback ) {
 	int inwater;
 
     trap_GetGlconfig(&cgs.glconfig);
@@ -1391,7 +1391,7 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 
 	// any looped sounds will be respecified as entities
 	// are added to the render list
-	trap_S_ClearLoopingSounds( qfalse );
+	trap_S_ClearLoopingSounds( false );
 
 	DEBUGTIME
 

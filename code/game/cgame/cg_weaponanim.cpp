@@ -44,7 +44,7 @@ bool ParseAnimationInteger(char **text, int minimum, int maximum, int &result) {
 }
 } // namespace
 
-qboolean CG_ParseWeaponConfig(const char *filename, weaponInfo_t *weapon) {
+bool CG_ParseWeaponConfig(const char *filename, weaponInfo_t *weapon) {
     char text[20000];
     fileHandle_t file = 0;
     const int length = trap_FS_FOpenFile(filename, &file, FS_READ);
@@ -53,7 +53,7 @@ qboolean CG_ParseWeaponConfig(const char *filename, weaponInfo_t *weapon) {
             trap_FS_FCloseFile(file);
         }
         CG_Printf("Missing or oversized weapon animation file: %s\n", filename);
-        return qfalse;
+        return false;
     }
     trap_FS_Read(text, length, file);
     trap_FS_FCloseFile(file);
@@ -67,45 +67,45 @@ qboolean CG_ParseWeaponConfig(const char *filename, weaponInfo_t *weapon) {
             newFormat = true;
         } else if (!Q_stricmp(token, "whatever_variable")) {
             if (!*COM_Parse(&cursor)) {
-                return qfalse;
+                return false;
             }
         } else if (*token >= '0' && *token <= '9') {
             cursor = previous;
             break;
         } else {
             CG_Printf("Invalid weapon animation header in %s\n", filename);
-            return qfalse;
+            return false;
         }
     }
     animation_t animations[MAX_WP_ANIMATIONS]{};
     for (auto &animation : animations) {
         if (!ParseAnimationInteger(&cursor, 0, 1000000, animation.firstFrame) ||
             !ParseAnimationInteger(&cursor, 1, 1000000, animation.numFrames)) {
-            return qfalse;
+            return false;
         }
         const char *token = COM_Parse(&cursor);
         char *end = nullptr;
         const float fps = strtof(token, &end);
         if (!*token || !end || *end || !std::isfinite(fps) || fps <= 0 || fps > 1000) {
-            return qfalse;
+            return false;
         }
         animation.frameLerp = animation.initialLerp = static_cast<int>(1000 / fps);
         if (!ParseAnimationInteger(&cursor, 0, animation.numFrames, animation.loopFrames)) {
-            return qfalse;
+            return false;
         }
         if (newFormat) {
             int barrels, animated, hidden;
             if (!ParseAnimationInteger(&cursor, 0, 255, barrels) ||
                 !ParseAnimationInteger(&cursor, 0, 1, animated) ||
                 !ParseAnimationInteger(&cursor, 0, 255, hidden)) {
-                return qfalse;
+                return false;
             }
             animation.moveSpeed = barrels | (animated << W_MAX_PARTS) | (hidden << 8);
         }
     }
     // Commit only complete tables; malformed files cannot leave partially live animations.
     memcpy(weapon->weapAnimations, animations, sizeof(animations));
-    return qtrue;
+    return true;
 }
 
 static void CG_SetWeapLerpFrameAnimation(weaponInfo_t *wi, lerpFrame_t *lf, int newAnimation) {

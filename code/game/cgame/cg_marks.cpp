@@ -149,8 +149,8 @@ passed to the renderer.
 #define MARK_FADE_TIME      10000
 
 void CG_ImpactMark(qhandle_t markShader, const vec3_t origin, const vec3_t dir, float orientation,
-                   float red, float green, float blue, float alpha, qboolean alphaFade,
-                   float radius, qboolean temporary, int duration) {
+                   float red, float green, float blue, float alpha, bool alphaFade,
+                   float radius, bool temporary, int duration) {
     if (!cg_markTime.integer || !std::isfinite(radius) || radius <= 0 || !markShader ||
         !std::isfinite(orientation) || !std::isfinite(red) || !std::isfinite(green) ||
         !std::isfinite(blue) || !std::isfinite(alpha)) {

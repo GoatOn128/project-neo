@@ -438,7 +438,7 @@ CG_DrawScoreboard
 Draw the normal in-game scoreboard
 =================
 */
-qboolean CG_DrawScoreboard( void ) {
+bool CG_DrawScoreboard( void ) {
 	int x = 0, y = 0, w;     // TTimo init
 	float fade;
 	float   *fadeColor;
@@ -447,22 +447,22 @@ qboolean CG_DrawScoreboard( void ) {
 	// don't draw amuthing if the menu or console is up
 	if ( cg_paused.integer ) {
 		cg.deferredPlayerLoading = 0;
-		return qfalse;
+		return false;
 	}
 
 	// still need to see 'mission failed' message in SP
 	if ( cgs.gametype == GT_SINGLE_PLAYER && cg.predictedPlayerState.pm_type == PM_DEAD ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( cgs.gametype == GT_SINGLE_PLAYER && cg.predictedPlayerState.pm_type == PM_INTERMISSION ) {
 		cg.deferredPlayerLoading = 0;
-		return qfalse;
+		return false;
 	}
 
 	// don't draw scoreboard during death while warmup up
 	if ( cg.warmup && !cg.showScores ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( cg.showScores || cg.predictedPlayerState.pm_type == PM_DEAD ||
@@ -476,7 +476,7 @@ qboolean CG_DrawScoreboard( void ) {
 			// next time scoreboard comes up, don't print killer
 			cg.deferredPlayerLoading = 0;
 			cg.killerName[0] = 0;
-			return qfalse;
+			return false;
 		}
 		fade = *fadeColor;
 	}
@@ -582,7 +582,7 @@ qboolean CG_DrawScoreboard( void ) {
 		CG_LoadDeferredPlayers();
 	}
 
-	return qtrue;
+	return true;
 }
 
 //================================================================================
@@ -603,7 +603,7 @@ static void CG_CenterGiantLine( float y, const char *string ) {
 
 	x = 0.5 * ( 640 - GIANT_WIDTH * CG_DrawStrlen( string ) );
 
-	CG_DrawStringExt( x, y, string, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+	CG_DrawStringExt( x, y, string, color, true, true, GIANT_WIDTH, GIANT_HEIGHT, 0 );
 }
 
 /*
@@ -664,15 +664,15 @@ void CG_DrawTourneyScoreboard( void ) {
 		//
 		// teamplay scoreboard
 		//
-		CG_DrawStringExt( 8, y, "Red Team", color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+		CG_DrawStringExt( 8, y, "Red Team", color, true, true, GIANT_WIDTH, GIANT_HEIGHT, 0 );
 		s = va( "%i", cg.teamScores[0] );
-		CG_DrawStringExt( 632 - GIANT_WIDTH * strlen( s ), y, s, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+		CG_DrawStringExt( 632 - GIANT_WIDTH * strlen( s ), y, s, color, true, true, GIANT_WIDTH, GIANT_HEIGHT, 0 );
 
 		y += 64;
 
-		CG_DrawStringExt( 8, y, "Blue Team", color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+		CG_DrawStringExt( 8, y, "Blue Team", color, true, true, GIANT_WIDTH, GIANT_HEIGHT, 0 );
 		s = va( "%i", cg.teamScores[1] );
-		CG_DrawStringExt( 632 - GIANT_WIDTH * strlen( s ), y, s, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+		CG_DrawStringExt( 632 - GIANT_WIDTH * strlen( s ), y, s, color, true, true, GIANT_WIDTH, GIANT_HEIGHT, 0 );
 	} else {
 		//
 		// free for all scoreboard
@@ -686,9 +686,9 @@ void CG_DrawTourneyScoreboard( void ) {
 				continue;
 			}
 
-			CG_DrawStringExt( 8, y, ci->name, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+			CG_DrawStringExt( 8, y, ci->name, color, true, true, GIANT_WIDTH, GIANT_HEIGHT, 0 );
 			s = va( "%i", ci->score );
-			CG_DrawStringExt( 632 - GIANT_WIDTH * strlen( s ), y, s, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+			CG_DrawStringExt( 632 - GIANT_WIDTH * strlen( s ), y, s, color, true, true, GIANT_WIDTH, GIANT_HEIGHT, 0 );
 			y += 64;
 		}
 	}

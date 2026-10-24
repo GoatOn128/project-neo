@@ -1221,7 +1221,7 @@ void CFxScheduler::AddScheduledEffects(bool portal) {
     vec3_t origin;
     vec3_t axis[3];
     int oldEntNum = -1, oldBoltIndex = -1, oldModelNum = -1;
-    qboolean doesBoltExist = qfalse;
+    bool doesBoltExist = false;
 
     if (portal) {
         gEffectsInPortal = true;
@@ -1610,8 +1610,8 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate *fx, const vec3_t origin, vec
             break;
         }
         CG_ImpactMark(fx->mMediaHandles.GetHandle(), org, ax[0], fx->mRotation.GetVal(), sRGB[0],
-                      sRGB[1], sRGB[2], fx->mAlphaStart.GetVal(), qtrue, fx->mSizeStart.GetVal(),
-                      qfalse, (int)fx->mLife.GetVal());
+                      sRGB[1], sRGB[2], fx->mAlphaStart.GetVal(), true, fx->mSizeStart.GetVal(),
+                      false, (int)fx->mLife.GetVal());
 
         break;
 

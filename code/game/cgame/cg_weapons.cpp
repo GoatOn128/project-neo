@@ -49,7 +49,7 @@ vec3_t ejectBrassCasingOrigin;
 static int getAltWeapon( int weapnum );
 int getEquivWeapon( int weapnum );
 int CG_WeaponIndex( int weapnum, int *bank, int *cycle );
-static qboolean CG_WeaponHasAmmo( int i );
+static bool CG_WeaponHasAmmo( int i );
 
 static int maxWeapBanks = MAX_WEAP_BANKS, maxWeapsInBank = MAX_WEAPS_IN_BANK; // JPW NERVE
 
@@ -924,7 +924,7 @@ void CG_RegisterWeapon( int weaponNum ) {
 	}
 
 	memset( weaponInfo, 0, sizeof( *weaponInfo ) );
-	weaponInfo->registered = qtrue;
+	weaponInfo->registered = true;
 
 	for ( item = bg_itemlist + 1 ; item->classname ; item++ ) {
 		if ( item->giType == IT_WEAPON && item->giTag == weaponNum ) {
@@ -1332,7 +1332,7 @@ void CG_RegisterItemVisuals( int itemNum ) {
 //----(SA)		then in the register weapon(below) it returns since
 //----(SA)		the first thing it does is to check if it's registered.
 
-	//	itemInfo->registered = qtrue;
+	//	itemInfo->registered = true;
 
 	for ( i = 0; i < MAX_ITEM_MODELS; i++ )
 		itemInfo->models[i] = trap_R_RegisterModel( item->world_model[i] );
@@ -1349,7 +1349,7 @@ void CG_RegisterItemVisuals( int itemNum ) {
 		CG_RegisterWeapon( item->giTag );
 	}
 
-	itemInfo->registered = qtrue;   //----(SA)	moved this down after the registerweapon()
+	itemInfo->registered = true;   //----(SA)	moved this down after the registerweapon()
 
 	hWeaponSnd = trap_S_RegisterSound( "sound/weapons/mg42/37mm.wav" );
 
@@ -1411,7 +1411,7 @@ CG_GetPartFramesFromWeap
 	get animation info from the parent if necessary
 ==============
 */
-qboolean CG_GetPartFramesFromWeap( centity_t *cent, refEntity_t *part, refEntity_t *parent, int partid, weaponInfo_t *wi ) {
+bool CG_GetPartFramesFromWeap( centity_t *cent, refEntity_t *part, refEntity_t *parent, int partid, weaponInfo_t *wi ) {
 	int i;
 	int frameoffset = 0;
 	animation_t *anim;
@@ -1419,12 +1419,12 @@ qboolean CG_GetPartFramesFromWeap( centity_t *cent, refEntity_t *part, refEntity
 	anim = cent->pe.weap.animation;
 
 	if ( partid == W_MAX_PARTS ) {
-		return qtrue;   // primary weap model drawn for all frames right now
+		return true;   // primary weap model drawn for all frames right now
 	}
 
 	// check draw bit
 	if ( anim->moveSpeed & ( 1 << ( partid + 8 ) ) ) {    // hide bits are in high byte
-		return qfalse;  // not drawn for current sequence
+		return false;  // not drawn for current sequence
 	}
 
 	// find part's start frame for this animation sequence
@@ -1441,7 +1441,7 @@ qboolean CG_GetPartFramesFromWeap( centity_t *cent, refEntity_t *part, refEntity
 		part->frame     = frameoffset + ( parent->frame - anim->firstFrame );
 	}
 
-	return qtrue;
+	return true;
 }
 
 
@@ -1532,9 +1532,9 @@ static void CG_FlamethrowerFlame( centity_t *cent, vec3_t origin ) {
 	}
 
 //	if (cent->currentState.aiChar)
-//		CG_FireFlameChunks( cent, origin, cent->lerpAngles, 650.0 / FLAMETHROWER_RANGE, qtrue, 0 );	// fixed length for AI
+//		CG_FireFlameChunks( cent, origin, cent->lerpAngles, 650.0 / FLAMETHROWER_RANGE, true, 0 );	// fixed length for AI
 //	else
-	CG_FireFlameChunks( cent, origin, cent->lerpAngles, 1.0, qtrue, 0 );
+	CG_FireFlameChunks( cent, origin, cent->lerpAngles, 1.0, true, 0 );
 
 	return;
 }
@@ -1666,15 +1666,15 @@ static float CG_VenomSpinAngle( centity_t *cent ) {
 	int delta;
 	float angle;
 	float speed;
-	qboolean firing;
+	bool firing;
 
 	delta = cg.time - cent->pe.barrelTime;
 
-	firing = (qboolean)( cent->currentState.eFlags & EF_FIRING );
+	firing = (bool)( cent->currentState.eFlags & EF_FIRING );
 
 //	if((cent->pe.weap.animationNumber & ~ANIM_TOGGLEBIT) >= WEAP_DROP)
 	if ( cg.snap->ps.weaponstate != WEAPON_FIRING ) { // (SA) this seems better
-		firing = qfalse;
+		firing = false;
 	}
 
 
@@ -1719,7 +1719,7 @@ static float CG_VenomSpinAngle( centity_t *cent ) {
 CG_DrawRealWeapons
 ==============
 */
-qboolean CG_DrawRealWeapons( centity_t *cent ) {
+bool CG_DrawRealWeapons( centity_t *cent ) {
 
 	switch ( cent->currentState.aiChar ) {
 	case AICHAR_LOPER:
@@ -1728,10 +1728,10 @@ qboolean CG_DrawRealWeapons( centity_t *cent ) {
 	case AICHAR_ZOMBIE:
 	case AICHAR_HELGA:      //----(SA)	added	// boss1 is now helga-blob
 	case AICHAR_WARZOMBIE:
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 }
 
 
@@ -2033,7 +2033,7 @@ void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
 			VectorSubtract( cent->pe.teslaEndPoints[i], tagPos, vec );
 			VectorNormalize( vec );
 			VectorInverse( vec );
-			CG_ImpactMark( cgs.media.lightningHitWallShader, cent->pe.teslaEndPoints[i], vec, random() * 360, 0.2, 0.2, 0.2, 1.0, qtrue, 4, qfalse, 300 );
+			CG_ImpactMark( cgs.media.lightningHitWallShader, cent->pe.teslaEndPoints[i], vec, random() * 360, 0.2, 0.2, 0.2, 1.0, true, 4, false, 300 );
 		}
 		//
 		// we have a valid lightning point, so draw it
@@ -2111,7 +2111,7 @@ void CG_AddProtoWeapons( refEntity_t *parent, playerState_t *ps, centity_t *cent
 CG_MonsterUsingWeapon
 ==============
 */
-qboolean CG_MonsterUsingWeapon( centity_t *cent, int aiChar, int weaponNum ) {
+bool CG_MonsterUsingWeapon( centity_t *cent, int aiChar, int weaponNum ) {
 	return ( cent->currentState.aiChar == aiChar ) && ( cent->currentState.weapon == weaponNum );
 }
 
@@ -2128,7 +2128,7 @@ The main player will have this called for BOTH cases, so effects like light and
 sound should only be done on the world model case.
 =============
 */
-static qboolean debuggingweapon = qfalse;
+static bool debuggingweapon = false;
 
 void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent ) {
     if (doomweapon::IsWeapon(cent->currentState.weapon)) {
@@ -2142,17 +2142,17 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	weapon_t weaponNum, weapSelect;
 	weaponInfo_t    *weapon;
 	centity_t   *nonPredictedCent;
-	qboolean firing;    // Ridah
+	bool firing;    // Ridah
 
-	qboolean akimboFire = qfalse;       //----(SA)	added
+	bool akimboFire = false;       //----(SA)	added
 
-	qboolean playerScaled;
-	qboolean drawpart, drawrealweap;
+	bool playerScaled;
+	bool drawpart, drawrealweap;
 	int i;
-	qboolean isPlayer;
+	bool isPlayer;
 
 	// (SA) might as well have this check consistant throughout the routine
-	isPlayer = (qboolean)( cent->currentState.clientNum == cg.snap->ps.clientNum );
+	isPlayer = (bool)( cent->currentState.clientNum == cg.snap->ps.clientNum );
 
 	weaponNum = (weapon_t)cent->currentState.weapon;
 	weapSelect = (weapon_t)cg.weaponSelect;
@@ -2268,11 +2268,11 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 
 	if ( !ps ) {
 		// add weapon ready sound
-		cent->pe.lightningFiring = qfalse;
+		cent->pe.lightningFiring = false;
 		if ( ( cent->currentState.eFlags & EF_FIRING ) && weapon->firingSound ) {
 			// lightning gun and guantlet make a different sound when fire is held down
 			trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, weapon->firingSound, 255 );
-			cent->pe.lightningFiring = qtrue;
+			cent->pe.lightningFiring = true;
 		} else if ( weapon->readySound ) {
 			trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, weapon->readySound, 255 );
 		}
@@ -2284,7 +2284,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 
 	CG_PositionEntityOnTag( &gun, parent, "tag_weapon", 0, NULL );
 
-	playerScaled = (qboolean)( cgs.clientinfo[ cent->currentState.clientNum ].playermodelScale[0] != 0 );
+	playerScaled = (bool)( cgs.clientinfo[ cent->currentState.clientNum ].playermodelScale[0] != 0 );
 	if ( !ps && playerScaled ) {   // don't "un-scale" weap up in 1st person
 		for ( i = 0; i < 3; i++ ) {  // scale weapon back up so it doesn't pick up the adjusted scale of the character models.
 									 // this will affect any parts attached to the gun as well (barrel/bolt/flash/brass/etc.)
@@ -2295,15 +2295,15 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 
 	// characters that draw their own special weapon model will not draw the standard ones
 	if ( CG_DrawRealWeapons( cent ) ) {
-		drawrealweap = qtrue;
+		drawrealweap = true;
 	} else {
-		drawrealweap = qfalse;
+		drawrealweap = false;
 	}
 
 	if ( ps ) {
 		drawpart = CG_GetPartFramesFromWeap( cent, &gun, parent, W_MAX_PARTS, weapon );   // W_MAX_PARTS specifies this as the primary view model
 	} else {
-		drawpart = qtrue;
+		drawpart = true;
 	}
 
 	if ( drawpart && drawrealweap ) {
@@ -2335,21 +2335,21 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	angles[YAW] = angles[PITCH] = 0;
 
 	if ( ps ) {
-		qboolean spunpart;
+		bool spunpart;
 
 		for ( i = W_PART_1; i < W_MAX_PARTS; i++ ) {
 
-			spunpart = qfalse;
+			spunpart = false;
 			barrel.hModel = weapon->wpPartModels[W_FP_MODEL][i];
 
 			// check for spinning
 			if ( weaponNum == WP_VENOM ) {
 				if ( i == W_PART_1 ) {
 					angles[ROLL] = CG_VenomSpinAngle( cent );
-					spunpart = qtrue;
+					spunpart = true;
 				} else if ( i == W_PART_2 )    {
 					angles[ROLL] = -CG_VenomSpinAngle( cent );
-					spunpart = qtrue;
+					spunpart = true;
 				}
 				// 'blurry' barel when firing
 				// (SA) not right now.  at the moment, just spin the belt when firing, no swapout
@@ -2362,13 +2362,13 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 					} else {
 						angles[ROLL] = 0;
 					}
-					spunpart = qtrue;
+					spunpart = true;
 				}
 
 			} else if ( weaponNum == WP_TESLA ) {
 				if ( i == W_PART_1 || i == W_PART_2 ) {
 					angles[ROLL] = CG_TeslaSpinAngle( cent );
-					spunpart = qtrue;
+					spunpart = true;
 				}
 			}
 
@@ -2574,7 +2574,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 			if ( weaponNum == WP_FLAMETHROWER ) {
 				vec3_t angles;
 				AxisToAngles( flash.axis, angles );
-				CG_FireFlameChunks( cent, flash.origin, angles, 1.0, qfalse, 0 );
+				CG_FireFlameChunks( cent, flash.origin, angles, 1.0, false, 0 );
 			}
 		}
 	}
@@ -2784,7 +2784,7 @@ void CG_DrawWeaponSelect( void ) {
 
 	for ( i = 0; i < maxWeapsInBank; i++ ) {
 
-		qboolean wideweap; // is the icon one of the double width ones
+		bool wideweap; // is the icon one of the double width ones
 
 		// primary fire
 // JPW NERVE
@@ -2809,10 +2809,10 @@ void CG_DrawWeaponSelect( void ) {
 		case WP_FLAMETHROWER:
 		case WP_FG42:
 		case WP_FG42SCOPE:
-			wideweap = qtrue;
+			wideweap = true;
 			break;
 		default:
-			wideweap = qfalse;
+			wideweap = false;
 			break;
 		}
 
@@ -2954,13 +2954,13 @@ CG_WeaponHasAmmo
 	check for ammo
 ==============
 */
-static qboolean CG_WeaponHasAmmo( int i ) {
+static bool CG_WeaponHasAmmo( int i ) {
 	if ( !( cg.predictedPlayerState.ammo[BG_FindAmmoForWeapon((weapon_t)( i ))] ) &&
 		 !( cg.predictedPlayerState.ammoclip[BG_FindClipForWeapon((weapon_t)( i ))] ) ) {
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 }
 
 
@@ -2969,19 +2969,19 @@ static qboolean CG_WeaponHasAmmo( int i ) {
 CG_WeaponSelectable
 ===============
 */
-static qboolean CG_WeaponSelectable( int i ) {
+static bool CG_WeaponSelectable( int i ) {
     if (cg.predictedPlayerState.stats[STAT_DOOM_WEAPONS]) {
-        return doomweapon::Selectable(cg.predictedPlayerState, i) ? qtrue : qfalse;
+        return doomweapon::Selectable(cg.predictedPlayerState, i) ? true : false;
     }
 
     // allow the player to unselect all weapons
     //	if(i == WP_NONE)
-    //		return qtrue;
+    //		return true;
 
     // if holding a melee weapon (chair/shield/etc.) only allow single-handed weapons
 	if ( cg.snap->ps.eFlags & EF_MELEE_ACTIVE ) {
 		if ( !( WEAPS_ONE_HANDED & ( 1 << i ) ) ) {
-			return qfalse;
+			return false;
 		}
 	}
 
@@ -2990,17 +2990,17 @@ static qboolean CG_WeaponSelectable( int i ) {
 	switch ( cg.weaponSelect ) {
 	case WP_SNOOPERSCOPE:
 		if ( i == WP_GARAND ) {
-			return qtrue;
+			return true;
 		}
 		break;
 	case WP_SNIPERRIFLE:
 		if ( i == WP_MAUSER ) {
-			return qtrue;
+			return true;
 		}
 		break;
 	case WP_FG42SCOPE:
 		if ( i == WP_FG42 ) {
-			return qtrue;
+			return true;
 		}
 		break;
 	default:
@@ -3010,14 +3010,14 @@ static qboolean CG_WeaponSelectable( int i ) {
 
 	// check for weapon
 	if ( !( COM_BitCheck( cg.predictedPlayerState.weapons, i ) ) ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( !CG_WeaponHasAmmo( i ) ) {
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 }
 
 
@@ -3189,7 +3189,7 @@ getNextBankWeap
 	return that	(colt returns thompson for example) rather than the lowest weapon
 ==============
 */
-static int getNextBankWeap( int bank, int cycle, qboolean sameBankPosition ) {
+static int getNextBankWeap( int bank, int cycle, bool sameBankPosition ) {
 	bank++;
 
 	bank = bank % maxWeapBanks;
@@ -3220,7 +3220,7 @@ getPrevBankWeap
 	return that	(thompson returns colt for example) rather than the highest weapon
 ==============
 */
-static int getPrevBankWeap( int bank, int cycle, qboolean sameBankPosition ) {
+static int getPrevBankWeap( int bank, int cycle, bool sameBankPosition ) {
 	int i;
 
 	bank--;
@@ -3570,17 +3570,17 @@ void CG_AltWeapon_f( void ) {
 ==============
 CG_NextWeap
 
-  switchBanks - curweap is the last in a bank, 'qtrue' means go to the next available bank, 'qfalse' means loop to the head of the bank
+  switchBanks - curweap is the last in a bank, 'true' means go to the next available bank, 'false' means loop to the head of the bank
 ==============
 */
-void CG_NextWeap( qboolean switchBanks ) {
+void CG_NextWeap( bool switchBanks ) {
     if (cg.predictedPlayerState.stats[STAT_DOOM_WEAPONS]) {
         CG_DoomSelectWeapon(0, 1);
         return;
     }
     int bank = 0, cycle = 0, newbank = 0, newcycle = 0;
     int num, curweap;
-	qboolean nextbank = qfalse;     // need to switch to the next bank of weapons?
+	bool nextbank = false;     // need to switch to the next bank of weapons?
 	int i, j;
 
 	num = curweap = cg.weaponSelect;
@@ -3606,7 +3606,7 @@ void CG_NextWeap( qboolean switchBanks ) {
 
 			if ( switchBanks ) {
 				if ( newcycle <= cycle ) {
-					nextbank = qtrue;
+					nextbank = true;
 					break;
 				}
 			} else {    // don't switch banks if you get to the end
@@ -3621,19 +3621,19 @@ void CG_NextWeap( qboolean switchBanks ) {
 			}
 		}
 	} else {
-		nextbank = qtrue;
+		nextbank = true;
 	}
 
 	if ( nextbank ) {
 		for ( i = 0; i < maxWeapBanks; i++ ) {
 //			if(cg_cycleAllWeaps.integer)
 			if ( 1 ) {
-				num = getNextBankWeap( bank + i, cycle, qfalse );   // cycling all weaps always starts the next bank at the bottom
+				num = getNextBankWeap( bank + i, cycle, false );   // cycling all weaps always starts the next bank at the bottom
 			} else {
 				if ( cg.lastWeapSelInBank[bank + i + 1] ) {
 					num = cg.lastWeapSelInBank[bank + i + 1];
 				} else {
-					num = getNextBankWeap( bank + i, cycle, qtrue );
+					num = getNextBankWeap( bank + i, cycle, true );
 				}
 			}
 
@@ -3671,18 +3671,18 @@ void CG_NextWeap( qboolean switchBanks ) {
 CG_PrevWeap
 
   switchBanks - curweap is the last in a bank
-		'qtrue'  - go to the next available bank
-		'qfalse' - loop to the head of the bank
+		'true'  - go to the next available bank
+		'false' - loop to the head of the bank
 ==============
 */
-void CG_PrevWeap( qboolean switchBanks ) {
+void CG_PrevWeap( bool switchBanks ) {
     if (cg.predictedPlayerState.stats[STAT_DOOM_WEAPONS]) {
         CG_DoomSelectWeapon(0, -1);
         return;
     }
     int bank = 0, cycle = 0, newbank = 0, newcycle = 0;
     int num, curweap;
-	qboolean prevbank = qfalse;     // need to switch to the next bank of weapons?
+	bool prevbank = false;     // need to switch to the next bank of weapons?
 	int i, j;
 
 	num = curweap = cg.weaponSelect;
@@ -3703,7 +3703,7 @@ void CG_PrevWeap( qboolean switchBanks ) {
 	if ( 1 ) {
 
 //		if(cycle == 0) {		// already at bottom of list
-//			prevbank = qtrue;
+//			prevbank = true;
 //		} else {
 		for ( i = cycle; i >= 0; i-- ) {
 //				num = getPrevWeapInBank(bank, i);
@@ -3713,7 +3713,7 @@ void CG_PrevWeap( qboolean switchBanks ) {
 
 			if ( switchBanks ) {
 				if ( newcycle > ( cycle - 1 ) ) {
-					prevbank = qtrue;
+					prevbank = true;
 					break;
 				}
 			} else {        // don't switch banks if you get to the end
@@ -3728,7 +3728,7 @@ void CG_PrevWeap( qboolean switchBanks ) {
 		}
 //		}
 	} else {
-		prevbank = qtrue;
+		prevbank = true;
 	}
 
 	// cycle to previous bank.
@@ -3740,9 +3740,9 @@ void CG_PrevWeap( qboolean switchBanks ) {
 		for ( i = 0; i < maxWeapBanks; i++ ) {
 //			if(cg_cycleAllWeaps.integer)
 			if ( 1 ) {
-				num = getPrevBankWeap( bank - i, cycle, qfalse );   // cycling all weaps always starts the next bank at the bottom
+				num = getPrevBankWeap( bank - i, cycle, false );   // cycling all weaps always starts the next bank at the bottom
 			} else {
-				num = getPrevBankWeap( bank - i, cycle, qtrue );
+				num = getPrevBankWeap( bank - i, cycle, true );
 			}
 
 			if ( num == 0 ) {
@@ -3831,7 +3831,7 @@ void CG_NextWeaponInBank_f( void ) {
 
 	cg.weaponSelectTime = cg.time;  // flash the current weapon icon
 
-	CG_NextWeap( qfalse );
+	CG_NextWeap( false );
 }
 
 /*
@@ -3859,7 +3859,7 @@ void CG_PrevWeaponInBank_f( void ) {
 
 	cg.weaponSelectTime = cg.time;  // flash the current weapon icon
 
-	CG_PrevWeap( qfalse );
+	CG_PrevWeap( false );
 }
 
 
@@ -3907,7 +3907,7 @@ void CG_NextWeapon_f( void ) {
 		return;
 	}
 
-	CG_NextWeap( qtrue );
+	CG_NextWeap( true );
 }
 
 
@@ -3920,7 +3920,7 @@ void CG_PrevWeapon_f( void ) {
 	// TTimo: unused
 	/*
 	  int			bank = 0, cycle = 0, newbank = 0, newcycle = 0;
-	  qboolean	prevbank = qfalse;	// need to switch to the next bank of weapons?
+	  bool	prevbank = false;	// need to switch to the next bank of weapons?
 	*/
 
 	if ( !cg.snap ) {
@@ -3953,7 +3953,7 @@ void CG_PrevWeapon_f( void ) {
 		return;
 	}
 
-	CG_PrevWeap( qtrue );
+	CG_PrevWeap( true );
 }
 
 
@@ -4047,7 +4047,7 @@ void CG_Weapon_f( void ) {
     }
     int num, i, curweap;
     int bank = 0, cycle = 0, newbank = 0, newcycle = 0;
-	qboolean banked = qfalse;
+	bool banked = false;
 
 	if ( !cg.snap ) {
 		return;
@@ -4178,7 +4178,7 @@ void CG_OutOfAmmoChange( void ) {
 
 	// still nothing available, just go to the next
 	// available weap using the regular selection scheme
-	CG_NextWeap( qtrue );
+	CG_NextWeap( true );
 
 }
 
@@ -4743,8 +4743,8 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 	vec3_t lightColor;
 	localEntity_t   *le;
 	int r;
-	qboolean alphaFade = qfalse;
-	qboolean isSprite;
+	bool alphaFade = false;
+	bool isSprite;
 	int duration;
 	// Ridah
 	int lightOverdraw;
@@ -4773,7 +4773,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 	lightOverdraw = 0;
 
 	// set defaults
-	isSprite = qfalse;
+	isSprite = false;
 	duration = 600;
 
 	if ( surfFlags & SURF_SKY ) {
@@ -4920,17 +4920,17 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 				// mark and sound can potentially use the surface for override values
 
 				mark = cgs.media.bulletMarkShader;  // default
-				alphaFade = qtrue;      // max made the bullet mark alpha (he'll make everything in the game out of 1024 textures, all with alpha blend funcs yet...)
+				alphaFade = true;      // max made the bullet mark alpha (he'll make everything in the game out of 1024 textures, all with alpha blend funcs yet...)
 				radius = 1.5f + rand() % 2;   // slightly larger for DM
 
 				if ( surfFlags & SURF_METAL ) {
 					sfx = cgs.media.sfx_bullet_metalhit[rand() % 3];
 					mark = cgs.media.bulletMarkShaderMetal;
-					alphaFade = qtrue;
+					alphaFade = true;
 				} else if ( surfFlags & SURF_WOOD ) {
 					sfx = cgs.media.sfx_bullet_woodhit[rand() % 3];
 					mark = cgs.media.bulletMarkShaderWood;
-					alphaFade = qtrue;
+					alphaFade = true;
 					radius += 1;    // experimenting with different mark sizes per surface
 
 /*
@@ -4973,13 +4973,13 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 				} else if ( surfFlags & SURF_CERAMIC ) {
 					sfx = cgs.media.sfx_bullet_ceramichit[rand() % 3];
 					mark = cgs.media.bulletMarkShaderCeramic;
-					alphaFade = qtrue;
+					alphaFade = true;
 					radius += 2;    // experimenting with different mark sizes per surface
 
 				} else if ( surfFlags & SURF_GLASS ) {
 					sfx = cgs.media.sfx_bullet_glasshit[rand() % 3];
 					mark = cgs.media.bulletMarkShaderGlass;
-					alphaFade = qtrue;
+					alphaFade = true;
 				} else if ( surfFlags & SURF_GRASS ) {
 
 				} else if ( surfFlags & SURF_GRAVEL ) {
@@ -5002,7 +5002,7 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 		mark = cgs.media.burnMarkShader;
 		radius = 64;
 		light = 300;
-		isSprite = qtrue;
+		isSprite = true;
 		duration = 1000;
 		lightColor[0] = 0.75;
 		lightColor[1] = 0.5;
@@ -5035,7 +5035,7 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 		mark = cgs.media.burnMarkShader;
 		radius = 64;
 		light = 300;
-		isSprite = qtrue;
+		isSprite = true;
 		duration = 1000;
 		lightColor[0] = 0.75;
 		lightColor[1] = 0.5;
@@ -5110,7 +5110,7 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 		mark = cgs.media.burnMarkShader;
 		radius = 64;
 		light = 300;
-		isSprite = qtrue;
+		isSprite = true;
 		duration = 1000;
 		lightColor[0] = 0.75;
 		lightColor[1] = 0.5;
@@ -5153,7 +5153,7 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 		mark = cgs.media.burnMarkShader;
 		radius = 64;
 		light = 600;
-		isSprite = qtrue;
+		isSprite = true;
 		duration = 1000;
 		// Ridah, changed to flamethrower colors
 //		lightColor[0] = 1;
@@ -5282,7 +5282,7 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 	// impact mark
 	//
 	if ( mark ) {
-		CG_ImpactMark( mark, origin, dir, random() * 360, 1,1,1,1, alphaFade, radius, qfalse, -1 );
+		CG_ImpactMark( mark, origin, dir, random() * 360, 1,1,1,1, alphaFade, radius, false, -1 );
 	}
 }
 
@@ -5301,8 +5301,8 @@ void CG_MissileHitWallSmall( int weapon, int clientNum, vec3_t origin, vec3_t di
 	vec3_t lightColor;
 	localEntity_t   *le;
 //	int				r;
-	qboolean alphaFade;
-	qboolean isSprite;
+	bool alphaFade;
+	bool isSprite;
 	int duration;
 	// Ridah
 	int lightOverdraw;
@@ -5323,7 +5323,7 @@ void CG_MissileHitWallSmall( int weapon, int clientNum, vec3_t origin, vec3_t di
 	lightOverdraw = 0;
 
 	// set defaults
-	isSprite = qfalse;
+	isSprite = false;
 	duration = 600;
 
 	shader = cgs.media.rocketExplosionShader;       // copied from RL
@@ -5331,7 +5331,7 @@ void CG_MissileHitWallSmall( int weapon, int clientNum, vec3_t origin, vec3_t di
 	mark = cgs.media.burnMarkShader;
 	radius = 64;
 	light = 300;
-	isSprite = qtrue;
+	isSprite = true;
 	duration = 1000;
 	lightColor[0] = 0.75;
 	lightColor[1] = 0.5;
@@ -5371,8 +5371,8 @@ void CG_MissileHitWallSmall( int weapon, int clientNum, vec3_t origin, vec3_t di
 	// impact mark
 	//
 	alphaFade = ( mark == cgs.media.energyMarkShader );   // plasma fades alpha, all others fade color
-	// CG_ImpactMark( mark, origin, dir, random()*360, 1,1,1,1, alphaFade, radius, qfalse, 60000 );
-	CG_ImpactMark( mark, origin, dir, random() * 360, 1,1,1,1, alphaFade, radius, qfalse, 0xffffffff );
+	// CG_ImpactMark( mark, origin, dir, random()*360, 1,1,1,1, alphaFade, radius, false, 60000 );
+	CG_ImpactMark( mark, origin, dir, random() * 360, 1,1,1,1, alphaFade, radius, false, 0xffffffff );
 
 	CG_StartShakeCamera( 0.05, 300, origin, 300 );
 }
@@ -5489,7 +5489,7 @@ static void CG_VenomPattern( vec3_t origin, vec3_t origin2, int otherEntNum ) {
 CG_VenomFire
 ==============
 */
-void CG_VenomFire( entityState_t *es, qboolean fullmode ) {
+void CG_VenomFire( entityState_t *es, bool fullmode ) {
 	vec3_t v;
 	int contents;
 
@@ -5676,7 +5676,7 @@ void CG_Tracer( vec3_t source, vec3_t dest, int sparks ) {
 CG_CalcMuzzlePoint
 ======================
 */
-static qboolean CG_CalcMuzzlePoint( int entityNum, vec3_t muzzle ) {
+static bool CG_CalcMuzzlePoint( int entityNum, vec3_t muzzle ) {
 	vec3_t forward, right, up;
 	centity_t   *cent;
 
@@ -5685,13 +5685,13 @@ static qboolean CG_CalcMuzzlePoint( int entityNum, vec3_t muzzle ) {
 		muzzle[2] += cg.snap->ps.viewheight;
 		AngleVectors( cg.snap->ps.viewangles, forward, NULL, NULL );
 		VectorMA( muzzle, 14, forward, muzzle );
-		return qtrue;
+		return true;
 	}
 
 	cent = &cg_entities[entityNum];
 //----(SA)	removed check.  is this still necessary?  (this way works for ai's firing mg42)  should I check for mg42?
 //	if ( !cent->currentValid ) {
-//		return qfalse;
+//		return false;
 //	}
 //----(SA)	end
 
@@ -5707,7 +5707,7 @@ static qboolean CG_CalcMuzzlePoint( int entityNum, vec3_t muzzle ) {
 
 	VectorMA( muzzle, 14, forward, muzzle );
 
-	return qtrue;
+	return true;
 
 }
 
@@ -5718,7 +5718,7 @@ CG_Bullet
 Renders bullet effects.
 ======================
 */
-void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, int fleshEntityNum, int otherEntNum2 ) {
+void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, bool flesh, int fleshEntityNum, int otherEntNum2 ) {
 	trace_t trace;
 	int sourceContentType = 0, destContentType = 0; // TTimo: init
 	vec3_t dir;
@@ -5828,7 +5828,7 @@ void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, 
 
 				if ( trace.fraction < 1 ) {
 					CG_ImpactMark( cgs.media.bloodDotShaders[rand() % 5], trace.endpos, trace.plane.normal, random() * 360,
-								   1,1,1,1, qtrue, 15 + random() * 20, qfalse, cg_bloodTime.integer * 1000 );
+								   1,1,1,1, true, 15 + random() * 20, false, cg_bloodTime.integer * 1000 );
 					lastBloodSpat = cg.time;
 				} else if ( lastBloodSpat < cg.time - 1000 ) {
 					// drop one on the ground?
@@ -5838,7 +5838,7 @@ void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, 
 
 					if ( trace.fraction < 1 ) {
 						CG_ImpactMark( cgs.media.bloodDotShaders[rand() % 5], trace.endpos, trace.plane.normal, random() * 360,
-									   1,1,1,1, qtrue, 15 + random() * 10, qfalse, cg_bloodTime.integer * 1000 );
+									   1,1,1,1, true, 15 + random() * 10, false, cg_bloodTime.integer * 1000 );
 						lastBloodSpat = cg.time;
 					}
 				}

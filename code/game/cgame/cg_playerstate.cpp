@@ -241,7 +241,7 @@ void CG_Respawn( void ) {
         cg.weaponSelect = cg.snap->ps.weapon;
     }
     // no error decay on player movement
-    cg.thisFrameTeleport = qtrue;
+    cg.thisFrameTeleport = true;
 
 	// need to reset client-side weapon animations
 	cg.predictedPlayerState.weapAnim = WEAP_IDLE1;  // reset weapon animations
@@ -262,8 +262,8 @@ void CG_Respawn( void ) {
 	// select the weapon the server says we are using
 	//cg.weaponSelect = cg.snap->ps.weapon;
 	// DHM - Nerve :: Clear even more things on respawn
-	cg.zoomedBinoc = qfalse;
-	cg.zoomedBinoc = cg.zoomedScope = qfalse;
+	cg.zoomedBinoc = false;
+	cg.zoomedBinoc = cg.zoomedScope = false;
 	cg.zoomTime = 0;
 	cg.zoomval = 0;
 
@@ -398,7 +398,7 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 	// health changes of more than -1 should make pain sounds
 	if ( ps->stats[STAT_HEALTH] < ops->stats[STAT_HEALTH] - 1 ) {
 		if ( ps->stats[STAT_HEALTH] > 0 ) {
-			CG_PainEvent( &cg.predictedPlayerEntity, ps->stats[STAT_HEALTH], qfalse );
+			CG_PainEvent( &cg.predictedPlayerEntity, ps->stats[STAT_HEALTH], false );
 		}
 	}
 
@@ -512,7 +512,7 @@ CG_TransitionPlayerState
 void CG_TransitionPlayerState( playerState_t *ps, playerState_t *ops ) {
 	// check for changing follow mode
 	if ( ps->clientNum != ops->clientNum ) {
-		cg.thisFrameTeleport = qtrue;
+		cg.thisFrameTeleport = true;
 		// make sure we don't get any unwanted transition effects
 		*ops = *ps;
 
@@ -534,7 +534,7 @@ void CG_TransitionPlayerState( playerState_t *ps, playerState_t *ops ) {
 
 	if ( cg.mapRestart ) {
 		CG_Respawn();
-		cg.mapRestart = qfalse;
+		cg.mapRestart = false;
 	}
 
 	if ( cg.snap->ps.pm_type != PM_INTERMISSION

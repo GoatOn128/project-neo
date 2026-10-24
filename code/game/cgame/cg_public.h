@@ -112,7 +112,7 @@ typedef struct {
 	void (*S_StartSound)( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx );
 	void (*S_StartSoundEx)( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx, int flags );
 	void (*S_StartLocalSound)( sfxHandle_t sfx, int channelNum );
-	void (*S_ClearLoopingSounds)( qboolean killall );
+	void (*S_ClearLoopingSounds)( bool killall );
 	void (*S_AddLoopingSound)( int entityNum, const vec3_t origin, const vec3_t velocity, int range, sfxHandle_t sfx, int volume );
 	void (*S_StopLoopingSound)( int entityNum );
 	void (*S_StopStreamingSound)( int entityNum );
@@ -126,7 +126,7 @@ typedef struct {
 	void (*S_StartStreamingSound)( const char * intro, const char * loop, int entnum, int channel, int attenuation );
 	void (*R_LoadWorldMap)( const char * mapname );
 	qhandle_t (*R_RegisterModel)( const char * name );
-	qboolean (*R_GetSkinModel)( qhandle_t skinid, const char * type, char * name );
+	bool (*R_GetSkinModel)( qhandle_t skinid, const char * type, char * name );
 	qhandle_t (*R_GetShaderFromModel)( qhandle_t modelid, int surfnum, int withlightmap );
 	qhandle_t (*R_RegisterSkin)( const char * name );
 	qhandle_t (*R_RegisterShader)( const char * name );
@@ -150,17 +150,17 @@ typedef struct {
 	void (*GetGlconfig)( glconfig_t * glconfig );
 	void (*GetGameState)( gameState_t * gamestate );
 	void (*GetCurrentSnapshotNumber)( int * snapshotNumber, int * serverTime );
-	qboolean (*GetSnapshot)( int snapshotNumber, snapshot_t * snapshot );
-	qboolean (*GetServerCommand)( int serverCommandNumber );
+	bool (*GetSnapshot)( int snapshotNumber, snapshot_t * snapshot );
+	bool (*GetServerCommand)( int serverCommandNumber );
 	int (*GetCurrentCmdNumber)(  );
-	qboolean (*GetUserCmd)( int cmdNumber, usercmd_t * ucmd );
+	bool (*GetUserCmd)( int cmdNumber, usercmd_t * ucmd );
 	void (*SetUserCmdValue)( int stateValue, int holdableValue, float sensitivityScale, int cld );
 	int (*MemoryRemaining)(  );
-	qboolean (*loadCamera)( int camNum, const char * name );
+	bool (*loadCamera)( int camNum, const char * name );
 	void (*startCamera)( int camNum, int time );
 	void (*stopCamera)( int camNum );
-	qboolean (*getCameraInfo)( int camNum, int time, vec3_t * origin, vec3_t * angles, float * fov );
-	qboolean (*Key_IsDown)( int keynum );
+	bool (*getCameraInfo)( int camNum, int time, vec3_t * origin, vec3_t * angles, float * fov );
+	bool (*Key_IsDown)( int keynum );
 	int (*Key_GetCatcher)(  );
 	void (*Key_SetCatcher)( int catcher );
 	int (*Key_GetKey)( const char * binding );
@@ -178,11 +178,11 @@ typedef struct {
 	e_status (*CIN_RunCinematic)( int handle );
 	void (*CIN_DrawCinematic)( int handle );
 	void (*CIN_SetExtents)( int handle, int x, int y, int w, int h );
-	qboolean (*GetEntityToken)( char * buffer, int bufferSize );
+	bool (*GetEntityToken)( char * buffer, int bufferSize );
 	void (*UI_Popup)( const char * arg0 );
 	void (*UI_LimboChat)( const char * arg0 );
 	void (*UI_ClosePopup)( const char * arg0 );
-	qboolean (*GetModelInfo)( int clientNum, char * modelName, void ** modelInfo );
+	bool (*GetModelInfo)( int clientNum, char * modelName, void ** modelInfo );
 	void (*R_SetDoomSectorLight)( int sector, int light );
 	void (*R_SetDoomSwitches)( const char * state );
 	int (*R_LightForPoint)( vec3_t point, vec3_t ambient, vec3_t directed, vec3_t lightDirection );
@@ -204,14 +204,14 @@ typedef struct {
 	int apiVersion;
 	void (*Init)( int serverMessageNum, int serverCommandSequence );
 	void (*Shutdown)( void );
-	qboolean (*ConsoleCommand)( void );
-	void (*DrawActiveFrame)( int serverTime, stereoFrame_t stereoView, qboolean demoPlayback );
+	bool (*ConsoleCommand)( void );
+	void (*DrawActiveFrame)( int serverTime, stereoFrame_t stereoView, bool demoPlayback );
 	int (*CrosshairPlayer)( void );
 	int (*LastAttacker)( void );
-	void (*KeyEvent)( int key, qboolean down );
+	void (*KeyEvent)( int key, bool down );
 	void (*MouseEvent)( int dx, int dy );
 	void (*EventHandling)( int type );
-	qboolean (*GetTag)( int clientNum, char * tagName, orientation_t * or );
+	bool (*GetTag)( int clientNum, char * tagName, orientation_t * or );
 } cgameExport_t;
 
 //----------------------------------------------

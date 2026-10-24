@@ -424,26 +424,26 @@ static void CG_ConfigStringModified( void ) {
 		cgs.levelStartTime = atoi( str );
 	} else if ( num == CS_VOTE_TIME ) {
 		cgs.voteTime = atoi( str );
-		cgs.voteModified = qtrue;
+		cgs.voteModified = true;
 	} else if ( num == CS_VOTE_YES ) {
 		cgs.voteYes = atoi( str );
-		cgs.voteModified = qtrue;
+		cgs.voteModified = true;
 	} else if ( num == CS_VOTE_NO ) {
 		cgs.voteNo = atoi( str );
-		cgs.voteModified = qtrue;
+		cgs.voteModified = true;
 	} else if ( num == CS_VOTE_STRING ) {
 		Q_strncpyz( cgs.voteString, str, sizeof( cgs.voteString ) );
 #if 0
 		trap_S_StartLocalSound( cgs.media.voteNow, CHAN_ANNOUNCER );
 	} else if ( num >= CS_TEAMVOTE_TIME && num <= CS_TEAMVOTE_TIME + 1 ) {
 		cgs.teamVoteTime[num - CS_TEAMVOTE_TIME] = atoi( str );
-		cgs.teamVoteModified[num - CS_TEAMVOTE_TIME] = qtrue;
+		cgs.teamVoteModified[num - CS_TEAMVOTE_TIME] = true;
 	} else if ( num >= CS_TEAMVOTE_YES && num <= CS_TEAMVOTE_YES + 1 ) {
 		cgs.teamVoteYes[num - CS_TEAMVOTE_YES] = atoi( str );
-		cgs.teamVoteModified[num - CS_TEAMVOTE_YES] = qtrue;
+		cgs.teamVoteModified[num - CS_TEAMVOTE_YES] = true;
 	} else if ( num >= CS_TEAMVOTE_NO && num <= CS_TEAMVOTE_NO + 1 ) {
 		cgs.teamVoteNo[num - CS_TEAMVOTE_NO] = atoi( str );
-		cgs.teamVoteModified[num - CS_TEAMVOTE_NO] = qtrue;
+		cgs.teamVoteModified[num - CS_TEAMVOTE_NO] = true;
 	} else if ( num >= CS_TEAMVOTE_STRING && num <= CS_TEAMVOTE_STRING + 1 ) {
 		Q_strncpyz( cgs.teamVoteString[num - CS_TEAMVOTE_STRING], str, sizeof( cgs.teamVoteString ) );
 		trap_S_StartLocalSound( cgs.media.voteNow, CHAN_ANNOUNCER );
@@ -659,8 +659,8 @@ static void CG_MapRestart( void ) {
 	cg.yougotmailTime = 0;  // reset
 
 	// (SA) clear zoom (so no warpies)
-	cg.zoomedBinoc = qfalse;
-	cg.zoomedBinoc = cg.zoomedScope = qfalse;
+	cg.zoomedBinoc = false;
+	cg.zoomedBinoc = cg.zoomedScope = false;
 	cg.zoomTime = 0;
 	cg.zoomval = 0;
 
@@ -706,17 +706,17 @@ static void CG_MapRestart( void ) {
 
 	cg.timelimitWarnings = 0;
 
-	cg.intermissionStarted = qfalse;
+	cg.intermissionStarted = false;
 
 	cgs.voteTime = 0;
 
-	cg.lightstylesInited    = qfalse;
+	cg.lightstylesInited    = false;
 
-	cg.mapRestart = qtrue;
+	cg.mapRestart = true;
 
 	CG_StartMusic();
 
-	trap_S_ClearLoopingSounds( qtrue );
+	trap_S_ClearLoopingSounds( true );
 
 	// we really should clear more parts of cg here and stop sounds
 	cg.v_dmg_time = 0;
@@ -958,7 +958,7 @@ static void CG_ServerCommand( void ) {
 	// clientLevelShot is sent before taking a special screenshot for
 	// the menu system during development
 	if ( !strcmp( cmd, "clientLevelShot" ) ) {
-		cg.levelShot = qtrue;
+		cg.levelShot = true;
 		return;
 	}
 
