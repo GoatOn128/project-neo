@@ -33,17 +33,17 @@ const Menu menus[] = {
     {44,50,8,{"","","","","","","",""},"dmbsfthj"},
     {44,70,2,{"",""},"aj"}
 };
-qboolean active = qfalse, inGame = qfalse, editing = qfalse;
-qboolean titleOnly = qfalse;
+bool active = false, inGame = false, editing = false;
+bool titleOnly = false;
 Screen screen = Main;
 Prompt prompt = NoPrompt;
 int selected[ScreenCount] = {0,0,2}, episode = 1, openedAt = 0;
 char message[512], descriptions[6][24], oldDescription[24];
-qboolean occupied[6];
+bool occupied[6];
 float mouseX = 160, mouseY = 100, mouseTravel = 0;
 qhandle_t white;
 char serverAddress[64] = "localhost:27960";
-qboolean editingAddress = qfalse;
+bool editingAddress = false;
 float sx, sy, ox, oy;
 
 int Clamp(int value, int lo, int hi) { return value < lo ? lo : value > hi ? hi : value; }
@@ -114,14 +114,14 @@ void Message(Prompt kind, const char *text) {
     prompt = kind; Q_strncpyz(message,text,sizeof(message));
 }
 void Close() {
-    active = editing = qfalse; prompt = NoPrompt;
+    active = editing = false; prompt = NoPrompt;
     _UI_SetActiveMenu(UIMENU_NONE);
 }
 void ReadSlots() {
     for (int i=0;i<6;++i) {
         fileHandle_t f;
         int length = trap_FS_FOpenFile(va("save/doomslot%d.svg",i),&f,FS_READ);
-        occupied[i] = length > 0 ? qtrue : qfalse;
+        occupied[i] = length > 0 ? true : false;
         if (f) trap_FS_FCloseFile(f);
         Q_strncpyz(descriptions[i],occupied[i] ? "SAVED GAME" : "EMPTY SLOT",24);
         length = trap_FS_FOpenFile(va("save/doomslot%d.txt",i),&f,FS_READ);
@@ -135,7 +135,7 @@ void ReadSlots() {
         }
     }
 }
-void Go(Screen next) { screen=next; editing=editingAddress=qfalse; mouseTravel=0; }
+void Go(Screen next) { screen=next; editing=editingAddress=false; mouseTravel=0; }
 bool DemoEpisode(int chosenEpisode) {
     if (chosenEpisode <= 1 || !trap_Cvar_VariableValue("doom_demo")) {
         return false;
@@ -280,7 +280,7 @@ void Activate() {
         else Adjust(1);
         break;
     case Join:
-        if (item == 0) editingAddress = qtrue;
+        if (item == 0) editingAddress = true;
         else JoinServer();
         break;
     case Episode:
@@ -308,7 +308,7 @@ void Activate() {
         else Play("oof");
         break;
     case Save:
-        editing=qtrue;
+        editing=true;
         Q_strncpyz(oldDescription,descriptions[item],24);
         if (!occupied[item]) descriptions[item][0]=0;
         break;
@@ -317,7 +317,7 @@ void Activate() {
     default: break;
     }
 }
-qboolean Selectable(int row) {
+bool Selectable(int row) {
     return !((screen==Options && (row==4 || row==6)) || (screen==Sound && (row==1 || row==3)));
 }
 void Move(int direction) {
@@ -334,7 +334,7 @@ void Thermo(int x,int y,int width,int value) {
 } // namespace
 
 void UI_DoomInit() {
-    active=inGame=editing=qfalse; prompt=NoPrompt;
+    active=inGame=editing=false; prompt=NoPrompt;
     for (auto &p:doomPatches) p.shader=0;
     white=trap_R_RegisterShaderNoMip("white");
     trap_Cvar_Register(NULL,"doom_messages","1",CVAR_ARCHIVE);
@@ -362,17 +362,17 @@ void UI_DoomInit() {
     }
     Geometry();
 }
-qboolean UI_DoomOpen(uiMenuCommand_t menu) {
-    if (menu==UIMENU_NONE) { active=editing=qfalse; prompt=NoPrompt; return qfalse; }
-    if (menu!=UIMENU_MAIN && menu!=UIMENU_INGAME) { active=qfalse; return qfalse; }
+bool UI_DoomOpen(uiMenuCommand_t menu) {
+    if (menu==UIMENU_NONE) { active=editing=false; prompt=NoPrompt; return false; }
+    if (menu!=UIMENU_MAIN && menu!=UIMENU_INGAME) { active=false; return false; }
     // Leave engine error dialogs on their existing path.
     char error[256]; trap_Cvar_VariableStringBuffer("com_errorMessage",error,sizeof(error));
     if (menu==UIMENU_MAIN && error[0]) {
-        inGame=qfalse; active=qtrue; titleOnly=qfalse; Go(Main);
-        Message(Notice,error); trap_Cvar_Set("com_errorMessage", ""); return qtrue;
+        inGame=false; active=true; titleOnly=false; Go(Main);
+        Message(Notice,error); trap_Cvar_Set("com_errorMessage", ""); return true;
     }
-    inGame=menu==UIMENU_INGAME ? qtrue:qfalse;
-    active=qtrue; titleOnly=qfalse; prompt=NoPrompt; Go(Main);
+    inGame=menu==UIMENU_INGAME ? true:false;
+    active=true; titleOnly=false; prompt=NoPrompt; Go(Main);
     if (!inGame) {
         trap_S_StartBackgroundTrack("music/doom/d_intro.mid", "music/doom/d_intro.mid", 0);
     }
@@ -382,10 +382,10 @@ qboolean UI_DoomOpen(uiMenuCommand_t menu) {
     trap_Cvar_Set("cl_paused", inGame && CvarInt("g_gametype") == GT_SINGLE_PLAYER ? "1" : "0");
     if (!inGame) { trap_Cvar_Set("g_reloading","0"); trap_S_FadeAllSound(1.f,0); }
     Play("swtchn");
-    return qtrue;
+    return true;
 }
-qboolean UI_DoomActive() { return active; }
-qboolean UI_DoomFullscreen() { return active && !inGame ? qtrue:qfalse; }
+bool UI_DoomActive() { return active; }
+bool UI_DoomFullscreen() { return active && !inGame ? true:false; }
 void UI_DoomDraw() {
     Geometry(); trap_R_SetColor(NULL);
     if (!inGame) {
@@ -456,9 +456,9 @@ void UI_DoomDraw() {
     int frame=tics < 10 ? 0 : 1+((tics-10)/8);
     Patch((frame&1) ? "M_SKULL2":"M_SKULL1",menu.x-32,menu.y-5+selected[screen]*16);
 }
-void UI_DoomKey(int key,qboolean down) {
+void UI_DoomKey(int key,bool down) {
     if (!down) return;
-    if (titleOnly) { if (!(key & K_CHAR_FLAG)) { titleOnly=qfalse; Play("swtchn"); } return; }
+    if (titleOnly) { if (!(key & K_CHAR_FLAG)) { titleOnly=false; Play("swtchn"); } return; }
     if (prompt!=NoPrompt) {
         if (prompt!=Notice && key!='y' && key!='Y' && key!='n' && key!='N' && key!=K_ESCAPE && key!=K_SPACE) return;
         Prompt previous=prompt; prompt=NoPrompt;
@@ -471,8 +471,8 @@ void UI_DoomKey(int key,qboolean down) {
     }
     if (editingAddress) {
         const int length = static_cast<int>(strlen(serverAddress));
-        if (key == K_ESCAPE) editingAddress = qfalse;
-        else if (key == K_ENTER || key == K_KP_ENTER) { editingAddress = qfalse; selected[Join] = 1; }
+        if (key == K_ESCAPE) editingAddress = false;
+        else if (key == K_ENTER || key == K_KP_ENTER) { editingAddress = false; selected[Join] = 1; }
         else if (key == K_BACKSPACE && length) serverAddress[length - 1] = 0;
         else if ((key & K_CHAR_FLAG) && length < static_cast<int>(sizeof(serverAddress)) - 1) {
             const int c = key & ~K_CHAR_FLAG;
@@ -482,7 +482,7 @@ void UI_DoomKey(int key,qboolean down) {
     }
     if (editing) {
         char *text=descriptions[selected[Save]]; int length=strlen(text);
-        if (key==K_ESCAPE) { Q_strncpyz(text,oldDescription,24); editing=qfalse; }
+        if (key==K_ESCAPE) { Q_strncpyz(text,oldDescription,24); editing=false; }
         else if (key==K_ENTER || key==K_KP_ENTER) SaveSlot();
         else if (key==K_BACKSPACE && length) text[length-1]=0;
         else if (key & K_CHAR_FLAG) {
@@ -500,7 +500,7 @@ void UI_DoomKey(int key,qboolean down) {
     case K_ENTER: case K_KP_ENTER: case K_MOUSE1: Activate(); break;
     case K_ESCAPE: case K_MOUSE2: case K_BACKSPACE:
         Play("swtchx");
-        if (screen==Main) { if (inGame) Close(); else titleOnly=qtrue; }
+        if (screen==Main) { if (inGame) Close(); else titleOnly=true; }
         else if (screen==Skill) Go(Episode);
         else if (screen==Sound) Go(Options);
         else if (screen==Join) Go(Multiplayer);
@@ -537,12 +537,12 @@ void UI_DoomMouse(int dx,int dy) {
         if (selected[screen]!=row) { selected[screen]=row; Play("pstop"); }
     }
 }
-qboolean UI_DoomCommand(const char *command) {
-    if (Q_stricmp(command,"doommenu")) return qfalse;
+bool UI_DoomCommand(const char *command) {
+    if (Q_stricmp(command,"doommenu")) return false;
     char target[32]; trap_Argv(1,target,sizeof(target));
     uiClientState_t client; trap_GetClientState(&client);
     _UI_SetActiveMenu(client.connState==CA_ACTIVE ? UIMENU_INGAME : UIMENU_MAIN);
-    if (!active) return qtrue;
+    if (!active) return true;
     if (!Q_stricmp(target,"options")) Go(Options);
     else if (!Q_stricmp(target,"multiplayer")) Go(Multiplayer);
     else if (!Q_stricmp(target,"join")) Go(Join);
@@ -554,19 +554,19 @@ qboolean UI_DoomCommand(const char *command) {
     else if (!Q_stricmp(target,"help")) Go(Help);
     else if (!Q_stricmp(target,"quit")) { selected[Main]=6; Activate(); }
     else if (!Q_stricmp(target,"endgame")) { Go(Options); selected[Options]=0; Activate(); }
-    return qtrue;
+    return true;
 }
 
-qboolean UI_DoomDrawLoading() {
+bool UI_DoomDrawLoading() {
     char map[MAX_QPATH];
     trap_Cvar_VariableStringBuffer("ui_doomLoadingMap",map,sizeof(map));
     int ep, mission;
-    if (!doomlevel::Map(map,ep,mission) || static_cast<int>(trap_Cvar_VariableValue("g_gametype")) != GT_SINGLE_PLAYER) { return qfalse; }
+    if (!doomlevel::Map(map,ep,mission) || static_cast<int>(trap_Cvar_VariableValue("g_gametype")) != GT_SINGLE_PLAYER) { return false; }
     Geometry();
     const vec4_t black = {0,0,0,1}; trap_R_SetColor(black);
     trap_R_DrawStretchPic(0,0,static_cast<float>(uiInfo.uiDC.glconfig.vidWidth),static_cast<float>(uiInfo.uiDC.glconfig.vidHeight),0,0,1,1,white);
     trap_R_SetColor(nullptr); Patch(va("WIMAP%d",ep-1),0,0);
     if (auto *patch = FindPatch(va("WILV%d%d",ep-1,mission-1))) { Patch(patch->name,(320-patch->width)*0.5f+patch->left,26+patch->top); }
     Text(132,140,"LOADING"); Text(92,160,"PREPARING THE LEVEL");
-    return qtrue;
+    return true;
 }

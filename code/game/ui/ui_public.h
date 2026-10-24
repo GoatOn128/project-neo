@@ -86,9 +86,9 @@ typedef struct {
 	void (*Key_KeynumToStringBuf)( int keynum, char * buf, int buflen );
 	void (*Key_GetBindingBuf)( int keynum, char * buf, int buflen );
 	void (*Key_SetBinding)( int keynum, const char * binding );
-	qboolean (*Key_IsDown)( int keynum );
-	qboolean (*Key_GetOverstrikeMode)(  );
-	void (*Key_SetOverstrikeMode)( qboolean state );
+	bool (*Key_IsDown)( int keynum );
+	bool (*Key_GetOverstrikeMode)(  );
+	void (*Key_SetOverstrikeMode)( bool state );
 	void (*Key_ClearStates)(  );
 	int (*Key_GetCatcher)(  );
 	void (*Key_SetCatcher)( int catcher );
@@ -100,7 +100,7 @@ typedef struct {
 	void (*LAN_ClearPing)( int n );
 	void (*LAN_GetPing)( int n, char * buf, int buflen, int * pingtime );
 	void (*LAN_GetPingInfo)( int n, char * buf, int buflen );
-	qboolean (*LAN_UpdateVisiblePings)( int source );
+	bool (*LAN_UpdateVisiblePings)( int source );
 	int (*LAN_GetServerCount)( int source );
 	int (*LAN_CompareServers)( int source, int sortKey, int sortDir, int s1, int s2 );
 	void (*LAN_GetServerAddressString)( int source, int n, char * buf, int buflen );
@@ -112,7 +112,7 @@ typedef struct {
 	int (*LAN_ServerStatus)( const char * serverAddress, char * serverStatus, int maxLen );
 	void (*LAN_SaveCachedServers)(  );
 	void (*LAN_LoadCachedServers)(  );
-	void (*LAN_MarkServerVisible)( int source, int n, qboolean visible );
+	void (*LAN_MarkServerVisible)( int source, int n, bool visible );
 	void (*LAN_ResetPings)( int n );
 	int (*MemoryRemaining)(  );
 	void (*GetCDKey)( char * buf, int buflen );
@@ -131,8 +131,8 @@ typedef struct {
 	void (*CIN_DrawCinematic)( int handle );
 	void (*CIN_SetExtents)( int handle, int x, int y, int w, int h );
 	void (*R_RemapShader)( const char * oldShader, const char * newShader, const char * timeOffset );
-	qboolean (*VerifyCDKey)( const char * key, const char * chksum );
-	qboolean (*GetLimboString)( int index, char * buf );
+	bool (*VerifyCDKey)( const char * key, const char * chksum );
+	bool (*GetLimboString)( int index, char * buf );
 } uiImport_t;
 
 // set by the engine right before the module entry point runs
@@ -168,17 +168,17 @@ typedef enum {
 
 typedef struct {
 	int apiVersion;
-	void (*Init)( qboolean fullscreen );
+	void (*Init)( bool fullscreen );
 	void (*Shutdown)( void );
-	void (*KeyEvent)( int key, qboolean down );
+	void (*KeyEvent)( int key, bool down );
 	void (*MouseEvent)( int dx, int dy );
 	void (*Refresh)( int time );
-	qboolean (*IsFullscreen)( void );
+	bool (*IsFullscreen)( void );
 	void (*SetActiveMenu)( uiMenuCommand_t menu );
 	uiMenuCommand_t (*GetActiveMenu)( void );
-	qboolean (*ConsoleCommand)( int realtime );
-	void (*DrawConnectScreen)( qboolean overlay );
-	qboolean (*HasUniqueCDKey)( void );
+	bool (*ConsoleCommand)( int realtime );
+	void (*DrawConnectScreen)( bool overlay );
+	bool (*HasUniqueCDKey)( void );
 } uiExport_t;
 
 #endif

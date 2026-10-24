@@ -503,7 +503,7 @@ UI_SwingAngles
 ==================
 */
 static void UI_SwingAngles( float destination, float swingTolerance, float clampTolerance,
-							float speed, float *angle, qboolean *swinging ) {
+							float speed, float *angle, bool *swinging ) {
 	float swing;
 	float move;
 	float scale;
@@ -512,7 +512,7 @@ static void UI_SwingAngles( float destination, float swingTolerance, float clamp
 		// see if a swing should be started
 		swing = AngleSubtract( *angle, destination );
 		if ( swing > swingTolerance || swing < -swingTolerance ) {
-			*swinging = qtrue;
+			*swinging = true;
 		}
 	}
 
@@ -537,14 +537,14 @@ static void UI_SwingAngles( float destination, float swingTolerance, float clamp
 		move = uis.frametime * scale * speed;
 		if ( move >= swing ) {
 			move = swing;
-			*swinging = qfalse;
+			*swinging = false;
 		}
 		*angle = AngleMod( *angle + move );
 	} else if ( swing < 0 ) {
 		move = uis.frametime * scale * -speed;
 		if ( move <= swing ) {
 			move = swing;
-			*swinging = qfalse;
+			*swinging = false;
 		}
 		*angle = AngleMod( *angle + move );
 	}
@@ -624,9 +624,9 @@ static void UI_PlayerAngles( playerInfo_t *pi, vec3_t legs[3], vec3_t torso[3], 
 	if ( ( pi->legsAnim & ~ANIM_TOGGLEBIT ) != LEGS_IDLE
 		 || ( pi->torsoAnim & ~ANIM_TOGGLEBIT ) != TORSO_STAND  ) {
 		// if not standing still, always point all in the same direction
-		pi->torso.yawing = qtrue;   // always center
-		pi->torso.pitching = qtrue; // always center
-		pi->legs.yawing = qtrue;    // always center
+		pi->torso.yawing = true;   // always center
+		pi->torso.pitching = true; // always center
+		pi->legs.yawing = true;    // always center
 	}
 
 	// adjust legs for movement dir
@@ -956,7 +956,7 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t *pi, int ti
 UI_RegisterClientSkin
 ==========================
 */
-static qboolean UI_RegisterClientSkin( playerInfo_t *pi, const char *modelName, const char *skinName ) {
+static bool UI_RegisterClientSkin( playerInfo_t *pi, const char *modelName, const char *skinName ) {
 	char filename[MAX_QPATH];
 
 //	Com_sprintf( filename, sizeof( filename ), "models/players/%s/lower_%s.skin", modelName, skinName );
@@ -971,10 +971,10 @@ static qboolean UI_RegisterClientSkin( playerInfo_t *pi, const char *modelName, 
 	pi->headSkin = trap_R_RegisterSkin( filename );
 
 	if ( !pi->legsSkin || !pi->torsoSkin || !pi->headSkin ) {
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 }
 
 /*
@@ -1004,10 +1004,10 @@ static long BG_StringHashValue( const char *fname ) {
 ============
 AnimParseAnimConfig
 
-  returns qfalse if error, qtrue otherwise
+  returns false if error, true otherwise
 ============
 */
-static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *filename, const char *input ) {
+static bool AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *filename, const char *input ) {
 	char    *text_p, *token;
 	animation_t *animations;
 	headAnimation_t *headAnims;
@@ -1029,7 +1029,7 @@ static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *fi
 	animModelInfo->footsteps = FOOTSTEP_NORMAL;
 	VectorClear( animModelInfo->headOffset );
 	animModelInfo->gender = GENDER_MALE;
-	animModelInfo->isSkeletal = qfalse;
+	animModelInfo->isSkeletal = false;
 	animModelInfo->version = 0;
 
 	// read optional parameters
@@ -1087,7 +1087,7 @@ static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *fi
 			animModelInfo->version = atoi( token );
 			continue;
 		} else if ( !Q_stricmp( token, "skeletal" ) ) {
-			animModelInfo->isSkeletal = qtrue;
+			animModelInfo->isSkeletal = true;
 			continue;
 		}
 
@@ -1124,7 +1124,7 @@ static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *fi
 			// convert to all lower case
 			Q_strlwr( animations[i].name );
 			//
-			token = COM_ParseExt( &text_p, qfalse );
+			token = COM_ParseExt( &text_p, false );
 			if ( !token || !token[0] ) {
 //				BG_AnimParseError( "end of file without ENDANIMS" );
 			}
@@ -1149,19 +1149,19 @@ static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *fi
 
 		}
 
-		token = COM_ParseExt( &text_p, qfalse );
+		token = COM_ParseExt( &text_p, false );
 		if ( !token || !token[0] ) {
 //			BG_AnimParseError( "end of file without ENDANIMS" );
 		}
 		animations[i].numFrames = atoi( token );
 
-		token = COM_ParseExt( &text_p, qfalse );
+		token = COM_ParseExt( &text_p, false );
 		if ( !token || !token[0] ) {
 //			BG_AnimParseError( "end of file without ENDANIMS: line %i" );
 		}
 		animations[i].loopFrames = atoi( token );
 
-		token = COM_ParseExt( &text_p, qfalse );
+		token = COM_ParseExt( &text_p, false );
 		if ( !token || !token[0] ) {
 //			BG_AnimParseError( "end of file without ENDANIMS: line %i" );
 		}
@@ -1173,14 +1173,14 @@ static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *fi
 		animations[i].initialLerp = 1000 / fps;
 
 		// movespeed
-		token = COM_ParseExt( &text_p, qfalse );
+		token = COM_ParseExt( &text_p, false );
 		if ( !token || !token[0] ) {
 //			BG_AnimParseError( "end of file without ENDANIMS" );
 		}
 		animations[i].moveSpeed = atoi( token );
 
 		// animation blending
-		token = COM_ParseExt( &text_p, qfalse );    // must be on same line
+		token = COM_ParseExt( &text_p, false );    // must be on same line
 		if ( !token ) {
 			animations[i].animBlend = 0;
 		} else {
@@ -1209,10 +1209,10 @@ static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *fi
 
 	if ( animModelInfo->version < 2 && i != MAX_ANIMATIONS ) {
 //		BG_AnimParseError( "Incorrect number of animations" );
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;           // NERVE - SMF - blah
+	return true;           // NERVE - SMF - blah
 
 	// check for head anims
 	token = COM_Parse( &text_p );
@@ -1229,7 +1229,7 @@ static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *fi
 
 				if ( animModelInfo->version > 1 ) {   // includes animation names at start of each line
 					// just throw this information away, not required for head
-					token = COM_ParseExt( &text_p, qfalse );
+					token = COM_ParseExt( &text_p, false );
 					if ( !token || !token[0] ) {
 						break;
 					}
@@ -1243,27 +1243,27 @@ static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *fi
 				// modify according to last frame of the main animations, since the head is totally seperate
 				headAnims[i].firstFrame -= animations[MAX_ANIMATIONS - 1].firstFrame + animations[MAX_ANIMATIONS - 1].numFrames + skip;
 
-				token = COM_ParseExt( &text_p, qfalse );
+				token = COM_ParseExt( &text_p, false );
 				if ( !token || !token[0] ) {
 					break;
 				}
 				headAnims[i].numFrames = atoi( token );
 
 				// skip the movespeed
-				token = COM_ParseExt( &text_p, qfalse );
+				token = COM_ParseExt( &text_p, false );
 			}
 
 //			animModelInfo->numHeadAnims = i;
 
 			if ( i != MAX_HEAD_ANIMS ) {
 //				BG_AnimParseError( "Incorrect number of head frames" );
-				return qfalse;
+				return false;
 			}
 
 		}
 	}
 
-	return qtrue;
+	return true;
 }
 
 /*
@@ -1271,7 +1271,7 @@ static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *fi
 UI_ParseAnimationFile
 ======================
 */
-static qboolean UI_ParseAnimationFile( const char *filename, playerInfo_t *pi ) {
+static bool UI_ParseAnimationFile( const char *filename, playerInfo_t *pi ) {
 	int len;
 	char text[20000];
 	fileHandle_t f;
@@ -1281,11 +1281,11 @@ static qboolean UI_ParseAnimationFile( const char *filename, playerInfo_t *pi ) 
 	// load the file
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );
 	if ( len <= 0 ) {
-		return qfalse;
+		return false;
 	}
 	if ( len >= ( sizeof( text ) - 1 ) ) {
 		Com_Printf( "File %s too long\n", filename );
-		return qfalse;
+		return false;
 	}
 	trap_FS_Read( text, len, f );
 	text[len] = 0;
@@ -1293,7 +1293,7 @@ static qboolean UI_ParseAnimationFile( const char *filename, playerInfo_t *pi ) 
 
 	// NERVE - SMF - new!!!!
 	AnimParseAnimConfig( pi, filename, text );
-	return qtrue;
+	return true;
 
 	// -NERVE - SMF - This does not work with wolf's new animation system
 /*
@@ -1377,10 +1377,10 @@ static qboolean UI_ParseAnimationFile( const char *filename, playerInfo_t *pi ) 
 
 	if ( i != MAX_ANIMATIONS ) {
 		Com_Printf( "Error parsing animation file: %s", filename );
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 */
 }
 
@@ -1392,7 +1392,7 @@ UI_RegisterClientModelname
 */
 int WM_getWeaponIndex();
 
-qboolean UI_RegisterClientModelname( playerInfo_t *pi, const char *modelSkinName ) {
+bool UI_RegisterClientModelname( playerInfo_t *pi, const char *modelSkinName ) {
 	char modelName[MAX_QPATH];
 	char skinName[MAX_QPATH];
 	char filename[MAX_QPATH];
@@ -1404,7 +1404,7 @@ qboolean UI_RegisterClientModelname( playerInfo_t *pi, const char *modelSkinName
 	pi->headModel = 0;
 
 	if ( !modelSkinName[0] ) {
-		return qfalse;
+		return false;
 	}
 
 	Q_strncpyz( modelName, modelSkinName, sizeof( modelName ) );
@@ -1498,7 +1498,7 @@ qboolean UI_RegisterClientModelname( playerInfo_t *pi, const char *modelSkinName
 	pi->legsModel = trap_R_RegisterModel( filename );
 	if ( !pi->legsModel ) {
 		Com_Printf( "Failed to load model file %s\n", filename );
-		return qfalse;
+		return false;
 	}
 
 //	Com_sprintf( filename, sizeof( filename ), "models/players/%s/upper.md3", modelName );
@@ -1506,14 +1506,14 @@ qboolean UI_RegisterClientModelname( playerInfo_t *pi, const char *modelSkinName
 	pi->torsoModel = trap_R_RegisterModel( filename );
 	if ( !pi->torsoModel ) {
 		Com_Printf( "Failed to load model file %s\n", filename );
-		return qfalse;
+		return false;
 	}
 
 	Com_sprintf( filename, sizeof( filename ), "models/players/%s/head.md3", modelName );
 	pi->headModel = trap_R_RegisterModel( filename );
 	if ( !pi->headModel ) {
 		Com_Printf( "Failed to load model file %s\n", filename );
-		return qfalse;
+		return false;
 	}
 
 	// NERVE - SMF - load backpack and helmet
@@ -1529,7 +1529,7 @@ qboolean UI_RegisterClientModelname( playerInfo_t *pi, const char *modelSkinName
 	if ( !UI_RegisterClientSkin( pi, modelName, skinName ) ) {
 		if ( !UI_RegisterClientSkin( pi, modelName, "default" ) ) {
 			Com_Printf( "Failed to load skin file: %s : %s\n", modelName, skinName );
-			return qfalse;
+			return false;
 		}
 	}
 
@@ -1540,10 +1540,10 @@ qboolean UI_RegisterClientModelname( playerInfo_t *pi, const char *modelSkinName
 //----(SA) end
 	if ( !UI_ParseAnimationFile( filename, pi ) ) {         // NERVE - SMF - make this work with wolf
 		Com_Printf( "Failed to load animation file %s\n", filename );
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 }
 
 
@@ -1561,8 +1561,8 @@ void UI_PlayerInfo_SetModel( playerInfo_t *pi, const char *model ) {
 	pi->lastWeapon = pi->weapon;
 	pi->pendingWeapon = (weapon_t)-1;
 	pi->weaponTimer = 0;
-	pi->chat = qfalse;
-	pi->newModel = qtrue;
+	pi->chat = false;
+	pi->newModel = true;
 	UI_PlayerInfo_SetWeapon( pi, pi->weapon );
 }
 
@@ -1572,7 +1572,7 @@ void UI_PlayerInfo_SetModel( playerInfo_t *pi, const char *model ) {
 UI_PlayerInfo_SetInfo
 ===============
 */
-void UI_PlayerInfo_SetInfo( playerInfo_t *pi, int legsAnim, int torsoAnim, vec3_t viewAngles, vec3_t moveAngles, weapon_t weaponNumber, qboolean chat ) {
+void UI_PlayerInfo_SetInfo( playerInfo_t *pi, int legsAnim, int torsoAnim, vec3_t viewAngles, vec3_t moveAngles, weapon_t weaponNumber, bool chat ) {
 	int currentAnim;
 	weapon_t weaponNum;
 
@@ -1585,18 +1585,18 @@ void UI_PlayerInfo_SetInfo( playerInfo_t *pi, int legsAnim, int torsoAnim, vec3_
 	VectorCopy( moveAngles, pi->moveAngles );
 
 	if ( pi->newModel ) {
-		pi->newModel = qfalse;
+		pi->newModel = false;
 
 		jumpHeight = 0;
 		pi->pendingLegsAnim = 0;
 		UI_ForceLegsAnim( pi, legsAnim );
 		pi->legs.yawAngle = viewAngles[YAW];
-		pi->legs.yawing = qfalse;
+		pi->legs.yawing = false;
 
 		pi->pendingTorsoAnim = 0;
 		UI_ForceTorsoAnim( pi, torsoAnim );
 		pi->torso.yawAngle = viewAngles[YAW];
-		pi->torso.yawing = qfalse;
+		pi->torso.yawing = false;
 
 		if ( (int)weaponNumber != -1 ) {
 			pi->weapon = weaponNumber;

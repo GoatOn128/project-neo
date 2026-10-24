@@ -205,15 +205,15 @@ void trap_Key_SetBinding( int keynum, const char * binding ) {
 	uiImports->Key_SetBinding( keynum, binding );
 }
 
-qboolean trap_Key_IsDown( int keynum ) {
+bool trap_Key_IsDown( int keynum ) {
 	return uiImports->Key_IsDown( keynum );
 }
 
-qboolean trap_Key_GetOverstrikeMode(  ) {
+bool trap_Key_GetOverstrikeMode(  ) {
 	return uiImports->Key_GetOverstrikeMode();
 }
 
-void trap_Key_SetOverstrikeMode( qboolean state ) {
+void trap_Key_SetOverstrikeMode( bool state ) {
 	uiImports->Key_SetOverstrikeMode( state );
 }
 
@@ -279,7 +279,7 @@ void trap_LAN_GetPingInfo( int n, char * buf, int buflen ) {
 	uiImports->LAN_GetPingInfo( n, buf, buflen );
 }
 
-qboolean trap_LAN_UpdateVisiblePings( int source ) {
+bool trap_LAN_UpdateVisiblePings( int source ) {
 	return uiImports->LAN_UpdateVisiblePings( source );
 }
 
@@ -327,7 +327,7 @@ void trap_LAN_LoadCachedServers(  ) {
 	uiImports->LAN_LoadCachedServers();
 }
 
-void trap_LAN_MarkServerVisible( int source, int n, qboolean visible ) {
+void trap_LAN_MarkServerVisible( int source, int n, bool visible ) {
 	uiImports->LAN_MarkServerVisible( source, n, visible );
 }
 
@@ -403,11 +403,11 @@ void trap_R_RemapShader( const char * oldShader, const char * newShader, const c
 	uiImports->R_RemapShader( oldShader, newShader, timeOffset );
 }
 
-qboolean trap_VerifyCDKey( const char * key, const char * chksum ) {
+bool trap_VerifyCDKey( const char * key, const char * chksum ) {
 	return uiImports->VerifyCDKey( key, chksum );
 }
 
-qboolean trap_GetLimboString( int index, char * buf ) {
+bool trap_GetLimboString( int index, char * buf ) {
 	return uiImports->GetLimboString( index, buf );
 }
 
