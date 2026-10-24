@@ -4,6 +4,7 @@ build/
 out/
 
 # Binaries the build copies next to the game data
+base/save/*
 base/cgamex86.dll
 base/qagamex86.dll
 base/uix86.dll
