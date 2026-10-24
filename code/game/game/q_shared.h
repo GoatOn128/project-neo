@@ -799,7 +799,7 @@ SAVE
 ==============================================================
 */
 
-#define SAVE_VERSION 22 // Client-backed Doom monsters and original chase state.
+#define SAVE_VERSION 23 // Removed lean, kick and notebook fields from the shared structs.
 #define SAVE_INFOSTRING_LENGTH  256
 
 
@@ -1118,7 +1118,6 @@ typedef struct playerState_s {
 
 
 	int gravity;
-	float leanf;                // amount of 'lean' when player is looking around corner //----(SA)	added
 
 	int speed;
 	int delta_angles[3];            // add to command angles to get view direction
@@ -1242,8 +1241,6 @@ typedef struct playerState_s {
 
 	int quickGrenTime;
 
-	int leanStopDebounceTime;
-
 	int weapHeat[MAX_WEAPONS];          // some weapons can overheat.  this tracks (server-side) how hot each weapon currently is.
 	int curWeapHeat;                    // value for the currently selected weapon (for transmission to client)
 
@@ -1292,8 +1289,6 @@ typedef struct playerState_s {
 #define WBUTTON_ZOOM        2
 #define WBUTTON_QUICKGREN   4
 #define WBUTTON_RELOAD      8
-#define WBUTTON_LEANLEFT    16
-#define WBUTTON_LEANRIGHT   32
 
 // unused
 #define WBUTTON_EXTRA6      64
@@ -1315,7 +1310,6 @@ typedef struct usercmd_s {
 
 
 	signed char forwardmove, rightmove, upmove;
-	signed char wolfkick;       // RF, we should move this over to a wbutton, this is a huge waste of bandwidth
 
 	unsigned short cld;         // NERVE - SMF - send client damage in usercmd instead of as a server command
 } usercmd_t;

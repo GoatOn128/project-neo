@@ -655,7 +655,6 @@ void MSG_WriteDeltaUsercmd( msg_t *msg, usercmd_t *from, usercmd_t *to ) {
 	MSG_WriteDelta( msg, from->wbuttons, to->wbuttons, 8 );
 	MSG_WriteDelta( msg, from->weapon, to->weapon, 8 );
 	MSG_WriteDelta( msg, from->holdable, to->holdable, 8 );         //----(SA)	modified
-	MSG_WriteDelta( msg, from->wolfkick, to->wolfkick, 8 );
 	MSG_WriteDelta( msg, from->cld, to->cld, 16 );          // NERVE - SMF
 }
 
@@ -681,7 +680,6 @@ void MSG_ReadDeltaUsercmd( msg_t *msg, usercmd_t *from, usercmd_t *to ) {
 	to->wbuttons = MSG_ReadDelta( msg, from->wbuttons, 8 );
 	to->weapon = MSG_ReadDelta( msg, from->weapon, 8 );
 	to->holdable = MSG_ReadDelta( msg, from->holdable, 8 );  //----(SA)	modified
-	to->wolfkick = MSG_ReadDelta( msg, from->wolfkick, 8 );
 	to->cld = MSG_ReadDelta( msg, from->cld, 16 );       // NERVE - SMF
 }
 
@@ -708,7 +706,6 @@ void MSG_WriteDeltaUsercmdKey( msg_t *msg, int key, usercmd_t *from, usercmd_t *
 		 from->wbuttons == to->wbuttons &&
 		 from->weapon == to->weapon &&
 		 from->holdable == to->holdable &&
-		 from->wolfkick == to->wolfkick &&
 		 from->cld == to->cld ) {                   // NERVE - SMF
 		MSG_WriteBits( msg, 0, 1 );                 // no change
 		oldsize += 7;
@@ -726,7 +723,6 @@ void MSG_WriteDeltaUsercmdKey( msg_t *msg, int key, usercmd_t *from, usercmd_t *
 	MSG_WriteDeltaKey( msg, key, from->wbuttons, to->wbuttons, 8 );
 	MSG_WriteDeltaKey( msg, key, from->weapon, to->weapon, 8 );
 	MSG_WriteDeltaKey( msg, key, from->holdable, to->holdable, 8 );
-	MSG_WriteDeltaKey( msg, key, from->wolfkick, to->wolfkick, 8 );
 
 	MSG_WriteDeltaKey( msg, key, from->cld, to->cld, 16 );      // NERVE - SMF - for multiplayer clientDamage
 }
@@ -755,7 +751,6 @@ void MSG_ReadDeltaUsercmdKey( msg_t *msg, int key, usercmd_t *from, usercmd_t *t
 		to->wbuttons = MSG_ReadDeltaKey( msg, key, from->wbuttons, 8 );
 		to->weapon = MSG_ReadDeltaKey( msg, key, from->weapon, 8 );
 		to->holdable = MSG_ReadDeltaKey( msg, key, from->holdable, 8 );
-		to->wolfkick = MSG_ReadDeltaKey( msg, key, from->wolfkick, 8 );
 
 		to->cld = MSG_ReadDeltaKey( msg, key, from->cld, 16 );           // NERVE - SMF - for multiplayer clientDamage
 	} else {
@@ -769,7 +764,6 @@ void MSG_ReadDeltaUsercmdKey( msg_t *msg, int key, usercmd_t *from, usercmd_t *t
 		to->wbuttons = from->wbuttons;
 		to->weapon = from->weapon;
 		to->holdable = from->holdable;
-		to->wolfkick = from->wolfkick;
 
 		to->cld = from->cld;                    // NERVE - SMF
 	}
@@ -1390,7 +1384,6 @@ netField_t playerStateFields[] = {
     {PSF(weaponDelay), -16},
     {PSF(grenadeTimeLeft), -16},
     {PSF(gravity), 16},
-    {PSF(leanf), 0},
     {PSF(speed), 16},
     {PSF(delta_angles[0]), 16},
     {PSF(delta_angles[1]), 16},

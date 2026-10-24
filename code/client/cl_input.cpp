@@ -234,11 +234,6 @@ void IN_ActivateDown( void ) {IN_KeyDown( &kb[KB_BUTTONS6] );}
 void IN_ActivateUp( void ) {IN_KeyUp( &kb[KB_BUTTONS6] );}
 // done.
 
-// Rafael Kick
-void IN_KickDown( void ) {IN_KeyDown( &kb[KB_KICK] );}
-void IN_KickUp( void ) {IN_KeyUp( &kb[KB_KICK] );}
-// done.
-
 void IN_SprintDown( void ) {IN_KeyDown( &kb[KB_BUTTONS5] );}
 void IN_SprintUp( void ) {IN_KeyUp( &kb[KB_BUTTONS5] );}
 
@@ -252,10 +247,6 @@ void IN_QuickGrenDown( void ) { IN_KeyDown( &kb[KB_WBUTTONS2] );    }   //----(S
 void IN_QuickGrenUp( void )   { IN_KeyUp( &kb[KB_WBUTTONS2] );  }
 void IN_ReloadDown( void )    { IN_KeyDown( &kb[KB_WBUTTONS3] );    }   //----(SA)	manual weapon re-load
 void IN_ReloadUp( void )      { IN_KeyUp( &kb[KB_WBUTTONS3] );  }
-void IN_LeanLeftDown( void )  { IN_KeyDown( &kb[KB_WBUTTONS4] );    }   //----(SA)	lean left
-void IN_LeanLeftUp( void )    { IN_KeyUp( &kb[KB_WBUTTONS4] );  }
-void IN_LeanRightDown( void ) { IN_KeyDown( &kb[KB_WBUTTONS5] );    }   //----(SA)	lean right
-void IN_LeanRightUp( void )   { IN_KeyUp( &kb[KB_WBUTTONS5] );  }
 
 // unused
 void IN_Wbutton6Down( void )  { IN_KeyDown( &kb[KB_WBUTTONS6] );    }
@@ -275,13 +266,6 @@ void IN_ButtonUp( void ) {
 
 void IN_CenterView( void ) {
 	cl.viewangles[PITCH] = -SHORT2ANGLE( cl.snap.ps.delta_angles[PITCH] );
-}
-
-void IN_Notebook( void ) {
-	if ( cls.state == CA_ACTIVE && !clc.demoplaying ) {
-		Cvar_Set( "cg_youGotMail", "0" ); // clear icon	//----(SA)	added
-		uiExport->SetActiveMenu( UIMENU_NOTEBOOK ); // startup notebook
-	}
 }
 
 void IN_Help( void ) {
@@ -341,9 +325,6 @@ Sets the usercmd_t based on key states
 void CL_KeyMove( usercmd_t *cmd ) {
 	int movespeed;
 	int forward, side, up;
-	// Rafael Kick
-	int kick;
-	// done
 
 	//
 	// adjust for speed key / running
@@ -369,36 +350,16 @@ void CL_KeyMove( usercmd_t *cmd ) {
 	side += movespeed * CL_KeyState( &kb[KB_MOVERIGHT] );
 	side -= movespeed * CL_KeyState( &kb[KB_MOVELEFT] );
 
-//----(SA)	added
-	if ( cmd->buttons & BUTTON_ACTIVATE ) {
-		if ( side > 0 ) {
-			cmd->wbuttons |= WBUTTON_LEANRIGHT;
-		} else if ( side < 0 ) {
-			cmd->wbuttons |= WBUTTON_LEANLEFT;
-		}
-
-		side = 0;   // disallow the strafe when holding 'activate'
-	}
-//----(SA)	end
-
 	up += movespeed * CL_KeyState( &kb[KB_UP] );
 	up -= movespeed * CL_KeyState( &kb[KB_DOWN] );
 
 	forward += movespeed * CL_KeyState( &kb[KB_FORWARD] );
 	forward -= movespeed * CL_KeyState( &kb[KB_BACK] );
 
-	// Rafael Kick
-	kick = CL_KeyState( &kb[KB_KICK] );
-	// done
-
 	if ( !( cl.snap.ps.persistant[PERS_HWEAPON_USE] ) ) {
 		cmd->forwardmove = ClampChar( forward );
 		cmd->rightmove = ClampChar( side );
 		cmd->upmove = ClampChar( up );
-
-		// Rafael - Kick
-		cmd->wolfkick = ClampChar( kick );
-		// done
 
 	}
 }
@@ -982,11 +943,6 @@ void CL_InitInput( void ) {
 	Cmd_AddCommand( "-activate", IN_ActivateUp );
 	// done.
 
-	// Rafael Kick
-	Cmd_AddCommand( "+kick", IN_KickDown );
-	Cmd_AddCommand( "-kick", IN_KickUp );
-	// done
-
 	Cmd_AddCommand( "+sprint", IN_SprintDown );
 	Cmd_AddCommand( "-sprint", IN_SprintUp );
 
@@ -1000,10 +956,6 @@ void CL_InitInput( void ) {
 	Cmd_AddCommand( "-quickgren",    IN_QuickGrenUp );
 	Cmd_AddCommand( "+reload",       IN_ReloadDown );     //
 	Cmd_AddCommand( "-reload",       IN_ReloadUp );
-	Cmd_AddCommand( "+leanleft", IN_LeanLeftDown );
-	Cmd_AddCommand( "-leanleft", IN_LeanLeftUp );
-	Cmd_AddCommand( "+leanright",    IN_LeanRightDown );
-	Cmd_AddCommand( "-leanright",    IN_LeanRightUp );
 	Cmd_AddCommand( "+wbutton6", IN_Wbutton6Down );   //
 	Cmd_AddCommand( "-wbutton6", IN_Wbutton6Up );
 	Cmd_AddCommand( "+wbutton7", IN_Wbutton7Down );   //
@@ -1013,7 +965,6 @@ void CL_InitInput( void ) {
 	Cmd_AddCommand( "+mlook", IN_MLookDown );
 	Cmd_AddCommand( "-mlook", IN_MLookUp );
 
-	Cmd_AddCommand( "notebook",IN_Notebook );
 //	Cmd_AddCommand ("help",IN_Help);
 
 	cl_nodelta = Cvar_Get( "cl_nodelta", "0", 0 );

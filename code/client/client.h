@@ -456,7 +456,6 @@ typedef enum {
 	KB_WBUTTONS6,
 	KB_WBUTTONS7,
 	KB_MLOOK,
-	KB_KICK,
 
 	NUM_BUTTONS
 } kbuttons_t;
@@ -471,7 +470,6 @@ void CL_ReadPackets( void );
 
 void CL_WritePacket( void );
 void IN_CenterView( void );
-void IN_Notebook( void );
 void IN_Help( void );
 
 //----(SA) salute
