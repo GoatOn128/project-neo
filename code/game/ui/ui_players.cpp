@@ -1283,7 +1283,7 @@ static bool UI_ParseAnimationFile( const char *filename, playerInfo_t *pi ) {
 	if ( len <= 0 ) {
 		return false;
 	}
-	if ( len >= ( sizeof( text ) - 1 ) ) {
+	if ( len >= ( (int)sizeof( text ) - 1 ) ) {
 		Com_Printf( "File %s too long\n", filename );
 		return false;
 	}

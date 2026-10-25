@@ -368,10 +368,10 @@ int AAS_LoadMap( const char *mapname ) {
 	{
 		AAS_SetCurrentWorld( i );
 
-		strncpy( this_mapname, mapname, 256 );
-		strncat( this_mapname, "_b", 256 );
+		Q_strncpyz( this_mapname, mapname, sizeof( this_mapname ) );
+		Q_strcat( this_mapname, sizeof( this_mapname ), "_b" );
 		sprintf( intstr, "%i", i );
-		strncat( this_mapname, intstr, 256 );
+		Q_strcat( this_mapname, sizeof( this_mapname ), intstr );
 
 		//if no mapname is provided then the string indexes are updated
 		if ( !mapname ) {

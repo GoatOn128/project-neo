@@ -3150,7 +3150,9 @@ void Item_Text_Wrapped_Paint( itemDef_t *item ) {
 
 void Item_Text_Paint( itemDef_t *item ) {
 	char text[1024];
-	char infostring[SAVE_INFOSTRING_LENGTH];
+	// static: the address is stored in item->text below, so it must stay
+	// valid after this frame instead of pointing at a dead stack frame
+	static char infostring[SAVE_INFOSTRING_LENGTH];
 	const char *textPtr;
 	int height, width;
 	vec4_t color;

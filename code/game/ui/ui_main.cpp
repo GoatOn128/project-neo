@@ -1957,7 +1957,9 @@ static void UI_DrawOpponent( rectDef_t *rect ) {
 	static playerInfo_t info2;
 	char model[MAX_QPATH];
 	char headmodel[MAX_QPATH];
+#ifdef MISSIONPACK
 	char team[256];
+#endif
 	vec3_t viewangles;
 	vec3_t moveangles;
 
@@ -1965,7 +1967,9 @@ static void UI_DrawOpponent( rectDef_t *rect ) {
 
 		strcpy( model, UI_Cvar_VariableString( "ui_opponentModel" ) );
 		strcpy( headmodel, UI_Cvar_VariableString( "ui_opponentModel" ) );
+#ifdef MISSIONPACK
 		team[0] = '\0';
+#endif
 
 		memset( &info2, 0, sizeof( playerInfo_t ) );
 		viewangles[YAW]   = 180 - 10;

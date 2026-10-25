@@ -217,7 +217,7 @@ weaponconfig_t *LoadWeaponConfig( char *filename ) {
 		max_projectileinfo = 32;
 		LibVarSet( "max_projectileinfo", "32" );
 	} //end if
-	strncpy( path, filename, MAX_PATH );
+	Q_strncpyz( path, filename, MAX_PATH );
 	source = LoadSourceFile( path );
 	if ( !source ) {
 		botimport.Print( PRT_ERROR, "counldn't load %s\n", path );
