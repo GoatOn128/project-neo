@@ -45,11 +45,11 @@ Sys_Milliseconds
 int sys_timeBase;
 
 int Sys_Milliseconds( void ) {
-	static qboolean initialized = qfalse;
+	static bool initialized = false;
 
 	if ( !initialized ) {
 		sys_timeBase = (int)SDL_GetTicks();
-		initialized = qtrue;
+		initialized = true;
 	}
 
 	return (int)SDL_GetTicks() - sys_timeBase;

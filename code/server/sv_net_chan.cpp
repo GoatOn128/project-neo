@@ -170,12 +170,12 @@ void SV_Netchan_Transmit( client_t *client, msg_t *msg ) {   //int length, const
 Netchan_SV_Process
 =================
 */
-qboolean SV_Netchan_Process( client_t *client, msg_t *msg ) {
+bool SV_Netchan_Process( client_t *client, msg_t *msg ) {
 	int ret;
 //	int i;
 	ret = Netchan_Process( &client->netchan, msg );
 	if ( !ret ) {
-		return qfalse;
+		return false;
 	}
 #if DO_NET_ENCODE
 	SV_Netchan_Decode( client, msg );
@@ -186,6 +186,6 @@ qboolean SV_Netchan_Process( client_t *client, msg_t *msg ) {
 //			Com_Error(ERR_DROP,"bad\n");
 //		}
 //	}
-	return qtrue;
+	return true;
 }
 

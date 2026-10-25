@@ -83,7 +83,7 @@ Make sure the timer is high precision, otherwise NT gets 18ms
 resolution.
 ==================
 */
-void Win_SetTimerResolution( qboolean enable ) {
+void Win_SetTimerResolution( bool enable ) {
 	if ( enable ) {
 		timeBeginPeriod( 1 );
 	} else {
@@ -95,18 +95,18 @@ void Win_SetTimerResolution( qboolean enable ) {
 ==================
 Win_PumpConsoleMessages
 
-Dispatch one pending message for the console window. Returns qfalse on
+Dispatch one pending message for the console window. Returns false on
 WM_QUIT so the caller can shut down.
 ==================
 */
-qboolean Win_PumpConsoleMessages( void ) {
+bool Win_PumpConsoleMessages( void ) {
 	MSG msg;
 
 	if ( !GetMessage( &msg, NULL, 0, 0 ) ) {
-		return qfalse;
+		return false;
 	}
 	TranslateMessage( &msg );
 	DispatchMessage( &msg );
 
-	return qtrue;
+	return true;
 }

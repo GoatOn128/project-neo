@@ -50,7 +50,7 @@ typedef enum {
 	RSERR_UNKNOWN
 } rserr_t;
 
-static qboolean s_windowMaximized = qfalse;
+static bool s_windowMaximized = false;
 
 
 //
@@ -80,7 +80,7 @@ cvar_t  *r_maskMinidriver;      // kept for compatibility, SDL owns the driver n
 static rserr_t GLW_SetMode( const char *drivername,
 							int mode,
 							int colorbits,
-							qboolean cdsFullscreen ) {
+							bool cdsFullscreen ) {
 	const char *win_fs[] = { "W", "FS" };
 	cvar_t *vid_xpos, *vid_ypos;
 	SDL_WindowFlags flags;
@@ -196,7 +196,7 @@ static rserr_t GLW_SetMode( const char *drivername,
 ** old pixel format code: first the requested color/depth/stencil, then the
 ** desktop color bits without stencil.
 */
-static qboolean GLW_CreateContext( int colorbits, int depthbits, int stencilbits, qboolean stereo ) {
+static bool GLW_CreateContext( int colorbits, int depthbits, int stencilbits, bool stereo ) {
 	int value;
 
 	SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY );
@@ -212,18 +212,18 @@ static qboolean GLW_CreateContext( int colorbits, int depthbits, int stencilbits
 	if ( stereo ) {
 		ri.Printf( PRINT_ALL, "...attempting to use stereo\n" );
 		SDL_GL_SetAttribute( SDL_GL_STEREO, 1 );
-		glConfig.stereoEnabled = qtrue;
+		glConfig.stereoEnabled = true;
 	} else
 	{
 		SDL_GL_SetAttribute( SDL_GL_STEREO, 0 );
-		glConfig.stereoEnabled = qfalse;
+		glConfig.stereoEnabled = false;
 	}
 
 	ri.Printf( PRINT_ALL, "...creating GL context: " );
 	glw_state.context = SDL_GL_CreateContext( glw_state.window );
 	if ( !glw_state.context ) {
 		ri.Printf( PRINT_ALL, "failed (%s)\n", SDL_GetError() );
-		return qfalse;
+		return false;
 	}
 
 	ri.Printf( PRINT_ALL, "succeeded\n" );
@@ -233,7 +233,7 @@ static qboolean GLW_CreateContext( int colorbits, int depthbits, int stencilbits
 		ri.Printf( PRINT_ALL, "failed (%s)\n", SDL_GetError() );
 		SDL_GL_DestroyContext( glw_state.context );
 		glw_state.context = NULL;
-		return qfalse;
+		return false;
 	}
 	ri.Printf( PRINT_ALL, "succeeded\n" );
 
@@ -242,7 +242,7 @@ static qboolean GLW_CreateContext( int colorbits, int depthbits, int stencilbits
 	*/
 	if ( stereo && SDL_GL_GetAttribute( SDL_GL_STEREO, &value ) && !value ) {
 		ri.Printf( PRINT_ALL, "...failed to select stereo pixel format\n" );
-		glConfig.stereoEnabled = qfalse;
+		glConfig.stereoEnabled = false;
 	}
 
 	/*
@@ -258,7 +258,7 @@ static qboolean GLW_CreateContext( int colorbits, int depthbits, int stencilbits
 		glConfig.stencilBits = value;
 	}
 
-	return qtrue;
+	return true;
 }
 
 
@@ -267,7 +267,7 @@ static qboolean GLW_CreateContext( int colorbits, int depthbits, int stencilbits
 
 ** Picks the depth/stencil sizes from the cvars and creates the context.
 */
-static qboolean GLW_InitDriver( int colorbits ) {
+static bool GLW_InitDriver( int colorbits ) {
 	int depthbits, stencilbits;
 
 	ri.Printf( PRINT_ALL, "Initializing OpenGL driver\n" );
@@ -309,21 +309,21 @@ static qboolean GLW_InitDriver( int colorbits ) {
 		}
 		if ( !GLW_CreateContext( colorbits, depthbits, 0, r_stereo->integer != 0 ) ) {
 			ri.Printf( PRINT_ALL, "...failed to find an appropriate PIXELFORMAT\n" );
-			return qfalse;
+			return false;
 		}
 	}
 
-	return qtrue;
+	return true;
 }
 
 
 /*
 ** GLW_StartDriverAndSetMode
 */
-static qboolean GLW_StartDriverAndSetMode( const char *drivername,
+static bool GLW_StartDriverAndSetMode( const char *drivername,
 										  int mode,
 										  int colorbits,
-										  qboolean cdsFullscreen ) {
+										  bool cdsFullscreen ) {
 	rserr_t err;
 
 	err = GLW_SetMode( drivername, mode, colorbits, cdsFullscreen );
@@ -332,10 +332,10 @@ static qboolean GLW_StartDriverAndSetMode( const char *drivername,
 	{
 	case RSERR_INVALID_FULLSCREEN:
 		ri.Printf( PRINT_ALL, "...WARNING: fullscreen unavailable in this mode\n" );
-		return qfalse;
+		return false;
 	case RSERR_INVALID_MODE:
 		ri.Printf( PRINT_ALL, "...WARNING: could not set the given mode (%d)\n", mode );
-		return qfalse;
+		return false;
 	default:
 		break;
 	}
@@ -347,10 +347,10 @@ static qboolean GLW_StartDriverAndSetMode( const char *drivername,
 			glw_state.window = NULL;
 			ri.SetGameWindow( NULL );
 		}
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 }
 
 
@@ -362,7 +362,7 @@ static void GLW_InitExtensions( void ) {
 	glConfig.textureCompression = TC_NONE;
 
 	// the GL_ADD texture environment is core since OpenGL 1.3
-	glConfig.textureEnvAddAvailable = qtrue;
+	glConfig.textureEnvAddAvailable = true;
 
 	ri.Printf( PRINT_ALL, "Initializing OpenGL extensions\n" );
 
@@ -385,7 +385,7 @@ static void GLW_InitExtensions( void ) {
 
 	// swap control goes through SDL_GL_SetSwapInterval now, force a set
 	ri.Printf( PRINT_ALL, "...using SDL swap control\n" );
-	r_swapInterval->modified = qtrue;   // force a set next frame
+	r_swapInterval->modified = true;   // force a set next frame
 }
 
 
@@ -396,7 +396,7 @@ static void GLW_InitExtensions( void ) {
 ** with the 1280x720 windowed fallback the old code had.
 */
 static void GLW_StartOpenGL( void ) {
-	qboolean cdsFullscreen;
+	bool cdsFullscreen;
 
 	glConfig.driverType = GLDRV_ICD;
 
@@ -405,7 +405,7 @@ static void GLW_StartOpenGL( void ) {
 	// create the window and set up the context
 	if ( !GLW_StartDriverAndSetMode( "opengl32", r_mode->integer, r_colorbits->integer, cdsFullscreen ) ) {
 		ri.Printf( PRINT_WARNING, "Falling back to 1280x720 windowed.\n" );
-		if ( !GLW_StartDriverAndSetMode( "opengl32", 2, 32, qfalse ) ) {
+		if ( !GLW_StartDriverAndSetMode( "opengl32", 2, 32, false ) ) {
 			ri.Error( ERR_FATAL, "GLW_StartOpenGL() - could not load OpenGL subsystem\n" );
 		}
 		ri.Cvar_Set( "r_mode", "2" );
@@ -422,7 +422,7 @@ void GLimp_EndFrame( void ) {
 	// swapinterval stuff
 	//
 	if ( r_swapInterval->modified ) {
-		r_swapInterval->modified = qfalse;
+		r_swapInterval->modified = false;
 
 		if ( !glConfig.stereoEnabled ) {    // why?
 			SDL_GL_SetSwapInterval( r_swapInterval->integer );
@@ -503,7 +503,7 @@ void GLimp_Shutdown( void ) {
 		SDL_DestroyWindow( glw_state.window );
 		glw_state.window = NULL;
 		ri.SetGameWindow( NULL );
-		glw_state.cdsFullscreen = qfalse;
+		glw_state.cdsFullscreen = false;
 	}
 
 
@@ -551,7 +551,7 @@ GLimp_SpawnRenderThread
 */
 HANDLE renderThreadHandle;
 DWORD renderThreadId;
-qboolean GLimp_SpawnRenderThread( void ( *function )( void ) ) {
+bool GLimp_SpawnRenderThread( void ( *function )( void ) ) {
 
 	renderCommandsEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
 	renderCompletedEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
@@ -563,10 +563,10 @@ qboolean GLimp_SpawnRenderThread( void ( *function )( void ) ) {
 		NULL, 0, GLimp_RenderThreadWrapper, NULL, 0, &renderThreadId );
 
 	if ( !renderThreadHandle ) {
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 }
 
 static void    *smpData;

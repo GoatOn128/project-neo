@@ -216,7 +216,7 @@ void BotImport_Trace( bsp_trace_t *bsptrace, vec3_t start, vec3_t mins, vec3_t m
 	trace_t trace;
 
 	// always use bounding box for bot stuff ?
-	SV_Trace( &trace, start, mins, maxs, end, passent, contentmask, qfalse );
+	SV_Trace( &trace, start, mins, maxs, end, passent, contentmask, false );
 	//copy the trace information
 	bsptrace->allsolid = trace.allsolid;
 	bsptrace->startsolid = trace.startsolid;
@@ -242,7 +242,7 @@ void BotImport_EntityTrace( bsp_trace_t *bsptrace, vec3_t start, vec3_t mins, ve
 	trace_t trace;
 
 	// always use bounding box for bot stuff ?
-	SV_ClipToEntity( &trace, start, mins, maxs, end, entnum, contentmask, qfalse );
+	SV_ClipToEntity( &trace, start, mins, maxs, end, entnum, contentmask, false );
 	//copy the trace information
 	bsptrace->allsolid = trace.allsolid;
 	bsptrace->startsolid = trace.startsolid;
@@ -369,7 +369,7 @@ int BotImport_DebugPolygonCreate( int color, int numPoints, vec3_t *points ) {
 		return 0;
 	}
 	poly = &debugpolygons[i];
-	poly->inuse = qtrue;
+	poly->inuse = true;
 	poly->color = color;
 	poly->numPoints = numPoints;
 	memcpy( poly->points, points, numPoints * sizeof( vec3_t ) );
@@ -386,7 +386,7 @@ void BotImport_DebugPolygonShow( int id, int color, int numPoints, vec3_t *point
 	bot_debugpoly_t *poly;
 
 	poly = &debugpolygons[id];
-	poly->inuse = qtrue;
+	poly->inuse = true;
 	poly->color = color;
 	poly->numPoints = numPoints;
 	memcpy( poly->points, points, numPoints * sizeof( vec3_t ) );
@@ -398,7 +398,7 @@ BotImport_DebugPolygonDelete
 ==================
 */
 void BotImport_DebugPolygonDelete( int id ) {
-	debugpolygons[id].inuse = qfalse;
+	debugpolygons[id].inuse = false;
 }
 
 /*
@@ -460,7 +460,7 @@ SV_BotClientCommand
 ==================
 */
 void BotClientCommand( int client, char *command ) {
-	SV_ExecuteClientCommand( &svs.clients[client], command, qtrue );
+	SV_ExecuteClientCommand( &svs.clients[client], command, true );
 }
 
 /*
@@ -543,8 +543,8 @@ void SV_BotInitCvars( void ) {
 BotImport_EntityVisibleFromPos
 ===============
 */
-qboolean BotImport_EntityVisibleFromPos(vec3_t srcpos, int srcnum, vec3_t destpos, int destnum,
-                                        qboolean updateVisPos) {
+bool BotImport_EntityVisibleFromPos(vec3_t srcpos, int srcnum, vec3_t destpos, int destnum,
+                                        bool updateVisPos) {
     return gameExport->EntityVisibleFromPos( srcpos, srcnum, destpos, destnum, updateVisPos );
 }
 
@@ -553,8 +553,8 @@ qboolean BotImport_EntityVisibleFromPos(vec3_t srcpos, int srcnum, vec3_t destpo
 BotImport_EntityCanAttackFromPos
 ===============
 */
-qboolean BotImport_EntityCanAttackFromPos(int entnum, int enemy, vec3_t pos, qboolean ducking,
-                                          qboolean allowHitWorld) {
+bool BotImport_EntityCanAttackFromPos(int entnum, int enemy, vec3_t pos, bool ducking,
+                                          bool allowHitWorld) {
     return gameExport->EntityCanAttackFromPos( entnum, enemy, pos, ducking, allowHitWorld );
 }
 // done.
@@ -637,7 +637,7 @@ int SV_BotGetConsoleMessage( int client, char *buf, int size ) {
 	cl->lastPacketTime = svs.time;
 
 	if ( cl->reliableAcknowledge == cl->reliableSequence ) {
-		return qfalse;
+		return false;
 	}
 
 	cl->reliableAcknowledge++;
@@ -645,12 +645,12 @@ int SV_BotGetConsoleMessage( int client, char *buf, int size ) {
 
 	//if ( !cl->reliableCommands[index][0] ) {
 	if ( !( msg = SV_GetReliableCommand( cl, index ) ) || !msg[0] ) {
-		return qfalse;
+		return false;
 	}
 
 	//Q_strncpyz( buf, cl->reliableCommands[index], size );
 	Q_strncpyz( buf, msg, size );
-	return qtrue;
+	return true;
 }
 
 #if 0
@@ -668,10 +668,10 @@ int EntityInPVS( int client, int entityNum ) {
 	frame = &cl->frames[cl->netchan.outgoingSequence & PACKET_MASK];
 	for ( i = 0; i < frame->num_entities; i++ ) {
 		if ( svs.snapshotEntities[( frame->first_entity + i ) % svs.numSnapshotEntities].number == entityNum ) {
-			return qtrue;
+			return true;
 		}
 	}
-	return qfalse;
+	return false;
 }
 #endif
 

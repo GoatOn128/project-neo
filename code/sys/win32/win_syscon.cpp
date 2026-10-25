@@ -76,7 +76,7 @@ typedef struct
 
 	char consoleText[512], returnedText[512];
 	int visLevel;
-	qboolean quitOnClose;
+	bool quitOnClose;
 	int windowWidth, windowHeight;
 
 	WNDPROC SysInputLineWndProc;
@@ -87,7 +87,7 @@ static WinConData s_wcd;
 
 static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam ) {
 	char *cmdString;
-	static qboolean s_timePolarity;
+	static bool s_timePolarity;
 
 	switch ( uMsg )
 	{
@@ -118,7 +118,7 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			PostQuitMessage( 0 );
 		} else
 		{
-			Sys_ShowConsole( 0, qfalse );
+			Sys_ShowConsole( 0, false );
 			Cvar_Set( "viewlog", "0" );
 		}
 		return 0;
@@ -409,7 +409,7 @@ void Sys_DestroyConsole( void ) {
 /*
 ** Sys_ShowConsole
 */
-void Sys_ShowConsole( int visLevel, qboolean quitOnClose ) {
+void Sys_ShowConsole( int visLevel, bool quitOnClose ) {
 	s_wcd.quitOnClose = quitOnClose;
 
 	if ( visLevel == s_wcd.visLevel ) {

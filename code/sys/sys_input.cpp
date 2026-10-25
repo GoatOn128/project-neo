@@ -37,8 +37,8 @@ If you have questions concerning this license or the applicable additional terms
 typedef struct {
 	int oldButtonState;
 
-	qboolean mouseActive;
-	qboolean mouseInitialized;
+	bool mouseActive;
+	bool mouseInitialized;
 } SysMouseVars_t;
 
 static SysMouseVars_t s_smv;
@@ -47,7 +47,7 @@ static SysMouseVars_t s_smv;
 // Joystick definitions
 //
 typedef struct {
-	qboolean avail;
+	bool avail;
 	SDL_Gamepad *gamepad;
 
 	int oldbuttonstate;
@@ -64,7 +64,7 @@ cvar_t  *in_joyBallScale;
 cvar_t  *in_debugJoystick;
 cvar_t  *joy_threshold;
 
-qboolean in_appactive;
+bool in_appactive;
 
 // forward-referenced functions
 void IN_StartupJoystick( void );
@@ -90,14 +90,14 @@ void IN_ActivateMouse( void ) {
 		return;
 	}
 	if ( !in_mouse->integer ) {
-		s_smv.mouseActive = qfalse;
+		s_smv.mouseActive = false;
 		return;
 	}
 	if ( s_smv.mouseActive ) {
 		return;
 	}
 
-	s_smv.mouseActive = qtrue;
+	s_smv.mouseActive = true;
 
 	// grab the mouse and hide the cursor while the game has focus
 	SDL_Window *window = Sys_GameWindow();
@@ -122,7 +122,7 @@ void IN_DeactivateMouse( void ) {
 	if ( !s_smv.mouseActive ) {
 		return;
 	}
-	s_smv.mouseActive = qfalse;
+	s_smv.mouseActive = false;
 
 	SDL_Window *window = Sys_GameWindow();
 	if ( window ) {
@@ -138,14 +138,14 @@ IN_StartupMouse
 ===========
 */
 void IN_StartupMouse( void ) {
-	s_smv.mouseInitialized = qfalse;
+	s_smv.mouseInitialized = false;
 
 	if ( in_mouse->integer == 0 ) {
 		Com_Printf( "Mouse control not active.\n" );
 		return;
 	}
 
-	s_smv.mouseInitialized = qtrue;
+	s_smv.mouseInitialized = true;
 }
 
 /*
@@ -168,12 +168,12 @@ void IN_MouseEvent( int mstate ) {
 	{
 		if ( ( mstate & ( 1 << i ) ) &&
 			 !( s_smv.oldButtonState & ( 1 << i ) ) ) {
-			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MOUSE1 + i, qtrue, 0, NULL );
+			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MOUSE1 + i, true, 0, NULL );
 		}
 
 		if ( !( mstate & ( 1 << i ) ) &&
 			 ( s_smv.oldButtonState & ( 1 << i ) ) ) {
-			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MOUSE1 + i, qfalse, 0, NULL );
+			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MOUSE1 + i, false, 0, NULL );
 		}
 	}
 
@@ -217,8 +217,8 @@ void IN_Startup( void ) {
 	IN_StartupMouse();
 	IN_StartupJoystick();
 
-	in_mouse->modified = qfalse;
-	in_joystick->modified = qfalse;
+	in_mouse->modified = false;
+	in_joystick->modified = false;
 }
 
 
@@ -234,7 +234,7 @@ void IN_Shutdown( void ) {
 		SDL_CloseGamepad( joy.gamepad );
 		joy.gamepad = NULL;
 	}
-	joy.avail = qfalse;
+	joy.avail = false;
 }
 
 
@@ -269,7 +269,7 @@ The window may have been destroyed and recreated
 between a deactivate and an activate.
 ===========
 */
-void IN_Activate( qboolean active ) {
+void IN_Activate( bool active ) {
 	in_appactive = active;
 
 	if ( !active ) {
@@ -357,7 +357,7 @@ void IN_StartupJoystick( void ) {
 	SDL_JoystickID *gamepads;
 
 	// assume no joystick
-	joy.avail = qfalse;
+	joy.avail = false;
 	joy.gamepad = NULL;
 
 	if ( !in_joystick->integer ) {
@@ -395,7 +395,7 @@ void IN_StartupJoystick( void ) {
 	joy.oldpovstate = 0;
 
 	// mark the joystick as available
-	joy.avail = qtrue;
+	joy.avail = true;
 }
 
 /*
@@ -456,10 +456,10 @@ void IN_JoyMove( void ) {
 	}
 	for ( i = 0 ; i < SDL_GAMEPAD_BUTTON_COUNT && i < 15 ; i++ ) {
 		if ( ( buttonstate & ( 1 << i ) ) && !( joy.oldbuttonstate & ( 1 << i ) ) ) {
-			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_JOY1 + i, qtrue, 0, NULL );
+			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_JOY1 + i, true, 0, NULL );
 		}
 		if ( !( buttonstate & ( 1 << i ) ) && ( joy.oldbuttonstate & ( 1 << i ) ) ) {
-			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_JOY1 + i, qfalse, 0, NULL );
+			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_JOY1 + i, false, 0, NULL );
 		}
 	}
 	joy.oldbuttonstate = buttonstate;
@@ -507,11 +507,11 @@ void IN_JoyMove( void ) {
 	// determine which bits have changed and key an auxillary event for each change
 	for ( i = 0 ; i < 16 ; i++ ) {
 		if ( ( povstate & ( 1 << i ) ) && !( joy.oldpovstate & ( 1 << i ) ) ) {
-			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, joyDirectionKeys[i], qtrue, 0, NULL );
+			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, joyDirectionKeys[i], true, 0, NULL );
 		}
 
 		if ( !( povstate & ( 1 << i ) ) && ( joy.oldpovstate & ( 1 << i ) ) ) {
-			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, joyDirectionKeys[i], qfalse, 0, NULL );
+			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, joyDirectionKeys[i], false, 0, NULL );
 		}
 	}
 	joy.oldpovstate = povstate;

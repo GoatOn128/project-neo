@@ -142,7 +142,7 @@ void SV_SetBrushModel( sharedEntity_t *ent, const char *name ) {
 	CM_ModelBounds( h, mins, maxs );
 	VectorCopy( mins, ent->r.mins );
 	VectorCopy( maxs, ent->r.maxs );
-	ent->r.bmodel = qtrue;
+	ent->r.bmodel = true;
 
 	ent->r.contents = -1;       // we don't know exactly what is in the brushes
 
@@ -158,7 +158,7 @@ SV_inPVS
 Also checks portalareas so that doors block sight
 =================
 */
-qboolean SV_inPVS( const vec3_t p1, const vec3_t p2 ) {
+bool SV_inPVS( const vec3_t p1, const vec3_t p2 ) {
 	int leafnum;
 	int cluster;
 	int area1, area2;
@@ -173,12 +173,12 @@ qboolean SV_inPVS( const vec3_t p1, const vec3_t p2 ) {
 	cluster = CM_LeafCluster( leafnum );
 	area2 = CM_LeafArea( leafnum );
 	if ( mask && ( !( mask[cluster >> 3] & ( 1 << ( cluster & 7 ) ) ) ) ) {
-		return qfalse;
+		return false;
 	}
 	if ( !CM_AreasConnected( area1, area2 ) ) {
-		return qfalse;      // a door blocks sight
+		return false;      // a door blocks sight
 	}
-	return qtrue;
+	return true;
 }
 
 
@@ -189,7 +189,7 @@ SV_inPVSIgnorePortals
 Does NOT check portalareas
 =================
 */
-qboolean SV_inPVSIgnorePortals( const vec3_t p1, const vec3_t p2 ) {
+bool SV_inPVSIgnorePortals( const vec3_t p1, const vec3_t p2 ) {
 	int leafnum;
 	int cluster;
 	byte    *mask;
@@ -202,10 +202,10 @@ qboolean SV_inPVSIgnorePortals( const vec3_t p1, const vec3_t p2 ) {
 	cluster = CM_LeafCluster( leafnum );
 
 	if ( mask && ( !( mask[cluster >> 3] & ( 1 << ( cluster & 7 ) ) ) ) ) {
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 }
 
 
@@ -214,7 +214,7 @@ qboolean SV_inPVSIgnorePortals( const vec3_t p1, const vec3_t p2 ) {
 SV_AdjustAreaPortalState
 ========================
 */
-void SV_AdjustAreaPortalState( sharedEntity_t *ent, qboolean open ) {
+void SV_AdjustAreaPortalState( sharedEntity_t *ent, bool open ) {
 	svEntity_t  *svEnt;
 
 	svEnt = SV_SvEntityForGentity( ent );
@@ -230,7 +230,7 @@ void SV_AdjustAreaPortalState( sharedEntity_t *ent, qboolean open ) {
 SV_GameAreaEntities
 ==================
 */
-qboolean    SV_EntityContact( const vec3_t mins, const vec3_t maxs, const sharedEntity_t *gEnt, const int capsule ) {
+bool    SV_EntityContact( const vec3_t mins, const vec3_t maxs, const sharedEntity_t *gEnt, const int capsule ) {
 	const float *origin, *angles;
 	clipHandle_t ch;
 	trace_t trace;
@@ -325,29 +325,29 @@ static const gameImport_t gameImportTable = {
 	SV_SetUserinfo,
 	SV_GetServerinfo,
 	[]( void *ent, const char *name ) { SV_SetBrushModel( (sharedEntity_t *)ent, name ); },
-	[]( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) { SV_Trace( results, start, mins, maxs, end, passEntityNum, contentmask, qfalse ); },
-	[]( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) { SV_Trace( results, start, mins, maxs, end, passEntityNum, contentmask, qtrue ); },
+	[]( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) { SV_Trace( results, start, mins, maxs, end, passEntityNum, contentmask, false ); },
+	[]( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) { SV_Trace( results, start, mins, maxs, end, passEntityNum, contentmask, true ); },
 	SV_PointContents,
 	SV_inPVS,
 	SV_inPVSIgnorePortals,
-	[]( void *ent, qboolean open ) { SV_AdjustAreaPortalState( (sharedEntity_t *)ent, open ); },
+	[]( void *ent, bool open ) { SV_AdjustAreaPortalState( (sharedEntity_t *)ent, open ); },
 	CM_AreasConnected,
 	[]( void *ent ) { SV_LinkEntity( (sharedEntity_t *)ent ); },
 	[]( void *ent ) { SV_UnlinkEntity( (sharedEntity_t *)ent ); },
 	SV_AreaEntities,
-	[]( const vec3_t mins, const vec3_t maxs, const void *ent ) { return SV_EntityContact( mins, maxs, (const sharedEntity_t *)ent, qfalse ); },
-	[]( const vec3_t mins, const vec3_t maxs, const void *ent ) { return SV_EntityContact( mins, maxs, (const sharedEntity_t *)ent, qtrue ); },
+	[]( const vec3_t mins, const vec3_t maxs, const void *ent ) { return SV_EntityContact( mins, maxs, (const sharedEntity_t *)ent, false ); },
+	[]( const vec3_t mins, const vec3_t maxs, const void *ent ) { return SV_EntityContact( mins, maxs, (const sharedEntity_t *)ent, true ); },
 	SV_BotAllocateClient,
 	SV_BotFreeClient,
 	SV_GetUsercmd,
-	// the enum literals need casts so the lambda deduces qboolean, not the enum type
+	// the enum literals need casts so the lambda deduces bool, not the enum type
 	[]( char *buffer, int bufferSize ) {
 		const char *s = COM_Parse( &sv.entityParsePoint );
 		Q_strncpyz( buffer, s, bufferSize );
 		if ( !sv.entityParsePoint && !s[0] ) {
-			return (qboolean)qfalse;
+			return (bool)false;
 		}
-		return (qboolean)qtrue;
+		return (bool)true;
 	},
 	BotImport_DebugPolygonCreate,
 	BotImport_DebugPolygonDelete,
@@ -390,7 +390,7 @@ static const gameImport_t gameImportTable = {
 	[]( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos ) { return botlib_export->aas.AAS_RT_GetHidePos( (vec_t *)srcpos, srcnum, srcarea, (vec_t *)destpos, destnum, destarea, (vec_t *)returnPos ); },
 	[]( int srcnum, int rangenum, int enemynum, float rangedist, int travelflags, float *outpos ) { return botlib_export->aas.AAS_FindAttackSpotWithinRange( srcnum, rangenum, enemynum, rangedist, travelflags, outpos ); },
 	[]( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos ) { return botlib_export->aas.AAS_GetRouteFirstVisPos( (vec_t *)srcpos, (vec_t *)destpos, travelflags, (vec_t *)retpos ); },
-	[]( vec3_t absmin, vec3_t absmax, qboolean blocking ) { botlib_export->aas.AAS_SetAASBlockingEntity( (vec_t *)absmin, (vec_t *)absmax, blocking ); },
+	[]( vec3_t absmin, vec3_t absmax, bool blocking ) { botlib_export->aas.AAS_SetAASBlockingEntity( (vec_t *)absmin, (vec_t *)absmax, blocking ); },
 	[]( int client, char *str ) { botlib_export->ea.EA_Say( client, str ); },
 	[]( int client, char *str ) { botlib_export->ea.EA_SayTeam( client, str ); },
 	[]( int client, char *it ) { botlib_export->ea.EA_UseItem( client, it ); },
@@ -527,7 +527,7 @@ void SV_ShutdownGameProgs( void ) {
 	if ( !gameExport ) {
 		return;
 	}
-	gameExport->Shutdown( qfalse );
+	gameExport->Shutdown( false );
 	Sys_UnloadDll( gameDllHandle );
 	gameDllHandle = NULL;
 	gameExport = NULL;
@@ -540,7 +540,7 @@ SV_InitGameVM
 Called for both a full init and a restart
 ==================
 */
-static void SV_InitGameVM(qboolean restart) {
+static void SV_InitGameVM(bool restart) {
     int i;
 
     // Native DLL reloads can relocate game entities. GAME_INIT publishes
@@ -568,7 +568,7 @@ void SV_RestartGameProgs( void ) {
 	if ( !gameExport ) {
 		return;
 	}
-	gameExport->Shutdown( qtrue );
+	gameExport->Shutdown( true );
 
 	// do a restart instead of a free: unload the DLL and load it from disk again
 	Sys_UnloadDll( gameDllHandle );
@@ -576,7 +576,7 @@ void SV_RestartGameProgs( void ) {
 	gameExport = NULL;
 	SV_LoadGame();
 
-	SV_InitGameVM( qtrue );
+	SV_InitGameVM( true );
 }
 
 
@@ -601,7 +601,7 @@ void SV_InitGameProgs( void ) {
 
 	SV_LoadGame();
 
-	SV_InitGameVM( qfalse );
+	SV_InitGameVM( false );
 }
 
 
@@ -612,9 +612,9 @@ SV_GameCommand
 See if the current console command is claimed by the game
 ====================
 */
-qboolean SV_GameCommand( void ) {
+bool SV_GameCommand( void ) {
 	if ( sv.state != SS_GAME ) {
-		return qfalse;
+		return false;
 	}
 
 	return gameExport->ConsoleCommand();
@@ -637,14 +637,14 @@ void SV_SendMoveSpeedsToGame( int entnum, char *text ) {
 ====================
 SV_GetTag
 
-  return qfalse if unable to retrieve tag information for this client
+  return false if unable to retrieve tag information for this client
 ====================
 */
-extern qboolean CL_GetTag( int clientNum, char *tagname, orientation_t *or );
+extern bool CL_GetTag( int clientNum, char *tagname, orientation_t *or );
 
-qboolean SV_GetTag( int clientNum, char *tagname, orientation_t *or ) {
+bool SV_GetTag( int clientNum, char *tagname, orientation_t *or ) {
 	if ( com_dedicated->integer ) {
-		return qfalse;
+		return false;
 	}
 
 	return CL_GetTag( clientNum, tagname, or );
@@ -657,7 +657,7 @@ SV_GetModelInfo
   request this modelinfo from the game
 ===================
 */
-qboolean SV_GetModelInfo( int clientNum, char *modelName, animModelInfo_t **modelInfo ) {
+bool SV_GetModelInfo( int clientNum, char *modelName, animModelInfo_t **modelInfo ) {
 	return gameExport->GetModelInfo( clientNum, modelName, (void **)modelInfo );
 }
 

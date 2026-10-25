@@ -55,9 +55,9 @@ static char sys_cmdline[MAX_STRING_CHARS];
 Sys_LowPhysicalMemory()
 ==================
 */
-qboolean Sys_LowPhysicalMemory() {
+bool Sys_LowPhysicalMemory() {
 	// SDL reports the RAM size in megabytes
-	return ( SDL_GetSystemRAM() <= MEM_THRESHOLD_MB ) ? qtrue : qfalse;
+	return ( SDL_GetSystemRAM() <= MEM_THRESHOLD_MB ) ? true : false;
 }
 
 //----(SA)	from from NERVE MP codebase (10/15/01)  (checkins at time of this file should be related)
@@ -66,7 +66,7 @@ qboolean Sys_LowPhysicalMemory() {
 Sys_StartProcess
 ==================
 */
-void Sys_StartProcess( char *exeName, qboolean doexit ) {           // NERVE - SMF
+void Sys_StartProcess( char *exeName, bool doexit ) {           // NERVE - SMF
 	char cmd[MAX_OSPATH];
 	SDL_Process *process;
 	const char *args[2];
@@ -96,7 +96,7 @@ void Sys_StartProcess( char *exeName, qboolean doexit ) {           // NERVE - S
 Sys_OpenURL
 ==================
 */
-void Sys_OpenURL( char *url, qboolean doexit ) {                // NERVE - SMF
+void Sys_OpenURL( char *url, bool doexit ) {                // NERVE - SMF
 	if ( !SDL_OpenURL( url ) ) {
 		// couldn't start it, popup error box
 		Com_Error( ERR_DROP, "Could not open url: '%s' ", url );
@@ -137,9 +137,9 @@ void QDECL Sys_Error( const char *error, ... ) {
 	Conbuf_AppendText( "\n" );
 
 	Sys_SetErrorText( text );
-	Sys_ShowConsole( 1, qtrue );
+	Sys_ShowConsole( 1, true );
 
-	Win_SetTimerResolution( qfalse );
+	Win_SetTimerResolution( false );
 
 	IN_Shutdown();
 
@@ -161,7 +161,7 @@ Sys_Quit
 ==============
 */
 void Sys_Quit( void ) {
-	Win_SetTimerResolution( qfalse );
+	Win_SetTimerResolution( false );
 	IN_Shutdown();
 	Sys_DestroyConsole();
 
@@ -301,7 +301,7 @@ static SDL_EnumerationResult SDLCALL FilteredFilesCallback( void *userdata, cons
 	// keep the same entry naming as the old code, including the leading
 	// separator when scanning the base directory itself
 	Com_sprintf( filename, sizeof( filename ), "%s\\%s", scan->subdirs, fname );
-	if ( !Com_FilterPath( (char *)scan->filter, filename, qfalse ) ) {
+	if ( !Com_FilterPath( (char *)scan->filter, filename, false ) ) {
 		return SDL_ENUM_CONTINUE;
 	}
 
@@ -334,7 +334,7 @@ void Sys_ListFilteredFiles( const char *basedir, const char *subdirs, const char
 	SDL_EnumerateDirectory( search, FilteredFilesCallback, &scan );
 }
 
-static qboolean strgtr( const char *s0, const char *s1 ) {
+static bool strgtr( const char *s0, const char *s1 ) {
 	int l0, l1, i;
 
 	l0 = strlen( s0 );
@@ -346,13 +346,13 @@ static qboolean strgtr( const char *s0, const char *s1 ) {
 
 	for ( i = 0; i < l0; i++ ) {
 		if ( s1[i] > s0[i] ) {
-			return qtrue;
+			return true;
 		}
 		if ( s1[i] < s0[i] ) {
-			return qfalse;
+			return false;
 		}
 	}
-	return qfalse;
+	return false;
 }
 
 // state shared between Sys_ListFiles and its enumeration callback
@@ -360,8 +360,8 @@ typedef struct {
 	char **list;
 	int nfiles;
 	const char *extension;
-	qboolean dirsOnly;
-	qboolean wantsubs;
+	bool dirsOnly;
+	bool wantsubs;
 } listFilesScan_t;
 
 /*
@@ -375,8 +375,8 @@ static SDL_EnumerationResult SDLCALL ListFilesCallback( void *userdata, const ch
 	listFilesScan_t *scan = (listFilesScan_t *)userdata;
 	char path[MAX_OSPATH];
 	SDL_PathInfo info;
-	qboolean isDir;
-	qboolean want;
+	bool isDir;
+	bool want;
 	int nameLen, extLen;
 
 	if ( !Q_stricmp( fname, "." ) || !Q_stricmp( fname, ".." ) ) {
@@ -419,7 +419,7 @@ static SDL_EnumerationResult SDLCALL ListFilesCallback( void *userdata, const ch
 	return SDL_ENUM_CONTINUE;
 }
 
-char **Sys_ListFiles( const char *directory, const char *extension, char *filter, int *numfiles, qboolean wantsubs ) {
+char **Sys_ListFiles( const char *directory, const char *extension, char *filter, int *numfiles, bool wantsubs ) {
 	int nfiles;
 	char        **listCopy;
 	char        *list[MAX_FOUND_FILES];
@@ -454,9 +454,9 @@ char **Sys_ListFiles( const char *directory, const char *extension, char *filter
 	// passing a slash as extension will find directories
 	if ( extension[0] == '/' && extension[1] == 0 ) {
 		extension = "";
-		scan.dirsOnly = qtrue;
+		scan.dirsOnly = true;
 	} else {
-		scan.dirsOnly = qfalse;
+		scan.dirsOnly = false;
 	}
 
 	// search
@@ -529,9 +529,9 @@ Return true if the proper CD is in the drive. The CD scan itself is
 dead, nothing can ship on a CD any more.
 ================
 */
-qboolean    Sys_CheckCD( void ) {
+bool    Sys_CheckCD( void ) {
 	// FIXME: mission pack
-	return qtrue;
+	return true;
 }
 
 
@@ -879,7 +879,7 @@ void Sys_Init( void ) {
 
 	// make sure the timer is high precision, otherwise
 	// NT gets 18ms resolution
-	Win_SetTimerResolution( qtrue );
+	Win_SetTimerResolution( true );
 
 	Cmd_AddCommand( "in_restart", Sys_In_Restart_f );
 	Cmd_AddCommand( "net_restart", Sys_Net_Restart_f );
@@ -1001,7 +1001,7 @@ int main( int argc, char *argv[] ) {
 	// hide the early console since we've reached the point where we
 	// have a working graphics subsystems
 	if ( !com_dedicated->integer && !com_viewlog->integer ) {
-		Sys_ShowConsole( 0, qfalse );
+		Sys_ShowConsole( 0, false );
 	}
 
 	SDL_Window *window = Sys_GameWindow();

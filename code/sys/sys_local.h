@@ -42,7 +42,7 @@ If you have questions concerning this license or the applicable additional terms
 void    IN_Init( void );
 void    IN_Shutdown( void );
 
-void    IN_Activate( qboolean active );
+void    IN_Activate( bool active );
 void    IN_Frame( void );
 void    IN_ClearStates( void );
 
@@ -60,7 +60,7 @@ void    Sys_QueEvent( int time, sysEventType_t type, int value, int value2, int 
 
 void    Sys_CreateConsole( void );
 void    Sys_DestroyConsole( void );
-void    Sys_ShowConsole( int visLevel, qboolean quitOnClose );
+void    Sys_ShowConsole( int visLevel, bool quitOnClose );
 void    Sys_SetErrorText( const char *text );
 
 char    *Sys_ConsoleInput( void );
@@ -69,21 +69,21 @@ void Conbuf_AppendText( const char *msg );
 
 // Networking, implemented with Winsock in sys/win32/win_net.cpp
 
-qboolean    Sys_GetPacket( netadr_t *net_from, msg_t *net_message );
+bool    Sys_GetPacket( netadr_t *net_from, msg_t *net_message );
 
 // Win32-only helpers the SDL files call into, implemented in
 // sys/win32/win_shared.cpp
 
 void Win_SetProcessErrorMode( void );
-void Win_SetTimerResolution( qboolean enable );
-qboolean Win_PumpConsoleMessages( void );
+void Win_SetTimerResolution( bool enable );
+bool Win_PumpConsoleMessages( void );
 
 void SNDDMA_Activate( void );
 
 typedef struct
 {
-	qboolean activeApp;
-	qboolean isMinimized;
+	bool activeApp;
+	bool isMinimized;
 
 	// when we get a window event, we store the time off so keyboard processing
 	// can know the exact time of an event
@@ -97,7 +97,7 @@ typedef struct
 	SDL_Window *window;         // the engine window
 	SDL_GLContext context;      // the OpenGL context
 
-	qboolean cdsFullscreen;
+	bool cdsFullscreen;
 
 	FILE *log_fp;
 

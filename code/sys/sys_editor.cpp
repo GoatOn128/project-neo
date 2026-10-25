@@ -137,14 +137,14 @@ void editorCommand() {
     }
     Key_ClearStates();
     Con_Close();
-    IN_Activate(qfalse);
+    IN_Activate(false);
     if (!pausedByEditor) {
         previousPause = Cvar_VariableIntegerValue("cl_paused");
     }
     pausedByEditor = true;
     Cvar_Set("cl_paused", "1");
     Cvar_Set("editor_active", "1");
-    S_SetEditorPaused(qtrue);
+    S_SetEditorPaused(true);
 }
 void buildCommand(bool navigationOnly) {
     if (!validCommand(navigationOnly ? "aasbuild <mapname>" : "dmap [mapname]", navigationOnly) ||
@@ -183,7 +183,7 @@ void Sys_EditorFrame() {
     flushMessages();
     if (Sys_EditorVisible()) {
         Cvar_Set("cl_paused", "1");
-        S_SetEditorPaused(qtrue);
+        S_SetEditorPaused(true);
     }
     if (returnRequested) {
         returnRequested = false;
@@ -191,7 +191,7 @@ void Sys_EditorFrame() {
         Cvar_Set("editor_active", "0");
         if (pausedByEditor) {
             Cvar_Set("cl_paused", previousPause ? "1" : "0");
-            S_SetEditorPaused(qfalse);
+            S_SetEditorPaused(false);
             pausedByEditor = false;
         }
         SDL_Window *window = Sys_GameWindow();
@@ -204,7 +204,7 @@ void Sys_EditorFrame() {
             // engine window goes back to the size the game allows.
             SDL_SetWindowMinimumSize(window, 640, 480);
         }
-        IN_Activate(qtrue);
+        IN_Activate(true);
         Com_Printf("Returned to game; editor document retained\n");
     }
     if (*pendingMap) {
@@ -248,7 +248,7 @@ void Sys_ShutdownEditor() {
     }
     if (pausedByEditor) {
         Cvar_Set("cl_paused", previousPause ? "1" : "0");
-        S_SetEditorPaused(qfalse);
+        S_SetEditorPaused(false);
     }
     pausedByEditor = returnRequested = false;
     pendingMap[0] = 0;

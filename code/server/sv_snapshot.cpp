@@ -93,9 +93,9 @@ static void SV_EmitPacketEntities( clientSnapshot_t *from, clientSnapshot_t *to,
 
 		if ( newnum == oldnum ) {
 			// delta update from old position
-			// because the force parm is qfalse, this will not result
+			// because the force parm is false, this will not result
 			// in any bytes being emited if the entity has not changed at all
-			MSG_WriteDeltaEntity( msg, oldent, newent, qfalse );
+			MSG_WriteDeltaEntity( msg, oldent, newent, false );
 			oldindex++;
 			newindex++;
 			continue;
@@ -103,14 +103,14 @@ static void SV_EmitPacketEntities( clientSnapshot_t *from, clientSnapshot_t *to,
 
 		if ( newnum < oldnum ) {
 			// this is a new entity, send it from the baseline
-			MSG_WriteDeltaEntity( msg, &sv.svEntities[newnum].baseline, newent, qtrue );
+			MSG_WriteDeltaEntity( msg, &sv.svEntities[newnum].baseline, newent, true );
 			newindex++;
 			continue;
 		}
 
 		if ( newnum > oldnum ) {
 			// the old entity isn't present in the new message
-			MSG_WriteDeltaEntity( msg, oldent, NULL, qtrue );
+			MSG_WriteDeltaEntity( msg, oldent, NULL, true );
 			oldindex++;
 			continue;
 		}
@@ -291,9 +291,9 @@ SV_AddEntitiesVisibleFromPoint
 ===============
 */
 static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *frame,
-//									snapshotEntityNumbers_t *eNums, qboolean portal, clientSnapshot_t *oldframe, qboolean localClient ) {
-//									snapshotEntityNumbers_t *eNums, qboolean portal ) {
-											snapshotEntityNumbers_t *eNums, qboolean portal, qboolean localClient  ) {
+//									snapshotEntityNumbers_t *eNums, bool portal, clientSnapshot_t *oldframe, bool localClient ) {
+//									snapshotEntityNumbers_t *eNums, bool portal ) {
+											snapshotEntityNumbers_t *eNums, bool portal, bool localClient  ) {
 	int e, i;
 	sharedEntity_t *ent, *playerEnt;
 	svEntity_t  *svEnt;
@@ -363,8 +363,8 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *fra
 		if ( ( playerEnt->s.eFlags & EF_VIEWING_CAMERA ) && !portal ) {
 			if ( ent->r.svFlags & SVF_PORTAL ) {
 				SV_AddEntToSnapshot( svEnt, ent, eNums );
-//				SV_AddEntitiesVisibleFromPoint( ent->s.origin2, frame, eNums, qtrue, oldframe, localClient );
-				SV_AddEntitiesVisibleFromPoint( ent->s.origin2, frame, eNums, qtrue, localClient );
+//				SV_AddEntitiesVisibleFromPoint( ent->s.origin2, frame, eNums, true, oldframe, localClient );
+				SV_AddEntitiesVisibleFromPoint( ent->s.origin2, frame, eNums, true, localClient );
 			}
 			continue;
 		}
@@ -488,8 +488,8 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *fra
 
 		// if its a portal entity, add everything visible from its camera position
 		if ( ent->r.svFlags & SVF_PORTAL ) {
-//			SV_AddEntitiesVisibleFromPoint( ent->s.origin2, frame, eNums, qtrue, oldframe, localClient );
-			SV_AddEntitiesVisibleFromPoint( ent->s.origin2, frame, eNums, qtrue, localClient );
+//			SV_AddEntitiesVisibleFromPoint( ent->s.origin2, frame, eNums, true, oldframe, localClient );
+			SV_AddEntitiesVisibleFromPoint( ent->s.origin2, frame, eNums, true, localClient );
 		}
 
 		continue;
@@ -595,8 +595,8 @@ static void SV_BuildClientSnapshot( client_t *client ) {
 
 	// add all the entities directly visible to the eye, which
 	// may include portal entities that merge other viewpoints
-	SV_AddEntitiesVisibleFromPoint( org, frame, &entityNumbers, qfalse, client->netchan.remoteAddress.type == NA_LOOPBACK );
-//	SV_AddEntitiesVisibleFromPoint( org, frame, &entityNumbers, qfalse, oldframe, client->netchan.remoteAddress.type == NA_LOOPBACK );
+	SV_AddEntitiesVisibleFromPoint( org, frame, &entityNumbers, false, client->netchan.remoteAddress.type == NA_LOOPBACK );
+//	SV_AddEntitiesVisibleFromPoint( org, frame, &entityNumbers, false, oldframe, client->netchan.remoteAddress.type == NA_LOOPBACK );
 
 	// if there were portals visible, there may be out of order entities
 	// in the list which will need to be resorted for the delta compression
@@ -691,9 +691,9 @@ void SV_SendMessageToClient( msg_t *msg, client_t *client ) {
 	if ( rateMsec < client->snapshotMsec ) {
 		// never send more packets than this, no matter what the rate is at
 		rateMsec = client->snapshotMsec;
-		client->rateDelayed = qfalse;
+		client->rateDelayed = false;
 	} else {
-		client->rateDelayed = qtrue;
+		client->rateDelayed = true;
 	}
 
 	client->nextSnapshotTime = svs.time + rateMsec;
@@ -737,7 +737,7 @@ void SV_SendClientSnapshot( client_t *client ) {
 	}
 
 	MSG_Init( &msg, msg_buf, sizeof( msg_buf ) );
-	msg.allowoverflow = qtrue;
+	msg.allowoverflow = true;
 
 	// NOTE, MRE: all server->client messages now acknowledge
 	// let the client know which reliable clientCommands we have received

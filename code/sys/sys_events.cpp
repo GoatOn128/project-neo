@@ -48,8 +48,8 @@ static cvar_t *Sys_FullscreenCvar( void ) {
 	return Cvar_Get( "r_fullscreen", "1", 0 );
 }
 
-static qboolean s_windowActive;
-static qboolean s_windowMinimized;
+static bool s_windowActive;
+static bool s_windowMinimized;
 
 /*
 ==================
@@ -89,8 +89,8 @@ void Sys_UpdateWindowSize() {
         re.ResizeWindow(width, height, &cls.glconfig);
         Con_CheckResize();
         if (g_sv.activeApp) {
-            IN_Activate(qfalse);
-            IN_Activate(qtrue);
+            IN_Activate(false);
+            IN_Activate(true);
         }
     }
 }
@@ -100,7 +100,7 @@ void Sys_UpdateWindowSize() {
 VID_AppActivate
 ==================
 */
-static void VID_AppActivate( qboolean fActive, qboolean minimize ) {
+static void VID_AppActivate( bool fActive, bool minimize ) {
 	g_sv.isMinimized = minimize;
 
 	Com_DPrintf( "VID_AppActivate: %i\n", fActive );
@@ -109,10 +109,10 @@ static void VID_AppActivate( qboolean fActive, qboolean minimize ) {
 
 	// we don't want to act like we're active if we're minimized
 	if ( fActive && !g_sv.isMinimized ) {
-		g_sv.activeApp = qtrue;
+		g_sv.activeApp = true;
 	} else
 	{
-		g_sv.activeApp = qfalse;
+		g_sv.activeApp = false;
 	}
 
 	// minimize/restore mouse-capture on demand
@@ -120,10 +120,10 @@ static void VID_AppActivate( qboolean fActive, qboolean minimize ) {
 		// Release the win32 button latch so no mouse button stays stuck
 		// down across the focus change
 		IN_MouseEvent( 0 );
-		IN_Activate( qfalse );
+		IN_Activate( false );
 	} else
 	{
-		IN_Activate( qtrue );
+		IN_Activate( true );
 	}
 }
 
@@ -365,36 +365,36 @@ void Sys_EventLoop( void ) {
 
 		case SDL_EVENT_WINDOW_FOCUS_GAINED:
 			if ( window && e.window.windowID == SDL_GetWindowID( window ) ) {
-				s_windowActive = qtrue;
+				s_windowActive = true;
 				s_windowMinimized = ( SDL_GetWindowFlags( window ) & SDL_WINDOW_MINIMIZED ) != 0;
 				g_sv.sysMsgTime = Sys_Milliseconds();
-				VID_AppActivate( qtrue, s_windowMinimized );
+				VID_AppActivate( true, s_windowMinimized );
 				SNDDMA_Activate();
 			}
 			break;
 
 		case SDL_EVENT_WINDOW_FOCUS_LOST:
 			if ( window && e.window.windowID == SDL_GetWindowID( window ) ) {
-				s_windowActive = qfalse;
+				s_windowActive = false;
 				g_sv.sysMsgTime = Sys_Milliseconds();
-				VID_AppActivate( qfalse, g_sv.isMinimized );
+				VID_AppActivate( false, g_sv.isMinimized );
 				SNDDMA_Activate();
 			}
 			break;
 
 		case SDL_EVENT_WINDOW_MINIMIZED:
 			if ( window && e.window.windowID == SDL_GetWindowID( window ) ) {
-				s_windowMinimized = qtrue;
+				s_windowMinimized = true;
 				g_sv.sysMsgTime = Sys_Milliseconds();
-				VID_AppActivate( qfalse, qtrue );
+				VID_AppActivate( false, true );
 			}
 			break;
 
 		case SDL_EVENT_WINDOW_RESTORED:
 			if ( window && e.window.windowID == SDL_GetWindowID( window ) ) {
-				s_windowMinimized = qfalse;
+				s_windowMinimized = false;
 				g_sv.sysMsgTime = Sys_Milliseconds();
-				VID_AppActivate( s_windowActive, qfalse );
+				VID_AppActivate( s_windowActive, false );
 			}
 			break;
 
@@ -415,10 +415,10 @@ void Sys_EventLoop( void ) {
 					Cvar_SetValue( "vid_xpos", xPos );
 					Cvar_SetValue( "vid_ypos", yPos );
 					if ( vid_xpos ) {
-						vid_xpos->modified = qfalse;
+						vid_xpos->modified = false;
 					}
 					if ( vid_ypos ) {
-						vid_ypos->modified = qfalse;
+						vid_ypos->modified = false;
 					}
 				}
 			}
@@ -435,12 +435,12 @@ void Sys_EventLoop( void ) {
 				break;
 			}
 			g_sv.sysMsgTime = Sys_Milliseconds();
-			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, MapKey( e.key.scancode ), qtrue, 0, NULL );
+			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, MapKey( e.key.scancode ), true, 0, NULL );
 			break;
 
 		case SDL_EVENT_KEY_UP:
 			g_sv.sysMsgTime = Sys_Milliseconds();
-			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, MapKey( e.key.scancode ), qfalse, 0, NULL );
+			Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, MapKey( e.key.scancode ), false, 0, NULL );
 			break;
 
 		case SDL_EVENT_TEXT_INPUT:
@@ -459,7 +459,7 @@ void Sys_EventLoop( void ) {
 		case SDL_EVENT_MOUSE_BUTTON_UP:
 			{
 				int key = 0;
-				qboolean down = ( e.type == SDL_EVENT_MOUSE_BUTTON_DOWN );
+				bool down = ( e.type == SDL_EVENT_MOUSE_BUTTON_DOWN );
 
 				switch ( e.button.button )
 				{
@@ -479,11 +479,11 @@ void Sys_EventLoop( void ) {
 
 		case SDL_EVENT_MOUSE_WHEEL:
 			if ( e.wheel.y > 0 ) {
-				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELUP, qtrue, 0, NULL );
-				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELUP, qfalse, 0, NULL );
+				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELUP, true, 0, NULL );
+				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELUP, false, 0, NULL );
 			} else if ( e.wheel.y < 0 )      {
-				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELDOWN, qtrue, 0, NULL );
-				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELDOWN, qfalse, 0, NULL );
+				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELDOWN, true, 0, NULL );
+				Sys_QueEvent( g_sv.sysMsgTime, SE_KEY, K_MWHEELDOWN, false, 0, NULL );
 			}
 			break;
 
