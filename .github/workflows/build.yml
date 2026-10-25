@@ -139,8 +139,11 @@ jobs:
               git rebase --abort 2>/dev/null || true
               sleep 5
             done
-            echo "Could not push the logs after several attempts."
-            exit 1
+            # The build result above is what matters, so a failed log
+            # push only warns instead of failing the job and skipping
+            # every later job.
+            echo "::warning::Could not push the logs after several attempts. The build result stands, but the log is not in the repository."
+            exit 0
           fi
 
       - name: Save build.log
@@ -255,8 +258,11 @@ jobs:
               git rebase --abort 2>/dev/null || true
               sleep 5
             done
-            echo "Could not push the logs after several attempts."
-            exit 1
+            # The build result above is what matters, so a failed log
+            # push only warns instead of failing the job and skipping
+            # every later job.
+            echo "::warning::Could not push the logs after several attempts. The build result stands, but the log is not in the repository."
+            exit 0
           fi
 
       - name: Save build-x64.log
@@ -387,8 +393,11 @@ jobs:
               git rebase --abort 2>/dev/null || true
               sleep 5
             done
-            echo "Could not push the logs after several attempts."
-            exit 1
+            # The build result above is what matters, so a failed log
+            # push only warns instead of failing the job and skipping
+            # every later job.
+            echo "::warning::Could not push the logs after several attempts. The build result stands, but the log is not in the repository."
+            exit 0
           fi
 
       - name: Save build-linux.log
