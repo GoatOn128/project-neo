@@ -81,6 +81,11 @@ jobs:
           origin = None
           origin_re = re.compile(r'(?:In file included from|from)\s+(code/[\w/.]+):\d+')
           loc_re = re.compile(r'^([^:]+):\d+')
+          # GCC prints the location of the previous definition on the
+          # line right after a redefinition warning. That location is
+          # usually the interesting part, so it is kept with the warning.
+          prev_re = re.compile(
+              r'^([^:]+):\d+:\s*note:\s+this is the location of the previous definition')
 
           def annotate(entry):
               lm = loc_re.match(entry)
@@ -94,6 +99,12 @@ jobs:
               m = origin_re.search(line)
               if m:
                   origin = m.group(1)
+              pm = prev_re.match(line)
+              if pm:
+                  target = warnings or errors
+                  if target:
+                      target[-1] = target[-1] + '   [previously defined at ' + pm.group(1) + ']'
+                  continue
               if error_re.search(line):
                   errors.append(annotate(line.strip()))
               elif warning_re.search(line):
@@ -160,6 +171,13 @@ jobs:
               for file, count in err_files.most_common():
                   out.append('| %d | %s |' % (count, file.replace('|', '\\|')))
 
+          if warnings:
+              out.append('')
+              out.append('## Warnings, first 40')
+              out.append('')
+              out.append('```')
+              out.extend(warnings[:40])
+              out.append('```')
           if warn_groups:
               out.append('')
               out.append('## Warnings that repeat, top 30')
