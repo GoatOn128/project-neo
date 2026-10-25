@@ -104,6 +104,7 @@ public:
 	idSoundVoice();
 
 	void Create( ALuint source );
+	void Destroy();
 	bool Start( idSoundSample *leadinSample, idSoundSample *loopingSample, bool looping );
 	void Stop();
 	void Pause();
@@ -125,6 +126,8 @@ public:
 	int ChannelIndex() const { return channelIndex; }
 
 private:
+	void ApplyParams();
+
 	ALuint source;
 	idSoundSample *leadinSample, *loopingSample;
 	bool looping, paused, assigned, relative;
@@ -272,8 +275,8 @@ public:
 	void ApplyListener( const vec3_t origin, const vec3_t axis[3] );
 
 	// cinematic raw samples, main thread (S_RawSamples)
-	void QueueRawSamples( int index, int samples, int rate, int width, int channels,
-						 const byte *data, float left, float right );
+	bool QueueRawSamples( int index, int samples, int rate, int width, int channels,
+						  const byte *data, float left, float right );
 	void SetRawStreamGain( int index, float gain );
 	void ClearRawStreams();
 
@@ -296,6 +299,7 @@ public:
 
 private:
 	bool ReadStream( soundStream_t &stream, const char *path );  // main thread only
+	void StopStreamLocked( int index );  // pumpMutex already held
 
 	ALCdevice *device;
 	ALCcontext *context;
@@ -350,6 +354,7 @@ public:
 	std::atomic<bool> muted;
 	std::atomic<float> pumpStreamGain;  // s_volume copy the pump thread reads
 	std::atomic<float> pumpMusicGain;   // s_musicvolume copy the pump thread reads
+	int editorPauseStarted;
 
 	// global fade (the old S_FadeAllSounds behavior)
 	float globalGain, fadeStartGain, fadeTarget;
@@ -365,5 +370,11 @@ private:
 
 // the concrete system, one instance, like the original engine
 extern idSoundSystemLocal *soundSystemLocalPtr;
+
+// console commands, the engine C API until idCmdArgs exists with idLib
+void PlaySoundCommand();
+void MusicCommand();
+void InfoCommand();
+void StopSoundCommand();
 
 #endif

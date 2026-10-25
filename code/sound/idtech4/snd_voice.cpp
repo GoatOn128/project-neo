@@ -33,6 +33,15 @@ void idSoundVoice::Create( ALuint newSource ) {
 	alSourcef( source, AL_PITCH, 1.0f );
 }
 
+void idSoundVoice::Destroy() {
+	if ( source ) {
+		alSourceStop( source );
+		alDeleteSources( 1, &source );
+		source = 0;
+	}
+	assigned = false;
+}
+
 void idSoundVoice::SetOwner( int emitter, int channel ) {
 	emitterIndex = emitter;
 	channelIndex = channel;
@@ -56,13 +65,24 @@ bool idSoundVoice::CompatibleFormat( const idSoundSample *sample ) const {
 	return sample != nullptr;
 }
 
-bool idSoundVoice::Start( idSoundSample *leadin, idSoundSample *loopingSample2, bool isLooping ) {
+void idSoundVoice::ApplyParams() {
+	alSourcei( source, AL_SOURCE_RELATIVE, relative ? AL_TRUE : AL_FALSE );
+	alSourcef( source, AL_GAIN, max( 0.0f, gain ) );
+	alSourcef( source, AL_PITCH, max( 0.05f, pitch ) );
+	alSourcef( source, AL_REFERENCE_DISTANCE, minDistance );
+	alSourcef( source, AL_MAX_DISTANCE, maxDistance );
+	alSourcef( source, AL_ROLLOFF_FACTOR, relative ? 0.0f : 1.0f );
+	// the engine is Y up, OpenAL is Z up, the same mapping the old code used
+	alSource3f( source, AL_POSITION, position[0], position[2], -position[1] );
+}
+
+bool idSoundVoice::Start( idSoundSample *leadin, idSoundSample *loop, bool isLooping ) {
 	if ( !source || !leadin || !leadin->IsLoaded() ) {
 		return false;
 	}
 	Stop();
 	leadinSample = leadin;
-	loopingSample = loopingSample2;
+	loopingSample = loop;
 	looping = isLooping;
 	switchedToLoop = ( leadinSample == loopingSample );
 	// a looping shader that plays one sample loops the buffer directly; a
@@ -74,17 +94,6 @@ bool idSoundVoice::Start( idSoundSample *leadin, idSoundSample *loopingSample2, 
 	alSourcePlay( source );
 	paused = false;
 	return true;
-}
-
-void idSoundVoice::ApplyParams() {
-	alSourcei( source, AL_SOURCE_RELATIVE, relative ? AL_TRUE : AL_FALSE );
-	alSourcef( source, AL_GAIN, max( 0.0f, gain ) );
-	alSourcef( source, AL_PITCH, max( 0.05f, pitch ) );
-	alSourcef( source, AL_REFERENCE_DISTANCE, minDistance );
-	alSourcef( source, AL_MAX_DISTANCE, maxDistance );
-	alSourcef( source, AL_ROLLOFF_FACTOR, relative ? 0.0f : 1.0f );
-	// the engine is Y up, OpenAL is Z up, the same mapping the old code used
-	alSource3f( source, AL_POSITION, position[0], position[2], -position[1] );
 }
 
 void idSoundVoice::Update() {

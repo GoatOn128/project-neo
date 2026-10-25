@@ -28,6 +28,7 @@ idSoundSystemLocal::idSoundSystemLocal() {
 	muted = false;
 	pumpStreamGain = 0.0f;
 	pumpMusicGain = 0.0f;
+	editorPauseStarted = 0;
 	globalGain = 1.0f;
 	fadeStartGain = 1.0f;
 	fadeTarget = 1.0f;
@@ -208,7 +209,7 @@ int idSoundSystemLocal::AsyncUpdate( int time ) {
 }
 
 int idSoundSystemLocal::IsEAXAvailable() {
-	// the snd_efxfile reverb/EAX port comes after the merger of the rest
+	// the snd_efxfile reverb/EAX port comes after the rest of the system
 	return 0;
 }
 
@@ -220,12 +221,12 @@ void idSoundSystemLocal::SetEditorPaused( bool paused ) {
 	const int now = Sys_Milliseconds();
 	editorPaused = requested;
 	if ( requested ) {
-		if ( fadeEnd > fadeStart ) {
-			// the fade clock stops with the device, shift the window
-			editorPauseStarted = now;
-		}
+		editorPauseStarted = now;
+		// stop the device clock as well as output, the queued buffers and
+		// synthesizer positions survive until the editor closes
 		hardware.PauseDevice();
 	} else {
+		// the fade clock stopped with the device, shift the window
 		if ( fadeEnd > fadeStart ) {
 			fadeStart += now - editorPauseStarted;
 			fadeEnd += now - editorPauseStarted;
@@ -282,7 +283,7 @@ void idSoundSystemLocal::PrintInfo() {
 		return;
 	}
 	Com_Printf( "Doom audio: id Tech 4 sound system (Doom 3 2004 port, BFG voice "
-				"pump), %d voices, %d samples, %d shaders\n",
+				"pump), %d free voices, %d samples, %d shaders\n",
 				hardware.NumFreeVoices(), sampleCache.NumLoaded(), shaderCount );
 }
 
@@ -301,7 +302,7 @@ void MusicCommand() {
 
 void InfoCommand() {
 	soundSystemLocalPtr->PrintInfo();
-	Com_Printf( "Doom audio state: editorPaused=%d fade=%d\n",
+	Com_Printf( "Doom audio state: editorPaused=%d fading=%d\n",
 				soundSystemLocalPtr->editorPaused.load() ? 1 : 0,
 				soundSystemLocalPtr->fadeEnd > soundSystemLocalPtr->fadeStart ? 1 : 0 );
 }
