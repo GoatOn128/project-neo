@@ -168,7 +168,7 @@ typedef struct {
 	void (*DebugPolygonDelete)( int id );
 	int (*RealTime)( qtime_t * qtime );
 	void (*SnapVector)( float * v );
-	bool (*GetTag)( int clientNum, char * tagName, orientation_t * or );
+	bool (*GetTag)( int clientNum, char * tagName, orientation_t * orient );
 	int (*BotLibSetup)(  );
 	int (*BotLibShutdown)(  );
 	int (*BotLibVarSet)( char * var_name, char * value );

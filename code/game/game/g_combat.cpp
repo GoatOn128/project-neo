@@ -711,7 +711,7 @@ bool IsHeadShot( gentity_t *targ, gentity_t *attacker, vec3_t dir, vec3_t point,
 	trace_t tr;
 	vec3_t start, end;
 	gentity_t   *traceEnt;
-	orientation_t or;
+	orientation_t orient;
 
 	bool head_shot_weapon = false;
 
@@ -732,9 +732,9 @@ bool IsHeadShot( gentity_t *targ, gentity_t *attacker, vec3_t dir, vec3_t point,
 		G_SetOrigin( head, targ->r.currentOrigin );
 
 		// RF, if there is a valid tag_head for this entity, then use that
-        if ((targ->r.svFlags & SVF_AI) && trap_GetTag(targ->s.number, "tag_head", &or)) {
-            VectorCopy(or.origin, head->r.currentOrigin);
-            VectorMA( head->r.currentOrigin, 6, or.axis[2], head->r.currentOrigin );    // tag is at base of neck
+        if ((targ->r.svFlags & SVF_AI) && trap_GetTag(targ->s.number, "tag_head", &orient)) {
+            VectorCopy(orient.origin, head->r.currentOrigin);
+            VectorMA( head->r.currentOrigin, 6, orient.axis[2], head->r.currentOrigin );    // tag is at base of neck
         } else if (targ->client->ps.pm_flags &
                    PMF_DUCKED) { // closer fake offset for 'head' box when crouching
             head->r.currentOrigin[2] += targ->client->ps.crouchViewHeight +

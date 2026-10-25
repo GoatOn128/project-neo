@@ -601,7 +601,7 @@ CL_UpdateLevelHunkUsage
 */
 void CL_UpdateLevelHunkUsage( void ) {
 	int handle;
-	char *memlistfile = "hunkusage.dat";
+	const char *memlistfile = "hunkusage.dat";
 	char *buf, *outbuf;
 	char *buftrav, *outbuftrav;
 	char *token;
@@ -1004,12 +1004,12 @@ void CL_SetCGameTime( void ) {
 CL_GetTag
 ====================
 */
-bool CL_GetTag( int clientNum, char *tagname, orientation_t *or ) {
+bool CL_GetTag( int clientNum, char *tagname, orientation_t *orient ) {
 	if ( !cgameExport ) {
 		return false;
 	}
 
-	return cgameExport->GetTag( clientNum, tagname, or );
+	return cgameExport->GetTag( clientNum, tagname, orient );
 }
 
 

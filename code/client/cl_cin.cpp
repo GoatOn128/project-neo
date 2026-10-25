@@ -1481,7 +1481,7 @@ Fetch and decompress the pending frame
 
 e_status CIN_RunCinematic( int handle ) {
 	// bk001204 - init
-	int start = 0;
+	unsigned int start = 0;
 	int thisTime = 0;
 	int played = 0;
 

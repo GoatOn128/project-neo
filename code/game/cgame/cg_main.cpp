@@ -96,8 +96,8 @@ static void Export_EventHandling( int type ) {
 	CG_EventHandling( type );
 }
 
-static bool Export_GetTag( int clientNum, char * tagName, orientation_t * or ) {
-	return CG_GetTag( clientNum, tagName, or );
+static bool Export_GetTag( int clientNum, char * tagName, orientation_t * orient ) {
+	return CG_GetTag( clientNum, tagName, orient );
 }
 
 static cgameExport_t cgameExportTable = {

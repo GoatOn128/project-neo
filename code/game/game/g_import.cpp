@@ -271,8 +271,8 @@ void trap_SnapVector( float * v ) {
 }
 DOOM_SAVE_CALLBACK("trap_SnapVector", trap_SnapVector);
 
-bool trap_GetTag( int clientNum, char * tagName, orientation_t * or ) {
-	return gameImports->GetTag( clientNum, tagName, or );
+bool trap_GetTag( int clientNum, char * tagName, orientation_t * orient ) {
+	return gameImports->GetTag( clientNum, tagName, orient );
 }
 DOOM_SAVE_CALLBACK("trap_GetTag", trap_GetTag);
 

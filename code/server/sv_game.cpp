@@ -640,14 +640,14 @@ SV_GetTag
   return false if unable to retrieve tag information for this client
 ====================
 */
-extern bool CL_GetTag( int clientNum, char *tagname, orientation_t *or );
+extern bool CL_GetTag( int clientNum, char *tagname, orientation_t *orient );
 
-bool SV_GetTag( int clientNum, char *tagname, orientation_t *or ) {
+bool SV_GetTag( int clientNum, char *tagname, orientation_t *orient ) {
 	if ( com_dedicated->integer ) {
 		return false;
 	}
 
-	return CL_GetTag( clientNum, tagname, or );
+	return CL_GetTag( clientNum, tagname, orient );
 }
 
 /*

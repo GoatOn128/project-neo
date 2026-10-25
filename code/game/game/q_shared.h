@@ -94,6 +94,24 @@ If you have questions concerning this license or the applicable additional terms
 
 #else
 
+#ifdef __cplusplus
+// The min and max macros further down in this file break the GCC standard
+// library headers, which use std::min and std::max internally and cannot be
+// parsed with the macros in scope. Parse every standard library header the
+// engine includes after this point before the macros exist. The MSVC standard
+// library tolerates the macros, so the Windows builds are not affected by
+// this.
+#include <algorithm>
+#include <cmath>
+#include <cstddef>
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
+#include <initializer_list>
+#include <limits>
+#include <vector>
+#endif
+
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>

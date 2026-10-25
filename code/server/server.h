@@ -340,7 +340,7 @@ void        SV_InitGameProgs( void );
 void        SV_ShutdownGameProgs( void );
 void        SV_RestartGameProgs( void );
 bool    SV_inPVS( const vec3_t p1, const vec3_t p2 );
-bool SV_GetTag( int clientNum, char *tagname, orientation_t * or );
+bool SV_GetTag( int clientNum, char *tagname, orientation_t * orient );
 
 //
 // sv_bot.cpp

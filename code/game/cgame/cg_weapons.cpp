@@ -5534,7 +5534,7 @@ void CG_SpawnTracer( int sourceEnt, vec3_t pstart, vec3_t pend ) {
 	localEntity_t   *le;
 	float dist;
 	vec3_t dir, ofs;
-	orientation_t or;
+	orientation_t orient;
 	vec3_t start, end;
 
 	VectorCopy( pstart, start );
@@ -5553,8 +5553,8 @@ void CG_SpawnTracer( int sourceEnt, vec3_t pstart, vec3_t pend ) {
 		if ( cg_entities[sourceEnt].currentState.eFlags & EF_MG42_ACTIVE ) {   // mounted
 			start[2] -= 32; // (SA) hack to get the tracer down below the barrel FIXME: do properly
 		} else {
-			if ( CG_GetWeaponTag( sourceEnt, "tag_flash", &or ) ) {
-				VectorSubtract( or.origin, start, ofs );
+			if ( CG_GetWeaponTag( sourceEnt, "tag_flash", &orient ) ) {
+				VectorSubtract( orient.origin, start, ofs );
 				if ( VectorLength( ofs ) < 64 ) {
 					VectorAdd( start, ofs, start );
 					//VectorAdd( end, ofs, end );

@@ -1,10 +1,12 @@
 name: Build log digest
 
-# Takes build.log from the root of the repository and turns it into a short
-# report: error count, warning count, the warnings that repeat the most and
-# the first errors with their file and line. The report goes into the job
-# summary, is saved as an artifact and is committed to the repository as
-# build-digest.md, so it can be read without downloading the artifact.
+# Takes the build logs from the root of the repository, build.log and
+# build-linux.log, and turns each into a short report: error count, warning
+# count, the warnings that repeat the most and the first errors with their
+# file and line. The reports go into the job summary, are saved as artifacts
+# and are committed to the repository as build-digest.md and
+# build-linux-digest.md, so they can be read without downloading the
+# artifacts.
 #
 # This runs when the Build workflow finishes, not when build.log is pushed:
 # the Build workflow commits build.log with GITHUB_TOKEN and pushes made with
@@ -21,7 +23,7 @@ permissions:
 
 jobs:
   digest:
-    name: Digest build.log
+    name: Digest the build logs
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repository
@@ -36,6 +38,12 @@ jobs:
           else
             echo "found=false" >> "$GITHUB_OUTPUT"
             echo "No build.log in the root of the repository. Put one there and run this again."
+          fi
+          if [ -f build-linux.log ]; then
+            echo "found_linux=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "found_linux=false" >> "$GITHUB_OUTPUT"
+            echo "No build-linux.log in the root of the repository."
           fi
 
       - name: Parse build.log
@@ -117,23 +125,35 @@ jobs:
           EOF
           python3 parse_build_log.py build.log > build-digest.md
           cat build-digest.md >> "$GITHUB_STEP_SUMMARY"
+          if [ -f build-linux.log ]; then
+            python3 parse_build_log.py build-linux.log > build-linux-digest.md
+            cat build-linux-digest.md >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Save the digest
         if: steps.check.outputs.found == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: build-digest
-          path: build-digest.md
+          path: |
+            build-digest.md
+            build-linux-digest.md
+          if-no-files-found: ignore
 
       - name: Put the digest in the repository
         if: steps.check.outputs.found == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add build-digest.md
+          for digest in build-digest.md build-linux-digest.md; do
+            if [ -f "$digest" ]; then
+              git add "$digest"
+            fi
+          done
           if git diff --cached --quiet; then
             echo "The digest did not change."
           else
             git commit -m "Update the build log digest"
+            git pull --rebase
             git push
           fi

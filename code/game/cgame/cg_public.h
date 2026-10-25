@@ -211,7 +211,7 @@ typedef struct {
 	void (*KeyEvent)( int key, bool down );
 	void (*MouseEvent)( int dx, int dy );
 	void (*EventHandling)( int type );
-	bool (*GetTag)( int clientNum, char * tagName, orientation_t * or );
+	bool (*GetTag)( int clientNum, char * tagName, orientation_t * orient );
 } cgameExport_t;
 
 //----------------------------------------------
