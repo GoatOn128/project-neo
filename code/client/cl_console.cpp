@@ -44,7 +44,7 @@ int g_console_field_width = 78;
 #define     CON_TEXTSIZE    65536   // (SA) DM want's more console...
 
 typedef struct {
-	qboolean initialized;
+	bool initialized;
 
 	short text[CON_TEXTSIZE];
 	int current;            // line where next message will be printed
@@ -105,8 +105,8 @@ Con_MessageMode_f
 */
 void Con_MessageMode_f( void ) {
 	chat_playerNum = -1;
-	chat_team = qfalse;
-//	chat_limbo = qfalse;		// NERVE - SMF
+	chat_team = false;
+//	chat_limbo = false;		// NERVE - SMF
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
 
@@ -120,8 +120,8 @@ Con_MessageMode2_f
 */
 void Con_MessageMode2_f( void ) {
 	chat_playerNum = -1;
-	chat_team = qtrue;
-//	chat_limbo = qfalse;		// NERVE - SMF
+	chat_team = true;
+//	chat_limbo = false;		// NERVE - SMF
 	Field_Clear( &chatField );
 	chatField.widthInChars = 25;
 	cls.keyCatchers ^= KEYCATCH_MESSAGE;
@@ -138,8 +138,8 @@ void Con_MessageMode3_f( void ) {
 		chat_playerNum = -1;
 		return;
 	}
-	chat_team = qfalse;
-//	chat_limbo = qfalse;		// NERVE - SMF
+	chat_team = false;
+//	chat_limbo = false;		// NERVE - SMF
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
 	cls.keyCatchers ^= KEYCATCH_MESSAGE;
@@ -156,8 +156,8 @@ void Con_MessageMode4_f( void ) {
 		chat_playerNum = -1;
 		return;
 	}
-	chat_team = qfalse;
-//	chat_limbo = qfalse;		// NERVE - SMF
+	chat_team = false;
+//	chat_limbo = false;		// NERVE - SMF
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
 	cls.keyCatchers ^= KEYCATCH_MESSAGE;
@@ -171,8 +171,8 @@ Con_StartLimboMode_f
 */
 void Con_StartLimboMode_f( void ) {
 //	chat_playerNum = -1;
-//	chat_team = qfalse;
-	chat_limbo = qtrue;     // NERVE - SMF
+//	chat_team = false;
+	chat_limbo = true;     // NERVE - SMF
 //	Field_Clear( &chatField );
 //	chatField.widthInChars = 30;
 
@@ -186,8 +186,8 @@ Con_StopLimboMode_f
 */
 void Con_StopLimboMode_f( void ) {
 //	chat_playerNum = -1;
-//	chat_team = qfalse;
-	chat_limbo = qfalse;        // NERVE - SMF
+//	chat_team = false;
+	chat_limbo = false;        // NERVE - SMF
 //	Field_Clear( &chatField );
 //	chatField.widthInChars = 30;
 
@@ -443,7 +443,7 @@ void CL_ConsolePrint( char *txt ) {
 					con.color[3] = 1.0f;
 		con.linewidth = -1;
 		Con_CheckResize();
-		con.initialized = qtrue;
+		con.initialized = true;
 	}
 
 	color = ColorIndex( COLNSOLE_COLOR );
@@ -531,7 +531,7 @@ void Con_DrawInput( void ) {
 	Con_FontDrawChar( con.xadjust + 1 * Con_FontWidth(), y, ']' );
 
 	Field_Draw( &g_consoleField, con.xadjust + 2 * Con_FontWidth(), y,
-				cls.glconfig.vidWidth - 3 * Con_FontWidth(), qtrue );
+				cls.glconfig.vidWidth - 3 * Con_FontWidth(), true );
 }
 
 
@@ -605,7 +605,7 @@ void Con_DrawNotify( void ) {
 		}
 
 		Field_BigDraw( &chatField, skip * BIGCHAR_WIDTH, v,
-					   SCREEN_WIDTH - ( skip + 1 ) * BIGCHAR_WIDTH, qtrue );
+					   SCREEN_WIDTH - ( skip + 1 ) * BIGCHAR_WIDTH, true );
 
 		v += BIGCHAR_HEIGHT;
 	}

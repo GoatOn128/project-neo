@@ -38,7 +38,7 @@ extern botlib_export_t *botlib_export;
 
 // RF, this is only used when running a local server
 extern void SV_SendMoveSpeedsToGame( int entnum, char *text );
-extern qboolean SV_GetModelInfo( int clientNum, char *modelName, animModelInfo_t **modelInfo );
+extern bool SV_GetModelInfo( int clientNum, char *modelName, animModelInfo_t **modelInfo );
 
 
 /*
@@ -65,7 +65,7 @@ void CL_GetGlconfig( glconfig_t *glconfig ) {
 CL_GetUserCmd
 ====================
 */
-qboolean CL_GetUserCmd( int cmdNumber, usercmd_t *ucmd ) {
+bool CL_GetUserCmd( int cmdNumber, usercmd_t *ucmd ) {
 	// cmds[cmdNumber] is the last properly generated command
 
 	// can't return anything that we haven't created yet
@@ -76,12 +76,12 @@ qboolean CL_GetUserCmd( int cmdNumber, usercmd_t *ucmd ) {
 	// the usercmd has been overwritten in the wrapping
 	// buffer because it is too far out of date
 	if ( cmdNumber <= cl.cmdNumber - CMD_BACKUP ) {
-		return qfalse;
+		return false;
 	}
 
 	*ucmd = cl.cmds[ cmdNumber & CMD_MASK ];
 
-	return qtrue;
+	return true;
 }
 
 int CL_GetCurrentCmdNumber( void ) {
@@ -94,7 +94,7 @@ int CL_GetCurrentCmdNumber( void ) {
 CL_GetParseEntityState
 ====================
 */
-qboolean    CL_GetParseEntityState( int parseEntityNumber, entityState_t *state ) {
+bool    CL_GetParseEntityState( int parseEntityNumber, entityState_t *state ) {
 	// can't return anything that hasn't been parsed yet
 	if ( parseEntityNumber >= cl.parseEntitiesNum ) {
 		Com_Error( ERR_DROP, "CL_GetParseEntityState: %i >= %i",
@@ -103,11 +103,11 @@ qboolean    CL_GetParseEntityState( int parseEntityNumber, entityState_t *state 
 
 	// can't return anything that has been overwritten in the circular buffer
 	if ( parseEntityNumber <= cl.parseEntitiesNum - MAX_PARSE_ENTITIES ) {
-		return qfalse;
+		return false;
 	}
 
 	*state = cl.parseEntities[ parseEntityNumber & ( MAX_PARSE_ENTITIES - 1 ) ];
-	return qtrue;
+	return true;
 }
 
 /*
@@ -125,7 +125,7 @@ void    CL_GetCurrentSnapshotNumber( int *snapshotNumber, int *serverTime ) {
 CL_GetSnapshot
 ====================
 */
-qboolean    CL_GetSnapshot( int snapshotNumber, snapshot_t *snapshot ) {
+bool    CL_GetSnapshot( int snapshotNumber, snapshot_t *snapshot ) {
 	clSnapshot_t    *clSnap;
 	int i, count;
 
@@ -135,19 +135,19 @@ qboolean    CL_GetSnapshot( int snapshotNumber, snapshot_t *snapshot ) {
 
 	// if the frame has fallen out of the circular buffer, we can't return it
 	if ( cl.snap.messageNum - snapshotNumber >= PACKET_BACKUP ) {
-		return qfalse;
+		return false;
 	}
 
 	// if the frame is not valid, we can't return it
 	clSnap = &cl.snapshots[snapshotNumber & PACKET_MASK];
 	if ( !clSnap->valid ) {
-		return qfalse;
+		return false;
 	}
 
 	// if the entities in the frame have fallen out of their
 	// circular buffer, we can't return it
 	if ( cl.parseEntitiesNum - clSnap->parseEntitiesNum >= MAX_PARSE_ENTITIES ) {
-		return qfalse;
+		return false;
 	}
 
 	// write the snapshot
@@ -170,7 +170,7 @@ qboolean    CL_GetSnapshot( int snapshotNumber, snapshot_t *snapshot ) {
 
 	// FIXME: configstring changes and server commands!!!
 
-	return qtrue;
+	return true;
 }
 
 /*
@@ -274,7 +274,7 @@ CL_GetServerCommand
 Set up argc/argv for the given command
 ===================
 */
-qboolean CL_GetServerCommand( int serverCommandNumber ) {
+bool CL_GetServerCommand( int serverCommandNumber ) {
 	char    *s;
 	char    *cmd;
 	static char bigConfigString[BIG_INFO_STRING];
@@ -284,15 +284,15 @@ qboolean CL_GetServerCommand( int serverCommandNumber ) {
 		// when a demo record was started after the client got a whole bunch of
 		// reliable commands then the client never got those first reliable commands
 		if ( clc.demoplaying ) {
-			return qfalse;
+			return false;
 		}
 		Com_Error( ERR_DROP, "CL_GetServerCommand: a reliable command was cycled out" );
-		return qfalse;
+		return false;
 	}
 
 	if ( serverCommandNumber > clc.serverCommandSequence ) {
 		Com_Error( ERR_DROP, "CL_GetServerCommand: requested a command not received" );
-		return qfalse;
+		return false;
 	}
 
 	s = clc.serverCommands[ serverCommandNumber & ( MAX_RELIABLE_COMMANDS - 1 ) ];
@@ -310,7 +310,7 @@ rescan:
 
 	if ( !strcmp( cmd, "bcs0" ) ) {
 		Com_sprintf( bigConfigString, BIG_INFO_STRING, "cs %s \"%s", Cmd_Argv( 1 ), Cmd_Argv( 2 ) );
-		return qfalse;
+		return false;
 	}
 
 	if ( !strcmp( cmd, "bcs1" ) ) {
@@ -319,7 +319,7 @@ rescan:
 			Com_Error( ERR_DROP, "bcs exceeded BIG_INFO_STRING" );
 		}
 		strcat( bigConfigString, s );
-		return qfalse;
+		return false;
 	}
 
 	if ( !strcmp( cmd, "bcs2" ) ) {
@@ -337,7 +337,7 @@ rescan:
 		CL_ConfigstringModified();
 		// reparse the string, because CL_ConfigstringModified may have done another Cmd_TokenizeString()
 		Cmd_TokenizeString( s );
-		return qtrue;
+		return true;
 	}
 
 	if ( !strcmp( cmd, "map_restart" ) ) {
@@ -345,7 +345,7 @@ rescan:
 		// the restart to the cgame
 		Con_ClearNotify();
 		memset( cl.cmds, 0, sizeof( cl.cmds ) );
-		return qtrue;
+		return true;
 	}
 
 	if ( !strcmp( cmd, "popup" ) ) { // direct server to client popup request, bypassing cgame
@@ -354,7 +354,7 @@ rescan:
 //			VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_CLIPBOARD);
 //			Menus_OpenByName(Cmd_Argv(1));
 //		}
-		return qfalse;
+		return false;
 	}
 
 
@@ -368,19 +368,19 @@ rescan:
 		// otherwise malicious remote servers could overwrite
 		// the existing thumbnails
 		if ( !com_sv_running->integer ) {
-			return qfalse;
+			return false;
 		}
 		// close the console
 		Con_Close();
 		// take a special screenshot next frame
 		Cbuf_AddText( "wait ; wait ; wait ; wait ; screenshot levelshot\n" );
-		return qtrue;
+		return true;
 	}
 
 	// we may want to put a "connect to other server" command here
 
 	// cgame can now act on the command
-	return qtrue;
+	return true;
 }
 
 
@@ -394,7 +394,7 @@ Just adds default parameters that cgame doesn't need to know about
 void CL_CM_LoadMap( const char *mapname ) {
 	int checksum;
 
-	CM_LoadMap( mapname, qtrue, &checksum );
+	CM_LoadMap( mapname, true, &checksum );
 }
 
 /*
@@ -410,7 +410,7 @@ cgameExport_t *cgameExport = NULL;
 
 void CL_ShutdownCGame( void ) {
 	cls.keyCatchers &= ~KEYCATCH_CGAME;
-	cls.cgameStarted = qfalse;
+	cls.cgameStarted = false;
 	if ( !cgameExport ) {
 		return;
 	}
@@ -447,25 +447,25 @@ static const cgameImport_t cgameImportTable = {
 	CL_CM_LoadMap,
 	CM_NumInlineModels,
 	CM_InlineModel,
-	[]( const vec3_t mins, const vec3_t maxs ) { return CM_TempBoxModel( mins, maxs, qfalse ); },
-	[]( const vec3_t mins, const vec3_t maxs ) { return CM_TempBoxModel( mins, maxs, qtrue ); },
+	[]( const vec3_t mins, const vec3_t maxs ) { return CM_TempBoxModel( mins, maxs, false ); },
+	[]( const vec3_t mins, const vec3_t maxs ) { return CM_TempBoxModel( mins, maxs, true ); },
 	CM_PointContents,
 	CM_TransformedPointContents,
-	[]( trace_t *results, const vec3_t start, const vec3_t end, const vec3_t mins, const vec3_t maxs, clipHandle_t model, int brushmask ) { CM_BoxTrace( results, start, end, mins, maxs, model, brushmask, qfalse ); },
-	[]( trace_t *results, const vec3_t start, const vec3_t end, const vec3_t mins, const vec3_t maxs, clipHandle_t model, int brushmask, const vec3_t origin, const vec3_t angles ) { CM_TransformedBoxTrace( results, start, end, mins, maxs, model, brushmask, origin, angles, qfalse ); },
-	[]( trace_t *results, const vec3_t start, const vec3_t end, const vec3_t mins, const vec3_t maxs, clipHandle_t model, int brushmask ) { CM_BoxTrace( results, start, end, mins, maxs, model, brushmask, qtrue ); },
-	[]( trace_t *results, const vec3_t start, const vec3_t end, const vec3_t mins, const vec3_t maxs, clipHandle_t model, int brushmask, const vec3_t origin, const vec3_t angles ) { CM_TransformedBoxTrace( results, start, end, mins, maxs, model, brushmask, origin, angles, qtrue ); },
+	[]( trace_t *results, const vec3_t start, const vec3_t end, const vec3_t mins, const vec3_t maxs, clipHandle_t model, int brushmask ) { CM_BoxTrace( results, start, end, mins, maxs, model, brushmask, false ); },
+	[]( trace_t *results, const vec3_t start, const vec3_t end, const vec3_t mins, const vec3_t maxs, clipHandle_t model, int brushmask, const vec3_t origin, const vec3_t angles ) { CM_TransformedBoxTrace( results, start, end, mins, maxs, model, brushmask, origin, angles, false ); },
+	[]( trace_t *results, const vec3_t start, const vec3_t end, const vec3_t mins, const vec3_t maxs, clipHandle_t model, int brushmask ) { CM_BoxTrace( results, start, end, mins, maxs, model, brushmask, true ); },
+	[]( trace_t *results, const vec3_t start, const vec3_t end, const vec3_t mins, const vec3_t maxs, clipHandle_t model, int brushmask, const vec3_t origin, const vec3_t angles ) { CM_TransformedBoxTrace( results, start, end, mins, maxs, model, brushmask, origin, angles, true ); },
 	[]( int numPoints, const vec3_t *points, const vec3_t projection, int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t *fragmentBuffer ) { return re.MarkFragments( numPoints, points, projection, maxPoints, pointBuffer, maxFragments, fragmentBuffer ); },
 	S_StartSound,
 	S_StartSoundEx,
 	S_StartLocalSound,
-	[]( qboolean killall ) {
+	[]( bool killall ) {
 		S_ClearLoopingSounds(); // (SA) so no_pvs sounds can function
 		// RF, if killall, then stop all sounds
 		if ( killall == 1 ) {
-			S_ClearSounds( qtrue, qfalse );
+			S_ClearSounds( true, false );
 		} else if ( killall == 2 ) {
-			S_ClearSounds( qtrue, qtrue );
+			S_ClearSounds( true, true );
 		}
 	},
 	[]( int entityNum, const vec3_t origin, const vec3_t velocity, int range, sfxHandle_t sfx, int volume ) { S_AddLoopingSound( entityNum, origin, velocity, range, sfx, volume ); },
@@ -479,7 +479,7 @@ static const cgameImport_t cgameImportTable = {
 #ifdef DOOMSOUND
 		return S_RegisterSound( sample );
 #else
-		return S_RegisterSound( sample, qfalse );
+		return S_RegisterSound( sample, false );
 #endif
 	},
 	S_StartBackgroundTrack,
@@ -521,16 +521,16 @@ static const cgameImport_t cgameImportTable = {
 	loadCamera,
 	[]( int camNum, int time ) {
 		if ( camNum == 0 ) { // CAM_PRIMARY
-			cl.cameraMode = qtrue;
+			cl.cameraMode = true;
 		}
 		startCamera( camNum, time );
 	},
 	[]( int camNum ) {
 		if ( camNum == 0 ) { // CAM_PRIMARY
-			cl.cameraMode = qfalse;
+			cl.cameraMode = false;
 		}
 	},
-	[]( int camNum, int time, vec3_t *origin, vec3_t *angles, float *fov ) { return (qboolean)getCameraInfo( camNum, time, *origin, *angles, fov ); },
+	[]( int camNum, int time, vec3_t *origin, vec3_t *angles, float *fov ) { return (bool)getCameraInfo( camNum, time, *origin, *angles, fov ); },
 	Key_IsDown,
 	Key_GetCatcher,
 	Key_SetCatcher,
@@ -573,7 +573,7 @@ static const cgameImport_t cgameImportTable = {
 		}
 	},
 	[]( const char *text ) { if ( text ) { CL_AddToLimboChat( text ); } },
-	[]( const char * ) { uiExport->KeyEvent( K_ESCAPE, qtrue ); },
+	[]( const char * ) { uiExport->KeyEvent( K_ESCAPE, true ); },
 	[]( int clientNum, char *modelName, void **modelInfo ) { return SV_GetModelInfo( clientNum, modelName, (animModelInfo_t **)modelInfo ); },
 	[]( int sector, int light ) { re.SetDoomSectorLight( sector, light ); },
 	[]( const char *state ) { re.SetDoomSwitches( state ); },
@@ -582,7 +582,7 @@ static const cgameImport_t cgameImportTable = {
 		if ( width <= 0 || height <= 0 || width > 16384 || height > 16384 || !pixels ) {
 			Com_Error( ERR_DROP, "Invalid Doom automap image" );
 		}
-		re.DrawStretchRaw( x, y, width, height, 256, 256, pixels, 31, qtrue );
+		re.DrawStretchRaw( x, y, width, height, 256, 256, pixels, 31, true );
 	},
 };
 
@@ -752,9 +752,9 @@ CL_GameCommand
 See if the current console command is claimed by the cgame
 ====================
 */
-qboolean CL_GameCommand( void ) {
+bool CL_GameCommand( void ) {
 	if ( !cgameExport ) {
-		return qfalse;
+		return false;
 	}
 
 	return cgameExport->ConsoleCommand();
@@ -799,7 +799,7 @@ void CL_AdjustTimeDelta( void ) {
 	int newDelta;
 	int deltaDelta;
 
-	cl.newSnapshots = qfalse;
+	cl.newSnapshots = false;
 
 	// the delta never drifts when replaying a demo
 	if ( clc.demoplaying ) {
@@ -830,7 +830,7 @@ void CL_AdjustTimeDelta( void ) {
 		// the granularity of +1 / -2 is too high for timescale modified frametimes
 		if ( com_timescale->value == 0 || com_timescale->value == 1 ) {
 			if ( cl.extrapolatedSnapshot ) {
-				cl.extrapolatedSnapshot = qfalse;
+				cl.extrapolatedSnapshot = false;
 				cl.serverTimeDelta -= 2;
 			} else {
 				// otherwise, move our sense of time forward to minimize total latency
@@ -890,13 +890,13 @@ void CL_SetCGameTime( void ) {
 			// we shouldn't get the first snapshot on the same frame
 			// as the gamestate, because it causes a bad time skip
 			if ( !clc.firstDemoFrameSkipped ) {
-				clc.firstDemoFrameSkipped = qtrue;
+				clc.firstDemoFrameSkipped = true;
 				return;
 			}
 			CL_ReadDemoMessage();
 		}
 		if ( cl.newSnapshots ) {
-			cl.newSnapshots = qfalse;
+			cl.newSnapshots = false;
 			CL_FirstSnapshot();
 		}
 		if ( cls.state != CA_ACTIVE ) {
@@ -957,7 +957,7 @@ void CL_SetCGameTime( void ) {
 		// note if we are almost past the latest frame (without timeNudge),
 		// so we will try to adjust back a bit when the next snapshot arrives
 		if ( cls.realtime + cl.serverTimeDelta >= cl.snap.serverTime - 5 ) {
-			cl.extrapolatedSnapshot = qtrue;
+			cl.extrapolatedSnapshot = true;
 		}
 	}
 
@@ -1004,9 +1004,9 @@ void CL_SetCGameTime( void ) {
 CL_GetTag
 ====================
 */
-qboolean CL_GetTag( int clientNum, char *tagname, orientation_t *or ) {
+bool CL_GetTag( int clientNum, char *tagname, orientation_t *or ) {
 	if ( !cgameExport ) {
-		return qfalse;
+		return false;
 	}
 
 	return cgameExport->GetTag( clientNum, tagname, or );

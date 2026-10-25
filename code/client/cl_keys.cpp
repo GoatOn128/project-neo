@@ -44,15 +44,15 @@ int historyLine;            // the line being displayed from history buffer
 
 field_t g_consoleField;
 field_t chatField;
-qboolean chat_team;
-qboolean chat_limbo;            // NERVE - SMF
+bool chat_team;
+bool chat_limbo;            // NERVE - SMF
 
 int chat_playerNum;
 
 
-qboolean key_overstrikeMode;
+bool key_overstrikeMode;
 
-qboolean anykeydown;
+bool anykeydown;
 qkey_t keys[MAX_KEYS];
 
 
@@ -61,7 +61,7 @@ typedef struct {
 	int keynum;
 } keyname_t;
 
-qboolean UI_checkKeyExec( int key );        // NERVE - SMF
+bool UI_checkKeyExec( int key );        // NERVE - SMF
 
 // names not in this list can either be lowercase ascii, or '0xnn' hex sequences
 keyname_t keynames[] =
@@ -703,7 +703,7 @@ Handles horizontal scrolling and cursor blinking
 x, y, amd width are in pixels
 ===================
 */
-void Field_VariableSizeDraw( field_t *edit, int x, int y, int width, int size, qboolean showCursor ) {
+void Field_VariableSizeDraw( field_t *edit, int x, int y, int width, int size, bool showCursor ) {
 	int len;
 	int drawLen;
 	int prestep;
@@ -796,11 +796,11 @@ void Field_VariableSizeDraw( field_t *edit, int x, int y, int width, int size, q
 	}
 }
 
-void Field_Draw( field_t *edit, int x, int y, int width, qboolean showCursor ) {
+void Field_Draw( field_t *edit, int x, int y, int width, bool showCursor ) {
 	Field_VariableSizeDraw( edit, x, y, width, SMALLCHAR_WIDTH, showCursor );
 }
 
-void Field_BigDraw( field_t *edit, int x, int y, int width, qboolean showCursor ) {
+void Field_BigDraw( field_t *edit, int x, int y, int width, bool showCursor ) {
 	Field_VariableSizeDraw( edit, x, y, width, BIGCHAR_WIDTH, showCursor );
 }
 
@@ -1317,12 +1317,12 @@ void Message_Key( int key ) {
 //============================================================================
 
 
-qboolean Key_GetOverstrikeMode( void ) {
+bool Key_GetOverstrikeMode( void ) {
 	return key_overstrikeMode;
 }
 
 
-void Key_SetOverstrikeMode( qboolean state ) {
+void Key_SetOverstrikeMode( bool state ) {
 	key_overstrikeMode = state;
 }
 
@@ -1332,9 +1332,9 @@ void Key_SetOverstrikeMode( qboolean state ) {
 Key_IsDown
 ===================
 */
-qboolean Key_IsDown( int keynum ) {
+bool Key_IsDown( int keynum ) {
 	if ( keynum == -1 ) {
-		return qfalse;
+		return false;
 	}
 
 	return keys[keynum].down;
@@ -1407,7 +1407,7 @@ Returns a string (either a single ascii char, a K_* name, or a 0x11 hex string) 
 given keynum.
 ===================
 */
-char *Key_KeynumToString( int keynum, qboolean bTranslate ) {
+char *Key_KeynumToString( int keynum, bool bTranslate ) {
 	keyname_t   *kn;
 	static char tinystr[5];
 	int i, j;
@@ -1616,7 +1616,7 @@ void Key_WriteBindings( fileHandle_t f ) {
 
 	for ( i = 0 ; i < 256 ; i++ ) {
 		if ( keys[i].binding && keys[i].binding[0] ) {
-			FS_Printf( f, "bind %s \"%s\"\n", Key_KeynumToString( i, qfalse ), keys[i].binding );
+			FS_Printf( f, "bind %s \"%s\"\n", Key_KeynumToString( i, false ), keys[i].binding );
 
 		}
 
@@ -1635,7 +1635,7 @@ void Key_Bindlist_f( void ) {
 
 	for ( i = 0 ; i < 256 ; i++ ) {
 		if ( keys[i].binding && keys[i].binding[0] ) {
-			Com_Printf( "%s \"%s\"\n", Key_KeynumToString( i, qfalse ), keys[i].binding );
+			Com_Printf( "%s \"%s\"\n", Key_KeynumToString( i, false ), keys[i].binding );
 		}
 	}
 }
@@ -1662,7 +1662,7 @@ Called by the system for both key up and key down events
 ===================
 */
 //static int consoleCount = 0; // TTimo: unused
-void CL_KeyEvent( int key, qboolean down, unsigned time ) {
+void CL_KeyEvent( int key, bool down, unsigned time ) {
 	char    *kb;
 	char cmd[1024];
 	int activeMenu = 0;
@@ -1851,7 +1851,7 @@ void CL_KeyEvent( int key, qboolean down, unsigned time ) {
 		if ( !kb ) {
 			if ( key >= 200 ) {
 				Com_Printf( "%s is unbound, use controls menu to set.\n"
-							, Key_KeynumToString( key, qfalse ) );
+							, Key_KeynumToString( key, false ) );
 			}
 		} else if ( kb[0] == '+' ) {
 			// button commands add keynum and time as parms so that multiple
@@ -1884,7 +1884,7 @@ void CL_CharEvent( int key ) {
 	if ( cls.keyCatchers & KEYCATCH_CONSOLE ) {
 		Field_CharEvent( &g_consoleField, key );
 	} else if ( cls.keyCatchers & KEYCATCH_UI )   {
-		uiExport->KeyEvent( key | K_CHAR_FLAG, qtrue );
+		uiExport->KeyEvent( key | K_CHAR_FLAG, true );
 	} else if ( cls.keyCatchers & KEYCATCH_MESSAGE )   {
 		Field_CharEvent( &chatField, key );
 	} else if ( cls.state == CA_DISCONNECTED )   {
@@ -1901,11 +1901,11 @@ Key_ClearStates
 void Key_ClearStates( void ) {
 	int i;
 
-	anykeydown = qfalse;
+	anykeydown = false;
 
 	for ( i = 0 ; i < MAX_KEYS ; i++ ) {
 		if ( keys[i].down ) {
-			CL_KeyEvent( i, qfalse, 0 );
+			CL_KeyEvent( i, false, 0 );
 
 		}
 		keys[i].down = 0;

@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "client.h"
 #include "../sys/sys_editor.h"
 
-qboolean scr_initialized;           // ready to draw
+bool scr_initialized;           // ready to draw
 
 cvar_t      *cl_timegraph;
 cvar_t      *cl_debuggraph;
@@ -204,7 +204,7 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void SCR_DrawStringExt( int x, int y, float size, const char *string, float *setColor, qboolean forceColor ) {
+void SCR_DrawStringExt( int x, int y, float size, const char *string, float *setColor, bool forceColor ) {
 	vec4_t color;
 	const char  *s;
 	int xx;
@@ -253,11 +253,11 @@ void SCR_DrawBigString( int x, int y, const char *s, float alpha ) {
 
 	color[0] = color[1] = color[2] = 1.0;
 	color[3] = alpha;
-	SCR_DrawStringExt( x, y, BIGCHAR_WIDTH, s, color, qfalse );
+	SCR_DrawStringExt( x, y, BIGCHAR_WIDTH, s, color, false );
 }
 
 void SCR_DrawBigStringColor( int x, int y, const char *s, vec4_t color ) {
-	SCR_DrawStringExt( x, y, BIGCHAR_WIDTH, s, color, qtrue );
+	SCR_DrawStringExt( x, y, BIGCHAR_WIDTH, s, color, true );
 }
 
 
@@ -271,7 +271,7 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, qboolean forceColor ) {
+void SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, bool forceColor ) {
 	vec4_t color;
 	const char  *s;
 	int xx;
@@ -344,7 +344,7 @@ void SCR_DrawDemoRecording( void ) {
 	pos = FS_FTell( clc.demofile );
 	sprintf( string, "RECORDING %s: %ik", clc.demoName, pos / 1024 );
 
-	SCR_DrawStringExt( 320 - strlen( string ) * 4, 20, 8, string, g_color_table[7], qtrue );
+	SCR_DrawStringExt( 320 - strlen( string ) * 4, 20, 8, string, g_color_table[7], true );
 }
 
 
@@ -424,7 +424,7 @@ void SCR_Init( void ) {
 	cl_graphscale = Cvar_Get( "graphscale", "1", CVAR_CHEAT );
 	cl_graphshift = Cvar_Get( "graphshift", "0", CVAR_CHEAT );
 
-	scr_initialized = qtrue;
+	scr_initialized = true;
 }
 
 
@@ -481,12 +481,12 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame ) {
 			// connecting clients will only show the connection dialog
 			// refresh to update the time
 			uiExport->Refresh( cls.realtime );
-			uiExport->DrawConnectScreen( qfalse );
+			uiExport->DrawConnectScreen( false );
 			break;
 //			// Ridah, if the cgame is valid, fall through to there
 //			if (!cls.cgameStarted || !com_sv_running->integer) {
 //				// connecting clients will only show the connection dialog
-//				uiExport->DrawConnectScreen( qfalse );
+//				uiExport->DrawConnectScreen( false );
 //				break;
 //			}
 		case CA_LOADING:
@@ -498,7 +498,7 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame ) {
 			// flash away too briefly on local or lan games
 			//if (!com_sv_running->value || Cvar_VariableIntegerValue("sv_cheats"))	// Ridah, don't draw useless text if not in dev mode
 			uiExport->Refresh( cls.realtime );
-			uiExport->DrawConnectScreen( qtrue );
+			uiExport->DrawConnectScreen( true );
 			break;
 		case CA_ACTIVE:
 			CL_CGameRendering( stereoFrame );
