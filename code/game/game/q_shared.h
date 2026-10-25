@@ -1,4 +1,4 @@
-/*
+successfully downloaded text file (SHA: 88977f8bb55da2dcfb069217d1d2dec165cc51c3)/*
 ===========================================================================
 
 Return to Castle Wolfenstein single player GPL Source Code
@@ -102,17 +102,25 @@ If you have questions concerning this license or the applicable additional terms
 // library tolerates the macros, so the Windows builds are not affected by
 // this.
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <filesystem>
+#include <fstream>
+#include <functional>
 #include <initializer_list>
+#include <iostream>
 #include <list>
 #include <limits>
 #include <map>
+#include <memory>
 #include <set>
+#include <sstream>
 #include <string>
+#include <thread>
 #include <vector>
 #endif
 
