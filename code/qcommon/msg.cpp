@@ -445,7 +445,7 @@ char *MSG_ReadString( msg_t *msg ) {
 
 		string[l] = c;
 		l++;
-	} while ( l < sizeof( string ) - 1 );
+	} while ( l < (int)sizeof( string ) - 1 );
 
 	string[l] = 0;
 
@@ -469,7 +469,7 @@ char *MSG_ReadBigString( msg_t *msg ) {
 
 		string[l] = c;
 		l++;
-	} while ( l < sizeof( string ) - 1 );
+	} while ( l < (int)sizeof( string ) - 1 );
 
 	string[l] = 0;
 
@@ -492,7 +492,7 @@ char *MSG_ReadStringLine( msg_t *msg ) {
 		}
 		string[l] = c;
 		l++;
-	} while ( l < sizeof( string ) - 1 );
+	} while ( l < (int)sizeof( string ) - 1 );
 
 	string[l] = 0;
 

@@ -550,7 +550,7 @@ static void FS_CopyFile( char *fromOSPath, char *toOSPath ) {
 	// we are using direct malloc instead of Z_Malloc here, so it
 	// probably won't work on a mac... Its only for developers anyway...
 	buf = (byte *)malloc( len );
-	if ( fread( buf, 1, len, f ) != len ) {
+	if ( fread( buf, 1, len, f ) != (size_t)len ) {
 		Com_Error( ERR_FATAL, "Short read in FS_Copyfiles()\n" );
 	}
 	fclose( f );
@@ -563,7 +563,7 @@ static void FS_CopyFile( char *fromOSPath, char *toOSPath ) {
 	if ( !f ) {
 		return;
 	}
-	if ( fwrite( buf, 1, len, f ) != len ) {
+	if ( fwrite( buf, 1, len, f ) != (size_t)len ) {
 		Com_Error( ERR_FATAL, "Short write in FS_Copyfiles()\n" );
 	}
 	fclose( f );
@@ -597,7 +597,7 @@ void FS_CopyFileOS( char *from, char *to ) {
 	// we are using direct malloc instead of Z_Malloc here, so it
 	// probably won't work on a mac... Its only for developers anyway...
 	buf = (byte *)malloc( len );
-	if ( fread( buf, 1, len, f ) != len ) {
+	if ( fread( buf, 1, len, f ) != (size_t)len ) {
 		Com_Error( ERR_FATAL, "Short read in FS_Copyfiles()\n" );
 	}
 	fclose( f );
@@ -610,7 +610,7 @@ void FS_CopyFileOS( char *from, char *to ) {
 	if ( !f ) {
 		return;
 	}
-	if ( fwrite( buf, 1, len, f ) != len ) {
+	if ( fwrite( buf, 1, len, f ) != (size_t)len ) {
 		Com_Error( ERR_FATAL, "Short write in FS_Copyfiles()\n" );
 	}
 	fclose( f );
@@ -1054,13 +1054,13 @@ bool FS_FileCompare( const char *s1, const char *s2 ) {
 
 	// now do a binary compare
 	b1 = (byte *)malloc( len1 );
-	if ( fread( b1, 1, len1, f1 ) != len1 ) {
+	if ( fread( b1, 1, len1, f1 ) != (size_t)len1 ) {
 		Com_Error( ERR_FATAL, "Short read in FS_FileCompare()\n" );
 	}
 	fclose( f1 );
 
 	b2 = (byte *)malloc( len2 );
-	if ( fread( b2, 1, len2, f2 ) != len2 ) {
+	if ( fread( b2, 1, len2, f2 ) != (size_t)len2 ) {
 		Com_Error( ERR_FATAL, "Short read in FS_FileCompare()\n" );
 	}
 	fclose( f2 );
@@ -1866,7 +1866,7 @@ static pack_t *FS_LoadZipFile( char *zipfile, const char *basename ) {
 
 	len = 0;
 	unzGoToFirstFile( uf );
-	for ( i = 0; i < gi.number_entry; i++ )
+	for ( i = 0; i < (int)gi.number_entry; i++ )
 	{
 		err = unzGetCurrentFileInfo( uf, &file_info, filename_inzip, sizeof( filename_inzip ), NULL, 0, NULL, 0 );
 		if ( err != UNZ_OK ) {
@@ -1883,7 +1883,7 @@ static pack_t *FS_LoadZipFile( char *zipfile, const char *basename ) {
 	// get the hash table size from the number of files in the zip
 	// because lots of custom pk3 files have less than 32 or 64 files
 	for ( i = 1; i <= MAX_FILEHASH_SIZE; i <<= 1 ) {
-		if ( i > gi.number_entry ) {
+		if ( i > (int)gi.number_entry ) {
 			break;
 		}
 	}
@@ -1907,7 +1907,7 @@ static pack_t *FS_LoadZipFile( char *zipfile, const char *basename ) {
 	pack->numfiles = gi.number_entry;
 	unzGoToFirstFile( uf );
 
-	for ( i = 0; i < gi.number_entry; i++ )
+	for ( i = 0; i < (int)gi.number_entry; i++ )
 	{
 		err = unzGetCurrentFileInfo( uf, &file_info, filename_inzip, sizeof( filename_inzip ), NULL, 0, NULL, 0 );
 		if ( err != UNZ_OK ) {

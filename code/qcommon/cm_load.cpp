@@ -660,7 +660,7 @@ void CM_LoadMap( const char *name, bool clientload, int *checksum ) {
 	const char *doomError=dbsp::validate(buf,length);
     if(doomError)Com_Error(ERR_DROP,"CM_LoadMap: %s: %s",name,doomError);
 	header = *(dheader_t *)buf;
-	for ( i = 0 ; i < sizeof( dheader_t ) / 4 ; i++ ) {
+	for ( i = 0 ; i < (int)( sizeof( dheader_t ) / 4 ) ; i++ ) {
 		( (int *)&header )[i] = LittleLong( ( (int *)&header )[i] );
 	}
 

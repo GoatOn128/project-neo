@@ -147,7 +147,7 @@ void QDECL Com_Printf( const char *fmt, ... ) {
     va_end(argptr);
 
     if ( rd_buffer ) {
-		if ( ( strlen( msg ) + strlen( rd_buffer ) ) > ( rd_buffersize - 1 ) ) {
+		if ( ( strlen( msg ) + strlen( rd_buffer ) ) > (size_t)( rd_buffersize - 1 ) ) {
 			rd_flush( rd_buffer );
 			*rd_buffer = 0;
 		}
@@ -1354,7 +1354,7 @@ void Hunk_FreeTempMemory( void *buf ) {
 
 
 	hdr = ( (hunkHeader_t *)buf ) - 1;
-	if ( hdr->magic != HUNK_MAGIC ) {
+	if ( (unsigned)hdr->magic != HUNK_MAGIC ) {
 		Com_Error( ERR_FATAL, "Hunk_FreeTempMemory: bad magic" );
 	}
 
@@ -1697,7 +1697,7 @@ int Com_EventLoop( void ) {
 			// the event buffers are only large enough to hold the
 			// exact payload, but channel messages need to be large
 			// enough to hold fragment reassembly
-			if ( (unsigned)buf.cursize > buf.maxsize ) {
+			if ( (unsigned)buf.cursize > (unsigned)buf.maxsize ) {
 				Com_Printf( "Com_EventLoop: oversize packet\n" );
 				continue;
 			}
