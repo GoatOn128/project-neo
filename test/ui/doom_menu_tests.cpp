@@ -93,7 +93,7 @@ int main() {
                 "New Doom weapon keys must retain custom bindings");
         Require(Drawn("ui/doom/titlepic") && Drawn("ui/doom/m_doom") && Drawn("ui/doom/m_ngame"),"Main must draw original title and patches");
         Require(UI_DoomFullscreen() && catcher==KEYCATCH_UI,"Title must own input and be fullscreen");
-        Require(ox==240 && oy==0 && sx==4.5f && sy==5.4f,"Widescreen must retain Doom's 4:3 pixel aspect");
+        Require(ox==240 && oy==0 && sx==4.5f && sy==5.4f,va("Widescreen must retain Doom's 4:3 pixel aspect: ox=%.9g oy=%.9g sx=%.9g sy=%.9g",ox,oy,sx,sy));
         Key(K_ESCAPE); Draw(); Require(Drawn("ui/doom/titlepic") && !Drawn("ui/doom/m_doom"),"Escape must dismiss title menu");
         Key(K_ENTER); Key(K_ENTER); Draw(); Require(Drawn("ui/doom/m_episod") && Drawn("ui/doom/m_epi3"),"New Game must offer compiled episodes");
         Key(K_DOWNARROW); Key(K_ENTER); Draw(); Require(Drawn("ui/doom/m_skill"),"Episode must open skill menu");
