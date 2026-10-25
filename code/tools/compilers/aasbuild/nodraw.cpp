@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "qbsp.h"
 
 vec3_t draw_mins, draw_maxs;
-qboolean drawflag;
+bool drawflag;
 
 void Draw_ClearWindow( void ) {
 }

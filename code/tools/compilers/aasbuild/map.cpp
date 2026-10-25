@@ -177,7 +177,7 @@ int PlaneTypeForNormal( vec3_t normal ) {
 //ME NOTE: changed from 0.01
 #define DIST_EPSILON    0.01
 
-qboolean    PlaneEqual( plane_t *p, vec3_t normal, vec_t dist ) {
+bool    PlaneEqual( plane_t *p, vec3_t normal, vec_t dist ) {
 #if 1
 	if (
 		fabs( p->normal[0] - normal[0] ) < NORMAL_EPSILON
@@ -546,7 +546,7 @@ void AddBrushBevels( mapbrush_t *b ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean MakeBrushWindings( mapbrush_t *ob ) {
+bool MakeBrushWindings( mapbrush_t *ob ) {
 	int i, j;
 	winding_t   *w;
 	side_t      *side;
@@ -704,7 +704,7 @@ int BrushExists( mapbrush_t *brush ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean WriteMapBrush( FILE *fp, mapbrush_t *brush, vec3_t origin ) {
+bool WriteMapBrush( FILE *fp, mapbrush_t *brush, vec3_t origin ) {
 	int sn, rotate, shift[2], sv, tv, planenum, p1, i, j;
 	float scale[2], originshift[2], ang1, ang2, newdist;
 	vec3_t vecs[2], axis[2];
@@ -953,7 +953,7 @@ qboolean WriteMapBrush( FILE *fp, mapbrush_t *brush, vec3_t origin ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean WriteOriginBrush( FILE *fp, vec3_t origin ) {
+bool WriteOriginBrush( FILE *fp, vec3_t origin ) {
 	vec3_t normal;
 	float dist;
 	int i, s;
@@ -1057,7 +1057,7 @@ mapbrush_t *GetAreaPortalBrush( entity_t *mapent ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean WriteMapFileSafe( FILE *fp ) {
+bool WriteMapFileSafe( FILE *fp ) {
 	char key[1024], value[1024];
 	int i, bn, entitybrushes;
 	epair_t *ep;

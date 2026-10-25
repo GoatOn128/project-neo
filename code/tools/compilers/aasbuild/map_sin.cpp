@@ -441,7 +441,7 @@ void MoveBrushesToWorld (entity_t *mapent)
 ParseMapEntity
 ================
 * /
-qboolean	Sin_ParseMapEntity (void)
+bool	Sin_ParseMapEntity (void)
 {
 	entity_t	*mapent;
 	epair_t		*e;
@@ -1094,7 +1094,7 @@ void Sin_ParseBSPBrushes( entity_t *mapent ) {
 } //end of the function Sin_ParseBSPBrushes
 //===========================================================================
 //===========================================================================
-qboolean Sin_ParseBSPEntity( int entnum ) {
+bool Sin_ParseBSPEntity( int entnum ) {
 	entity_t    *mapent;
 	char *model;
 

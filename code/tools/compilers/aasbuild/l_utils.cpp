@@ -132,7 +132,7 @@ void AppendPathSeperator( char *path, int length ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean FindFileInPak( char *pakfile, char *filename, foundfile_t *file ) {
+bool FindFileInPak( char *pakfile, char *filename, foundfile_t *file ) {
 	FILE *fp;
 	dpackheader_t packheader;
 	dpackfile_t *packfiles;
@@ -191,7 +191,7 @@ qboolean FindFileInPak( char *pakfile, char *filename, foundfile_t *file ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean FindQuakeFile2( char *basedir, char *gamedir, char *filename, foundfile_t *file ) {
+bool FindQuakeFile2( char *basedir, char *gamedir, char *filename, foundfile_t *file ) {
 	int dir, i;
 	//NOTE: 3 is necessary (LCC bug???)
 	char gamedirs[3][MAX_PATH] = {"","",""};
@@ -261,12 +261,12 @@ qboolean FindQuakeFile2( char *basedir, char *gamedir, char *filename, foundfile
 // Changes Globals:		-
 //===========================================================================
 #ifdef BOTLIB
-qboolean FindQuakeFile( char *filename, foundfile_t *file ) {
+bool FindQuakeFile( char *filename, foundfile_t *file ) {
 	return FindQuakeFile2( LibVarGetString( "basedir" ),
 						   LibVarGetString( "gamedir" ), filename, file );
 } //end of the function FindQuakeFile
 #else //BOTLIB
-qboolean FindQuakeFile( char *basedir, char *gamedir, char *filename, foundfile_t *file ) {
+bool FindQuakeFile( char *basedir, char *gamedir, char *filename, foundfile_t *file ) {
 	return FindQuakeFile2( basedir, gamedir, filename, file );
 } //end of the function FindQuakeFile
 #endif //BOTLIB

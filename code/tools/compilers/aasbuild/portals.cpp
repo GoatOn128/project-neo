@@ -140,7 +140,7 @@ int ClusterContents( node_t *node ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean Portal_VisFlood( portal_t *p ) {
+bool Portal_VisFlood( portal_t *p ) {
 	int c1, c2;
 
 	if ( !p->onnode ) {
@@ -183,7 +183,7 @@ qboolean Portal_VisFlood( portal_t *p ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean Portal_EntityFlood( portal_t *p, int s ) {
+bool Portal_EntityFlood( portal_t *p, int s ) {
 	if ( p->nodes[0]->planenum != PLANENUM_LEAF
 		 || p->nodes[1]->planenum != PLANENUM_LEAF ) {
 		Error( "Portal_EntityFlood: not a leaf" );
@@ -415,7 +415,7 @@ winding_t *BaseWindingForNode( node_t *node ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean WindingIsTiny( winding_t *w );
+bool WindingIsTiny( winding_t *w );
 
 void MakeNodePortal( node_t *node ) {
 	portal_t    *new_portal, *p;
@@ -806,7 +806,7 @@ void FloodPortals_r( node_t *node, int dist ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean PlaceOccupant( node_t *headnode, vec3_t origin, entity_t *occupant ) {
+bool PlaceOccupant( node_t *headnode, vec3_t origin, entity_t *occupant ) {
 	node_t *node;
 	vec_t d;
 	plane_t *plane;
@@ -857,12 +857,12 @@ qboolean PlaceOccupant( node_t *headnode, vec3_t origin, entity_t *occupant ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean FloodEntities( tree_t *tree ) {
+bool FloodEntities( tree_t *tree ) {
 	int i;
 	int x, y;
 	vec3_t origin;
 	char *cl;
-	qboolean inside;
+	bool inside;
 	node_t *headnode;
 
 	headnode = tree->headnode;
@@ -924,7 +924,7 @@ qboolean FloodEntities( tree_t *tree ) {
         Log_Print( "WARNING: entity reached from outside\n" );
     } //end else if
 
-    return (qboolean)( inside && !tree->outside_node.occupied );
+    return (bool)( inside && !tree->outside_node.occupied );
 } //end of the function FloodEntities
 
 /*

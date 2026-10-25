@@ -85,31 +85,31 @@ char outbase[32];
 int entity_num;
 extern aas_settings_t aassettings;
 
-qboolean noprune;               //don't prune nodes (bspc.cpp)
-qboolean glview;                //create a gl view
-qboolean nodetail;              //don't use detail brushes (map.cpp)
-qboolean fulldetail;            //use but don't mark detail brushes (map.cpp)
-qboolean onlyents;              //only process the entities (bspc.cpp)
-qboolean nomerge;               //don't merge bsp node faces (faces.cpp)
-qboolean nowater;               //don't use the water brushes (map.cpp)
-qboolean nocsg;                 //don't carve intersecting brushes (bspc.cpp)
-qboolean noweld;                //use unique face vertexes (faces.cpp)
-qboolean noshare;               //don't share bsp edges (faces.cpp)
-qboolean nosubdiv;              //don't subdivide bsp node faces (faces.cpp)
-qboolean notjunc;               //don't create tjunctions (edge melting) (faces.cpp)
-qboolean optimize;              //enable optimisation
-qboolean leaktest;              //perform a leak test
-qboolean verboseentities;
-qboolean freetree;              //free the bsp tree when not needed anymore
-qboolean create_aas;            //create an .AAS file
-qboolean nobrushmerge;          //don't merge brushes
-qboolean lessbrushes;           //create less brushes instead of correct texture placement
-qboolean cancelconversion;      //true if the conversion is being cancelled
-qboolean noliquids;             //no liquids when writing map file
-qboolean forcesidesvisible;     //force all brush sides to be visible when loaded from bsp
-qboolean writeaasmap;           //
-// qboolean	capsule_collision = true;	//use capsule collision
-qboolean capsule_collision = false; // capsule collision// Ridah, allow to specify an extension for multiple AAS files per map
+bool noprune;               //don't prune nodes (bspc.cpp)
+bool glview;                //create a gl view
+bool nodetail;              //don't use detail brushes (map.cpp)
+bool fulldetail;            //use but don't mark detail brushes (map.cpp)
+bool onlyents;              //only process the entities (bspc.cpp)
+bool nomerge;               //don't merge bsp node faces (faces.cpp)
+bool nowater;               //don't use the water brushes (map.cpp)
+bool nocsg;                 //don't carve intersecting brushes (bspc.cpp)
+bool noweld;                //use unique face vertexes (faces.cpp)
+bool noshare;               //don't share bsp edges (faces.cpp)
+bool nosubdiv;              //don't subdivide bsp node faces (faces.cpp)
+bool notjunc;               //don't create tjunctions (edge melting) (faces.cpp)
+bool optimize;              //enable optimisation
+bool leaktest;              //perform a leak test
+bool verboseentities;
+bool freetree;              //free the bsp tree when not needed anymore
+bool create_aas;            //create an .AAS file
+bool nobrushmerge;          //don't merge brushes
+bool lessbrushes;           //create less brushes instead of correct texture placement
+bool cancelconversion;      //true if the conversion is being cancelled
+bool noliquids;             //no liquids when writing map file
+bool forcesidesvisible;     //force all brush sides to be visible when loaded from bsp
+bool writeaasmap;           //
+// bool	capsule_collision = true;	//use capsule collision
+bool capsule_collision = false; // capsule collision// Ridah, allow to specify an extension for multiple AAS files per map
 
 char aas_extension[64];
 // done.
@@ -132,7 +132,7 @@ void ProcessWorldModel (void)
 {
 	entity_t	*e;
 	tree_t *tree;
-	qboolean	leaked;
+	bool	leaked;
 	int brush_start, brush_end;
 
 	e = &entities[entity_num];

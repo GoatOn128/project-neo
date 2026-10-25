@@ -437,7 +437,7 @@ void Q3_ParseBSPBrushes( entity_t *mapent ) {
 } //end of the function Q3_ParseBSPBrushes
 //===========================================================================
 //===========================================================================
-qboolean Q3_ParseBSPEntity( int entnum ) {
+bool Q3_ParseBSPEntity( int entnum ) {
 	entity_t *mapent;
 	char *model;
 

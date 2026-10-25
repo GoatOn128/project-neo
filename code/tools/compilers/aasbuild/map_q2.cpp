@@ -488,7 +488,7 @@ void Q2_MoveBrushesToWorld( entity_t *mapent ) {
 Q2_ParseMapEntity
 ================
 */
-qboolean    Q2_ParseMapEntity( script_t *script ) {
+bool    Q2_ParseMapEntity( script_t *script ) {
 	entity_t    *mapent;
 	epair_t *e;
 	side_t *s;
@@ -980,7 +980,7 @@ void Q2_ParseBSPBrushes( entity_t *mapent ) {
 } //end of the function Q2_ParseBSPBrushes
 //===========================================================================
 //===========================================================================
-qboolean Q2_ParseBSPEntity( int entnum ) {
+bool Q2_ParseBSPEntity( int entnum ) {
 	entity_t    *mapent;
 	char *model;
 
