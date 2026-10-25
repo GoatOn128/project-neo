@@ -202,7 +202,7 @@ typedef struct {
 	bool (*AAS_RT_GetHidePos)( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos );
 	int (*AAS_FindAttackSpotWithinRange)( int srcnum, int rangenum, int enemynum, float rangedist, int travelflags, float * outpos );
 	bool (*AAS_GetRouteFirstVisPos)( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos );
-	void (*AAS_SetAASBlockingEntity)( vec3_t absmin, vec3_t absmax, bool blocking );
+	void (*AAS_SetAASBlockingEntity)( vec3_t absmin, vec3_t absmax, int blocking );
 	void (*EA_Say)( int client, char * str );
 	void (*EA_SayTeam)( int client, char * str );
 	void (*EA_UseItem)( int client, char * it );

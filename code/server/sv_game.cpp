@@ -390,7 +390,7 @@ static const gameImport_t gameImportTable = {
 	[]( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos ) { return botlib_export->aas.AAS_RT_GetHidePos( (vec_t *)srcpos, srcnum, srcarea, (vec_t *)destpos, destnum, destarea, (vec_t *)returnPos ); },
 	[]( int srcnum, int rangenum, int enemynum, float rangedist, int travelflags, float *outpos ) { return botlib_export->aas.AAS_FindAttackSpotWithinRange( srcnum, rangenum, enemynum, rangedist, travelflags, outpos ); },
 	[]( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos ) { return botlib_export->aas.AAS_GetRouteFirstVisPos( (vec_t *)srcpos, (vec_t *)destpos, travelflags, (vec_t *)retpos ); },
-	[]( vec3_t absmin, vec3_t absmax, bool blocking ) { botlib_export->aas.AAS_SetAASBlockingEntity( (vec_t *)absmin, (vec_t *)absmax, blocking ); },
+	[]( vec3_t absmin, vec3_t absmax, int blocking ) { botlib_export->aas.AAS_SetAASBlockingEntity( (vec_t *)absmin, (vec_t *)absmax, blocking ); },
 	[]( int client, char *str ) { botlib_export->ea.EA_Say( client, str ); },
 	[]( int client, char *str ) { botlib_export->ea.EA_SayTeam( client, str ); },
 	[]( int client, char *it ) { botlib_export->ea.EA_UseItem( client, it ); },

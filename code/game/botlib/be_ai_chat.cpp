@@ -2135,3 +2135,748 @@ int BotLoadChatFile( int chatstate, char *chatfile, char *chatname ) {
 		}
 	}
 
+	cs->chat = BotLoadInitialChat( chatfile, chatname );
+	if ( !cs->chat ) {
+		botimport.Print( PRT_FATAL, "couldn't load chat %s from %s\n", chatname, chatfile );
+		return BLERR_CANNOTLOADICHAT;
+	} //end if
+	if ( !LibVarGetValue( "bot_reloadcharacters" ) ) {
+		ichatdata[avail].chat = cs->chat;
+		Q_strncpyz( ichatdata[avail].chatname, chatname, sizeof( ichatdata[avail].chatname ) );
+		Q_strncpyz( ichatdata[avail].filename, chatfile, sizeof( ichatdata[avail].filename ) );
+		ichatdata[avail].inuse = true;
+	} //end if
+
+	return BLERR_NOERROR;
+} //end of the function BotLoadChatFile
+//===========================================================================
+//
+// Parameter:			-
+// Returns:				-
+// Changes Globals:		-
+//===========================================================================
+int BotExpandChatMessage( char *outmessage, char *message, unsigned long mcontext,
+						  bot_matchvariable_t *variables, unsigned long vcontext, int reply ) {
+	int num, len, i, expansion;
+	char *outputbuf, *ptr, *msgptr;
+	char temp[MAX_MESSAGE_SIZE];
+
+	expansion = false;
+	msgptr = message;
+	outputbuf = outmessage;
+	len = 0;
+	//
+	while ( *msgptr )
+	{
+		if ( *msgptr == ESCAPE_CHAR ) {
+			msgptr++;
+			switch ( *msgptr )
+			{
+			case 'v':    //variable
+			{
+				msgptr++;
+				num = 0;
+				while ( *msgptr && *msgptr != ESCAPE_CHAR )
+				{
+					num = num * 10 + ( *msgptr++ ) - '0';
+				}     //end while
+					  //step over the trailing escape char
+				if ( *msgptr ) {
+					msgptr++;
+				}
+				if ( num > MAX_MATCHVARIABLES ) {
+					botimport.Print( PRT_ERROR, "BotConstructChat: message %s variable %d out of range\n", message, num );
+					return false;
+				}     //end if
+				ptr = variables[num].ptr;
+				if ( ptr ) {
+					for ( i = 0; i < variables[num].length; i++ )
+					{
+						temp[i] = ptr[i];
+					}     //end for
+					temp[i] = 0;
+					//if it's a reply message
+					if ( reply ) {
+						//replace the reply synonyms in the variables
+						BotReplaceReplySynonyms( temp, vcontext );
+					}     //end if
+					else
+					{
+						//replace synonyms in the variable context
+						BotReplaceSynonyms( temp, vcontext );
+					}     //end else
+						  //
+					if ( len + strlen( temp ) >= MAX_MESSAGE_SIZE ) {
+						botimport.Print( PRT_ERROR, "BotConstructChat: message %s too long\n", message );
+						return false;
+					}     //end if
+					strcpy( &outputbuf[len], temp );
+					len += strlen( temp );
+				}     //end if
+				break;
+			}     //end case
+			case 'r':    //random
+			{
+				msgptr++;
+				for ( i = 0; ( *msgptr && *msgptr != ESCAPE_CHAR ); i++ )
+				{
+					temp[i] = *msgptr++;
+				}     //end while
+				temp[i] = '\0';
+				//step over the trailing escape char
+				if ( *msgptr ) {
+					msgptr++;
+				}
+				//find the random keyword
+				ptr = RandomString( temp );
+				if ( !ptr ) {
+					botimport.Print( PRT_ERROR, "BotConstructChat: unknown random string %s\n", temp );
+					return false;
+				}     //end if
+				if ( len + strlen( ptr ) >= MAX_MESSAGE_SIZE ) {
+					botimport.Print( PRT_ERROR, "BotConstructChat: message \"%s\" too long\n", message );
+					return false;
+				}     //end if
+				strcpy( &outputbuf[len], ptr );
+				len += strlen( ptr );
+				expansion = true;
+				break;
+			}     //end case
+			default:
+			{
+				botimport.Print( PRT_FATAL, "BotConstructChat: message \"%s\" invalid escape char\n", message );
+				break;
+			}     //end default
+			} //end switch
+		} //end if
+		else
+		{
+			outputbuf[len++] = *msgptr++;
+			if ( len >= MAX_MESSAGE_SIZE ) {
+				botimport.Print( PRT_ERROR, "BotConstructChat: message \"%s\" too long\n", message );
+				break;
+			} //end if
+		} //end else
+	} //end while
+	outputbuf[len] = '\0';
+	//replace synonyms weighted in the message context
+	BotReplaceWeightedSynonyms( outputbuf, mcontext );
+	//return true if a random was expanded
+	return expansion;
+} //end of the function BotExpandChatMessage
+//===========================================================================
+//
+// Parameter:			-
+// Returns:				-
+// Changes Globals:		-
+//===========================================================================
+void BotConstructChatMessage( bot_chatstate_t *chatstate, char *message, unsigned long mcontext,
+							  bot_matchvariable_t *variables, unsigned long vcontext, int reply ) {
+	int i;
+	char srcmessage[MAX_MESSAGE_SIZE];
+
+	strcpy( srcmessage, message );
+	for ( i = 0; i < 10; i++ )
+	{
+		if ( !BotExpandChatMessage( chatstate->chatmessage, srcmessage, mcontext, variables, vcontext, reply ) ) {
+			break;
+		} //end if
+		strcpy( srcmessage, chatstate->chatmessage );
+	} //end for
+	if ( i >= 10 ) {
+		botimport.Print( PRT_WARNING, "too many expansions in chat message\n" );
+		botimport.Print( PRT_WARNING, "%s\n", chatstate->chatmessage );
+	} //end if
+} //end of the function BotConstructChatMessage
+//===========================================================================
+// randomly chooses one of the chat message of the given type
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//===========================================================================
+char *BotChooseInitialChatMessage( bot_chatstate_t *cs, char *type ) {
+	int n, numchatmessages;
+	float besttime;
+	bot_chattype_t *t;
+	bot_chatmessage_t *m, *bestchatmessage;
+	bot_chat_t *chat;
+
+	chat = cs->chat;
+	for ( t = chat->types; t; t = t->next )
+	{
+		if ( !Q_stricmp( t->name, type ) ) {
+			numchatmessages = 0;
+			for ( m = t->firstchatmessage; m; m = m->next )
+			{
+				if ( m->time > AAS_Time() ) {
+					continue;
+				}
+				numchatmessages++;
+			} //end if
+			  //if all chat messages have been used recently
+			if ( numchatmessages <= 0 ) {
+				besttime = 0;
+				bestchatmessage = NULL;
+				for ( m = t->firstchatmessage; m; m = m->next )
+				{
+					if ( !besttime || m->time < besttime ) {
+						bestchatmessage = m;
+						besttime = m->time;
+					} //end if
+				} //end for
+				if ( bestchatmessage ) {
+					return bestchatmessage->chatmessage;
+				}
+			} //end if
+			else //choose a chat message randomly
+			{
+				n = random() * numchatmessages;
+				for ( m = t->firstchatmessage; m; m = m->next )
+				{
+					if ( m->time > AAS_Time() ) {
+						continue;
+					}
+					if ( --n < 0 ) {
+						m->time = AAS_Time() + CHATMESSAGE_RECENTTIME;
+						return m->chatmessage;
+					} //end if
+				} //end for
+			} //end else
+			return NULL;
+		} //end if
+	} //end for
+	return NULL;
+} //end of the function BotChooseInitialChatMessage
+//===========================================================================
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//===========================================================================
+int BotNumInitialChats( int chatstate, char *type ) {
+	bot_chatstate_t *cs;
+	bot_chattype_t *t;
+
+	cs = BotChatStateFromHandle( chatstate );
+	if ( !cs ) {
+		return 0;
+	}
+
+	for ( t = cs->chat->types; t; t = t->next )
+	{
+		if ( !Q_stricmp( t->name, type ) ) {
+			if ( LibVarGetValue( "bot_testichat" ) ) {
+				botimport.Print( PRT_MESSAGE, "%s has %d chat lines\n", type, t->numchatmessages );
+				botimport.Print( PRT_MESSAGE, "-------------------\n" );
+			}
+			return t->numchatmessages;
+		} //end if
+	} //end for
+	return 0;
+} //end of the function BotNumInitialChats
+//===========================================================================
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//===========================================================================
+void BotInitialChat( int chatstate, char *type, int mcontext, char *var0, char *var1, char *var2, char *var3, char *var4, char *var5, char *var6, char *var7 ) {
+	char *message;
+	bot_matchvariable_t variables[MAX_MATCHVARIABLES];
+	bot_chatstate_t *cs;
+
+	cs = BotChatStateFromHandle( chatstate );
+	if ( !cs ) {
+		return;
+	}
+	//if no chat file is loaded
+	if ( !cs->chat ) {
+		return;
+	}
+	//choose a chat message randomly of the given type
+	message = BotChooseInitialChatMessage( cs, type );
+	//if there's no message of the given type
+	if ( !message ) {
+#ifdef DEBUG
+		botimport.Print( PRT_MESSAGE, "no chat messages of type %s\n", type );
+#endif //DEBUG
+		return;
+	} //end if
+	  //
+	memset( variables, 0, sizeof( variables ) );
+	if ( var0 ) {
+		variables[0].ptr = var0;
+		variables[0].length = strlen( var0 );
+	}
+	if ( var1 ) {
+		variables[1].ptr = var1;
+		variables[1].length = strlen( var1 );
+	}
+	if ( var2 ) {
+		variables[2].ptr = var2;
+		variables[2].length = strlen( var2 );
+	}
+	if ( var3 ) {
+		variables[3].ptr = var3;
+		variables[3].length = strlen( var3 );
+	}
+	if ( var4 ) {
+		variables[4].ptr = var4;
+		variables[4].length = strlen( var4 );
+	}
+	if ( var5 ) {
+		variables[5].ptr = var5;
+		variables[5].length = strlen( var5 );
+	}
+	if ( var6 ) {
+		variables[6].ptr = var6;
+		variables[6].length = strlen( var6 );
+	}
+	if ( var7 ) {
+		variables[7].ptr = var7;
+		variables[7].length = strlen( var7 );
+	}
+	//
+	BotConstructChatMessage( cs, message, mcontext, variables, 0, false );
+} //end of the function BotInitialChat
+//===========================================================================
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//===========================================================================
+void BotPrintReplyChatKeys( bot_replychat_t *replychat ) {
+	bot_replychatkey_t *key;
+	bot_matchpiece_t *mp;
+
+	botimport.Print( PRT_MESSAGE, "[" );
+	for ( key = replychat->keys; key; key = key->next )
+	{
+		if ( key->flags & RCKFL_AND ) {
+			botimport.Print( PRT_MESSAGE, "&" );
+		} else if ( key->flags & RCKFL_NOT ) {
+			botimport.Print( PRT_MESSAGE, "!" );
+		}
+		//
+		if ( key->flags & RCKFL_NAME ) {
+			botimport.Print( PRT_MESSAGE, "name" );
+		} else if ( key->flags & RCKFL_GENDERFEMALE ) {
+			botimport.Print( PRT_MESSAGE, "female" );
+		} else if ( key->flags & RCKFL_GENDERMALE )                                                                                     {
+			botimport.Print( PRT_MESSAGE, "male" );
+		} else if ( key->flags & RCKFL_GENDERLESS )                                                                                                                                                                          {
+			botimport.Print( PRT_MESSAGE, "it" );
+		} else if ( key->flags & RCKFL_VARIABLES )                                                                                                                                                                                                                                                             {
+			botimport.Print( PRT_MESSAGE, "(" );
+			for ( mp = key->match; mp; mp = mp->next )
+			{
+				if ( mp->type == MT_STRING ) {
+					botimport.Print( PRT_MESSAGE, "\"%s\"", mp->firststring->string );
+				} else { botimport.Print( PRT_MESSAGE, "%d", mp->variable );}
+				if ( mp->next ) {
+					botimport.Print( PRT_MESSAGE, ", " );
+				}
+			} //end for
+			botimport.Print( PRT_MESSAGE, ")" );
+		} //end if
+		else if ( key->flags & RCKFL_STRING ) {
+			botimport.Print( PRT_MESSAGE, "\"%s\"", key->string );
+		} //end if
+		if ( key->next ) {
+			botimport.Print( PRT_MESSAGE, ", " );
+		} else { botimport.Print( PRT_MESSAGE, "] = %1.0f\n", replychat->priority );}
+	} //end for
+	botimport.Print( PRT_MESSAGE, "{\n" );
+} //end of the function BotPrintReplyChatKeys
+//===========================================================================
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//===========================================================================
+int BotReplyChat( int chatstate, char *message, int mcontext, int vcontext, char *var0, char *var1, char *var2, char *var3, char *var4, char *var5, char *var6, char *var7 ) {
+	bot_replychat_t *rchat, *bestrchat;
+	bot_replychatkey_t *key;
+	bot_chatmessage_t *m, *bestchatmessage;
+	bot_match_t match, bestmatch;
+	int bestpriority, num, found, res, numchatmessages;
+	bot_chatstate_t *cs;
+
+	cs = BotChatStateFromHandle( chatstate );
+	if ( !cs ) {
+		return false;
+	}
+	memset( &match, 0, sizeof( bot_match_t ) );
+	strcpy( match.string, message );
+	bestpriority = -1;
+	bestchatmessage = NULL;
+	bestrchat = NULL;
+	//go through all the reply chats
+	for ( rchat = replychats; rchat; rchat = rchat->next )
+	{
+		found = false;
+		for ( key = rchat->keys; key; key = key->next )
+		{
+			res = false;
+			//get the match result
+			if ( key->flags & RCKFL_NAME ) {
+				res = ( StringContains( message, cs->name, false ) != -1 );
+			} else if ( key->flags & RCKFL_BOTNAMES ) {
+				res = ( StringContains( key->string, cs->name, false ) != -1 );
+			} else if ( key->flags & RCKFL_GENDERFEMALE )                                                                                                    {
+				res = ( cs->gender == CHAT_GENDERFEMALE );
+			} else if ( key->flags & RCKFL_GENDERMALE )                                                                                                                                                                                              {
+				res = ( cs->gender == CHAT_GENDERMALE );
+			} else if ( key->flags & RCKFL_GENDERLESS )                                                                                                                                                                                                                                                                                    {
+				res = ( cs->gender == CHAT_GENDERLESS );
+			} else if ( key->flags & RCKFL_VARIABLES )                                                                                                                                                                                                                                                                                                                                                                          {
+				res = StringsMatch( key->match, &match );
+			} else if ( key->flags & RCKFL_STRING )                                                                                                                                                                                                                                                                                                                                                                                                                                                                {
+				res = ( StringContainsWord( message, key->string, false ) != NULL );
+			}
+			//if the key must be present
+			if ( key->flags & RCKFL_AND ) {
+				if ( !res ) {
+					found = false;
+					break;
+				} //end if
+				  //botnames is an exception
+				  //if (!(key->flags & RCKFL_BOTNAMES)) found = true;
+			} //end else if
+			  //if the key must be absent
+			else if ( key->flags & RCKFL_NOT ) {
+				if ( res ) {
+					found = false;
+					break;
+				} //end if
+			} //end if
+			else if ( res ) {
+				found = true;
+			} //end else
+		} //end for
+		  //
+		if ( found ) {
+			if ( rchat->priority > bestpriority ) {
+				numchatmessages = 0;
+				for ( m = rchat->firstchatmessage; m; m = m->next )
+				{
+					if ( m->time > AAS_Time() ) {
+						continue;
+					}
+					numchatmessages++;
+				} //end if
+				num = random() * numchatmessages;
+				for ( m = rchat->firstchatmessage; m; m = m->next )
+				{
+					if ( --num < 0 ) {
+						break;
+					}
+					if ( m->time > AAS_Time() ) {
+						continue;
+					}
+				} //end for
+				  //if the reply chat has a message
+				if ( m ) {
+					memcpy( &bestmatch, &match, sizeof( bot_match_t ) );
+					bestchatmessage = m;
+					bestrchat = rchat;
+					bestpriority = rchat->priority;
+				} //end if
+			} //end if
+		} //end if
+	} //end for
+	if ( bestchatmessage ) {
+		if ( var0 ) {
+			bestmatch.variables[0].ptr = var0;
+			bestmatch.variables[0].length = strlen( var0 );
+		}
+		if ( var1 ) {
+			bestmatch.variables[1].ptr = var1;
+			bestmatch.variables[1].length = strlen( var1 );
+		}
+		if ( var2 ) {
+			bestmatch.variables[2].ptr = var2;
+			bestmatch.variables[2].length = strlen( var2 );
+		}
+		if ( var3 ) {
+			bestmatch.variables[3].ptr = var3;
+			bestmatch.variables[3].length = strlen( var3 );
+		}
+		if ( var4 ) {
+			bestmatch.variables[4].ptr = var4;
+			bestmatch.variables[4].length = strlen( var4 );
+		}
+		if ( var5 ) {
+			bestmatch.variables[5].ptr = var5;
+			bestmatch.variables[5].length = strlen( var5 );
+		}
+		if ( var6 ) {
+			bestmatch.variables[6].ptr = var6;
+			bestmatch.variables[6].length = strlen( var6 );
+		}
+		if ( var7 ) {
+			bestmatch.variables[7].ptr = var7;
+			bestmatch.variables[7].length = strlen( var7 );
+		}
+		if ( LibVarGetValue( "bot_testrchat" ) ) {
+			for ( m = bestrchat->firstchatmessage; m; m = m->next )
+			{
+				BotConstructChatMessage( cs, m->chatmessage, mcontext, bestmatch.variables, vcontext, true );
+				BotRemoveTildes( cs->chatmessage );
+				botimport.Print( PRT_MESSAGE, "%s\n", cs->chatmessage );
+			} //end if
+		} //end if
+		else
+		{
+			bestchatmessage->time = AAS_Time() + CHATMESSAGE_RECENTTIME;
+			BotConstructChatMessage( cs, bestchatmessage->chatmessage, mcontext, bestmatch.variables, vcontext, true );
+		} //end else
+		return true;
+	} //end if
+	return false;
+} //end of the function BotReplyChat
+//===========================================================================
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//===========================================================================
+int BotChatLength( int chatstate ) {
+	bot_chatstate_t *cs;
+
+	cs = BotChatStateFromHandle( chatstate );
+	if ( !cs ) {
+		return 0;
+	}
+	return strlen( cs->chatmessage );
+} //end of the function BotChatLength
+//===========================================================================
+//
+// Parameter:			-
+// Returns:				-
+// Changes Globals:		-
+//===========================================================================
+void BotEnterChat( int chatstate, int client, int sendto ) {
+	bot_chatstate_t *cs;
+
+	cs = BotChatStateFromHandle( chatstate );
+	if ( !cs ) {
+		return;
+	}
+
+	if ( strlen( cs->chatmessage ) ) {
+		BotRemoveTildes( cs->chatmessage );
+		if ( LibVarGetValue( "bot_testichat" ) ) {
+			botimport.Print( PRT_MESSAGE, "%s\n", cs->chatmessage );
+		} else {
+			if ( sendto == CHAT_TEAM ) {
+				EA_SayTeam( client, cs->chatmessage );
+			} else { EA_Say( client, cs->chatmessage );}
+		}
+		//clear the chat message from the state
+		strcpy( cs->chatmessage, "" );
+	} //end if
+} //end of the function BotEnterChat
+//===========================================================================
+//
+// Parameter:			-
+// Returns:				-
+// Changes Globals:		-
+//===========================================================================
+void BotGetChatMessage( int chatstate, char *buf, int size ) {
+	bot_chatstate_t *cs;
+
+	cs = BotChatStateFromHandle( chatstate );
+	if ( !cs ) {
+		return;
+	}
+
+	BotRemoveTildes( cs->chatmessage );
+	strncpy( buf, cs->chatmessage, size - 1 );
+	buf[size - 1] = '\0';
+	//clear the chat message from the state
+	strcpy( cs->chatmessage, "" );
+} //end of the function BotGetChatMessage
+//===========================================================================
+//
+// Parameter:			-
+// Returns:				-
+// Changes Globals:		-
+//===========================================================================
+void BotSetChatGender( int chatstate, int gender ) {
+	bot_chatstate_t *cs;
+
+	cs = BotChatStateFromHandle( chatstate );
+	if ( !cs ) {
+		return;
+	}
+	switch ( gender )
+	{
+	case CHAT_GENDERFEMALE: cs->gender = CHAT_GENDERFEMALE; break;
+	case CHAT_GENDERMALE: cs->gender = CHAT_GENDERMALE; break;
+	default: cs->gender = CHAT_GENDERLESS; break;
+	} //end switch
+} //end of the function BotSetChatGender
+//===========================================================================
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//===========================================================================
+void BotSetChatName( int chatstate, char *name ) {
+	bot_chatstate_t *cs;
+
+	cs = BotChatStateFromHandle( chatstate );
+	if ( !cs ) {
+		return;
+	}
+	memset( cs->name, 0, sizeof( cs->name ) );
+	strncpy( cs->name, name, sizeof( cs->name ) );
+	cs->name[sizeof( cs->name ) - 1] = '\0';
+} //end of the function BotSetChatName
+//===========================================================================
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//===========================================================================
+void BotResetChatAI( void ) {
+	bot_replychat_t *rchat;
+	bot_chatmessage_t *m;
+
+	for ( rchat = replychats; rchat; rchat = rchat->next )
+	{
+		for ( m = rchat->firstchatmessage; m; m = m->next )
+		{
+			m->time = 0;
+		} //end for
+	} //end for
+} //end of the function BotResetChatAI
+//========================================================================
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//========================================================================
+int BotAllocChatState( void ) {
+	int i;
+
+	for ( i = 1; i <= MAX_CLIENTS; i++ )
+	{
+		if ( !botchatstates[i] ) {
+			botchatstates[i] = (bot_chatstate_t *)GetClearedMemory( sizeof( bot_chatstate_t ) );
+			return i;
+		} //end if
+	} //end for
+	return 0;
+} //end of the function BotAllocChatState
+//========================================================================
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//========================================================================
+void BotFreeChatState( int handle ) {
+	bot_consolemessage_t m;
+	int h;
+
+	if ( handle <= 0 || handle > MAX_CLIENTS ) {
+		botimport.Print( PRT_FATAL, "chat state handle %d out of range\n", handle );
+		return;
+	} //end if
+	if ( !botchatstates[handle] ) {
+		botimport.Print( PRT_FATAL, "invalid chat state %d\n", handle );
+		return;
+	} //end if
+	if ( LibVarGetValue( "bot_reloadcharacters" ) ) {
+		BotFreeChatFile( handle );
+	} //end if
+	  //free all the console messages left in the chat state
+	for ( h = BotNextConsoleMessage( handle, &m ); h; h = BotNextConsoleMessage( handle, &m ) )
+	{
+		//remove the console message
+		BotRemoveConsoleMessage( handle, h );
+	} //end for
+	FreeMemory( botchatstates[handle] );
+	botchatstates[handle] = NULL;
+} //end of the function BotFreeChatState
+//===========================================================================
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//===========================================================================
+int BotSetupChatAI( void ) {
+	char *file;
+
+#ifdef DEBUG
+	int starttime = Sys_MilliSeconds();
+#endif //DEBUG
+
+	file = LibVarString( "synfile", "syn.cpp" );
+	synonyms = BotLoadSynonyms( file );
+	file = LibVarString( "rndfile", "rnd.cpp" );
+	randomstrings = BotLoadRandomStrings( file );
+	file = LibVarString( "matchfile", "match.cpp" );
+	matchtemplates = BotLoadMatchTemplates( file );
+	//
+	if ( !LibVarValue( "nochat", "0" ) ) {
+		file = LibVarString( "rchatfile", "rchat.cpp" );
+		replychats = BotLoadReplyChat( file );
+	} //end if
+
+	InitConsoleMessageHeap();
+
+#ifdef DEBUG
+	botimport.Print( PRT_MESSAGE, "setup chat AI %d msec\n", Sys_MilliSeconds() - starttime );
+#endif //DEBUG
+	return BLERR_NOERROR;
+} //end of the function BotSetupChatAI
+//===========================================================================
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//===========================================================================
+void BotShutdownChatAI( void ) {
+	int i;
+
+	//free all remaining chat states
+	for ( i = 0; i < MAX_CLIENTS; i++ )
+	{
+		if ( botchatstates[i] ) {
+			BotFreeChatState( i );
+		} //end if
+	} //end for
+	  //free all cached chats
+	for ( i = 0; i < MAX_CLIENTS; i++ )
+	{
+		if ( ichatdata[i].inuse ) {
+			FreeMemory( ichatdata[i].chat );
+			ichatdata[i].inuse = false;
+		} //end if
+	} //end for
+	if ( consolemessageheap ) {
+		FreeMemory( consolemessageheap );
+	}
+	consolemessageheap = NULL;
+	if ( matchtemplates ) {
+		BotFreeMatchTemplates( matchtemplates );
+	}
+	matchtemplates = NULL;
+	if ( randomstrings ) {
+		FreeMemory( randomstrings );
+	}
+	randomstrings = NULL;
+	if ( synonyms ) {
+		FreeMemory( synonyms );
+	}
+	synonyms = NULL;
+	if ( replychats ) {
+		BotFreeReplyChat( replychats );
+	}
+	replychats = NULL;
+} //end of the function BotShutdownChatAI
+
+

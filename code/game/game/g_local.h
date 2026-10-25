@@ -1250,7 +1250,7 @@ void        trap_AAS_RT_ShowRoute( vec3_t srcpos, int srcnum, int destnum );
 bool    trap_AAS_RT_GetHidePos( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos );
 int         trap_AAS_FindAttackSpotWithinRange( int srcnum, int rangenum, int enemynum, float rangedist, int travelflags, float *outpos );
 bool    trap_AAS_GetRouteFirstVisPos( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos );
-void        trap_AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, bool blocking );
+void        trap_AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, int blocking );
 // done.
 
 void    trap_EA_Say( int client, char *str );
