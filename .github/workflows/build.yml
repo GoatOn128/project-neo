@@ -115,6 +115,7 @@ jobs:
             echo "build.log did not change."
           else
             git commit -m "Save the Windows x86 build and test logs"
+            git pull --rebase
             git push
           fi
 
