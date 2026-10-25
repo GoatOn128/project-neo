@@ -1,4 +1,4 @@
-successfully downloaded text file (SHA: 88977f8bb55da2dcfb069217d1d2dec165cc51c3)/*
+/*
 ===========================================================================
 
 Return to Castle Wolfenstein single player GPL Source Code
