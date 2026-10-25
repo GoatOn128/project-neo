@@ -623,7 +623,7 @@ TESTS = [
             'sound/snd_fluidsynth.cpp',
             'sound/snd_wave.cpp',
         ],
-        'libs': ['OpenAL'],
+        'libs': ['OpenAL', 'SDL3'],
         'syslibs': ['winmm', 'ole32', 'oleaut32'],
     },
     {
@@ -638,7 +638,7 @@ TESTS = [
             'game/q_shared.cpp',
             'game/q_math.cpp',
         ],
-        'libs': ['OpenAL', 'doom_opl'],
+        'libs': ['OpenAL', 'SDL3', 'doom_opl'],
         'syslibs': ['winmm', 'ole32', 'oleaut32'],
         'sections': True,
     },

@@ -363,6 +363,7 @@ BUILT_LIBS = {
     'doom_miniz': doom_miniz,
     'doom_opl': doom_opl,
     'OpenAL': OpenAL32,
+    'SDL3': SDL3,
 }
 if build_editor:
     BUILT_LIBS['doomed_core'] = doomed_core
@@ -428,6 +429,8 @@ for test in doom_sources.TESTS:
     test_nodes.append(node)
 
 env.Alias('tests', test_nodes)
+if sdl_copies:
+    env.Depends(test_nodes, sdl_copies)
 
 # "scons test" builds the tests, runs them and stops when one fails.
 # The tests stay optional for a plain build; the CI run always executes them.
