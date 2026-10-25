@@ -361,11 +361,11 @@ extern unzFile unzOpen (const char* path)
 	uLong central_pos,uL;
 	FILE * fin ;
 
-	uLong number_disk;          /* number of the current dist, used for 
+	uLong number_disk = 0;          /* number of the current dist, used for 
 								   spaning ZIP, unsupported, always 0*/
-	uLong number_disk_with_CD;  /* number the the disk with central dir, used
+	uLong number_disk_with_CD = 0;  /* number the the disk with central dir, used
 								   for spaning ZIP, unsupported, always 0*/
-	uLong number_entry_CD;      /* total number of entries in
+	uLong number_entry_CD = 0;      /* total number of entries in
 	                               the central dir 
 	                               (same than number_entry on nospan) */
 
@@ -827,8 +827,8 @@ static int unzlocal_CheckCurrentFileCoherencyHeader (unz_s* s, uInt* piSizeVar,
 													uInt *psize_local_extrafield)
 {
 	uLong uMagic,uData,uFlags;
-	uLong size_filename;
-	uLong size_extra_field;
+	uLong size_filename = 0;
+	uLong size_extra_field = 0;
 	int err=UNZ_OK;
 
 	*piSizeVar = 0;

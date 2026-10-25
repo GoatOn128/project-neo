@@ -104,7 +104,9 @@ static char *GetToken(char **text, bool allowLineBreaks, bool readUntilEOL = fal
         }
     }
 
-    if (token[0] == '\"') { // remove start quote
+    // The length check keeps the memmove bound from wrapping around
+    // when the token holds nothing but the quote itself.
+    if ( length && token[0] == '\"' )) { // remove start quote
         length--;
         memmove(token, token + 1, length);
 

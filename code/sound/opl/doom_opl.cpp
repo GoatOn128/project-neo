@@ -1420,7 +1420,7 @@ static void KeyOnEvent(opl_track_data_t *track, midi_event_t *event) {
         if (!opl_opl3mode) {
             voicenum = 1;
         }
-        while (voice_alloced_num > (unsigned int)( num_opl_voices - voicenum )) {
+        while ( (unsigned int)voice_alloced_num > (unsigned int)( num_opl_voices - voicenum )) {
             ReplaceExistingVoiceDoom1();
         }
 

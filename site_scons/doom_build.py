@@ -57,10 +57,16 @@ GCC_FLAGS = [
 
 
 def pkg_config_libs(name):
-    """The linker flags for a system library, straight from pkg-config."""
+    """The bare library names for a system library, from pkg-config.
+
+    The names go into a LIBS list, where scons prefixes every entry with
+    -l. The -L and -Wl flags pkg-config also prints would turn into
+    broken library names there, so they are appended to the base
+    environment LINKFLAGS instead (see make_base_env_linux).
+    """
     import subprocess
-    return subprocess.check_output(
-        ['pkg-config', '--libs', name], text=True).split()
+    return [lib[len('-l'):] for lib in subprocess.check_output(
+        ['pkg-config', '--libs-only-l', name], text=True).split()]
 
 
 def make_base_env(config, arch='x86'):
@@ -142,6 +148,17 @@ def make_base_env_linux(config):
     cflags = subprocess.check_output(
         ['pkg-config', '--cflags', 'sdl3'], text=True).split()
     env.Append(CCFLAGS=cflags)
+
+    # The -L and -Wl flags pkg-config prints for SDL3 have to reach the
+    # linker as LINKFLAGS: in a LIBS list scons prefixes every entry with
+    # -l, and the link failed with "cannot find -l-L/usr/local/lib". Every
+    # program and module shares this environment, so they all find
+    # libSDL3.so through -L at build time and through the rpath at run
+    # time.
+    sdl3_linkflags = subprocess.check_output(
+        ['pkg-config', '--libs-only-L', '--libs-only-other', 'sdl3'],
+        text=True).split()
+    env.Append(LINKFLAGS=sdl3_linkflags)
 
     # Include folders that make the old include paths work, see above.
     env.Append(CPPPATH=LEGACY_INCLUDE_PATHS)
