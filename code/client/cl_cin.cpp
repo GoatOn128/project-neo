@@ -134,7 +134,8 @@ typedef struct {
 	byte*               gray;
 	unsigned int xsize, ysize, maxsize, minsize;
 
-	bool half, smootheddouble, inMemory;
+	bool half, smootheddouble;
+	int inMemory;
 	long normalBuffer0;
 	long roq_flags;
 	long roqF0;
@@ -1871,6 +1872,7 @@ void CIN_UploadCinematic( int handle ) {
 		}
 	}
 }
+
 
 
 

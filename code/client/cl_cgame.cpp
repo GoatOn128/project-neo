@@ -459,7 +459,7 @@ static const cgameImport_t cgameImportTable = {
 	S_StartSound,
 	S_StartSoundEx,
 	S_StartLocalSound,
-	[]( bool killall ) {
+	[]( int killall ) {
 		S_ClearLoopingSounds(); // (SA) so no_pvs sounds can function
 		// RF, if killall, then stop all sounds
 		if ( killall == 1 ) {
@@ -1011,5 +1011,6 @@ bool CL_GetTag( int clientNum, char *tagname, orientation_t *or ) {
 
 	return cgameExport->GetTag( clientNum, tagname, or );
 }
+
 
 

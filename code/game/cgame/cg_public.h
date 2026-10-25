@@ -112,7 +112,7 @@ typedef struct {
 	void (*S_StartSound)( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx );
 	void (*S_StartSoundEx)( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx, int flags );
 	void (*S_StartLocalSound)( sfxHandle_t sfx, int channelNum );
-	void (*S_ClearLoopingSounds)( bool killall );
+	void (*S_ClearLoopingSounds)( int killall );
 	void (*S_AddLoopingSound)( int entityNum, const vec3_t origin, const vec3_t velocity, int range, sfxHandle_t sfx, int volume );
 	void (*S_StopLoopingSound)( int entityNum );
 	void (*S_StopStreamingSound)( int entityNum );

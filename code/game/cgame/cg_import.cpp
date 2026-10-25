@@ -161,7 +161,7 @@ void trap_S_StartLocalSound( sfxHandle_t sfx, int channelNum ) {
 	cgameImports->S_StartLocalSound( sfx, channelNum );
 }
 
-void trap_S_ClearLoopingSounds( bool killall ) {
+void trap_S_ClearLoopingSounds( int killall ) {
 	cgameImports->S_ClearLoopingSounds( killall );
 }
 
@@ -473,5 +473,6 @@ int trap_R_LightForPoint( vec3_t point, vec3_t ambient, vec3_t directed, vec3_t 
 void trap_R_DrawDoomMap( int x, int y, int width, int height, const byte * pixels ) {
 	cgameImports->R_DrawDoomMap( x, y, width, height, pixels );
 }
+
 
 
