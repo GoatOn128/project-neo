@@ -62,7 +62,7 @@ void S_StopAllSounds( void );
 
 // all continuous looping sounds must be added before calling S_Update
 void S_ClearLoopingSounds( void );
-void S_ClearSounds( qboolean clearStreaming, qboolean clearMusic ); //----(SA)	modified
+void S_ClearSounds( bool clearStreaming, bool clearMusic ); //----(SA)	modified
 void S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfxHandle, int volume );
 void S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfx );
 void S_StopLoopingSound( int entityNum );
@@ -80,7 +80,7 @@ void S_UpdateEntityPosition( int entityNum, const vec3_t origin );
 void S_Update( void );
 
 // Suspend playback and streaming without discarding queued sounds or music.
-void S_SetEditorPaused(qboolean paused);
+void S_SetEditorPaused(bool paused);
 
 void S_DisableSounds( void );
 
@@ -92,7 +92,7 @@ void S_BeginRegistration( void );
 #ifdef DOOMSOUND    ///// (SA) DOOMSOUND
 sfxHandle_t S_RegisterSound( const char *sample );
 #else
-sfxHandle_t S_RegisterSound( const char *sample, qboolean compressed );
+sfxHandle_t S_RegisterSound( const char *sample, bool compressed );
 #endif ///// (SA) DOOMSOUND
 
 void S_DisplayFreeMemory( void );

@@ -10,7 +10,7 @@ void FS_InitDoomContent() {
     // Use the mounted Quake filesystem, including its normal base/home/mod search order.
     // Cache this once at startup so a remote server's pure list cannot change ownership.
     fileHandle_t file = 0;
-    const int length = FS_FOpenFileRead("wad/DOOM.wad", &file, qfalse);
+    const int length = FS_FOpenFileRead("wad/DOOM.wad", &file, false);
     demoMode = !file || length <= 0;
     if (file) {
         FS_FCloseFile(file);
@@ -22,9 +22,9 @@ void FS_InitDoomContent() {
                demoMode ? "missing, empty or unreadable" : "found");
 }
 
-qboolean FS_DoomMapAllowed(const char *name) {
+bool FS_DoomMapAllowed(const char *name) {
     if (!demoMode || !name) {
-        return qtrue;
+        return true;
     }
     // Both console names and collision paths reach this boundary. Match the basename
     // case-insensitively, including paths using Windows separators.
@@ -38,7 +38,7 @@ qboolean FS_DoomMapAllowed(const char *name) {
     if ((length == 4 || (length == 8 && !Q_stricmp(map + 4, ".bsp"))) &&
         (map[0] == 'e' || map[0] == 'E') && (map[1] == '2' || map[1] == '3') &&
         (map[2] == 'm' || map[2] == 'M') && map[3] >= '1' && map[3] <= '9') {
-        return qfalse;
+        return false;
     }
-    return qtrue;
+    return true;
 }

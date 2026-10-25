@@ -42,7 +42,7 @@ int cvar_numIndexes;
 #define FILE_HASH_SIZE      256
 static cvar_t*     hashTable[FILE_HASH_SIZE];
 
-cvar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force );
+cvar_t *Cvar_Set2( const char *var_name, const char *value, bool force );
 
 /*
 ================
@@ -73,20 +73,20 @@ static long generateHashValue( const char *fname ) {
 Cvar_ValidateString
 ============
 */
-static qboolean Cvar_ValidateString( const char *s ) {
+static bool Cvar_ValidateString( const char *s ) {
 	if ( !s ) {
-		return qfalse;
+		return false;
 	}
 	if ( strchr( s, '\\' ) ) {
-		return qfalse;
+		return false;
 	}
 	if ( strchr( s, '\"' ) ) {
-		return qfalse;
+		return false;
 	}
 	if ( strchr( s, ';' ) ) {
-		return qfalse;
+		return false;
 	}
-	return qtrue;
+	return true;
 }
 
 /*
@@ -247,7 +247,7 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 
 			s = var->latchedString;
 			var->latchedString = NULL;  // otherwise cvar_set2 would free it
-			Cvar_Set2( var_name, s, qtrue );
+			Cvar_Set2( var_name, s, true );
 			Z_Free( s );
 		}
 
@@ -255,7 +255,7 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 #if 0
 		// CVAR_ROM always overrides
 		if ( flags & CVAR_ROM ) {
-			Cvar_Set2( var_name, var_value, qtrue );
+			Cvar_Set2( var_name, var_value, true );
 		}
 #endif
 		return var;
@@ -271,7 +271,7 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	cvar_numIndexes++;
 	var->name = CopyString( var_name );
 	var->string = CopyString( var_value );
-	var->modified = qtrue;
+	var->modified = true;
 	var->modificationCount = 1;
 	var->value = atof( var->string );
 	var->integer = atoi( var->string );
@@ -295,7 +295,7 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 Cvar_Set2
 ============
 */
-cvar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force ) {
+cvar_t *Cvar_Set2( const char *var_name, const char *value, bool force ) {
 	cvar_t  *var;
 
 	Com_DPrintf( "Cvar_Set2: %s %s\n", var_name, value );
@@ -361,7 +361,7 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force ) {
 
 			Com_Printf( "%s will be changed upon restarting.\n", var_name );
 			var->latchedString = CopyString( value );
-			var->modified = qtrue;
+			var->modified = true;
 			var->modificationCount++;
 			return var;
 		}
@@ -383,7 +383,7 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force ) {
 		return var;     // not changed
 
 	}
-	var->modified = qtrue;
+	var->modified = true;
 	var->modificationCount++;
 
 	Z_Free( var->string );   // free the old value string
@@ -401,7 +401,7 @@ Cvar_Set
 ============
 */
 void Cvar_Set( const char *var_name, const char *value ) {
-	Cvar_Set2( var_name, value, qtrue );
+	Cvar_Set2( var_name, value, true );
 }
 
 /*
@@ -410,7 +410,7 @@ Cvar_SetLatched
 ============
 */
 void Cvar_SetLatched( const char *var_name, const char *value ) {
-	Cvar_Set2( var_name, value, qfalse );
+	Cvar_Set2( var_name, value, false );
 }
 
 /*
@@ -436,7 +436,7 @@ Cvar_Reset
 ============
 */
 void Cvar_Reset( const char *var_name ) {
-	Cvar_Set2( var_name, NULL, qfalse );
+	Cvar_Set2( var_name, NULL, false );
 }
 
 
@@ -467,13 +467,13 @@ Cvar_Command
 Handles variable inspection and changing from the console
 ============
 */
-qboolean Cvar_Command( void ) {
+bool Cvar_Command( void ) {
 	cvar_t          *v;
 
 	// check variables
 	v = Cvar_FindVar( Cmd_Argv( 0 ) );
 	if ( !v ) {
-		return qfalse;
+		return false;
 	}
 
 	// perform a variable print or set
@@ -482,12 +482,12 @@ qboolean Cvar_Command( void ) {
 		if ( v->latchedString ) {
 			Com_Printf( "latched: \"%s\"\n", v->latchedString );
 		}
-		return qtrue;
+		return true;
 	}
 
 	// set the value if forcing isn't required
-	Cvar_Set2( v->name, Cmd_Argv( 1 ), qfalse );
-	return qtrue;
+	Cvar_Set2( v->name, Cmd_Argv( 1 ), false );
+	return true;
 }
 
 
@@ -509,7 +509,7 @@ void Cvar_Toggle_f( void ) {
 	v = Cvar_VariableValue( Cmd_Argv( 1 ) );
 	v = !v;
 
-	Cvar_Set2( Cmd_Argv( 1 ), va( "%i", v ), qfalse );
+	Cvar_Set2( Cmd_Argv( 1 ), va( "%i", v ), false );
 }
 
 /*
@@ -543,7 +543,7 @@ void Cvar_Set_f( void ) {
 		}
 		l += len;
 	}
-	Cvar_Set2( Cmd_Argv( 1 ), combined, qfalse );
+	Cvar_Set2( Cmd_Argv( 1 ), combined, false );
 }
 
 /*
@@ -630,7 +630,7 @@ void Cvar_Reset_f( void ) {
 Cvar_WriteVariables
 
 Appends lines containing "set variable value" for all variables
-with the archive flag set to qtrue.
+with the archive flag set to true.
 ============
 */
 void Cvar_WriteVariables( fileHandle_t f ) {
@@ -672,7 +672,7 @@ void Cvar_List_f( void ) {
 	i = 0;
 	for ( var = cvar_vars ; var ; var = var->next, i++ )
 	{
-		if ( match && !Com_Filter( match, var->name, qfalse ) ) {
+		if ( match && !Com_Filter( match, var->name, false ) ) {
 			continue;
 		}
 

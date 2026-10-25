@@ -56,19 +56,19 @@ float Spline_Q_fabs( float f ) {
 idCameraDef camera[MAX_CAMERAS];
 
 extern "C" {
-qboolean loadCamera( int camNum, const char *name ) {
+bool loadCamera( int camNum, const char *name ) {
 	if ( camNum < 0 || camNum >= MAX_CAMERAS ) {
-		return qfalse;
+		return false;
 	}
 	camera[camNum].clear();
 	// TTimo static_cast confused gcc, went for C-style casting
-	return (qboolean)( camera[camNum].load( name ) );
+	return (bool)( camera[camNum].load( name ) );
 }
 
-qboolean getCameraInfo( int camNum, int time, float *origin, float *angles, float *fov ) {
+bool getCameraInfo( int camNum, int time, float *origin, float *angles, float *fov ) {
 	idVec3 dir, org;
 	if ( camNum < 0 || camNum >= MAX_CAMERAS ) {
-		return qfalse;
+		return false;
 	}
 	org[0] = origin[0];
 	org[1] = origin[1];
@@ -79,9 +79,9 @@ qboolean getCameraInfo( int camNum, int time, float *origin, float *angles, floa
 		origin[2] = org[2];
 		angles[1] = atan2( dir[1], dir[0] ) * 180 / 3.14159;
 		angles[0] = asin( dir[2] ) * 180 / 3.14159;
-		return qtrue;
+		return true;
 	}
-	return qfalse;
+	return false;
 }
 
 void startCamera( int camNum, int time ) {

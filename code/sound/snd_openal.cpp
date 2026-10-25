@@ -163,7 +163,7 @@ void Start(const vec3_t origin, int entity, int channel, int sound, bool local) 
 }
 void PlayCommand() {
     for (int i = 1; i < Cmd_Argc(); ++i) {
-        S_StartLocalSound(S_RegisterSound(Cmd_Argv(i), qfalse), CHAN_LOCAL_SOUND);
+        S_StartLocalSound(S_RegisterSound(Cmd_Argv(i), false), CHAN_LOCAL_SOUND);
     }
 }
 void MusicCommand() {
@@ -188,8 +188,8 @@ void InfoCommand() {
 }
 } // namespace
 
-void S_SetEditorPaused(qboolean paused) {
-    const bool requested = paused != qfalse;
+void S_SetEditorPaused(bool paused) {
+    const bool requested = paused != false;
     if (requested == editorPaused) {
         return;
     }
@@ -308,7 +308,7 @@ void S_Shutdown() {
         Cmd_RemoveCommand(command);
     }
 }
-sfxHandle_t S_RegisterSound(const char *name, qboolean) {
+sfxHandle_t S_RegisterSound(const char *name, bool) {
     if (!Ready() || !name || !*name || strlen(name) >= MAX_QPATH) {
         return 0;
     }
@@ -436,7 +436,7 @@ void S_StopAllSounds() {
     }
     doomaudio::MusicStop();
 }
-void S_ClearSounds(qboolean streaming, qboolean music) {
+void S_ClearSounds(bool streaming, bool music) {
     if (!Ready()) {
         return;
     }
@@ -592,7 +592,7 @@ int S_GetVoiceAmplitude(int) {
 void SNDDMA_Activate() {
 } // OpenAL retains the device across focus changes.
 // Sound buffers are device-owned rather than the old shared DMA ring.
-void S_ClearSoundBuffer(qboolean killStreaming) {
+void S_ClearSoundBuffer(bool killStreaming) {
     S_ClearSounds(killStreaming, killStreaming);
 }
 
