@@ -81,8 +81,8 @@ typedef struct optimized_s
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_KeepEdge( aas_edge_t *edge ) {
-	return 1;
+bool AAS_KeepEdge( aas_edge_t *edge ) {
+	return true;
 } //end of the function AAS_KeepFace
 //===========================================================================
 //
@@ -136,10 +136,10 @@ int AAS_OptimizeEdge( optimized_t *optimized, int edgenum ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_KeepFace( aas_face_t *face ) {
+bool AAS_KeepFace( aas_face_t *face ) {
 	if ( !( face->faceflags & FACE_LADDER ) ) {
-		return 0;
-	} else { return 1;}
+		return false;
+	} else { return true;}
 } //end of the function AAS_KeepFace
 //===========================================================================
 //

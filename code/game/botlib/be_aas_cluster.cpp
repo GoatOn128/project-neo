@@ -57,7 +57,7 @@ extern botlib_import_t botimport;
 #define MAX_PORTALAREAS         1024
 
 // do not flood through area faces, only use reachabilities
-int nofaceflood = true;
+bool nofaceflood = true;
 
 //===========================================================================
 //
@@ -114,7 +114,7 @@ void AAS_RemovePortalsClusterReference( int clusternum ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_UpdatePortal( int areanum, int clusternum ) {
+bool AAS_UpdatePortal( int areanum, int clusternum ) {
 	int portalnum;
 	aas_portal_t *portal;
 	aas_cluster_t *cluster;
@@ -174,7 +174,7 @@ int AAS_UpdatePortal( int areanum, int clusternum ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_FloodClusterAreas_r( int areanum, int clusternum ) {
+bool AAS_FloodClusterAreas_r( int areanum, int clusternum ) {
 	aas_area_t *area;
 	aas_face_t *face;
 	int facenum, i;
@@ -252,7 +252,7 @@ int AAS_FloodClusterAreas_r( int areanum, int clusternum ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_FloodClusterAreasUsingReachabilities( int clusternum ) {
+bool AAS_FloodClusterAreasUsingReachabilities( int clusternum ) {
 	int i, j, areanum;
 
 	for ( i = 1; i < ( *aasworld ).numareas; i++ )
@@ -400,7 +400,7 @@ void AAS_NumberClusterAreas( int clusternum ) {
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_FindClusters( void ) {
+bool AAS_FindClusters( void ) {
 	int i;
 	aas_cluster_t *cluster;
 
@@ -1427,7 +1427,7 @@ void AAS_AddTeleporterPortals(void)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_TestPortals( void ) {
+bool AAS_TestPortals( void ) {
 	int i;
 	aas_portal_t *portal;
 
