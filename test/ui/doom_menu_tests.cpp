@@ -17,7 +17,7 @@ std::string argument;
 connstate_t connection=CA_DISCONNECTED;
 void Require(bool ok,const char *why) { if (!ok) throw std::runtime_error(why); }
 bool Drawn(const char *name) { for (auto &s:draws) if (s==name) return true; return false; }
-void Key(int key) { UI_DoomKey(key,qtrue); UI_DoomKey(key,qfalse); }
+void Key(int key) { UI_DoomKey(key,true); UI_DoomKey(key,false); }
 void Draw() { draws.clear(); UI_DoomDraw(); }
 void Open(uiMenuCommand_t mode=UIMENU_MAIN) { _UI_SetActiveMenu(mode); }
 }

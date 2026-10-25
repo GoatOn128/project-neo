@@ -119,8 +119,8 @@ void Run(bool monster) {
         move.tracemask = CONTENTS_SOLID;
         move.cmd.serverTime = step * 50;
         move.cmd.forwardmove = 127;
-        move.noFootsteps = qtrue;
-        move.noWeapClips = qtrue;
+        move.noFootsteps = true;
+        move.noWeapClips = true;
         Pmove(&move);
     }
     if (stairHeight < 0) {

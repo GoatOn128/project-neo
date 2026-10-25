@@ -45,7 +45,7 @@ gentity_t &Reset(int special = 97) {
     VectorSet(client.ps.velocity, 200, 100, 40);
     level.num_entities = MAX_CLIENTS + 2;
     auto &line = g_entities[MAX_CLIENTS];
-    line.inuse = qtrue;
+    line.inuse = true;
     line.classname = "doom_line";
     line.touch = DoomLineTouch;
     line.doom.special = special;
@@ -71,7 +71,7 @@ void trap_SetConfigstring(int, const char *) {
 }
 void trap_TraceCapsule(trace_t *trace, const vec3_t, const vec3_t, const vec3_t, const vec3_t, int,
                        int mask) {
-    trace->startsolid = blocked ? qtrue : qfalse;
+    trace->startsolid = blocked ? true : false;
     traceMask = mask;
 }
 void trap_LinkEntity(gentity_t *) {
@@ -93,7 +93,7 @@ gentity_t *G_TempEntity(vec3_t origin, int event) {
     VectorCopy(origin, entity.s.origin);
     return &entity;
 }
-void BG_PlayerStateToEntityState(playerState_t *ps, entityState_t *state, qboolean) {
+void BG_PlayerStateToEntityState(playerState_t *ps, entityState_t *state, bool) {
     state->eFlags = ps->eFlags;
 }
 void G_DoomAIReplicate(gentity_t *entity) {
@@ -110,14 +110,14 @@ int G_SoundIndex(const char *) {
 }
 void G_Damage(gentity_t *, gentity_t *, gentity_t *, vec3_t, vec3_t, int, int, int) {
 }
-qboolean G_SpawnInt(const char *, const char *, int *) {
-    return qfalse;
+bool G_SpawnInt(const char *, const char *, int *) {
+    return false;
 }
-qboolean G_SpawnFloat(const char *, const char *, float *) {
-    return qfalse;
+bool G_SpawnFloat(const char *, const char *, float *) {
+    return false;
 }
-qboolean G_SpawnVector(const char *, const char *, float *) {
-    return qfalse;
+bool G_SpawnVector(const char *, const char *, float *) {
+    return false;
 }
 void trap_SetBrushModel(gentity_t *, const char *) {
 }
@@ -190,7 +190,7 @@ int main() {
         Check(!eventCount, "Crossing the infinite extension misses the finite line");
         Reset();
         auto &mover = g_entities[MAX_CLIENTS + 1];
-        mover.inuse = qtrue;
+        mover.inuse = true;
         mover.classname = "doom_mover";
         mover.doom.sector = 0;
         mover.doom.base = 64;

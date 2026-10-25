@@ -29,7 +29,7 @@ template <typename Function> void Reject(Function function) {
 }
 void Actor(int slot, int species) {
     auto &entity = g_entities[slot];
-    entity.inuse = qtrue;
+    entity.inuse = true;
     entity.s.number = entity.s.clientNum = slot;
     entity.s.eType = ET_PLAYER;
     entity.r.svFlags = SVF_AI | SVF_BOT;
@@ -59,7 +59,7 @@ void QDECL Com_Error(int, const char *message, ...) {
 void QDECL Com_Printf(const char *, ...) {
 }
 void trap_UnlinkEntity(gentity_t *entity) {
-    entity->r.linked = qfalse;
+    entity->r.linked = false;
 }
 void trap_BotFreeClient(int slot) {
     Check(slot > 0 && slot < MAX_CLIENTS, "Human or out-of-range slot freed");
@@ -87,12 +87,12 @@ int main() {
     try {
         level.clients = clients;
         level.maxclients = MAX_CLIENTS;
-        g_entities[0].inuse = qtrue;
+        g_entities[0].inuse = true;
         g_entities[0].client = &clients[0];
         SavedClient(0);
         Actor(1, doommonster::Imp);
         Actor(3, doommonster::Demon);
-        g_entities[1].r.linked = qtrue;
+        g_entities[1].r.linked = true;
         allocated[1] = allocated[3] = allocated[11] = true;
         clients[11].pers.connected = CON_CONNECTED; // Orphan from an older load.
         G_DoomSaveBeginRestore();

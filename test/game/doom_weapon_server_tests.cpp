@@ -36,12 +36,12 @@ gentity_t *Player(int weapon) {
     auto *player = &g_entities[0];
     memset(player, 0, sizeof(*player));
     memset(&playerClient, 0, sizeof(playerClient));
-    player->inuse = qtrue;
+    player->inuse = true;
     player->client = &playerClient;
     playerClient.ps.stats[STAT_DOOM_WEAPONS] = 1;
     playerClient.ps.weapon = weapon;
     playerClient.ps.viewheight = 32;
-    g_entities[1].takedamage = qtrue;
+    g_entities[1].takedamage = true;
     g_entities[1].client = &targetClient;
     traceCount = damageCount = lineCount = 0;
     impactCount = traceFlags = traceContents = 0;
@@ -71,7 +71,7 @@ void G_SetOrigin(gentity_t *entity, vec3_t origin) {
     VectorCopy(origin, entity->s.pos.trBase);
 }
 void G_FreeEntity(gentity_t *entity) {
-    entity->inuse = qfalse;
+    entity->inuse = false;
 }
 int G_SoundIndex(const char *) {
     return 1;
@@ -110,10 +110,10 @@ void trap_Trace(trace_t *trace, const vec3_t start, const vec3_t, const vec3_t, 
     VectorSet(g_entities[1].r.mins, -20, -20, 0);
     VectorSet(g_entities[1].r.maxs, 20, 20, 56);
 }
-qboolean G_DoomTraceLine(gentity_t *, const vec3_t, const vec3_t, qboolean shot) {
-    Check(shot == qtrue, "Hitscan activates shootable Doom lines");
+bool G_DoomTraceLine(gentity_t *, const vec3_t, const vec3_t, bool shot) {
+    Check(shot == true, "Hitscan activates shootable Doom lines");
     ++lineCount;
-    return qtrue;
+    return true;
 }
 void G_Damage(gentity_t *target, gentity_t *, gentity_t *attacker, vec3_t, vec3_t, int damage,
               int flags, int mod) {

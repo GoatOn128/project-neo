@@ -40,7 +40,7 @@ int main() {
         actor.effect1Time = 12345678;
         actor.pos.trBase[0] = -16384.5f;
         actor.apos.trBase[1] = 315;
-        MSG_WriteDeltaEntity(&message, &baseline, &actor, qtrue);
+        MSG_WriteDeltaEntity(&message, &baseline, &actor, true);
         MSG_BeginReading(&message);
         const int number = MSG_ReadBits(&message, GENTITYNUM_BITS);
         MSG_ReadDeltaEntity(&message, &baseline, &decoded, number);
@@ -62,7 +62,7 @@ int main() {
         VectorSet(impact.origin2, .6f, .8f, 0);
         VectorSet(impact.angles, 147.25f, -56.5f, 32);
         MSG_Clear(&message);
-        MSG_WriteDeltaEntity(&message, &baseline, &impact, qtrue);
+        MSG_WriteDeltaEntity(&message, &baseline, &impact, true);
         MSG_BeginReading(&message);
         const int impactNumber = MSG_ReadBits(&message, GENTITYNUM_BITS);
         MSG_ReadDeltaEntity(&message, &baseline, &restoredImpact, impactNumber);

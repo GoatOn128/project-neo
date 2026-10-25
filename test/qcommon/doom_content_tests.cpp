@@ -20,7 +20,7 @@ void Check(bool condition, const char *message) {
 int Q_stricmp(const char *a, const char *b) {
     return _stricmp(a, b);
 }
-int FS_FOpenFileRead(const char *path, fileHandle_t *file, qboolean unique) {
+int FS_FOpenFileRead(const char *path, fileHandle_t *file, bool unique) {
     Check(std::string(path) == "wad/DOOM.wad" && !unique,
           "Content must use the mounted filesystem's wad path");
     *file = openFile ? 1 : 0;

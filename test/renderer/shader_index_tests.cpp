@@ -40,7 +40,7 @@ int main() {
         for (const auto &bucket : shaderChecksumLookup) {
             for (const auto *node = &bucket; node && node->pStr; node = node->next) {
                 char *cursor = node->pStr;
-                const char *name = COM_ParseExt(&cursor, qtrue);
+                const char *name = COM_ParseExt(&cursor, true);
                 if (strncmp(name, "test/sprite", 11)) {
                     throw std::runtime_error("Shader body was indexed as a shader name");
                 }
@@ -59,8 +59,8 @@ int main() {
         bool found = false;
         for (auto *node = &shaderChecksumLookup[1]; node && node->pStr; node = node->next) {
             char *cursor = node->pStr;
-            if (!Q_stricmp(COM_ParseExt(&cursor, qtrue), "textures/check/floor")) {
-                found = !Q_stricmp(COM_ParseExt(&cursor, qtrue), "{");
+            if (!Q_stricmp(COM_ParseExt(&cursor, true), "textures/check/floor")) {
+                found = !Q_stricmp(COM_ParseExt(&cursor, true), "{");
             }
         }
         if (!found) {
