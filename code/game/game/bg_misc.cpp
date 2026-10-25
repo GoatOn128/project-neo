@@ -3447,7 +3447,7 @@ gitem_t *BG_FindItemForWeapon( weapon_t weapon ) {
 	int i;
 	const int NUM_TABLE_ELEMENTS = WP_NUM_WEAPONS;
 	static gitem_t  *lookupTable[WP_NUM_WEAPONS];
-	static qboolean lookupTableInit = qtrue;
+	static bool lookupTableInit = true;
 
 	if ( lookupTableInit ) {
 		for ( i = 0; i < NUM_TABLE_ELEMENTS; i++ ) {
@@ -3459,7 +3459,7 @@ gitem_t *BG_FindItemForWeapon( weapon_t weapon ) {
 			}
 		}
 		// table is created
-		lookupTableInit = qfalse;
+		lookupTableInit = false;
 	}
 
     if (weapon < 0 || weapon >= NUM_TABLE_ELEMENTS) {
@@ -3493,7 +3493,7 @@ weapon_t BG_FindClipForWeapon( weapon_t weapon ) {
 	int i;
 	const int NUM_TABLE_ELEMENTS = WP_NUM_WEAPONS;
 	static weapon_t lookupTable[WP_NUM_WEAPONS];
-	static qboolean lookupTableInit = qtrue;
+	static bool lookupTableInit = true;
 
 	if ( lookupTableInit ) {
 		for ( i = 0; i < NUM_TABLE_ELEMENTS; i++ ) {
@@ -3505,7 +3505,7 @@ weapon_t BG_FindClipForWeapon( weapon_t weapon ) {
 			}
 		}
 		// table is created
-		lookupTableInit = qfalse;
+		lookupTableInit = false;
 	}
 
     if (weapon < 0 || weapon >= NUM_TABLE_ELEMENTS) {
@@ -3536,7 +3536,7 @@ weapon_t BG_FindAmmoForWeapon( weapon_t weapon ) {
 	int i;
 	const int NUM_TABLE_ELEMENTS = WP_NUM_WEAPONS;
 	static weapon_t lookupTable[WP_NUM_WEAPONS];
-	static qboolean lookupTableInit = qtrue;
+	static bool lookupTableInit = true;
 
 	if ( lookupTableInit ) {
 		for ( i = 0; i < NUM_TABLE_ELEMENTS; i++ ) {
@@ -3548,7 +3548,7 @@ weapon_t BG_FindAmmoForWeapon( weapon_t weapon ) {
 			}
 		}
 		// table is created
-		lookupTableInit = qfalse;
+		lookupTableInit = false;
 	}
 
     if (weapon < 0 || weapon >= NUM_TABLE_ELEMENTS) {
@@ -3566,31 +3566,31 @@ BG_AkimboFireSequence
 	returns 'true' if it's the left hand's turn to fire, 'false' if it's the right hand's turn
 ==============
 */
-//qboolean BG_AkimboFireSequence( playerState_t *ps ) {
-qboolean BG_AkimboFireSequence( int weapon, int akimboClip, int coltClip ) {
+//bool BG_AkimboFireSequence( playerState_t *ps ) {
+bool BG_AkimboFireSequence( int weapon, int akimboClip, int coltClip ) {
 	// NOTE: this doesn't work when clips are turned off (dmflags 64)
 
 	if ( weapon != WP_AKIMBO ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( !akimboClip ) {
-		return qfalse;
+		return false;
 	}
 
 	// no ammo in colt, must be akimbo turn
 	if ( !coltClip ) {
-		return qtrue;
+		return true;
 	}
 
 	// at this point, both have ammo
 
 	// now check 'cycle'   // (removed old method 11/5/2001)
 	if ( ( akimboClip + coltClip ) & 1 ) {
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 }
 DOOM_SAVE_CALLBACK("BG_AkimboFireSequence", BG_AkimboFireSequence);
 
@@ -3705,7 +3705,7 @@ BG_PlayerSeesItem
 
 //----(SA)	not used
 /*
-qboolean BG_PlayerSeesItem(playerState_t *ps, entityState_t *item, int atTime)
+bool BG_PlayerSeesItem(playerState_t *ps, entityState_t *item, int atTime)
 {
    vec3_t	vorigin, eorigin, viewa, dir;
    float	dot, dist, foo;
@@ -3720,7 +3720,7 @@ qboolean BG_PlayerSeesItem(playerState_t *ps, entityState_t *item, int atTime)
    dist = VectorNormalize(dir);			// dir is now the direction from the item to the player
 
    if(dist > 255)
-	   return qfalse;						// only run the remaining stuff on items that are close enough
+	   return false;						// only run the remaining stuff on items that are close enough
 
    // (SA) FIXME: do this without AngleVectors.
    //		It'd be nice if the angle vectors for the player
@@ -3735,11 +3735,11 @@ qboolean BG_PlayerSeesItem(playerState_t *ps, entityState_t *item, int atTime)
 
    foo = -0.94f - (dist/255.0f) * 0.057f;	// (ranging from -0.94 to -0.997) (it happened to be a pretty good range)
 
-//	Com_Printf("test: if(%f > %f) return qfalse (dot > foo)\n", dot, foo);
+//	Com_Printf("test: if(%f > %f) return false (dot > foo)\n", dot, foo);
    if(dot > foo)
-	   return qfalse;
+	   return false;
 
-   return qtrue;
+   return true;
 }
 */
 //----(SA)	end
@@ -3756,7 +3756,7 @@ grabbing them easier
 
 extern int trap_Cvar_VariableIntegerValue( const char *var_name );
 
-qboolean    BG_PlayerTouchesItem( playerState_t *ps, entityState_t *item, int atTime ) {
+bool    BG_PlayerTouchesItem( playerState_t *ps, entityState_t *item, int atTime ) {
 	vec3_t origin;
 
 	BG_EvaluateTrajectory( &item->pos, atTime, origin );
@@ -3768,10 +3768,10 @@ qboolean    BG_PlayerTouchesItem( playerState_t *ps, entityState_t *item, int at
 		 || ps->origin[1] - origin[1] < -36
 		 || ps->origin[2] - origin[2] > 36
 		 || ps->origin[2] - origin[2] < -36 ) {
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 }
 DOOM_SAVE_CALLBACK("BG_PlayerTouchesItem", BG_PlayerTouchesItem);
 
@@ -3785,23 +3785,23 @@ This needs to be the same for client side prediction and server use.
 ================
 */
 
-qboolean isClipOnly( int weap ) {
+bool isClipOnly( int weap ) {
 	switch ( weap ) {
 	case WP_GRENADE_LAUNCHER:
 	case WP_GRENADE_PINEAPPLE:
 	case WP_DYNAMITE:
 	case WP_TESLA:
 	case WP_FLAMETHROWER:
-		return qtrue;
+		return true;
 	}
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("isClipOnly", isClipOnly);
 
-qboolean    BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *ps ) {
+bool    BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *ps ) {
 	gitem_t *item;
 	int ammoweap;
-	qboolean multiplayer = qfalse;
+	bool multiplayer = false;
 
 	if ( ent->modelindex < 1 || ent->modelindex >= bg_numItems ) {
 		Com_Error( ERR_DROP, "BG_CanItemBeGrabbed: index out of range" );
@@ -3814,7 +3814,7 @@ qboolean    BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *
 #ifdef CGAMEDLL
 	if ( cg_gameType.integer == GT_WOLF )
 #endif
-	multiplayer = qtrue;
+	multiplayer = true;
 //----(SA)	end
 
 	item = &bg_itemlist[ent->modelindex];
@@ -3826,68 +3826,68 @@ qboolean    BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *
 		if ( multiplayer ) {
 			if ( ( ps->stats[STAT_PLAYER_CLASS] == PC_MEDIC ) || ( ps->stats[STAT_PLAYER_CLASS] == PC_ENGINEER ) ) {
 				if ( !COM_BitCheck( ps->weapons, item->giTag ) ) {
-					return qfalse;
+					return false;
 				}
 			}
 		} else {
 			if ( COM_BitCheck( ps->weapons, item->giTag ) ) {               // you have the weap
 				if ( isClipOnly( item->giTag ) ) {
 					if ( ps->ammoclip[item->giAmmoIndex] >= ammoTable[item->giAmmoIndex].maxclip ) {
-						return qfalse;
+						return false;
 					}
 				} else {
 					if ( ps->ammo[item->giAmmoIndex] >= ammoTable[item->giAmmoIndex].maxammo ) { // you are loaded with the ammo
-						return qfalse;
+						return false;
 					}
 				}
 			}
 		}
 		// JPW
-		return qtrue;
+		return true;
 
 	case IT_AMMO:
 		ammoweap = BG_FindAmmoForWeapon((weapon_t)( item->giTag ));
 
 		if ( isClipOnly( ammoweap ) ) {
 			if ( ps->ammoclip[ammoweap] >= ammoTable[ammoweap].maxclip ) {
-				return qfalse;
+				return false;
 			}
 		}
 
 		if ( ps->ammo[ammoweap] >= ammoTable[ammoweap].maxammo ) {
-			return qfalse;
+			return false;
 		}
 
-		return qtrue;
+		return true;
 
 	case IT_ARMOR:
 		// we also clamp armor to the maxhealth for handicapping
 //			if ( ps->stats[STAT_ARMOR] >= ps->stats[STAT_MAX_HEALTH] * 2 ) {
 		if ( ps->stats[STAT_ARMOR] >= 100 ) {
-			return qfalse;
+			return false;
 		}
-		return qtrue;
+		return true;
 
 	case IT_HEALTH:
 		if ( ent->density == ( 1 << 9 ) ) { // density tracks how many uses left
-			return qfalse;
+			return false;
 		}
 
 		if ( ps->stats[STAT_HEALTH] >= ps->stats[STAT_MAX_HEALTH] ) {
-			return qfalse;
+			return false;
 		}
-		return qtrue;
+		return true;
 
 	case IT_POWERUP:
 		if ( ent->density == ( 1 << 9 ) ) { // density tracks how many uses left
-			return qfalse;
+			return false;
 		}
 
 		if ( ps->powerups[PW_NOFATIGUE] == 60000 ) { // full
-			return qfalse;
+			return false;
 		}
 
-		return qtrue;
+		return true;
 
 	case IT_TEAM:     // team items, such as flags
 
@@ -3899,37 +3899,37 @@ qboolean    BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *
 			if ( item->giTag == PW_BLUEFLAG ||
 				 ( item->giTag == PW_REDFLAG && ent->otherEntityNum2 /*ent->modelindex2*/ ) ||
 				 ( item->giTag == PW_REDFLAG && ps->powerups[PW_BLUEFLAG] ) ) {
-				return qtrue;
+				return true;
 			}
 		} else if ( ps->persistant[PERS_TEAM] == TEAM_BLUE ) {
 			if ( item->giTag == PW_REDFLAG ||
 				 ( item->giTag == PW_BLUEFLAG && ent->otherEntityNum2 /*ent->modelindex2*/ ) ||
 				 ( item->giTag == PW_BLUEFLAG && ps->powerups[PW_REDFLAG] ) ) {
-				return qtrue;
+				return true;
 			}
 		}
-		return qfalse;
+		return false;
 
 
 	case IT_HOLDABLE:
-		return qtrue;
+		return true;
 
 	case IT_TREASURE:       // treasure always picked up
-		return qtrue;
+		return true;
 
 	case IT_CLIPBOARD:      // clipboards always picked up
-		return qtrue;
+		return true;
 
 		//---- (SA) Wolf keys
 	case IT_KEY:
-		return qtrue;       // keys are always picked up
+		return true;       // keys are always picked up
 
 	case IT_BAD:
 		Com_Error( ERR_DROP, "BG_CanItemBeGrabbed: IT_BAD" );
 
 	}
 
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("BG_CanItemBeGrabbed", BG_CanItemBeGrabbed);
 
@@ -4316,7 +4316,7 @@ This is done after each set of usercmd_t on the server,
 and after local prediction on the client
 ========================
 */
-void BG_PlayerStateToEntityState( playerState_t *ps, entityState_t *s, qboolean snap ) {
+void BG_PlayerStateToEntityState( playerState_t *ps, entityState_t *s, bool snap ) {
 	int i;
 
 	if ( ps->pm_type == PM_INTERMISSION || ps->pm_type == PM_SPECTATOR || ps->pm_flags & PMF_LIMBO ) { // JPW NERVE limbo
@@ -4428,7 +4428,7 @@ This is done after each set of usercmd_t on the server,
 and after local prediction on the client
 ========================
 */
-void BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s, int time, qboolean snap ) {
+void BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s, int time, bool snap ) {
 	int i;
 
 	if ( ps->pm_type == PM_INTERMISSION || ps->pm_type == PM_SPECTATOR || ps->pm_flags & PMF_LIMBO ) { // JPW NERVE limbo

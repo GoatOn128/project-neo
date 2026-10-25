@@ -119,7 +119,7 @@ SpotWouldTelefrag
 
 ================
 */
-qboolean SpotWouldTelefrag( gentity_t *spot ) {
+bool SpotWouldTelefrag( gentity_t *spot ) {
 	int i, num;
 	int touch[MAX_GENTITIES];
 	gentity_t   *hit;
@@ -132,12 +132,12 @@ qboolean SpotWouldTelefrag( gentity_t *spot ) {
 	for ( i = 0 ; i < num ; i++ ) {
 		hit = &g_entities[touch[i]];
 		if ( hit->client && hit->client->ps.stats[STAT_HEALTH] > 0 ) {
-			return qtrue;
+			return true;
 		}
 
 	}
 
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("SpotWouldTelefrag", SpotWouldTelefrag);
 
@@ -189,11 +189,11 @@ gentity_t *SelectRandomDeathmatchSpawnPoint( void ) {
 
 	count = 0;
 	spot = NULL;
-	qboolean hasDoomDeathmatchStarts = qfalse;
+	bool hasDoomDeathmatchStarts = false;
 	if (DoomBotsActive()) {
 		while ((spot = G_Find(spot, FOFS(classname), "info_player_deathmatch")) != NULL) {
 			if (!(spot->spawnflags & 2)) {
-				hasDoomDeathmatchStarts = qtrue;
+				hasDoomDeathmatchStarts = true;
 				break;
 			}
 		}
@@ -338,7 +338,7 @@ void InitBodyQue( void ) {
 	for ( i = 0; i < BODY_QUEUE_SIZE ; i++ ) {
 		ent = G_Spawn();
 		ent->classname = "bodyque";
-		ent->neverFree = qtrue;
+		ent->neverFree = true;
 		level.bodyQue[i] = ent;
 	}
 }
@@ -355,7 +355,7 @@ void BodySink( gentity_t *ent ) {
 	if ( level.time - ent->timestamp > 6500 ) {
 		// the body ques are never actually freed, they are just unlinked
 		trap_UnlinkEntity( ent );
-		ent->physicsObject = qfalse;
+		ent->physicsObject = false;
 		return;
 	}
 	ent->nextthink = level.time + 100;
@@ -400,7 +400,7 @@ void CopyToBodyQue( gentity_t *ent ) {
 	body->s.loopSound = 0;  // clear lava burning
 	body->s.number = body - g_entities;
 	body->timestamp = level.time;
-	body->physicsObject = qtrue;
+	body->physicsObject = true;
 	body->physicsBounce = 0;        // don't bounce
 	if ( body->s.groundEntityNum == ENTITYNUM_NONE ) {
 		body->s.pos.trType = TR_GRAVITY;
@@ -455,9 +455,9 @@ void CopyToBodyQue( gentity_t *ent ) {
 
 	// don't take more damage if already gibbed
 	if ( ent->health <= GIB_HEALTH ) {
-		body->takedamage = qfalse;
+		body->takedamage = false;
 	} else {
-		body->takedamage = qtrue;
+		body->takedamage = true;
 	}
 
 
@@ -715,7 +715,7 @@ void respawn( gentity_t *ent ) {
             // Fast method, just do a map_restart, and then load in the savegame
             // once everything is settled.
             trap_SetConfigstring( CS_SCREENFADE, va( "1 %i 4000", level.time + 2000 ) );
-//			reloading = qtrue;
+//			reloading = true;
 			trap_Cvar_Set( "g_reloading", "1" );
 
 //			level.reloadDelayTime = level.time + 1500;
@@ -1218,10 +1218,10 @@ G_CheckForExistingModelInfo
   If this player model has already been parsed, then use the existing information.
   Otherwise, set the modelInfo pointer to the first free slot.
 
-  returns qtrue if existing model found, qfalse otherwise
+  returns true if existing model found, false otherwise
 ==================
 */
-qboolean G_CheckForExistingModelInfo( gclient_t *cl, char *modelName, animModelInfo_t **modelInfo ) {
+bool G_CheckForExistingModelInfo( gclient_t *cl, char *modelName, animModelInfo_t **modelInfo ) {
 	int i;
 	animModelInfo_t *trav;
 
@@ -1232,7 +1232,7 @@ qboolean G_CheckForExistingModelInfo( gclient_t *cl, char *modelName, animModelI
 				// found a match, use this modelinfo
 				*modelInfo = trav;
 				level.animScriptData.clientModels[cl->ps.clientNum] = i + 1;
-				return qtrue;
+				return true;
 			}
 		} else {
 			level.animScriptData.modelInfo[i] = (animModelInfo_t *)G_Alloc( sizeof( animModelInfo_t ) );
@@ -1240,13 +1240,13 @@ qboolean G_CheckForExistingModelInfo( gclient_t *cl, char *modelName, animModelI
 			// clear the structure out ready for use
 			memset( *modelInfo, 0, sizeof( **modelInfo ) );
 			level.animScriptData.clientModels[cl->ps.clientNum] = i + 1;
-			return qfalse;
+			return false;
 		}
 	}
 
 	G_Error( "unable to find a free modelinfo slot, cannot continue\n" );
-	// qfalse signifies that we need to parse the information from the script files
-	return qfalse;
+	// false signifies that we need to parse the information from the script files
+	return false;
 }
 DOOM_SAVE_CALLBACK("G_CheckForExistingModelInfo", G_CheckForExistingModelInfo);
 
@@ -1255,8 +1255,8 @@ DOOM_SAVE_CALLBACK("G_CheckForExistingModelInfo", G_CheckForExistingModelInfo);
 G_GetModelInfo
 ==============
 */
-qboolean G_ParseAnimationFiles( char *modelname, gclient_t *cl );
-qboolean G_GetModelInfo( int clientNum, char *modelName, animModelInfo_t **modelInfo ) {
+bool G_ParseAnimationFiles( char *modelname, gclient_t *cl );
+bool G_GetModelInfo( int clientNum, char *modelName, animModelInfo_t **modelInfo ) {
 
 	if ( !G_CheckForExistingModelInfo( &level.clients[clientNum], modelName, modelInfo ) ) {
 		level.clients[clientNum].modelInfo = *modelInfo;
@@ -1265,7 +1265,7 @@ qboolean G_GetModelInfo( int clientNum, char *modelName, animModelInfo_t **model
 		}
 	}
 
-	return qtrue;
+	return true;
 }
 DOOM_SAVE_CALLBACK("G_GetModelInfo", G_GetModelInfo);
 
@@ -1274,7 +1274,7 @@ DOOM_SAVE_CALLBACK("G_GetModelInfo", G_GetModelInfo);
 G_ParseAnimationFiles
 =============
 */
-qboolean G_ParseAnimationFiles( char *modelname, gclient_t *cl ) {
+bool G_ParseAnimationFiles( char *modelname, gclient_t *cl ) {
 	char text[100000];
 	char filename[MAX_QPATH];
 	fileHandle_t f;
@@ -1288,11 +1288,11 @@ qboolean G_ParseAnimationFiles( char *modelname, gclient_t *cl ) {
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );
 	if ( len <= 0 ) {
 		G_Printf( "G_ParseAnimationFiles(): file '%s' not found\n", filename );       //----(SA)	added
-		return qfalse;
+		return false;
 	}
 	if ( len >= sizeof( text ) - 1 ) {
 		G_Printf( "File %s too long\n", filename );
-		return qfalse;
+		return false;
 	}
 	trap_FS_Read( text, len, f );
 	text[len] = 0;
@@ -1306,18 +1306,18 @@ qboolean G_ParseAnimationFiles( char *modelname, gclient_t *cl ) {
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );
 	if ( len <= 0 ) {
 		if ( cl->modelInfo->version > 1 ) {
-			return qfalse;
+			return false;
 		}
 		// try loading the default script for old legacy models
 		Com_sprintf( filename, sizeof( filename ), "models/players/default.script", modelname );
 		len = trap_FS_FOpenFile( filename, &f, FS_READ );
 		if ( len <= 0 ) {
-			return qfalse;
+			return false;
 		}
 	}
 	if ( len >= sizeof( text ) - 1 ) {
 		G_Printf( "File %s too long\n", filename );
-		return qfalse;
+		return false;
 	}
 	trap_FS_Read( text, len, f );
 	text[len] = 0;
@@ -1331,7 +1331,7 @@ qboolean G_ParseAnimationFiles( char *modelname, gclient_t *cl ) {
 		trap_SendServerCommand( 0, va( "mvspd %s", modelname ) );
 	}
 
-	return qtrue;
+	return true;
 }
 DOOM_SAVE_CALLBACK("G_ParseAnimationFiles", G_ParseAnimationFiles);
 
@@ -1374,15 +1374,15 @@ void ClientUserinfoChanged( int clientNum ) {
 	// check for local client
 	s = Info_ValueForKey( userinfo, "ip" );
 	if ( !strcmp( s, "localhost" ) ) {
-		client->pers.localClient = qtrue;
+		client->pers.localClient = true;
 	}
 
 	// check the item prediction
 	s = Info_ValueForKey( userinfo, "cg_predictItems" );
 	if ( !atoi( s ) ) {
-		client->pers.predictItemPickup = qfalse;
+		client->pers.predictItemPickup = false;
 	} else {
-		client->pers.predictItemPickup = qtrue;
+		client->pers.predictItemPickup = true;
 	}
 
 	// check the auto activation
@@ -1549,12 +1549,12 @@ a string with the reason for denial.
 Otherwise, the client will be sent the current gamestate
 and will eventually get to ClientBegin.
 
-firstTime will be qtrue the very first time a client connects
-to the server machine, but qfalse on map changes and tournement
+firstTime will be true the very first time a client connects
+to the server machine, but false on map changes and tournement
 restarts.
 ============
 */
-char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
+char *ClientConnect( int clientNum, bool firstTime, bool isBot ) {
 	char        *value;
 	gclient_t   *client;
 	char userinfo[MAX_INFO_STRING];
@@ -1592,7 +1592,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 
 	if ( isBot ) {
 		ent->r.svFlags |= SVF_BOT;
-		ent->inuse = qtrue;
+		ent->inuse = true;
         if (!DoomBotsActive()) {
             return "Doom bots require deathmatch or team deathmatch";
         }
@@ -1638,7 +1638,7 @@ void ClientBegin( int clientNum ) {
 
 	if ( ent->botDelayBegin ) {
 
-        ent->botDelayBegin = qfalse;
+        ent->botDelayBegin = false;
         return;
 	}
 
@@ -1756,7 +1756,7 @@ void ClientSpawn( gentity_t *ent ) {
 			do {
 				// the first spawn should be at a good looking spot
 				if ( !client->pers.initialSpawn && client->pers.localClient ) {
-					client->pers.initialSpawn = qtrue;
+					client->pers.initialSpawn = true;
 					spawnPoint = SelectInitialSpawnPoint( spawn_origin, spawn_angles );
 				} else {
 					// don't spawn near existing origin if possible
@@ -1824,8 +1824,8 @@ void ClientSpawn( gentity_t *ent ) {
 
 	ent->s.groundEntityNum = ENTITYNUM_NONE;
 	ent->client = &level.clients[index];
-	ent->takedamage = qtrue;
-	ent->inuse = qtrue;
+	ent->takedamage = true;
+	ent->inuse = true;
     if (!(ent->r.svFlags & SVF_AI)) {
         ent->classname = "player";
     }
@@ -1988,7 +1988,7 @@ void ClientSpawn( gentity_t *ent ) {
 
 	// positively link the client, even if the command times are weird
 	if ( ent->client->sess.sessionTeam != TEAM_SPECTATOR ) {
-		BG_PlayerStateToEntityState( &client->ps, &ent->s, qtrue );
+		BG_PlayerStateToEntityState( &client->ps, &ent->s, true );
 		VectorCopy( ent->client->ps.origin, ent->r.currentOrigin );
 		trap_LinkEntity( ent );
 	}
@@ -1997,7 +1997,7 @@ void ClientSpawn( gentity_t *ent ) {
 	ClientEndFrame( ent );
 
 	// clear entity state values
-	BG_PlayerStateToEntityState( &client->ps, &ent->s, qtrue );
+	BG_PlayerStateToEntityState( &client->ps, &ent->s, true );
 }
 DOOM_SAVE_CALLBACK("ClientSpawn", ClientSpawn);
 
@@ -2063,7 +2063,7 @@ void ClientDisconnect( int clientNum ) {
 
 	trap_UnlinkEntity( ent );
 	ent->s.modelindex = 0;
-	ent->inuse = qfalse;
+	ent->inuse = false;
 	ent->classname = "disconnected";
 	ent->client->pers.connected = CON_DISCONNECTED;
 	ent->client->ps.persistant[PERS_TEAM] = TEAM_FREE;

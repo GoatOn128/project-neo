@@ -277,7 +277,7 @@ void Weapon_Engineer( gentity_t *ent ) {
 			traceEnt->health = 255;
 			// Need some kind of event/announcement here
 
-			Add_Ammo( ent, WP_DYNAMITE, 1, qtrue );
+			Add_Ammo( ent, WP_DYNAMITE, 1, true );
 
 			traceEnt->think = G_FreeEntity;
 			traceEnt->nextthink = level.time + FRAMETIME;
@@ -306,13 +306,13 @@ void Weapon_Engineer( gentity_t *ent ) {
 
 			if ( traceEnt->mg42BaseEnt > 0 ) {
 				g_entities[ traceEnt->mg42BaseEnt ].health = 100;
-				g_entities[ traceEnt->mg42BaseEnt ].takedamage = qtrue;
+				g_entities[ traceEnt->mg42BaseEnt ].takedamage = true;
 				traceEnt->health = 0;
 			} else {
 				traceEnt->health = 100;
 			}
 
-			traceEnt->takedamage = qtrue;
+			traceEnt->takedamage = true;
 
 			trap_SendServerCommand( ent - g_entities, "cp \"You have repaired the MG42!\n\"" );
 		} else {
@@ -470,7 +470,7 @@ Weapon_Gauntlet
 */
 void Weapon_Gauntlet( gentity_t *ent ) {
 	trace_t *tr;
-	tr = CheckMeleeAttack( ent, 32, qfalse );
+	tr = CheckMeleeAttack( ent, 32, false );
 	if ( tr ) {
 		G_Damage( &g_entities[tr->entityNum], ent, ent, vec3_origin, tr->endpos,
 				  ( 10 + rand() % 5 ) * s_quadFactor, 0, MOD_GAUNTLET );
@@ -484,7 +484,7 @@ CheckMeleeAttack
 	using 'isTest' to return hits to world surfaces
 ===============
 */
-trace_t *CheckMeleeAttack( gentity_t *ent, float dist, qboolean isTest ) {
+trace_t *CheckMeleeAttack( gentity_t *ent, float dist, bool isTest ) {
 	static trace_t tr;
 	vec3_t end;
 	gentity_t   *tent;
@@ -782,7 +782,7 @@ void Tesla_Fire( gentity_t *ent ) {
 DOOM_SAVE_CALLBACK("Tesla_Fire", Tesla_Fire);
 
 void RubbleFlagCheck( gentity_t *ent, trace_t tr ) {
-	qboolean is_valid = qfalse;
+	bool is_valid = false;
 	int type = 0;
 
 	// (SA) moving client-side
@@ -793,14 +793,14 @@ void RubbleFlagCheck( gentity_t *ent, trace_t tr ) {
 
 
 	if ( tr.surfaceFlags & SURF_RUBBLE || tr.surfaceFlags & SURF_GRAVEL ) {
-		is_valid = qtrue;
+		is_valid = true;
 		type = 4;
 	} else if ( tr.surfaceFlags & SURF_METAL )     {
 //----(SA)	removed
-//		is_valid = qtrue;
+//		is_valid = true;
 //		type = 2;
 	} else if ( tr.surfaceFlags & SURF_WOOD )     {
-		is_valid = qtrue;
+		is_valid = true;
 		type = 1;
 	}
 
@@ -885,7 +885,7 @@ Bullet_Endpos
 */
 void Bullet_Endpos( gentity_t *ent, float spread, vec3_t *end ) {
 	float r, u;
-	qboolean randSpread = qtrue;
+	bool randSpread = true;
 	int dist = 8192;
 
 	r = crandom() * spread;
@@ -903,7 +903,7 @@ void Bullet_Endpos( gentity_t *ent, float spread, vec3_t *end ) {
             //		if(ent->s.weapon == WP_SNOOPERSCOPE || ent->s.weapon == WP_SNIPERRIFLE) {
 			// aim dir already accounted for sway of scoped weapons in CalcMuzzlePoints()
 			dist *= 2;
-			randSpread = qfalse;
+			randSpread = false;
         }
     }
 
@@ -943,7 +943,7 @@ void Bullet_Fire_Extended( gentity_t *source, gentity_t *attacker, vec3_t start,
 	gentity_t   *tent;
 	gentity_t   *traceEnt;
 	int dflags = 0;         // flag if source==attacker, meaning it wasn't shot directly, but was reflected went through an entity that allows bullets to pass through
-	qboolean reflectBullet = qfalse;
+	bool reflectBullet = false;
 
 	// RF, abort if too many recursions.. there must be a real solution for this, but for now this is the safest
 	// fix I can find
@@ -960,7 +960,7 @@ void Bullet_Fire_Extended( gentity_t *source, gentity_t *attacker, vec3_t start,
 	// (SA) changed so player could shoot his own dynamite.
 	// (SA) whoops, but that broke bullets going through explosives...
 	trap_Trace( &tr, start, NULL, NULL, end, source->s.number, MASK_SHOT );
-    G_DoomTraceLine(attacker,start,tr.endpos,qtrue);
+    G_DoomTraceLine(attacker,start,tr.endpos,true);
 //	trap_Trace (&tr, start, NULL, NULL, end, ENTITYNUM_NONE, MASK_SHOT);
 
 	// DHM - Nerve :: only in single player
@@ -986,10 +986,10 @@ void Bullet_Fire_Extended( gentity_t *source, gentity_t *attacker, vec3_t start,
 
 	// should we reflect this bullet?
 	if ( traceEnt->flags & FL_DEFENSE_GUARD ) {
-		reflectBullet = qtrue;
+		reflectBullet = true;
 	} else if ( traceEnt->flags & FL_DEFENSE_CROUCH ) {
 		if ( rand() % 3 < 2 ) {
-			reflectBullet = qtrue;
+			reflectBullet = true;
 		}
 	}
 
@@ -1061,14 +1061,14 @@ void Bullet_Fire_Extended( gentity_t *source, gentity_t *attacker, vec3_t start,
 	tent->s.otherEntityNum = attacker->s.number;
 
 	if ( traceEnt->takedamage ) {
-		qboolean reflectBool = qfalse;
+		bool reflectBool = false;
 		vec3_t trDir;
 
 		if ( reflectBullet ) {
 			// if we are facing the direction the bullet came from, then reflect it
 			AngleVectors( traceEnt->s.apos.trBase, trDir, NULL, NULL );
 			if ( DotProduct( forward, trDir ) < 0.6 ) {
-				reflectBool = qtrue;
+				reflectBool = true;
 			}
 		}
 
@@ -1088,7 +1088,7 @@ void Bullet_Fire_Extended( gentity_t *source, gentity_t *attacker, vec3_t start,
 			// Ridah, don't hurt team-mates
 			// DHM - Nerve :: Only in single player
             if (attacker->client && traceEnt->client && g_gametype.integer == GT_SINGLE_PLAYER &&
-                (traceEnt->r.svFlags & SVF_AI) && (attacker->r.svFlags & SVF_AI) && qfalse) {
+                (traceEnt->r.svFlags & SVF_AI) && (attacker->r.svFlags & SVF_AI) && false) {
                 // AI's don't hurt members of their own team
                 return;
             }
@@ -1139,10 +1139,10 @@ gentity_t *weapon_grenadelauncher_fire( gentity_t *ent, int grenType ) {
 	gentity_t   *m, *te; // JPW NERVE
 	float upangle = 0;                  //	start with level throwing and adjust based on angle
 	vec3_t tosspos;
-	qboolean underhand = 0;
+	bool underhand = 0;
 
 	if ( ( ent->s.apos.trBase[0] > 0 ) && ( grenType != WP_GRENADE_SMOKE ) ) { // JPW NERVE -- smoke grenades always overhand
-		underhand = qtrue;
+		underhand = true;
 	}
 
 	if ( underhand ) {
@@ -1315,7 +1315,7 @@ VENOM GUN TRACING
 #define DEFAULT_VENOM_SPREAD 20
 #define DEFAULT_VENOM_DAMAGE 15
 
-qboolean VenomPellet( vec3_t start, vec3_t end, gentity_t *ent ) {
+bool VenomPellet( vec3_t start, vec3_t end, gentity_t *ent ) {
 	trace_t tr;
 	int damage;
 	gentity_t       *traceEnt;
@@ -1325,7 +1325,7 @@ qboolean VenomPellet( vec3_t start, vec3_t end, gentity_t *ent ) {
 
 	// send bullet impact
 	if (  tr.surfaceFlags & SURF_NOIMPACT ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( traceEnt->takedamage ) {
@@ -1333,10 +1333,10 @@ qboolean VenomPellet( vec3_t start, vec3_t end, gentity_t *ent ) {
 
 		G_Damage( traceEnt, ent, ent, forward, tr.endpos, damage, 0, MOD_VENOM );
 		if ( LogAccuracyHit( traceEnt, ent ) ) {
-			return qtrue;
+			return true;
 		}
 	}
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("VenomPellet", VenomPellet);
 
@@ -1346,7 +1346,7 @@ void VenomPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t *ent ) {
 	float r, u;
 	vec3_t end;
 	vec3_t forward, right, up;
-	qboolean hitClient = qfalse;
+	bool hitClient = false;
 
 	// derive the right and up vectors from the forward vector, because
 	// the client won't have any other information
@@ -1362,7 +1362,7 @@ void VenomPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t *ent ) {
 		VectorMA( end, r, right, end );
 		VectorMA( end, u, up, end );
 		if ( VenomPellet( origin, end, ent ) && !hitClient ) {
-			hitClient = qtrue;
+			hitClient = true;
 			ent->client->ps.persistant[PERS_ACCURACY_HITS]++;
 		}
 	}
@@ -1374,7 +1374,7 @@ DOOM_SAVE_CALLBACK("VenomPattern", VenomPattern);
 weapon_venom_fire
 ==============
 */
-void weapon_venom_fire( gentity_t *ent, qboolean fullmode, float aimSpreadScale ) {
+void weapon_venom_fire( gentity_t *ent, bool fullmode, float aimSpreadScale ) {
 	gentity_t       *tent;
 
 	if ( fullmode ) {
@@ -1496,7 +1496,7 @@ void Weapon_LightningFire( gentity_t *ent ) {
 		tent->s.eventParm = DirToByte( tr.plane.normal );
 	}
 */
-    if (traceEnt->takedamage && !qfalse) {
+    if (traceEnt->takedamage && !false) {
 #define FLAME_THRESHOLD 50
 
         // RF, only do damage once they start burning
@@ -1548,32 +1548,32 @@ DOOM_SAVE_CALLBACK("Weapon_LightningFire", Weapon_LightningFire);
 LogAccuracyHit
 ===============
 */
-qboolean LogAccuracyHit( gentity_t *target, gentity_t *attacker ) {
+bool LogAccuracyHit( gentity_t *target, gentity_t *attacker ) {
 	if ( !target->takedamage ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( target == attacker ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( !target->client ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( !attacker->client ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( target->client->ps.stats[STAT_HEALTH] <= 0 ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( OnSameTeam( target, attacker ) ) {
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 }
 DOOM_SAVE_CALLBACK("LogAccuracyHit", LogAccuracyHit);
 
@@ -1766,7 +1766,7 @@ void FireWeapon( gentity_t *ent ) {
 		Bullet_Fire( ent, COLT_SPREAD * aimSpreadScale, COLT_DAMAGE );
 		break;
 	case WP_VENOM:
-		weapon_venom_fire( ent, qfalse, aimSpreadScale );
+		weapon_venom_fire( ent, false, aimSpreadScale );
 		break;
 	case WP_SNIPERRIFLE:
 		Bullet_Fire( ent, SNIPER_SPREAD * aimSpreadScale, SNIPER_DAMAGE );
@@ -1834,7 +1834,7 @@ void FireWeapon( gentity_t *ent ) {
 	case WP_DYNAMITE:
 		// weapon_grenadelauncher_fire( ent, ent->s.weapon );
 		//RF- disabled this since it's broken (do we still want it?)
-        //if (ent->aiName && !Q_strncmp(ent->aiName, "mechanic", 8) && !qfalse)
+        //if (ent->aiName && !Q_strncmp(ent->aiName, "mechanic", 8) && !false)
         //	weapon_crowbar_throw (ent);
         //else
         if (ent->s.weapon == WP_DYNAMITE) {

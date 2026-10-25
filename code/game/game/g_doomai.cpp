@@ -136,7 +136,7 @@ bool Walkable(gentity_t *entity, const vec3_t end) {
                      (CONTENTS_LAVA | CONTENTS_SLIME));
         }
     }
-    G_DoomTraceLine(entity, entity->r.currentOrigin, end, qfalse);
+    G_DoomTraceLine(entity, entity->r.currentOrigin, end, false);
     return false;
 }
 
@@ -265,7 +265,7 @@ bool CanMove(gentity_t *entity, int direction) {
     // only one movement step cannot reach a door touched by the front of its hull.
     VectorMA(entity->client->ps.origin, step + definitions[entity->doomNpc.type].radius + 2, vector,
              end);
-    G_DoomTraceLine(entity, entity->client->ps.origin, end, qfalse);
+    G_DoomTraceLine(entity, entity->client->ps.origin, end, false);
     return false;
 }
 
@@ -556,7 +556,7 @@ void G_DoomAIInit() {
     navigationSetup = false;
     vmCvar_t skill;
     trap_Cvar_Register(&skill, "doom_skill", "2", CVAR_SERVERINFO | CVAR_ARCHIVE);
-    saveGamePending = g_gametype.integer == GT_SINGLE_PLAYER ? qtrue : qfalse;
+    saveGamePending = g_gametype.integer == GT_SINGLE_PLAYER ? true : false;
     trap_Cvar_Set("g_reloading", "0");
 }
 DOOM_SAVE_CALLBACK("G_DoomAIInit", G_DoomAIInit);
@@ -584,10 +584,10 @@ void G_DoomAIBeginFrame() {
 }
 DOOM_SAVE_CALLBACK("G_DoomAIBeginFrame", G_DoomAIBeginFrame);
 
-qboolean G_DoomAIConfigure(gentity_t *entity) {
+bool G_DoomAIConfigure(gentity_t *entity) {
     const int type = TypeForClass(entity->classname);
     if (!type) {
-        return qfalse;
+        return false;
     }
     entity->doomNpc.type = type;
     int options;
@@ -596,7 +596,7 @@ qboolean G_DoomAIConfigure(gentity_t *entity) {
     entity->think = G_DoomAISpawnThink;
     entity->nextthink = level.time + 400;
     G_SetOrigin(entity, entity->s.origin);
-    return qtrue;
+    return true;
 }
 DOOM_SAVE_CALLBACK("G_DoomAIConfigure", G_DoomAIConfigure);
 
@@ -617,7 +617,7 @@ void DoomBarrelDie(gentity_t *barrel, gentity_t *, gentity_t *attacker, int, int
     if (!barrel->takedamage) {
         return;
     }
-    barrel->takedamage = qfalse;
+    barrel->takedamage = false;
     barrel->parent = attacker;
     barrel->s.legsAnim = Death;
     barrel->s.effect1Time = level.time;
@@ -684,7 +684,7 @@ void G_DoomAISpawnThings(const void *mapData) {
             source->nextthink = 0;
             if (type == Barrel) {
                 source->health = definitions[type].health;
-                source->takedamage = qtrue;
+                source->takedamage = true;
                 source->die = DoomBarrelDie;
             }
             source->r.contents = CONTENTS_SOLID;
@@ -733,10 +733,10 @@ void G_DoomAISpawnThink(gentity_t *source) {
     entity->client = &level.clients[slot];
     memset(entity->client, 0, sizeof(*entity->client));
     entity->r.svFlags = SVF_BOT | SVF_AI;
-    entity->r.linked = qfalse;
+    entity->r.linked = false;
     entity->r.contents = CONTENTS_BODY;
     entity->clipmask = MonsterSolid;
-    entity->takedamage = qtrue;
+    entity->takedamage = true;
     entity->health = definition.health;
     entity->doomNpc.enemy = -1;
     entity->doomNpc.moveDirection = NoDirection;
@@ -796,7 +796,7 @@ void G_DoomAISpawnThink(gentity_t *source) {
 DOOM_SAVE_CALLBACK("G_DoomAISpawnThink", G_DoomAISpawnThink);
 
 void G_DoomAIReplicate(gentity_t *entity) {
-    BG_PlayerStateToEntityState(&entity->client->ps, &entity->s, qfalse);
+    BG_PlayerStateToEntityState(&entity->client->ps, &entity->s, false);
     entity->s.eType = ET_PLAYER;
     entity->s.density = NetworkBase + entity->doomNpc.type;
     entity->s.legsAnim = entity->doomNpc.clip;
@@ -899,8 +899,8 @@ void G_DoomAIRun(gentity_t *entity) {
         movement.tracemask = entity->health > 0 ? MonsterSolid : MASK_SOLID;
         movement.trace = trap_Trace;
         movement.pointcontents = trap_PointContents;
-        movement.noFootsteps = qtrue;
-        movement.noWeapClips = qtrue;
+        movement.noFootsteps = true;
+        movement.noWeapClips = true;
         Pmove(&movement);
         VectorCopy(movement.mins, entity->r.mins);
         VectorCopy(movement.maxs, entity->r.maxs);
@@ -961,7 +961,7 @@ bool G_DoomAIDamage(gentity_t *entity, gentity_t *attacker, int damage, int flag
         const auto &definition = definitions[npc.type];
         Animate(entity, entity->health < -definition.health ? Gib : Death, true);
         Sound(entity, definition.deathSound);
-        entity->takedamage = qfalse;
+        entity->takedamage = false;
         entity->r.contents = CONTENTS_CORPSE;
         entity->client->ps.eFlags |= EF_DEAD;
         entity->client->ps.pm_type = PM_DEAD;

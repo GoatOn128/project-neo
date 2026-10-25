@@ -579,7 +579,7 @@ DOOM_SAVE_CALLBACK("propExplosion", propExplosion);
 void InitProp( gentity_t *ent ) {
 	float light;
 	vec3_t color;
-	qboolean lightSet, colorSet;
+	bool lightSet, colorSet;
 	char        *sound;
 
 	if ( !Q_stricmp( ent->classname, "props_bench" ) ) {
@@ -630,7 +630,7 @@ void InitProp( gentity_t *ent ) {
 		ent->s.constantLight = r | ( g << 8 ) | ( b << 16 ) | ( i << 24 );
 	}
 
-	ent->isProp = qtrue;
+	ent->isProp = true;
 
 	ent->moverState = MOVER_POS1;
 	ent->s.eType = ET_MOVER;
@@ -649,7 +649,7 @@ void props_bench_think( gentity_t *ent ) {
 	{
 		ent->clipmask = 0;
 		ent->r.contents = 0;
-		ent->takedamage = qfalse;
+		ent->takedamage = false;
 
 		G_UseTargets( ent, NULL );
 	}
@@ -677,7 +677,7 @@ void SP_Props_Bench( gentity_t *ent ) {
 		ent->health = 10;
 	}
 
-	ent->takedamage = qtrue;
+	ent->takedamage = true;
 
 	ent->clipmask = CONTENTS_SOLID;
 
@@ -691,7 +691,7 @@ void props_radio_die( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker,
 
 	propExplosion( ent );
 
-	ent->takedamage = qfalse;
+	ent->takedamage = false;
 
 	G_UseTargets( ent, NULL );
 
@@ -719,7 +719,7 @@ void SP_Props_Radio( gentity_t *ent ) {
 		ent->health = 100;
 	}
 
-	ent->takedamage = qtrue;
+	ent->takedamage = true;
 
 	ent->die = props_radio_die;
 
@@ -739,7 +739,7 @@ void props_radio_dieSEVEN( gentity_t *ent, gentity_t *inflictor, gentity_t *atta
 
 	Prop_Break_Sound( ent );
 
-	ent->takedamage = qfalse;
+	ent->takedamage = false;
 	ent->die = NULL;
 
 	trap_LinkEntity( ent );
@@ -779,7 +779,7 @@ void SP_Props_RadioSEVEN( gentity_t *ent ) {
 		ent->health = 100;
 	}
 
-	ent->takedamage = qtrue;
+	ent->takedamage = true;
 
 	ent->die = props_radio_dieSEVEN;
 
@@ -807,7 +807,7 @@ void props_locker_tall_die( gentity_t *ent, gentity_t *inflictor, gentity_t *att
 	ent->think = locker_tall_think;
 	ent->nextthink = level.time + FRAMETIME;
 
-	ent->takedamage = qfalse;
+	ent->takedamage = false;
 
 	G_UseTargets( ent, NULL );
 }
@@ -832,7 +832,7 @@ void SP_Props_Locker_Tall( gentity_t *ent ) {
 		ent->health = 100;
 	}
 
-	ent->takedamage = qtrue;
+	ent->takedamage = true;
 
 	ent->die = props_locker_tall_die;
 
@@ -953,7 +953,7 @@ void Just_Got_Thrown( gentity_t *self ) {
 			vec3_t end;
 			gentity_t   *traceEnt;
 			gentity_t   *player;
-			qboolean reGrab = qtrue;
+			bool reGrab = true;
 
 			VectorCopy( self->r.currentOrigin, end );
 			end[2] += 1;
@@ -967,25 +967,25 @@ void Just_Got_Thrown( gentity_t *self ) {
 
                 // only player can catch
                 if ( traceEnt != player ) {
-					reGrab = qfalse;
+					reGrab = false;
 				}
 
 				// no catch when dead
 				if ( traceEnt->health <= 0 ) {
-					reGrab = qfalse;
+					reGrab = false;
 				}
 
 				// player can throw, then switch to a two handed weapon before catching.
 				// need to catch this (no pun intended)
 				if ( player->s.weapon && !( WEAPS_ONE_HANDED & ( 1 << ( player->s.weapon ) ) ) ) {
-					reGrab = qfalse;
+					reGrab = false;
 				}
 
 				if ( reGrab ) {
 					// pick the chair back up
-					self->active = qtrue;
+					self->active = true;
 					self->r.ownerNum = player->s.number;
-					player->active = qtrue;
+					player->active = true;
 					player->melee = self;
 					self->nextthink = level.time + 50;
 
@@ -1053,11 +1053,11 @@ void Props_Activated( gentity_t *self ) {
 
 	Props_TurnLightsOff( self );
 
-	if ( owner->active == qfalse ) {
+	if ( owner->active == false ) {
 
 		owner->melee = NULL;
 
-		self->physicsObject = qtrue;
+		self->physicsObject = true;
 		self->physicsBounce = 0.2;
 
 		self->s.groundEntityNum = -1;
@@ -1065,7 +1065,7 @@ void Props_Activated( gentity_t *self ) {
 		self->s.pos.trType = TR_GRAVITY;
 		self->s.pos.trTime = level.time;
 
-		self->active = qfalse;
+		self->active = false;
 
 		G_AddEvent( owner, EV_GENERAL_SOUND, snd_chairthrow );
 
@@ -1088,12 +1088,12 @@ void Props_Activated( gentity_t *self ) {
 
 		prop->clipmask   = CONTENTS_SOLID | CONTENTS_MISSILECLIP;
 		prop->r.contents = CONTENTS_SOLID;
-		prop->isProp = qtrue;
+		prop->isProp = true;
 
 		VectorSet( prop->r.mins, -12, -12, 0 );
 		VectorSet( prop->r.maxs, 12, 12, 48 );
 
-		prop->physicsObject = qtrue;
+		prop->physicsObject = true;
 		prop->physicsBounce = 0.2;
 
 		VectorCopy( owner->client->ps.origin, prop->s.pos.trBase );
@@ -1103,7 +1103,7 @@ void Props_Activated( gentity_t *self ) {
 		prop->s.pos.trType = TR_GRAVITY;
 		prop->s.pos.trTime = level.time;
 
-		prop->active = qfalse;
+		prop->active = false;
 
 		prop->health = self->health;
 
@@ -1114,7 +1114,7 @@ void Props_Activated( gentity_t *self ) {
 		prop->think = Just_Got_Thrown;
 		prop->nextthink = level.time + FRAMETIME;
 
-		prop->takedamage = qtrue;
+		prop->takedamage = true;
 
 		prop->wait = self->wait;
 
@@ -1215,7 +1215,7 @@ void Props_Chair_Think( gentity_t *self ) {
 
 	if ( self->s.groundEntityNum == -1 ) {
 
-		self->physicsObject = qtrue;
+		self->physicsObject = true;
 		self->physicsBounce = 0.2;
 
 		self->s.pos.trDelta[2] -= 200;
@@ -1223,7 +1223,7 @@ void Props_Chair_Think( gentity_t *self ) {
 		self->s.pos.trType = TR_GRAVITY;
 		self->s.pos.trTime = level.time;
 
-		self->active = qfalse;
+		self->active = false;
 
 		self->think = Just_Got_Thrown;
 
@@ -1242,7 +1242,7 @@ void Props_Chair_Think( gentity_t *self ) {
 }
 DOOM_SAVE_CALLBACK("Props_Chair_Think", Props_Chair_Think);
 
-qboolean Prop_Touch( gentity_t *self, gentity_t *other, vec3_t v ) {
+bool Prop_Touch( gentity_t *self, gentity_t *other, vec3_t v ) {
 
 	vec3_t forward;
 	vec3_t dest;
@@ -1252,7 +1252,7 @@ qboolean Prop_Touch( gentity_t *self, gentity_t *other, vec3_t v ) {
 	trace_t tr;
 
 	if ( !other->client ) {
-		return qfalse;
+		return false;
 	}
 
 	vectoangles( v, angle );
@@ -1274,7 +1274,7 @@ qboolean Prop_Touch( gentity_t *self, gentity_t *other, vec3_t v ) {
 	trap_Trace( &tr, start, mins, maxs, end, self->s.number, MASK_SHOT );
 
 	if ( tr.fraction != 1 ) {
-		return qfalse;
+		return false;
 	}
 
 	VectorCopy( dest, self->s.pos.trDelta );
@@ -1284,9 +1284,9 @@ qboolean Prop_Touch( gentity_t *self, gentity_t *other, vec3_t v ) {
 	self->s.pos.trTime = level.time;
 	self->s.pos.trType = TR_LINEAR;
 
-	self->physicsObject = qtrue;
+	self->physicsObject = true;
 
-	return qtrue;
+	return true;
 }
 DOOM_SAVE_CALLBACK("Prop_Touch", Prop_Touch);
 
@@ -1317,7 +1317,7 @@ DOOM_SAVE_CALLBACK("Prop_Check_Ground", Prop_Check_Ground);
 
 void Props_Chair_Touch( gentity_t *self, gentity_t *other, trace_t *trace ) {
 	vec3_t v;
-	qboolean has_moved;
+	bool has_moved;
 
 	if ( !other->client ) {
 		return;
@@ -1507,11 +1507,11 @@ void Props_Chair_Die( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker,
 
         if (player && player->melee == ent) {
             player->melee = NULL;
-			player->active = qfalse;
+			player->active = false;
 			player->client->ps.eFlags &= ~EF_MELEE_ACTIVE;
 
         } else if (player && player->s.number == ent->r.ownerNum) {
-            player->active = qfalse;
+            player->active = false;
 			player->melee = NULL;
 			player->client->ps.eFlags &= ~EF_MELEE_ACTIVE;
         }
@@ -1566,10 +1566,10 @@ void Props_Chair_Skyboxtouch( gentity_t *ent ) {
 
     if (player && player->melee == ent) {
         player->melee = NULL;
-		player->active = qfalse;
+		player->active = false;
 		player->client->ps.eFlags &= ~EF_MELEE_ACTIVE;
     } else if (player && player->s.number == ent->r.ownerNum) {
-        player->active = qfalse;
+        player->active = false;
 		player->melee = NULL;
 		player->client->ps.eFlags &= ~EF_MELEE_ACTIVE;
     }
@@ -1596,7 +1596,7 @@ void SP_Props_Chair( gentity_t *ent ) {
 	ent->r.contents = CONTENTS_SOLID;
 	ent->s.eType = ET_MOVER;
 
-	ent->isProp = qtrue;
+	ent->isProp = true;
 
 	VectorSet( ent->r.mins, -12, -12, 0 );
 	VectorSet( ent->r.maxs, 12, 12, 48 );
@@ -1620,7 +1620,7 @@ void SP_Props_Chair( gentity_t *ent ) {
 
 	ent->touch = Props_Chair_Touch;
 	ent->die = Props_Chair_Die;
-	ent->takedamage = qtrue;
+	ent->takedamage = true;
 	trap_LinkEntity( ent );
 
 	snd_boardbreak = G_SoundIndex( "sound/world/boardbreak.wav" );
@@ -1657,7 +1657,7 @@ void SP_Props_GenericChair( gentity_t *ent ) {
 	ent->r.contents = CONTENTS_SOLID;
 	ent->s.eType    = ET_MOVER;
 
-	ent->isProp     = qtrue;
+	ent->isProp     = true;
 
 	VectorSet( ent->r.mins, -12, -12, 0 );
 	VectorSet( ent->r.maxs, 12, 12, 48 );
@@ -1680,7 +1680,7 @@ void SP_Props_GenericChair( gentity_t *ent ) {
 
 	ent->touch = Props_Chair_Touch;
 	ent->die = Props_Chair_Die;
-	ent->takedamage = qtrue;
+	ent->takedamage = true;
 	trap_LinkEntity( ent );
 
 	snd_boardbreak = G_SoundIndex( "sound/world/boardbreak.wav" );
@@ -1864,8 +1864,8 @@ void SP_Props_Desklamp( gentity_t *ent ) {
 	ent->r.contents = CONTENTS_SOLID;
 	ent->s.eType = ET_MOVER;
 
-	ent->isProp = qtrue;
-	ent->nopickup = qtrue;
+	ent->isProp = true;
+	ent->nopickup = true;
 
 	VectorSet( ent->r.mins, -6, -6, 0 );
 	VectorSet( ent->r.maxs, 6, 6, 14 );
@@ -1888,7 +1888,7 @@ void SP_Props_Desklamp( gentity_t *ent ) {
 
 	ent->touch = Props_Chair_Touch;
 	ent->die = Props_Chair_Die;
-	ent->takedamage = qtrue;
+	ent->takedamage = true;
 	trap_LinkEntity( ent );
 
 	snd_boardbreak = G_SoundIndex( "sound/world/boardbreak.wav" );
@@ -2045,7 +2045,7 @@ void Delayed_Leak_Think( gentity_t *ent ) {
 }
 DOOM_SAVE_CALLBACK("Delayed_Leak_Think", Delayed_Leak_Think);
 
-qboolean validOilSlickSpawnPoint( vec3_t point, gentity_t *ent ) {
+bool validOilSlickSpawnPoint( vec3_t point, gentity_t *ent ) {
 	trace_t tr;
 	vec3_t end;
 	gentity_t *traceEnt;
@@ -2060,12 +2060,12 @@ qboolean validOilSlickSpawnPoint( vec3_t point, gentity_t *ent ) {
 	if ( traceEnt && traceEnt->classname ) {
 		if ( !Q_stricmp( traceEnt->classname, "worldspawn" ) ) {
 			if ( tr.plane.normal[0] == 0 && tr.plane.normal[1] == 0 && tr.plane.normal[2] == 1 ) {
-				return qtrue;
+				return true;
 			}
 		}
 	}
 
-	return qfalse;
+	return false;
 
 }
 DOOM_SAVE_CALLBACK("validOilSlickSpawnPoint", validOilSlickSpawnPoint);
@@ -2173,7 +2173,7 @@ void Props_Barrel_Die( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker
 	propExplosion( ent );
 	ent->health = 0;
 
-	ent->takedamage = qfalse;
+	ent->takedamage = false;
 
 	AngleVectors( ent->r.currentAngles, dir, NULL, NULL );
 	dir[2] = 1;
@@ -2251,7 +2251,7 @@ void Props_OilSlickSlippery( gentity_t *ent ) {
 DOOM_SAVE_CALLBACK("Props_OilSlickSlippery", Props_OilSlickSlippery);
 
 void Props_Barrel_Think( gentity_t *self ) {
-	self->active = qfalse;
+	self->active = false;
 	Props_Chair_Think( self );
 
 	if ( self->spawnflags & 8 ) { // there is an oil slick
@@ -2283,8 +2283,8 @@ void SP_Props_Flamebarrel( gentity_t *ent ) {
 	ent->r.contents = CONTENTS_SOLID;
 	ent->s.eType = ET_MOVER;
 
-	ent->isProp = qtrue;
-	ent->nopickup = qtrue;
+	ent->isProp = true;
+	ent->nopickup = true;
 
 	VectorSet( ent->r.mins, -13, -13, 0 );
 	VectorSet( ent->r.maxs, 13, 13, 36 );
@@ -2311,7 +2311,7 @@ void SP_Props_Flamebarrel( gentity_t *ent ) {
 		ent->pain = Props_Barrel_Pain;
 	}
 
-	ent->takedamage = qtrue;
+	ent->takedamage = true;
 	trap_LinkEntity( ent );
 }
 DOOM_SAVE_CALLBACK("SP_Props_Flamebarrel", SP_Props_Flamebarrel);
@@ -2400,7 +2400,7 @@ void crate_die( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker, int d
 
 	Spawn_Shard( ent, inflictor, quantity, type );
 
-	ent->takedamage = qfalse;
+	ent->takedamage = false;
 	ent->think = crate_animate;
 	ent->nextthink = level.time + FRAMETIME;
 	ent->touch = NULL;
@@ -2427,15 +2427,15 @@ void SP_crate_64( gentity_t *self ) {
 
 	self->s.eType = ET_MOVER;
 
-	self->isProp = qtrue;
-	self->nopickup = qtrue;
+	self->isProp = true;
+	self->nopickup = true;
 	G_SetOrigin( self, self->s.origin );
 	G_SetAngle( self, self->s.angles );
 
 	self->touch = touch_crate_64;
 	self->die = crate_die;
 
-	self->takedamage = qtrue;
+	self->takedamage = true;
 
 	if ( !self->health ) {
 		self->health = 20;
@@ -2449,8 +2449,8 @@ void SP_crate_64( gentity_t *self ) {
 		self->wait = 10;
 	}
 
-	self->isProp = qtrue;
-	self->nopickup = qtrue;
+	self->isProp = true;
+	self->nopickup = true;
 
 	trap_LinkEntity( self );
 
@@ -2470,15 +2470,15 @@ void SP_crate_32( gentity_t *self ) {
 
 	self->s.eType = ET_MOVER;
 
-	self->isProp = qtrue;
-	self->nopickup = qtrue;
+	self->isProp = true;
+	self->nopickup = true;
 	G_SetOrigin( self, self->s.origin );
 	G_SetAngle( self, self->s.angles );
 
 	self->touch = touch_crate_64;
 	self->die = crate_die;
 
-	self->takedamage = qtrue;
+	self->takedamage = true;
 
 	if ( !self->health ) {
 		self->health = 20;
@@ -2492,8 +2492,8 @@ void SP_crate_32( gentity_t *self ) {
 		self->wait = 10;
 	}
 
-	self->isProp = qtrue;
-	self->nopickup = qtrue;
+	self->isProp = true;
+	self->nopickup = true;
 
 	trap_LinkEntity( self );
 
@@ -2513,7 +2513,7 @@ void props_crate32x64_think( gentity_t *ent ) {
 	{
 		ent->clipmask = 0;
 		ent->r.contents = 0;
-		ent->takedamage = qfalse;
+		ent->takedamage = false;
 
 		G_UseTargets( ent, NULL );
 	}
@@ -2537,7 +2537,7 @@ void SP_Props_Crate32x64( gentity_t *ent ) {
 		ent->health = 10;
 	}
 
-	ent->takedamage = qtrue;
+	ent->takedamage = true;
 
 	ent->clipmask = CONTENTS_SOLID;
 
@@ -2555,7 +2555,7 @@ slave so that the table will flip over correctly.
 */
 
 void flippy_table_use( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
-	qboolean is_infront;
+	bool is_infront;
 	gentity_t   *slave;
 
 	// it would be odd to flip a table if your standing on it
@@ -2630,7 +2630,7 @@ void props_flippy_table_die( gentity_t *ent, gentity_t *inflictor, gentity_t *at
 	ent->think = flippy_table_animate;
 	ent->nextthink = level.time + FRAMETIME;
 
-	ent->takedamage = qfalse;
+	ent->takedamage = false;
 
 	G_UseTargets( ent, NULL );
 }
@@ -2722,7 +2722,7 @@ void SP_Props_Flipping_Table( gentity_t *ent ) {
 
 	ent->wait *= 1000;
 
-	//ent->takedamage = qtrue;
+	//ent->takedamage = true;
 
 	//ent->die = props_flippy_table_die;
 
@@ -2773,7 +2773,7 @@ DOOM_SAVE_CALLBACK("props_58x112tablew_think", props_58x112tablew_think);
 void props_58x112tablew_die( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker, int damage, int mod ) {
 	ent->think = props_58x112tablew_think;
 	ent->nextthink = level.time + FRAMETIME;
-	ent->takedamage = qfalse;
+	ent->takedamage = false;
 }
 DOOM_SAVE_CALLBACK("props_58x112tablew_die", props_58x112tablew_die);
 
@@ -2787,7 +2787,7 @@ void SP_Props_58x112tablew( gentity_t *ent ) {
 		ent->health = 10;
 	}
 
-	ent->takedamage = qtrue;
+	ent->takedamage = true;
 
 	ent->clipmask = CONTENTS_SOLID;
 
@@ -2857,7 +2857,7 @@ void props_castlebed_die( gentity_t *ent, gentity_t *inflictor, gentity_t *attac
 	ent->think = props_castlebed_animate;
 	ent->nextthink = level.time + FRAMETIME;
 	ent->touch = NULL;
-	ent->takedamage = qfalse;
+	ent->takedamage = false;
 
 	ent->count = shard_wood;
 	Prop_Break_Sound( ent );
@@ -2873,7 +2873,7 @@ void SP_props_castlebed( gentity_t *ent ) {
 		ent->health = 20;
 	}
 
-	ent->takedamage = qtrue;
+	ent->takedamage = true;
 
 	ent->clipmask = CONTENTS_SOLID;
 
@@ -3267,12 +3267,12 @@ void props_decoration_animate( gentity_t *ent ) {
 			ent->s.frame = ent->props_frame_state;
 
 			if ( !( ent->spawnflags & 64 ) ) {
-				ent->takedamage = qfalse;
+				ent->takedamage = false;
 			}
 		} else
 		{
 			ent->s.frame = ent->count2;
-			ent->takedamage = qfalse;
+			ent->takedamage = false;
 
 			return;
 		}
@@ -3290,7 +3290,7 @@ void props_decoration_death( gentity_t *ent, gentity_t *inflictor, gentity_t *at
 		trap_LinkEntity( ent );
 	}
 
-	ent->takedamage = qfalse;
+	ent->takedamage = false;
 
 	G_UseTargets( ent, NULL );
 
@@ -3335,7 +3335,7 @@ DOOM_SAVE_CALLBACK("props_touch", props_touch);
 void SP_props_decoration( gentity_t *ent ) {
 	float light;
 	vec3_t color;
-	qboolean lightSet, colorSet;
+	bool lightSet, colorSet;
 	char        *sound;
 	char        *type;
 	char        *high;
@@ -3391,8 +3391,8 @@ void SP_props_decoration( gentity_t *ent ) {
 	}
 
 	if ( ent->health ) {
-		ent->isProp = qtrue;
-		ent->takedamage = qtrue;
+		ent->isProp = true;
+		ent->takedamage = true;
 		ent->die = props_decoration_death;
 
 		G_SpawnString( "type", "wood", &type );
@@ -3662,20 +3662,20 @@ DOOM_SAVE_CALLBACK("props_statue_blocked", props_statue_blocked);
 
 void props_statue_animate( gentity_t *ent ) {
 
-	qboolean takeashot = qfalse;
+	bool takeashot = false;
 
 	ent->s.frame++;
 	ent->s.eType = ET_GENERAL;
 
 	if ( ent->s.frame > ent->count2 ) {
 		ent->s.frame = ent->count2;
-		ent->takedamage = qfalse;
+		ent->takedamage = false;
 	}
 
 	if ( ( ( ent->delay * 1000 ) + ent->timestamp ) > level.time ) {
 		ent->count = 0;
 	} else if ( ent->count == 5 )     {
-		takeashot = qtrue;
+		takeashot = true;
 		ent->count = 0;
 	} else {
 		ent->count++;
@@ -3704,7 +3704,7 @@ void props_statue_death( gentity_t *ent, gentity_t *inflictor, gentity_t *attack
 		trap_LinkEntity( ent );
 	}
 
-	ent->takedamage = qfalse;
+	ent->takedamage = false;
 
 	G_UseTargets( ent, NULL );
 
@@ -3731,7 +3731,7 @@ DOOM_SAVE_CALLBACK("props_statue_touch", props_statue_touch);
 void SP_props_statue( gentity_t *ent ) {
 	float light;
 	vec3_t color;
-	qboolean lightSet, colorSet;
+	bool lightSet, colorSet;
 	char        *sound;
 	char        *type;
 	char        *high;
@@ -3774,8 +3774,8 @@ void SP_props_statue( gentity_t *ent ) {
 		ent->s.constantLight = r | ( g << 8 ) | ( b << 16 ) | ( i << 24 );
 	}
 
-	ent->isProp = qtrue;
-	ent->takedamage = qtrue;
+	ent->isProp = true;
+	ent->takedamage = true;
 	ent->die = props_statue_death;
 
 	G_SpawnString( "type", "wood", &type );
@@ -3943,8 +3943,8 @@ void props_locker_pain( gentity_t *ent, gentity_t *attacker, int damage, vec3_t 
 DOOM_SAVE_CALLBACK("props_locker_pain", props_locker_pain);
 
 void init_locker( gentity_t *ent ) {
-	ent->isProp = qtrue;
-	ent->takedamage = qtrue;
+	ent->isProp = true;
+	ent->takedamage = true;
 	ent->delay = 0;
 
 	ent->clipmask   = CONTENTS_SOLID;
@@ -3986,7 +3986,7 @@ void props_locker_spawn_item( gentity_t *ent ) {
 		return;
 	}
 
-//	drop = Drop_Item (ent, item, 0, qtrue);
+//	drop = Drop_Item (ent, item, 0, true);
 	drop = LaunchItem( item, ent->r.currentOrigin, tv( 0, 0, 20 ) );
 
 
@@ -4062,7 +4062,7 @@ props_locker_death
 ==============
 */
 void props_locker_death( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker, int damage, int mod ) {
-	ent->takedamage = qfalse;
+	ent->takedamage = false;
 	ent->s.frame = 2;   // opening animation
 	ent->think = 0;
 	ent->nextthink = 0;

@@ -101,16 +101,16 @@ DOOM_SAVE_CALLBACK("Cmd_Score_f", Cmd_Score_f);
 CheatsOk
 ==================
 */
-qboolean    CheatsOk( gentity_t *ent ) {
+bool    CheatsOk( gentity_t *ent ) {
 	if ( !g_cheats.integer ) {
 		trap_SendServerCommand( ent - g_entities, va( "print \"Cheats are not enabled on this server.\n\"" ) );
-		return qfalse;
+		return false;
 	}
 	if ( ent->health <= 0 ) {
 		trap_SendServerCommand( ent - g_entities, va( "print \"You must be alive to use this command.\n\"" ) );
-		return qfalse;
+		return false;
 	}
-	return qtrue;
+	return true;
 }
 DOOM_SAVE_CALLBACK("CheatsOk", CheatsOk);
 
@@ -252,7 +252,7 @@ void Cmd_Give_f( gentity_t *ent ) {
 	char        *name, *amt;
 	gitem_t     *it;
 	int i;
-	qboolean give_all;
+	bool give_all;
 	gentity_t       *it_ent;
 	trace_t trace;
 	int amount;
@@ -273,9 +273,9 @@ void Cmd_Give_f( gentity_t *ent ) {
 	}
 
 	if ( Q_stricmp( name, "all" ) == 0 ) {
-		give_all = qtrue;
+		give_all = true;
 	} else {
-		give_all = qfalse;
+		give_all = false;
 	}
 
     if (ent->client->ps.stats[STAT_DOOM_WEAPONS]) {
@@ -366,11 +366,11 @@ void Cmd_Give_f( gentity_t *ent ) {
 	if ( give_all || Q_stricmpn( name, "ammo", 4 ) == 0 ) {
 		if ( amount ) {
 			if ( ent->client->ps.weapon ) {
-				Add_Ammo( ent, ent->client->ps.weapon, amount, qtrue );
+				Add_Ammo( ent, ent->client->ps.weapon, amount, true );
 			}
 		} else {
 			for ( i = 1 ; i < WP_MONSTER_ATTACK1 ; i++ )
-				Add_Ammo( ent, i, 999, qtrue );
+				Add_Ammo( ent, i, 999, true );
 		}
 
 		if ( !give_all ) {
@@ -382,7 +382,7 @@ void Cmd_Give_f( gentity_t *ent ) {
 	//	allowing "give ammo <n>" to only give to the selected weap.
 	if ( Q_stricmpn( name, "allammo", 7 ) == 0 && amount ) {
 		for ( i = 1 ; i < WP_MONSTER_ATTACK1 ; i++ )
-			Add_Ammo( ent, i, amount, qtrue );
+			Add_Ammo( ent, i, amount, true );
 
 		if ( !give_all ) {
 			return;
@@ -425,9 +425,9 @@ void Cmd_Give_f( gentity_t *ent ) {
 		G_SpawnItem( it_ent, it );
 		FinishSpawningItem( it_ent );
 		memset( &trace, 0, sizeof( trace ) );
-		it_ent->active = qtrue;
+		it_ent->active = true;
 		Touch_Item( it_ent, ent, &trace );
-		it_ent->active = qfalse;
+		it_ent->active = false;
 		if ( it_ent->inuse ) {
 			G_FreeEntity( it_ent );
 		}
@@ -1031,7 +1031,7 @@ DOOM_SAVE_CALLBACK("G_Say", G_Say);
 Cmd_Say_f
 ==================
 */
-static void Cmd_Say_f( gentity_t *ent, int mode, qboolean arg0 ) {
+static void Cmd_Say_f( gentity_t *ent, int mode, bool arg0 ) {
 	char        *p;
 
 	if ( trap_Argc() < 2 && !arg0 ) {
@@ -1216,26 +1216,26 @@ void Cmd_Vote_f( gentity_t *ent ) {
 }
 DOOM_SAVE_CALLBACK("Cmd_Vote_f", Cmd_Vote_f);
 
-qboolean G_canPickupMelee( gentity_t *ent ) {
+bool G_canPickupMelee( gentity_t *ent ) {
 
 	if ( !( ent->client ) ) {
-		return qfalse;  // hmm, shouldn't be too likely...
+		return false;  // hmm, shouldn't be too likely...
 
 	}
 	if ( !( ent->s.weapon ) ) {  // no weap, go ahead
-		return qtrue;
+		return true;
 	}
 
 	if ( ent->client->ps.weaponstate == WEAPON_RELOADING ) {
-		return qfalse;
+		return false;
 	}
 
 //	if( WEAPS_ONE_HANDED & (1<<(ent->s.weapon)) )
 	if ( WEAPS_ONE_HANDED & ( 1 << ( ent->client->pers.cmd.weapon ) ) ) {
-		return qtrue;
+		return true;
 	}
 
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("G_canPickupMelee", G_canPickupMelee);
 
@@ -1359,16 +1359,16 @@ DOOM_SAVE_CALLBACK("Cmd_InterruptCamera_f", Cmd_InterruptCamera_f);
 G_ThrowChair
 ==============
 */
-qboolean G_ThrowChair( gentity_t *ent, vec3_t dir, qboolean force ) {
+bool G_ThrowChair( gentity_t *ent, vec3_t dir, bool force ) {
 	trace_t trace;
 	vec3_t mins, maxs;
 //	vec3_t		forward;
 	vec3_t start, end;
-	qboolean isthrown = qtrue;
+	bool isthrown = true;
 	gentity_t   *traceEnt;
 
 	if ( !ent->active || !ent->melee ) {
-		return qfalse;
+		return false;
 	}
 
 	VectorCopy( ent->r.mins, mins );
@@ -1389,19 +1389,19 @@ qboolean G_ThrowChair( gentity_t *ent, vec3_t dir, qboolean force ) {
 	traceEnt = &g_entities[ trace.entityNum ];
 
 	if ( trace.startsolid ) {
-		isthrown = qfalse;
+		isthrown = false;
 	}
 
 	if ( trace.fraction != 1 ) {
-		isthrown = qfalse;
+		isthrown = false;
 	}
 
 	if ( isthrown || force ) {
 		// successful drop
-		traceEnt->active = qfalse;
+		traceEnt->active = false;
 
 		ent->melee = NULL;
-		ent->active = qfalse;
+		ent->active = false;
 		ent->client->ps.eFlags &= ~EF_MELEE_ACTIVE;
 //		ent->s.eFlags &= ~EF_MELEE_ACTIVE;
 	}
@@ -1427,10 +1427,10 @@ void Cmd_Activate_f( gentity_t *ent ) {
 	vec3_t forward, right, up, offset;
 	static int oldactivatetime = 0;
 	int activatetime = level.time;
-	qboolean walking = qfalse;
+	bool walking = false;
 
 	if ( ent->client->pers.cmd.buttons & BUTTON_WALKING ) {
-		walking = qtrue;
+		walking = true;
 	}
 
 	AngleVectors( ent->client->ps.viewangles, forward, right, up );
@@ -1441,7 +1441,7 @@ void Cmd_Activate_f( gentity_t *ent ) {
 
 	trap_Trace( &tr, offset, NULL, NULL, end, ent->s.number, ( CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_CORPSE | CONTENTS_TRIGGER ) );
 
-	if (G_DoomTraceLine(ent, offset, tr.endpos, qfalse)) return;
+	if (G_DoomTraceLine(ent, offset, tr.endpos, false)) return;
 
 	//----(SA)	removed erroneous code
 
@@ -1473,10 +1473,10 @@ void Cmd_Activate_f( gentity_t *ent ) {
 //----(SA)	end
 		} else if ( ( Q_stricmp( traceEnt->classname, "func_button" ) == 0 )
 					&& ( traceEnt->s.apos.trType == TR_STATIONARY && traceEnt->s.pos.trType == TR_STATIONARY )
-					&& traceEnt->active == qfalse ) {
+					&& traceEnt->active == false ) {
 			G_TryDoor( traceEnt, ent, ent );      // (door,other,activator)
 //			Use_BinaryMover (traceEnt, ent, ent);
-//			traceEnt->active = qtrue;
+//			traceEnt->active = true;
 		} else if ( !Q_stricmp( traceEnt->classname, "func_invisible_user" ) )     {
 			if ( walking ) {
 				traceEnt->flags |= FL_SOFTACTIVATE;     // no noise
@@ -1511,11 +1511,11 @@ void Cmd_Activate_f( gentity_t *ent ) {
 				if ( ent->client->pers.autoActivate == PICKUP_ACTIVATE ) {
 					ent->client->pers.autoActivate = PICKUP_FORCE;      //----(SA) force the pickup of a normally autoactivate only item
 				}
-				traceEnt->active = qtrue;
+				traceEnt->active = true;
 				traceEnt->touch( traceEnt, ent, &trace );
 			}
 
-		} else if ( ( Q_stricmp( traceEnt->classname, "misc_mg42" ) == 0 ) /*&& activatetime > oldactivatetime + 1000*/ && traceEnt->active == qfalse )         {
+		} else if ( ( Q_stricmp( traceEnt->classname, "misc_mg42" ) == 0 ) /*&& activatetime > oldactivatetime + 1000*/ && traceEnt->active == false )         {
 			if ( !ent->active && traceEnt->takedamage ) {  // not a dead gun
 				// RF, dont allow activating MG42 if crouching
 				if ( !( ent->client->ps.pm_flags & PMF_DUCKED ) && !infront( traceEnt, ent ) ) {
@@ -1541,8 +1541,8 @@ void Cmd_Activate_f( gentity_t *ent ) {
 					}
 
 					if ( !( cl->ps.grenadeTimeLeft ) ) { // make sure the client isn't holding a hot potato
-						traceEnt->active = qtrue;
-						ent->active = qtrue;
+						traceEnt->active = true;
+						ent->active = true;
 						traceEnt->r.ownerNum = ent->s.number;
 						VectorCopy( traceEnt->s.angles, traceEnt->TargetAngles );
 
@@ -1555,13 +1555,13 @@ void Cmd_Activate_f( gentity_t *ent ) {
                     }
 				}
 			}
-		} else if ( ( Q_stricmp( traceEnt->classname, "misc_flak" ) == 0 ) /*&& activatetime > oldactivatetime + 1000*/ && traceEnt->active == qfalse )         {
+		} else if ( ( Q_stricmp( traceEnt->classname, "misc_flak" ) == 0 ) /*&& activatetime > oldactivatetime + 1000*/ && traceEnt->active == false )         {
 			if ( !infront( traceEnt, ent ) ) {     // make sure the client isn't holding a hot potato
 				gclient_t   *cl;
 				cl = &level.clients[ ent->s.clientNum ];
 				if ( !( cl->ps.grenadeTimeLeft ) ) {
-					traceEnt->active = qtrue;
-					ent->active = qtrue;
+					traceEnt->active = true;
+					ent->active = true;
 					traceEnt->r.ownerNum = ent->s.number;
 					// Rafael fix for wierd mg42 movement
 					VectorCopy( traceEnt->s.angles, traceEnt->TargetAngles );
@@ -1573,16 +1573,16 @@ void Cmd_Activate_f( gentity_t *ent ) {
 			if ( !ent->active ) {
 				if ( traceEnt->active ) {
 					// ?
-					traceEnt->active = qfalse;
+					traceEnt->active = false;
 				} else
 
 				// pickup item
 				{
 					// only allow if using a 'one-handed' weapon
 					if ( G_canPickupMelee( ent ) ) {
-						traceEnt->active = qtrue;
+						traceEnt->active = true;
 						traceEnt->r.ownerNum = ent->s.number;
-						ent->active = qtrue;
+						ent->active = true;
 						ent->melee = traceEnt;
 						ent->client->ps.eFlags |= EF_MELEE_ACTIVE;
 //						ent->s.eFlags |= EF_MELEE_ACTIVE;
@@ -1602,11 +1602,11 @@ void Cmd_Activate_f( gentity_t *ent ) {
 		} else if ( ent->melee ) {
 			// throw chair
 			if ( ( tr.fraction == 1 ) || ( !( traceEnt->r.contents & CONTENTS_SOLID ) ) ) {
-				G_ThrowChair( ent, forward, qfalse );
+				G_ThrowChair( ent, forward, false );
 			}
 
 		} else {
-			ent->active = qfalse;
+			ent->active = false;
 		}
 	}
 
@@ -1734,7 +1734,7 @@ void ClientDamage( gentity_t *clent, int entnum, int enemynum, int id ) {
 			break;
 		}
 
-        if (ent->takedamage /*&& !qfalse*/) {
+        if (ent->takedamage /*&& !false*/) {
             VectorSubtract(ent->r.currentOrigin, enemy->r.currentOrigin, vec);
             VectorNormalize( vec );
             if (!(enemy->r.svFlags & SVF_AI)) {
@@ -1754,11 +1754,11 @@ void ClientDamage( gentity_t *clent, int entnum, int enemynum, int id ) {
 //				break;
 		} else {
 			// this is required for Zombie flame attack
-			//if ((enemy->aiCharacter == AICHAR_ZOMBIE) && !AICast_VisibleFromPos( enemy->r.currentOrigin, enemy->s.number, ent->r.currentOrigin, ent->s.number, qfalse ))
+			//if ((enemy->aiCharacter == AICHAR_ZOMBIE) && !AICast_VisibleFromPos( enemy->r.currentOrigin, enemy->s.number, ent->r.currentOrigin, ent->s.number, false ))
 			//	break;
 		}
 
-        if (ent->takedamage && !qfalse) {
+        if (ent->takedamage && !false) {
 #define FLAME_THRESHOLD 50
             int damage = 5;
 
@@ -1956,16 +1956,16 @@ void ClientCommand( int clientNum ) {
 	// done.
 
 	if ( Q_stricmp( cmd, "say" ) == 0 ) {
-		Cmd_Say_f( ent, SAY_ALL, qfalse );
+		Cmd_Say_f( ent, SAY_ALL, false );
 		return;
 	}
 	if ( Q_stricmp( cmd, "say_team" ) == 0 ) {
-		Cmd_Say_f( ent, SAY_TEAM, qfalse );
+		Cmd_Say_f( ent, SAY_TEAM, false );
 		return;
 	}
 	// NERVE - SMF
 	if ( Q_stricmp( cmd, "say_limbo" ) == 0 ) {
-		Cmd_Say_f( ent, SAY_LIMBO, qfalse );
+		Cmd_Say_f( ent, SAY_LIMBO, false );
 		return;
 	}
 	// -NERVE - SMF
@@ -1987,7 +1987,7 @@ void ClientCommand( int clientNum ) {
 
 	// ignore all other commands when at intermission
 	if ( level.intermissiontime ) {
-		Cmd_Say_f( ent, qfalse, qtrue );
+		Cmd_Say_f( ent, false, true );
 		return;
 	}
 

@@ -536,32 +536,32 @@ static void PM_SetMovementDir( void ) {
 PM_CheckJump
 =============
 */
-static qboolean PM_CheckJump( void ) {
+static bool PM_CheckJump( void ) {
 	// JPW NERVE -- jumping in multiplayer uses and requires sprint juice (to prevent turbo skating, sprint + jumps)
 	// don't allow jump accel
 //	if (pm->cmd.serverTime - pm->ps->jumpTime < 850)
 	if ( pm->cmd.serverTime - pm->ps->jumpTime < 500 ) {  // (SA) trying shorter time.  I find this effect annoying ;)
-		return qfalse;
+		return false;
 	}
 
 	if ( pm->ps->pm_flags & PMF_RESPAWNED ) {
-		return qfalse;      // don't allow jump until all buttons are up
+		return false;      // don't allow jump until all buttons are up
 	}
 
 	if ( pm->cmd.upmove < 10 ) {
 		// not holding jump
-		return qfalse;
+		return false;
 	}
 
 	// must wait for jump to be released
 	if ( pm->ps->pm_flags & PMF_JUMP_HELD ) {
 		// clear upmove so cmdscale doesn't lower running speed
 		pm->cmd.upmove = 0;
-		return qfalse;
+		return false;
 	}
 
-	pml.groundPlane = qfalse;       // jumping away
-	pml.walking = qfalse;
+	pml.groundPlane = false;       // jumping away
+	pml.walking = false;
 	pm->ps->pm_flags |= PMF_JUMP_HELD;
 
 	pm->ps->groundEntityNum = ENTITYNUM_NONE;
@@ -569,14 +569,14 @@ static qboolean PM_CheckJump( void ) {
 	PM_AddEvent( EV_JUMP );
 
 	if ( pm->cmd.forwardmove >= 0 ) {
-		BG_AnimScriptEvent( pm->ps, ANIM_ET_JUMP, qfalse, qtrue );
+		BG_AnimScriptEvent( pm->ps, ANIM_ET_JUMP, false, true );
 		pm->ps->pm_flags &= ~PMF_BACKWARDS_JUMP;
 	} else {
-		BG_AnimScriptEvent( pm->ps, ANIM_ET_JUMPBK, qfalse, qtrue );
+		BG_AnimScriptEvent( pm->ps, ANIM_ET_JUMPBK, false, true );
 		pm->ps->pm_flags |= PMF_BACKWARDS_JUMP;
 	}
 
-	return qtrue;
+	return true;
 }
 
 /*
@@ -584,18 +584,18 @@ static qboolean PM_CheckJump( void ) {
 PM_CheckWaterJump
 =============
 */
-static qboolean PM_CheckWaterJump( void ) {
+static bool PM_CheckWaterJump( void ) {
 	vec3_t spot;
 	int cont;
 	vec3_t flatforward;
 
 	if ( pm->ps->pm_time ) {
-		return qfalse;
+		return false;
 	}
 
 	// check for water jump
 	if ( pm->waterlevel != 2 ) {
-		return qfalse;
+		return false;
 	}
 
 	flatforward[0] = pml.forward[0];
@@ -607,13 +607,13 @@ static qboolean PM_CheckWaterJump( void ) {
 	spot[2] += 4;
 	cont = pm->pointcontents( spot, pm->ps->clientNum );
 	if ( !( cont & CONTENTS_SOLID ) ) {
-		return qfalse;
+		return false;
 	}
 
 	spot[2] += 16;
 	cont = pm->pointcontents( spot, pm->ps->clientNum );
 	if ( cont ) {
-		return qfalse;
+		return false;
 	}
 
 	// jump out of water
@@ -623,7 +623,7 @@ static qboolean PM_CheckWaterJump( void ) {
 	pm->ps->pm_flags |= PMF_TIME_WATERJUMP;
 	pm->ps->pm_time = 2000;
 
-	return qtrue;
+	return true;
 }
 
 //============================================================================
@@ -639,7 +639,7 @@ Flying out of the water
 static void PM_WaterJumpMove( void ) {
 	// waterjump has no control, but falls
 
-	PM_StepSlideMove( qtrue );
+	PM_StepSlideMove( true );
 
 	pm->ps->velocity[2] -= pm->ps->gravity * pml.frametime;
 	if ( pm->ps->velocity[2] < 0 ) {
@@ -727,7 +727,7 @@ static void PM_WaterMove( void ) {
 		VectorScale( pm->ps->velocity, vel, pm->ps->velocity );
 	}
 
-	PM_SlideMove( qfalse );
+	PM_SlideMove( false );
 }
 
 
@@ -791,7 +791,7 @@ static void PM_FlyMove( void ) {
 
 	PM_Accelerate( wishdir, wishspeed, pm_flyaccelerate );
 
-	PM_StepSlideMove( qfalse );
+	PM_StepSlideMove( false );
 }
 
 
@@ -853,13 +853,13 @@ static void PM_AirMove( void ) {
 	//this allows a player to use the grapple to pull himself
 	//over a ledge
 	if ( pm->ps->pm_flags & PMF_GRAPPLE_PULL ) {
-		PM_StepSlideMove( qtrue );
+		PM_StepSlideMove( true );
 	} else {
-		PM_SlideMove( qtrue );
+		PM_SlideMove( true );
 	}
 #endif
 
-	PM_StepSlideMove( qtrue );
+	PM_StepSlideMove( true );
 
 // Ridah, moved this down, so we use the actual movement direction
 	// set the movementDir so clients can rotate the legs for strafing
@@ -893,7 +893,7 @@ static void PM_GrappleMove( void ) {
 
 	VectorCopy(vel, pm->ps->velocity);
 
-	pml.groundPlane = qfalse;
+	pml.groundPlane = false;
 #endif
 }
 */
@@ -1086,7 +1086,7 @@ static void PM_WalkMove( void ) {
 		return;
 	}
 
-	PM_StepSlideMove( qfalse );
+	PM_StepSlideMove( false );
 
 // Ridah, moved this down, so we use the actual movement direction
 	// set the movementDir so clients can rotate the legs for strafing
@@ -1260,7 +1260,7 @@ static void PM_CrashLand( void ) {
 	// Ridah, only play this if coming down hard
 	if ( !pm->ps->legsTimer ) {
 		if ( pml.previous_velocity[2] < -220 ) {
-			BG_AnimScriptEvent( pm->ps, ANIM_ET_LAND, qfalse, qtrue );
+			BG_AnimScriptEvent( pm->ps, ANIM_ET_LAND, false, true );
 		}
 	}
 
@@ -1382,17 +1382,17 @@ static int PM_CorrectAllSolid( trace_t *trace ) {
 
 					pm->trace( trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->clientNum, pm->tracemask );
 					pml.groundTrace = *trace;
-					return qtrue;
+					return true;
 				}
 			}
 		}
 	}
 
 	pm->ps->groundEntityNum = ENTITYNUM_NONE;
-	pml.groundPlane = qfalse;
-	pml.walking = qfalse;
+	pml.groundPlane = false;
+	pml.walking = false;
 
-	return qfalse;
+	return false;
 }
 
 
@@ -1441,18 +1441,18 @@ static void PM_GroundTraceMissed( void ) {
 		//
 		if ( trace.fraction == 1.0 && !( pm->ps->pm_flags & PMF_LADDER ) ) {
 			if ( pm->cmd.forwardmove >= 0 ) {
-				BG_AnimScriptEvent( pm->ps, ANIM_ET_JUMP, qfalse, qtrue );
+				BG_AnimScriptEvent( pm->ps, ANIM_ET_JUMP, false, true );
 				pm->ps->pm_flags &= ~PMF_BACKWARDS_JUMP;
 			} else {
-				BG_AnimScriptEvent( pm->ps, ANIM_ET_JUMPBK, qfalse, qtrue );
+				BG_AnimScriptEvent( pm->ps, ANIM_ET_JUMPBK, false, true );
 				pm->ps->pm_flags |= PMF_BACKWARDS_JUMP;
 			}
 		}
 	}
 
 	pm->ps->groundEntityNum = ENTITYNUM_NONE;
-	pml.groundPlane = qfalse;
-	pml.walking = qfalse;
+	pml.groundPlane = false;
+	pml.walking = false;
 }
 
 
@@ -1482,8 +1482,8 @@ static void PM_GroundTrace( void ) {
 	// if the trace didn't hit anything, we are in free fall
 	if ( trace.fraction == 1.0 ) {
 		PM_GroundTraceMissed();
-		pml.groundPlane = qfalse;
-		pml.walking = qfalse;
+		pml.groundPlane = false;
+		pml.walking = false;
 		return;
 	}
 
@@ -1495,17 +1495,17 @@ static void PM_GroundTrace( void ) {
 		if ( !( pm->ps->pm_flags & PMF_LADDER ) ) {
 			// go into jump animation
 			if ( pm->cmd.forwardmove >= 0 ) {
-				BG_AnimScriptEvent( pm->ps, ANIM_ET_JUMP, qfalse, qfalse );
+				BG_AnimScriptEvent( pm->ps, ANIM_ET_JUMP, false, false );
 				pm->ps->pm_flags &= ~PMF_BACKWARDS_JUMP;
 			} else {
-				BG_AnimScriptEvent( pm->ps, ANIM_ET_JUMPBK, qfalse, qfalse );
+				BG_AnimScriptEvent( pm->ps, ANIM_ET_JUMPBK, false, false );
 				pm->ps->pm_flags |= PMF_BACKWARDS_JUMP;
 			}
 		}
 
 		pm->ps->groundEntityNum = ENTITYNUM_NONE;
-		pml.groundPlane = qfalse;
-		pml.walking = qfalse;
+		pml.groundPlane = false;
+		pml.walking = false;
 		return;
 	}
 
@@ -1517,13 +1517,13 @@ static void PM_GroundTrace( void ) {
 		// FIXME: if they can't slide down the slope, let them
 		// walk (sharp crevices)
 		pm->ps->groundEntityNum = ENTITYNUM_NONE;
-		pml.groundPlane = qtrue;
-		pml.walking = qfalse;
+		pml.groundPlane = true;
+		pml.walking = false;
 		return;
 	}
 
-	pml.groundPlane = qtrue;
-	pml.walking = qtrue;
+	pml.groundPlane = true;
+	pml.walking = true;
 
 	// hitting solid ground will end a waterjump
 	if ( pm->ps->pm_flags & PMF_TIME_WATERJUMP ) {
@@ -1599,7 +1599,7 @@ static void PM_SetWaterLevel( void ) {
 	// done.
 
 	// UNDERWATER
-	BG_UpdateConditionValue( pm->ps->clientNum, ANIM_COND_UNDERWATER, ( pm->waterlevel > 1 ), qtrue );
+	BG_UpdateConditionValue( pm->ps->clientNum, ANIM_COND_UNDERWATER, ( pm->waterlevel > 1 ), true );
 
 }
 
@@ -1675,15 +1675,15 @@ PM_Footsteps
 static void PM_Footsteps( void ) {
 	float bobmove, animGap;
 	int old;
-	qboolean footstep;
-	qboolean iswalking;
+	bool footstep;
+	bool iswalking;
 	int animResult = -1;
 
 	if ( pm->ps->eFlags & EF_DEAD ) {
 		return;
 	}
 
-	iswalking = qfalse;
+	iswalking = false;
 
 	//
 	// calculate speed and cycle to be used for
@@ -1694,7 +1694,7 @@ static void PM_Footsteps( void ) {
 
 	// mg42, always idle
 	if ( pm->ps->persistant[PERS_HWEAPON_USE] ) {
-		animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLE, qtrue );
+		animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLE, true );
 		//
 		return;
 	}
@@ -1703,9 +1703,9 @@ static void PM_Footsteps( void ) {
 	if ( pm->waterlevel > 1 ) {
 
 		if ( pm->ps->pm_flags & PMF_BACKWARDS_RUN ) {
-			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_SWIMBK, qtrue );
+			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_SWIMBK, true );
 		} else {
-			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_SWIM, qtrue );
+			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_SWIM, true );
 		}
 
 		return;
@@ -1715,11 +1715,11 @@ static void PM_Footsteps( void ) {
 	if ( pm->ps->groundEntityNum == ENTITYNUM_NONE ) {
 		if ( pm->ps->pm_flags & PMF_LADDER ) {             // on ladder
 			if ( pm->ps->velocity[2] >= 0 ) {
-				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_CLIMBUP, qtrue );
-				//BG_PlayAnimName( pm->ps, "BOTH_CLIMB", ANIM_BP_BOTH, qfalse, qtrue, qfalse );
+				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_CLIMBUP, true );
+				//BG_PlayAnimName( pm->ps, "BOTH_CLIMB", ANIM_BP_BOTH, false, true, false );
 			} else if ( pm->ps->velocity[2] < 0 )     {
-				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_CLIMBDOWN, qtrue );
-				//BG_PlayAnimName( pm->ps, "BOTH_CLIMB_DOWN", ANIM_BP_BOTH, qfalse, qtrue, qfalse );
+				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_CLIMBDOWN, true );
+				//BG_PlayAnimName( pm->ps, "BOTH_CLIMB_DOWN", ANIM_BP_BOTH, false, true, false );
 			}
 		}
 
@@ -1736,59 +1736,59 @@ static void PM_Footsteps( void ) {
 			return; // continue what they were doing last frame, until we stop
 		}
 		if ( pm->ps->pm_flags & PMF_DUCKED ) {
-			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLECR, qtrue );
+			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLECR, true );
 		}
 		if ( animResult < 0 ) {
-			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLE, qtrue );
+			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLE, true );
 		}
 		//
 		return;
 	}
 
 
-	footstep = qfalse;
+	footstep = false;
 
 	if ( pm->ps->pm_flags & PMF_DUCKED ) {
 		bobmove = 0.5;  // ducked characters bob much faster
 		if ( pm->ps->pm_flags & PMF_BACKWARDS_RUN ) {
-			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_WALKCRBK, qtrue );
+			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_WALKCRBK, true );
 		} else {
-			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_WALKCR, qtrue );
+			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_WALKCR, true );
 		}
 		// ducked characters never play footsteps
 	} else if ( pm->ps->pm_flags & PMF_BACKWARDS_RUN ) {
 		if ( !( pm->cmd.buttons & BUTTON_WALKING ) ) {
 			bobmove = 0.4;  // faster speeds bob faster
-			footstep = qtrue;
+			footstep = true;
 			// check for strafing
 			if ( pm->cmd.rightmove && !pm->cmd.forwardmove ) {
 				if ( pm->cmd.rightmove > 0 ) {
-					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFERIGHT, qtrue );
+					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFERIGHT, true );
 				} else {
-					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFELEFT, qtrue );
+					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFELEFT, true );
 				}
 			}
 			if ( animResult < 0 ) {   // if we havent found an anim yet, play the run
-				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_RUNBK, qtrue );
+				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_RUNBK, true );
 			}
 			if ( animResult < 0 ) {   // if we havent found an anim yet, play the run
-				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_WALKBK, qtrue );
+				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_WALKBK, true );
 			}
 		} else {
 			bobmove = 0.3;
 			// check for strafing
 			if ( pm->cmd.rightmove && !pm->cmd.forwardmove ) {
 				if ( pm->cmd.rightmove > 0 ) {
-					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFERIGHT, qtrue );
+					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFERIGHT, true );
 				} else {
-					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFELEFT, qtrue );
+					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFELEFT, true );
 				}
 			}
 			if ( animResult < 0 ) {   // if we havent found an anim yet, play the run
-				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_WALKBK, qtrue );
+				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_WALKBK, true );
 			}
 			if ( animResult < 0 ) {   // if we havent found an anim yet, play the run
-				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_RUNBK, qtrue );
+				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_RUNBK, true );
 			}
 		}
 
@@ -1796,48 +1796,48 @@ static void PM_Footsteps( void ) {
 
 		if ( !( pm->cmd.buttons & BUTTON_WALKING ) ) {
 			bobmove = 0.4;  // faster speeds bob faster
-			footstep = qtrue;
+			footstep = true;
 			// check for strafing
 			if ( pm->cmd.rightmove && !pm->cmd.forwardmove ) {
 				if ( pm->cmd.rightmove > 0 ) {
-					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFERIGHT, qtrue );
+					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFERIGHT, true );
 				} else {
-					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFELEFT, qtrue );
+					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFELEFT, true );
 				}
 			}
 			if ( animResult < 0 ) {   // if we havent found an anim yet, play the run
-				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_RUN, qtrue );
+				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_RUN, true );
 			}
 			if ( animResult < 0 ) {   // if we havent found an anim yet, play the run
-				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_WALK, qtrue );
+				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_WALK, true );
 			}
 		} else {
 			bobmove = 0.3;  // walking bobs slow
 			if ( pm->ps->aiChar != AICHAR_NONE ) {
-				footstep = qtrue;
-				iswalking = qtrue;
+				footstep = true;
+				iswalking = true;
 			} else {
-				footstep = qfalse;  // walking is quiet for the player
+				footstep = false;  // walking is quiet for the player
 			}
 			if ( pm->cmd.rightmove && !pm->cmd.forwardmove ) {
 				if ( pm->cmd.rightmove > 0 ) {
-					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFERIGHT, qtrue );
+					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFERIGHT, true );
 				} else {
-					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFELEFT, qtrue );
+					animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_STRAFELEFT, true );
 				}
 			}
 			if ( animResult < 0 ) {   // if we havent found an anim yet, play the run
-				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_WALK, qtrue );
+				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_WALK, true );
 			}
 			if ( animResult < 0 ) {   // if we havent found an anim yet, play the run
-				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_RUN, qtrue );
+				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_RUN, true );
 			}
 		}
 	}
 
 	// if no anim found yet, then just use the idle as default
 	if ( animResult < 0 ) {
-		animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLE, qtrue );
+		animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLE, true );
 	}
 
 	// check for footstep / splash sounds
@@ -1885,17 +1885,17 @@ static void PM_Footsteps( void ) {
 		old = pm->ps->bobCycle;
 
 		if ( pm->ps->aiChar == AICHAR_SUPERSOLDIER || pm->ps->aiChar == AICHAR_PROTOSOLDIER ) {
-			//iswalking = qfalse;
+			//iswalking = false;
 			bobmove = 0.4 * 0.75f;  // slow down footsteps for big guys
 		}
 
 		if ( pm->ps->aiChar == AICHAR_HEINRICH ) {
-			iswalking = qfalse;
+			iswalking = false;
 			bobmove = 0.4 * 1.3f;
 		}
 
 		if ( pm->ps->aiChar == AICHAR_HELGA ) {
-			iswalking = qfalse;
+			iswalking = false;
 			bobmove = 0.4 * 1.5f;
 		}
 
@@ -2027,7 +2027,7 @@ static void PM_BeginWeaponReload( int weapon ) {
 
 	default:
 		// DHM - Nerve :: override current animation (so reloading after firing will work)
-		BG_AnimScriptEvent( pm->ps, ANIM_ET_RELOAD, qfalse, qtrue );
+		BG_AnimScriptEvent( pm->ps, ANIM_ET_RELOAD, false, true );
 		break;
 	}
 
@@ -2055,9 +2055,9 @@ static void PM_BeginWeaponReload( int weapon ) {
 PM_BeginWeaponChange
 ===============
 */
-static void PM_BeginWeaponChange( int oldweapon, int newweapon, qboolean reload ) {  //----(SA)	modified to play 1st person alt-mode transition animations.
+static void PM_BeginWeaponChange( int oldweapon, int newweapon, bool reload ) {  //----(SA)	modified to play 1st person alt-mode transition animations.
 	int switchtime;
-	qboolean altswitch, showdrop;
+	bool altswitch, showdrop;
 
 	if ( newweapon < WP_NONE || newweapon >= WP_NUM_WEAPONS ) {
 		return;
@@ -2087,16 +2087,16 @@ static void PM_BeginWeaponChange( int oldweapon, int newweapon, qboolean reload 
 		return;
 	}
 
-	altswitch = (qboolean)( newweapon == weapAlts[oldweapon] );
+	altswitch = (bool)( newweapon == weapAlts[oldweapon] );
 
-	showdrop = qtrue;
+	showdrop = true;
 
 	if ( oldweapon == WP_GRENADE_LAUNCHER ||
 		 oldweapon == WP_GRENADE_PINEAPPLE ||
 		 oldweapon == WP_DYNAMITE ||
 		 oldweapon == WP_PANZERFAUST ) {
 		if ( !pm->ps->ammoclip[oldweapon] ) {  // you're empty, don't show grenade '0'
-			showdrop = qfalse;
+			showdrop = false;
 		}
 	}
 
@@ -2129,7 +2129,7 @@ static void PM_BeginWeaponChange( int oldweapon, int newweapon, qboolean reload 
 		}
 	}
 
-	BG_AnimScriptEvent( pm->ps, ANIM_ET_DROPWEAPON, qfalse, qfalse );
+	BG_AnimScriptEvent( pm->ps, ANIM_ET_DROPWEAPON, false, false );
 
 	if ( reload ) {
 		pm->ps->weaponstate = WEAPON_DROPPING_TORELOAD;
@@ -2242,10 +2242,10 @@ static void PM_FinishWeaponChange( void ) {
 	pm->ps->weaponTime += switchtime;
 
 	// make scripting aware of new weapon
-	BG_UpdateConditionValue( pm->ps->clientNum, ANIM_COND_WEAPON, newweapon, qtrue );
+	BG_UpdateConditionValue( pm->ps->clientNum, ANIM_COND_WEAPON, newweapon, true );
 
 	// play an animation
-	BG_AnimScriptEvent( pm->ps, ANIM_ET_RAISEWEAPON, qfalse, qfalse );
+	BG_AnimScriptEvent( pm->ps, ANIM_ET_RAISEWEAPON, false, false );
 
 	// alt weapon switch was played when switching away, just go into idle
 	if ( weapAlts[oldweapon] == newweapon ) {
@@ -2302,8 +2302,8 @@ PM_CheckforReload
 ==============
 */
 void PM_CheckForReload( int weapon ) {
-	qboolean reloadRequested;
-	qboolean doReload = qfalse;
+	bool reloadRequested;
+	bool doReload = false;
 	int clipWeap, ammoWeap;
 
 	if ( pm->noWeapClips ) { // no need to reload
@@ -2311,7 +2311,7 @@ void PM_CheckForReload( int weapon ) {
 	}
 
 	// user is forcing a reload (manual reload)
-	reloadRequested = (qboolean)( pm->cmd.wbuttons & WBUTTON_RELOAD );
+	reloadRequested = (bool)( pm->cmd.wbuttons & WBUTTON_RELOAD );
 
 	switch ( pm->ps->weaponstate ) {
 	case WEAPON_RAISING:
@@ -2339,9 +2339,9 @@ void PM_CheckForReload( int weapon ) {
 		case WP_SNIPERRIFLE:
 		case WP_FG42SCOPE:
 			if ( reloadRequested ) {
-				doReload = qtrue;
+				doReload = true;
 				if ( !( pm->ps->ammo[ammoWeap] ) ) { // no ammo left. when you switch out, don't try to reload
-					doReload = qfalse;
+					doReload = false;
 				}
 				PM_BeginWeaponChange( weapon, weapAlts[weapon], doReload );
 			}
@@ -2358,12 +2358,12 @@ void PM_CheckForReload( int weapon ) {
 		// don't allow a force reload if it won't have any effect (no more ammo reserves or full clip)
 		if ( pm->ps->ammo[ammoWeap] ) {
 			if ( pm->ps->ammoclip[clipWeap] < ammoTable[weapon].maxclip ) {
-				doReload = qtrue;
+				doReload = true;
 			}
 			if ( weapon == WP_AKIMBO ) {
 				// akimbo should also check Colt status
 				if ( pm->ps->ammoclip[BG_FindClipForWeapon( WP_COLT )] < ammoTable[BG_FindClipForWeapon( WP_COLT )].maxclip ) {
-					doReload = qtrue;
+					doReload = true;
 				}
 			}
 		}
@@ -2373,19 +2373,19 @@ void PM_CheckForReload( int weapon ) {
 		if ( pm->ps->ammo[ammoWeap] ) {         // and you have reserves
 			if ( weapon == WP_AKIMBO ) {    // if colt's got ammo, don't force reload yet (you know you've got it 'out' since you've got the akimbo selected
 				if ( !( pm->ps->ammoclip[WP_COLT] ) ) {
-					doReload = qtrue;
+					doReload = true;
 				}
 				// likewise.  however, you need to check if you've got the akimbo selected, since you could have the colt alone
 			} else if ( weapon == WP_COLT ) {   // weapon checking for reload is colt...
 				if ( pm->ps->weapon == WP_AKIMBO ) {    // you've got the akimbo selected...
 					if ( !( pm->ps->ammoclip[WP_AKIMBO] ) ) {   // and it's got no ammo either
-						doReload = qtrue;       // so reload
+						doReload = true;       // so reload
 					}
 				} else {     // single colt selected
-					doReload = qtrue;       // so reload
+					doReload = true;       // so reload
 				}
 			} else {
-				doReload = qtrue;
+				doReload = true;
 			}
 		}
 	}
@@ -2748,11 +2748,11 @@ static void PM_Weapon( void ) {
     }
     int addTime;
 	int ammoNeeded;
-	qboolean delayedFire;       //----(SA)  true if the delay time has just expired and this is the frame to send the fire event
+	bool delayedFire;       //----(SA)  true if the delay time has just expired and this is the frame to send the fire event
 	int aimSpreadScaleAdd;
 	int weapattackanim;
-	qboolean akimboFire;
-	qboolean gameReloading;
+	bool akimboFire;
+	bool gameReloading;
 
 	// don't allow attack until all buttons are up
 	if ( pm->ps->pm_flags & PMF_RESPAWNED ) {
@@ -2766,9 +2766,9 @@ static void PM_Weapon( void ) {
 #ifdef GAMEDLL
 	if ( g_reloading.integer )
 #endif
-	gameReloading = qtrue;
+	gameReloading = true;
 	else {
-		gameReloading = qfalse;
+		gameReloading = false;
 	}
 
 	// ignore if spectator
@@ -2870,7 +2870,7 @@ static void PM_Weapon( void ) {
 	}
 
 
-	delayedFire = qfalse;
+	delayedFire = false;
 
 	if ( pm->ps->weapon == WP_GRENADE_LAUNCHER || pm->ps->weapon == WP_GRENADE_PINEAPPLE || pm->ps->weapon == WP_DYNAMITE ) {
 		// (SA) AI's don't set grenadeTimeLeft on +attack, so I don't check for (pm->ps->aiChar) here
@@ -2917,7 +2917,7 @@ static void PM_Weapon( void ) {
 		if ( !( pm->cmd.buttons & BUTTON_ATTACK ) ) { //----(SA)	modified
 			if ( pm->ps->weaponDelay == ammoTable[pm->ps->weapon].fireDelayTime ) {
 				// released fire button.  Fire!!!
-				BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, qfalse, qtrue );
+				BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, false, true );
 			}
 		} else {
 			return;
@@ -2929,14 +2929,14 @@ if ( pm->ps->weaponDelay > 0 ) {
 	pm->ps->weaponDelay -= pml.msec;
 	if ( pm->ps->weaponDelay <= 0 ) {
 		pm->ps->weaponDelay = 0;
-		delayedFire = qtrue;            // weapon delay has expired.  Fire this frame
+		delayedFire = true;            // weapon delay has expired.  Fire this frame
 
 		// double check the player is still holding the fire button down for these weapons
 		// so you don't get a delayed "non-fire" (fire hit and released, then shot fires)
 		switch ( pm->ps->weapon ) {
 		case WP_VENOM:
 			if ( pm->ps->weaponstate == WEAPON_FIRING ) {
-				delayedFire = qfalse;
+				delayedFire = false;
 			}
 			break;
 		default:
@@ -2967,7 +2967,7 @@ if ( pm->ps->weaponTime > 0 ) {
 					pm->ps->weaponTime = 0;
 				}
 			} else if (!(pm->cmd.buttons & BUTTON_ATTACK)) {
-				pm->ps->releasedFire = qtrue;
+				pm->ps->releasedFire = true;
 			}
 		} else if ( pm->ps->weapon == WP_COLT ) {
 			if ( pm->ps->releasedFire ) {
@@ -2975,7 +2975,7 @@ if ( pm->ps->weaponTime > 0 ) {
 					pm->ps->weaponTime = 0;
 				}
 			} else if (!(pm->cmd.buttons & BUTTON_ATTACK)) {
-				pm->ps->releasedFire = qtrue;
+				pm->ps->releasedFire = true;
 			}
 		} else if ( pm->ps->weapon == WP_SILENCER ) {
 			if ( pm->ps->releasedFire ) {
@@ -2983,7 +2983,7 @@ if ( pm->ps->weaponTime > 0 ) {
 					pm->ps->weaponTime = 0;
 				}
 			} else if (!(pm->cmd.buttons & BUTTON_ATTACK)) {
-				pm->ps->releasedFire = qtrue;
+				pm->ps->releasedFire = true;
 			}
 		}
 */
@@ -3002,7 +3002,7 @@ if ( pm->ps->weaponTime > 0 ) {
 				pm->ps->weaponTime = 0;
 			}
 		} else if ( !( pm->cmd.buttons & BUTTON_ATTACK ) && ( pm->ps->weaponTime >= 50 ) ) {
-			pm->ps->releasedFire = qtrue;
+			pm->ps->releasedFire = true;
 		}
 	} else if ( pm->ps->weapon == WP_COLT ) {
 		if ( pm->ps->releasedFire ) {
@@ -3010,7 +3010,7 @@ if ( pm->ps->weaponTime > 0 ) {
 				pm->ps->weaponTime = 0;
 			}
 		} else if ( !( pm->cmd.buttons & BUTTON_ATTACK ) && ( pm->ps->weaponTime >= 100 ) ) {
-			pm->ps->releasedFire = qtrue;
+			pm->ps->releasedFire = true;
 		}
 	}
 }
@@ -3026,7 +3026,7 @@ if ( pm->ps->weaponTime > 0 ) {
 // TTimo gcc: suggest parentheses around && within ||
 if ( pm->ps->weaponTime <= 0 || ( !weaponstateFiring && pm->ps->weaponDelay <= 0 ) ) {
 	if ( pm->ps->weapon != pm->cmd.weapon ) {
-		PM_BeginWeaponChange( pm->ps->weapon, pm->cmd.weapon, qfalse );     //----(SA)	modified
+		PM_BeginWeaponChange( pm->ps->weapon, pm->cmd.weapon, false );     //----(SA)	modified
 	}
 }
 
@@ -3136,7 +3136,7 @@ default:
 	if ( !weaponstateFiring ) {
 		pm->ps->weaponDelay = ammoTable[pm->ps->weapon].fireDelayTime;          // delay so the weapon can get up into position before firing (and showing the flash)
 	} else {
-		BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, qfalse, qtrue );
+		BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, false, true );
 	}
 	break;
 	// machineguns should continue the anim, rather than start each fire
@@ -3154,7 +3154,7 @@ case WP_FG42SCOPE:
 			pm->ps->weaponDelay = ammoTable[pm->ps->weapon].fireDelayTime;          // delay so the weapon can get up into position before firing (and showing the flash)
 		}
 	} else {
-		BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, qtrue, qtrue );
+		BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, true, true );
 	}
 	break;
 case WP_PANZERFAUST:
@@ -3172,18 +3172,18 @@ case WP_GARAND:
 //					PM_AddEvent( EV_SPINUP );
 		pm->ps->weaponDelay = ammoTable[pm->ps->weapon].fireDelayTime;
 	} else {
-		BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, qfalse, qtrue );
+		BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, false, true );
 	}
 	break;
 // melee
 case WP_KNIFE:
 	if ( !delayedFire ) {
-		BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, qfalse, qfalse );
+		BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, false, false );
 	}
 	break;
 case WP_GAUNTLET:
 	if ( !delayedFire ) {
-		BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, qfalse, qfalse );
+		BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, false, false );
 	}
 	break;
 // throw
@@ -3192,7 +3192,7 @@ case WP_GRENADE_LAUNCHER:
 case WP_GRENADE_PINEAPPLE:
 	if ( !delayedFire ) {
 		if ( pm->ps->aiChar ) {         // ai characters go into their regular animation setup
-			BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, qtrue, qtrue );
+			BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, true, true );
 		} else {                    // the player pulls the fuse and holds the hot potato
 			if ( PM_WeaponAmmoAvailable( pm->ps->weapon ) ) {
 				if ( pm->ps->weapon == WP_DYNAMITE ) {
@@ -3221,20 +3221,20 @@ ammoNeeded = ammoTable[pm->ps->weapon].uses;
 
 if ( pm->ps->weapon ) {
 	int ammoAvailable;
-	qboolean reloadingW, playswitchsound = qtrue;
+	bool reloadingW, playswitchsound = true;
 
 	ammoAvailable = PM_WeaponAmmoAvailable( pm->ps->weapon );
 
 	if ( ammoNeeded > ammoAvailable ) {
 
-		reloadingW = (qboolean)( ammoNeeded <= pm->ps->ammo[ BG_FindAmmoForWeapon((weapon_t)( pm->ps->weapon ))] ); // you have ammo for this, just not in the clip
+		reloadingW = (bool)( ammoNeeded <= pm->ps->ammo[ BG_FindAmmoForWeapon((weapon_t)( pm->ps->weapon ))] ); // you have ammo for this, just not in the clip
 
 		if ( pm->ps->eFlags & EF_MELEE_ACTIVE ) {   // not going to be allowed to reload if holding a chair
-			reloadingW = qfalse;
+			reloadingW = false;
 		}
 
 		if ( pm->ps->weapon == WP_SNOOPERSCOPE ) {
-			reloadingW = qfalse;
+			reloadingW = false;
 		}
 
 		switch ( pm->ps->weapon ) {
@@ -3244,14 +3244,14 @@ if ( pm->ps->weapon ) {
 		case WP_DYNAMITE:
 		case WP_GRENADE_LAUNCHER:
 		case WP_GRENADE_PINEAPPLE:
-			playswitchsound = qfalse;
+			playswitchsound = false;
 			break;
 
 			// some weapons not allowed to reload.  must switch back to primary first
 		case WP_SNOOPERSCOPE:
 		case WP_SNIPERRIFLE:
 		case WP_FG42SCOPE:
-			reloadingW = qfalse;
+			reloadingW = false;
 			break;
 		}
 
@@ -3356,7 +3356,7 @@ if ( pm->ps->weapon == WP_AKIMBO ) {
 
 
 // RF
-pm->ps->releasedFire = qfalse;
+pm->ps->releasedFire = false;
 pm->ps->lastFireTime = pm->cmd.serverTime;
 
 
@@ -3653,7 +3653,7 @@ PM_CheckLadderMove
   Checks to see if we are on a ladder
 ================
 */
-qboolean ladderforward;
+bool ladderforward;
 vec3_t laddervec;
 
 void PM_CheckLadderMove( void ) {
@@ -3662,7 +3662,7 @@ void PM_CheckLadderMove( void ) {
 	trace_t trace;
 	float tracedist;
 	#define TRACE_LADDER_DIST   48.0
-	qboolean wasOnLadder;
+	bool wasOnLadder;
 
 	if ( pm->ps->pm_time ) {
 		return;
@@ -3679,9 +3679,9 @@ void PM_CheckLadderMove( void ) {
 
 	wasOnLadder = ( ( pm->ps->pm_flags & PMF_LADDER ) != 0 );
 
-	pml.ladder = qfalse;
+	pml.ladder = false;
 	pm->ps->pm_flags &= ~PMF_LADDER;    // clear ladder bit
-	ladderforward = qfalse;
+	ladderforward = false;
 
 	/*
 	if (pm->ps->eFlags & EF_DEAD) {	// dead bodies should fall down ladders
@@ -3695,8 +3695,8 @@ void PM_CheckLadderMove( void ) {
 	*/
 	if ( pm->ps->stats[STAT_HEALTH] <= 0 ) {
 		pm->ps->groundEntityNum = ENTITYNUM_NONE;
-		pml.groundPlane = qfalse;
-		pml.walking = qfalse;
+		pml.groundPlane = false;
+		pml.walking = false;
 		return;
 	}
 
@@ -3709,7 +3709,7 @@ void PM_CheckLadderMove( void ) {
 	VectorMA( pm->ps->origin, tracedist, flatforward, spot );
 	pm->trace( &trace, pm->ps->origin, pm->mins, pm->maxs, spot, pm->ps->clientNum, pm->tracemask );
 	if ( ( trace.fraction < 1 ) && ( trace.surfaceFlags & SURF_LADDER ) ) {
-		pml.ladder = qtrue;
+		pml.ladder = true;
 	}
 /*
 	if (!pml.ladder && DotProduct(pm->ps->velocity, pml.forward) < 0) {
@@ -3723,7 +3723,7 @@ void PM_CheckLadderMove( void ) {
 		pm->trace (&trace, pm->ps->origin, pm->mins, pm->maxs, spot, pm->ps->clientNum, pm->tracemask);
 		if ((trace.fraction < 1) && (trace.surfaceFlags & SURF_LADDER))
 		{
-			pml.ladder = qtrue;
+			pml.ladder = true;
 		}
 	}
 */
@@ -3734,7 +3734,7 @@ void PM_CheckLadderMove( void ) {
 	if ( pml.ladder && !pml.walking && ( trace.fraction * tracedist > 1.0 ) ) {
 		vec3_t mins;
 		// if we are only just on the ladder, don't do this yet, or it may throw us back off the ladder
-		pml.ladder = qfalse;
+		pml.ladder = false;
 		VectorCopy( pm->mins, mins );
 		mins[2] = -1;
 		VectorMA( pm->ps->origin, -tracedist, laddervec, spot );
@@ -3742,14 +3742,14 @@ void PM_CheckLadderMove( void ) {
 		if ( ( trace.fraction < 1 ) && ( trace.surfaceFlags & SURF_LADDER ) ) {
 			// if AI, then be more stringent on their viewangles
 			if ( pm->ps->aiChar && ( DotProduct( trace.plane.normal, pml.forward ) > -0.9 ) ) {
-				pml.ladder = qfalse;
+				pml.ladder = false;
 			} else {
-				ladderforward = qtrue;
-				pml.ladder = qtrue;
+				ladderforward = true;
+				pml.ladder = true;
 				pm->ps->pm_flags |= PMF_LADDER; // set ladder bit
 			}
 		} else {
-			pml.ladder = qfalse;
+			pml.ladder = false;
 		}
 	} else if ( pml.ladder ) {
 		pm->ps->pm_flags |= PMF_LADDER; // set ladder bit
@@ -3760,18 +3760,18 @@ void PM_CheckLadderMove( void ) {
 		if ( pml.walking ) {
 			// we are currently on the ground, only go up and prevent X/Y if we are pushing forwards
 			if ( pm->cmd.forwardmove <= 0 ) {
-				pml.ladder = qfalse;
+				pml.ladder = false;
 			}
 		}
 	}
 
 	// if we have just dismounted the ladder at the top, play dismount
 	if ( !pml.ladder && wasOnLadder && pm->ps->velocity[2] > 0 ) {
-		BG_AnimScriptEvent( pm->ps, ANIM_ET_CLIMB_DISMOUNT, qfalse, qfalse );
+		BG_AnimScriptEvent( pm->ps, ANIM_ET_CLIMB_DISMOUNT, false, false );
 	}
 	// if we have just mounted the ladder
 	if ( pml.ladder && !wasOnLadder && pm->ps->velocity[2] < 0 ) {    // only play anim if going down ladder
-		BG_AnimScriptEvent( pm->ps, ANIM_ET_CLIMB_MOUNT, qfalse, qfalse );
+		BG_AnimScriptEvent( pm->ps, ANIM_ET_CLIMB_MOUNT, false, false );
 	}
 }
 
@@ -3857,7 +3857,7 @@ void PM_LadderMove( void ) {
 
 //Com_Printf("vel[2] = %i\n", (int)pm->ps->velocity[2] );
 
-	PM_StepSlideMove( qfalse );  // no gravity while going up ladder
+	PM_StepSlideMove( false );  // no gravity while going up ladder
 
 	// always point legs forward
 	pm->ps->movementDir = 0;
@@ -3937,7 +3937,7 @@ void trap_SnapVector( float *v );
 
 void PmoveSingle( pmove_t *pmove ) {
 	// Ridah
-	qboolean isDummy;
+	bool isDummy;
 
 	isDummy = ( ( pmove->ps->eFlags & EF_DUMMY_PMOVE ) != 0 );
 	// done.

@@ -71,7 +71,7 @@ void P_DamageFeedback( gentity_t *player ) {
 		client->ps.damagePitch = 255;
 		client->ps.damageYaw = 255;
 
-		client->damage_fromWorld = qfalse;
+		client->damage_fromWorld = false;
 	} else {
 		vectoangles( client->damage_from, angles );
 		client->ps.damagePitch = angles[PITCH] / 360.0 * 256;
@@ -106,7 +106,7 @@ Check for lava / slime contents and drowning
 =============
 */
 void P_WorldEffects( gentity_t *ent ) {
-	qboolean envirosuit;
+	bool envirosuit;
 	int waterlevel;
 
 	if ( ent->client->noclip ) {
@@ -205,7 +205,7 @@ void P_WorldEffects( gentity_t *ent ) {
 	//
 	// check for burning from flamethrower
 	//
-    if (ent->s.onFireEnd > level.time && (qtrue)) {
+    if (ent->s.onFireEnd > level.time && (true)) {
         gentity_t *attacker;
 
         if ( ent->health > 0 ) {
@@ -442,33 +442,33 @@ DOOM_SAVE_CALLBACK("SpectatorThink", SpectatorThink);
 =================
 ClientInactivityTimer
 
-Returns qfalse if the client is dropped
+Returns false if the client is dropped
 =================
 */
-qboolean ClientInactivityTimer( gclient_t *client ) {
+bool ClientInactivityTimer( gclient_t *client ) {
 	if ( !g_inactivity.integer ) {
 		// give everyone some time, so if the operator sets g_inactivity during
 		// gameplay, everyone isn't kicked
 		client->inactivityTime = level.time + 60 * 1000;
-		client->inactivityWarning = qfalse;
+		client->inactivityWarning = false;
 	} else if ( client->pers.cmd.forwardmove ||
 				client->pers.cmd.rightmove ||
 				client->pers.cmd.upmove ||
 				( client->pers.cmd.wbuttons & WBUTTON_ATTACK2 ) ||
 				( client->pers.cmd.buttons & BUTTON_ATTACK ) ) {
 		client->inactivityTime = level.time + g_inactivity.integer * 1000;
-		client->inactivityWarning = qfalse;
+		client->inactivityWarning = false;
 	} else if ( !client->pers.localClient ) {
 		if ( level.time > client->inactivityTime ) {
 			trap_DropClient( client - level.clients, "Dropped due to inactivity" );
-			return qfalse;
+			return false;
 		}
 		if ( level.time > client->inactivityTime - 10000 && !client->inactivityWarning ) {
-			client->inactivityWarning = qtrue;
+			client->inactivityWarning = true;
 			trap_SendServerCommand( client - level.clients, "cp \"Ten seconds until inactivity drop!\n\"" );
 		}
 	}
-	return qtrue;
+	return true;
 }
 DOOM_SAVE_CALLBACK("ClientInactivityTimer", ClientInactivityTimer);
 
@@ -586,7 +586,7 @@ void ClientEvents( gentity_t *ent, int oldEventSequence ) {
 	vec3_t dir;
 	int stunTime;           //----(SA)	added
 //	vec3_t		origin, angles;
-//	qboolean	fired;
+//	bool	fired;
 //	gitem_t		*item;
 //	gentity_t	*drop;
 
@@ -755,7 +755,7 @@ void SendPendingPredictableEvents( playerState_t *ps ) {
 		// create temporary entity for event
 		t = G_TempEntity( ps->origin, event );
 		number = t->s.number;
-		BG_PlayerStateToEntityState( ps, &t->s, qtrue );
+		BG_PlayerStateToEntityState( ps, &t->s, true );
 		t->s.number = number;
 		t->s.eType = ET_EVENTS + event;
 		t->s.eFlags |= EF_PLAYER_EVENT;
@@ -988,7 +988,7 @@ void ClientThink_real( gentity_t *ent ) {
     }
 
     // set parachute anim condition flag
-	BG_UpdateConditionValue( ent->s.number, ANIM_COND_PARACHUTE, ( ent->flags & FL_PARACHUTE ) != 0, qfalse );
+	BG_UpdateConditionValue( ent->s.number, ANIM_COND_PARACHUTE, ( ent->flags & FL_PARACHUTE ) != 0, false );
 
 	// all playing clients are assumed to be in combat mode
 	if ( !client->ps.aiChar ) {
@@ -1034,11 +1034,11 @@ void ClientThink_real( gentity_t *ent ) {
 
 	pm.noWeapClips = ( g_dmflags.integer & DF_NO_WEAPRELOAD ) > 0;
 	if ( ent->aiCharacter ) {
-		pm.noWeapClips = qtrue; // ensure AI characters don't use clips if they're not supposed to.
+		pm.noWeapClips = true; // ensure AI characters don't use clips if they're not supposed to.
 	}
     // Ridah
     //	if (ent->r.svFlags & SVF_NOFOOTSTEPS)
-    //		pm.noFootsteps = qtrue;
+    //		pm.noFootsteps = true;
 
     VectorCopy( client->ps.origin, client->oldOrigin );
 
@@ -1065,7 +1065,7 @@ void ClientThink_real( gentity_t *ent ) {
 			vec3_t kvel;
 			vec3_t forward;
 			float angle = 0.0f;   // TTimo: init
-			qboolean bogus = qfalse;
+			bool bogus = false;
 
 			// NE
 			if ( ( monsterslick & SURF_MONSLICK_N ) && ( monsterslick & SURF_MONSLICK_E ) ) {
@@ -1100,7 +1100,7 @@ void ClientThink_real( gentity_t *ent ) {
 				angle = 180;
 			} else
 			{
-				bogus = qtrue;
+				bogus = true;
 			}
 
 			if ( !bogus ) {
@@ -1109,7 +1109,7 @@ void ClientThink_real( gentity_t *ent ) {
 					orientation_t   or;
 					trace_t tr;
 					vec3_t start, end;
-					qboolean slide = qtrue;
+					bool slide = true;
 
 					if ( trap_GetTag( ent->s.number, "tag_head", &or ) ) {
 						VectorCopy( or.origin, start );
@@ -1120,7 +1120,7 @@ void ClientThink_real( gentity_t *ent ) {
 
 						if ( tr.contents & CONTENTS_SOLID ) {
 							//VectorClear (pm.ps->velocity);
-							slide = qfalse;
+							slide = false;
 							// stop checking for slicks
 							ent->flags |= FL_NO_MONSTERSLICK;
 						}
@@ -1229,7 +1229,7 @@ void ClientThink_real( gentity_t *ent ) {
 	G_CheckForCursorHints( ent ); //----(SA)	added
 
 	// get this for the clients
-	ent->s.animMovetype = BG_GetConditionValue( ent->s.number, ANIM_COND_MOVETYPE, qtrue );
+	ent->s.animMovetype = BG_GetConditionValue( ent->s.number, ANIM_COND_MOVETYPE, true );
 
 	// keep a held chair prop in its idle state
 	if ( ent->melee ) {
@@ -1258,7 +1258,7 @@ void ClientThink_real( gentity_t *ent ) {
     }
 
     if (!(ent->client->ps.eFlags & EF_FIRING)) {
-        client->fireHeld = qfalse;      // for grapple
+        client->fireHeld = false;      // for grapple
     }
 
 //

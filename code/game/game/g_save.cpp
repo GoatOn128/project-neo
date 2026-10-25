@@ -786,7 +786,7 @@ void ReadEntity( fileHandle_t f, gentity_t *ent, int size ) {
 		if ( ent->teammaster == ent || !ent->teammaster ) {
 			if ( ent->moverState == MOVER_POS1ROTATE || ent->moverState == MOVER_POS1 ) {
 				// closed areaportal
-				trap_AdjustAreaPortalState( ent, qfalse );
+				trap_AdjustAreaPortalState( ent, false );
 			} else {    // must be open
 				// portals are always opened before the mover starts to open, so we must move
 				// it back to the start position, link, set portals, then move it back
@@ -795,7 +795,7 @@ void ReadEntity( fileHandle_t f, gentity_t *ent, int size ) {
 				// link it at original position
 				trap_LinkEntity( ent );
 				// set portals
-				trap_AdjustAreaPortalState( ent, qtrue );
+				trap_AdjustAreaPortalState( ent, true );
 				// put it back
 				*ent = backup2;
 				trap_LinkEntity( ent );
@@ -805,12 +805,12 @@ void ReadEntity( fileHandle_t f, gentity_t *ent, int size ) {
 
 	// check for blocking AAS at save time
 	if ( ent->AASblocking ) {
-		G_SetAASBlockingEntity( ent, qtrue );
+		G_SetAASBlockingEntity( ent, true );
 	}
 
 	// check for this being a tagconnect entity
 	if ( ent->tagName && ent->tagParent ) {   // the parent might not be there yet
-		G_ProcessTagConnect( ent, qfalse );
+		G_ProcessTagConnect( ent, false );
 	}
 
 	// if this is a camera, then make it the current global camera (silly global variables..)
@@ -940,7 +940,7 @@ static char infoString[SAVE_INFOSTRING_LENGTH];
 ===============
 G_SaveGame
 
-  returns qtrue if successful
+  returns true if successful
 
   TODO: have G_SaveWrite return the number of byte's written, so if it doesn't
   succeed, we can abort the save, and not save the file. This means we should
@@ -948,7 +948,7 @@ G_SaveGame
   so full disks don't result in lost saved games.
 ===============
 */
-qboolean G_SaveGame( char *username ) {
+bool G_SaveGame( char *username ) {
 	char filename[MAX_QPATH];
 	char mapstr[MAX_QPATH];
 	char leveltime[MAX_QPATH];
@@ -962,14 +962,14 @@ qboolean G_SaveGame( char *username ) {
     int playtime, minutes;
 
     //if (reloading)
-	//	return qtrue;	// actually this should be qtrue, but we should make it silent during reloading
+	//	return true;	// actually this should be true, but we should make it silent during reloading
 
 	if (g_entities[0].health <= 0 || level.intermissiontime) { // save only during play
-		return qtrue;
+		return true;
 	}
 
 	if ( g_gametype.integer != GT_SINGLE_PLAYER ) {    // don't allow saves in MP
-		return qtrue;
+		return true;
 	}
 
 	G_DPrintf( "G_SaveGame '%s'\n", username );
@@ -985,7 +985,7 @@ qboolean G_SaveGame( char *username ) {
 	for ( i = 0; i < strlen( username ); i++ ) {
 		if ( !Q_isforfilename( username[i] ) && username[i] != '\\' ) { // (allow '\\' so games can be saved in subdirs)
 			G_Printf( "G_SaveGame: '%s'.  Invalid character (%c) in filename. Must use alphanumeric characters only.\n", username, username[i] );
-			return qtrue;
+			return true;
 		}
 	}
 
@@ -1170,7 +1170,7 @@ qboolean G_SaveGame( char *username ) {
 	if ( ( len = trap_FS_FOpenFile( filename, &f, FS_READ ) ) != saveByteCount ) {
 		trap_FS_FCloseFile( f );
 		G_SaveWriteError();
-		return qfalse;
+		return false;
 	}
 
 	trap_FS_FCloseFile( f );
@@ -1183,7 +1183,7 @@ qboolean G_SaveGame( char *username ) {
 	if ( ( len = trap_FS_FOpenFile( mapstr, &f, FS_READ ) ) != saveByteCount ) {
 		trap_FS_FCloseFile( f );
 		G_SaveWriteError();
-		return qfalse;
+		return false;
 	}
 
 	trap_FS_FCloseFile( f );
@@ -1192,7 +1192,7 @@ qboolean G_SaveGame( char *username ) {
 
 #endif
 
-	return qtrue;
+	return true;
 }
 DOOM_SAVE_CALLBACK("G_SaveGame", G_SaveGame);
 
@@ -1212,7 +1212,7 @@ void G_LoadGame( char *filename ) {
     bool clientRecords[MAX_CLIENTS]{};
 
     qtime_t tm;
-    qboolean serverEntityUpdate = qfalse;
+    bool serverEntityUpdate = false;
 
 	if ( g_gametype.integer != GT_SINGLE_PLAYER ) {    // don't allow loads in MP
 		return;
@@ -1384,7 +1384,7 @@ void G_LoadGame( char *filename ) {
 		}
 		if ( i >= level.num_entities ) {  // notify server
             level.num_entities = i + 1;
-            serverEntityUpdate = qtrue;
+            serverEntityUpdate = true;
         }
 		ent = &g_entities[i];
 		ReadEntity( f, ent, size );
@@ -1406,7 +1406,7 @@ void G_LoadGame( char *filename ) {
 		memset( ent, 0, sizeof( *ent ) );
 		ent->classname = "freed";
 		ent->freetime = level.time;
-		ent->inuse = qfalse;
+		ent->inuse = false;
 	}
 
     const int restoredActors = G_DoomSavePrepareClients();
@@ -1580,7 +1580,7 @@ DOOM_SAVE_CALLBACK("PersReadEntity", PersReadEntity);
 ===============
 G_SavePersistant
 
-  returns qtrue if successful
+  returns true if successful
 
   NOTE: only saves the local player's data, doesn't support AI characters
 
@@ -1590,7 +1590,7 @@ G_SavePersistant
   so full disks don't result in lost saved games.
 ===============
 */
-qboolean G_SavePersistant( char *nextmap ) {
+bool G_SavePersistant( char *nextmap ) {
 	char filename[MAX_QPATH];
 	fileHandle_t f;
 	int persid;
@@ -1626,7 +1626,7 @@ qboolean G_SavePersistant( char *nextmap ) {
 	if ( trap_FS_FOpenFile( filename, &f, FS_READ ) < saveByteCount ) {
 		trap_FS_FCloseFile( f );
 		G_SaveWriteError();
-		return qfalse;
+		return false;
 	}
 	trap_FS_FCloseFile( f );
 
@@ -1638,11 +1638,11 @@ qboolean G_SavePersistant( char *nextmap ) {
 	if ( trap_FS_FOpenFile( filename, &f, FS_READ ) < saveByteCount ) {
 		trap_FS_FCloseFile( f );
 		G_SaveWriteError();
-		return qfalse;
+		return false;
 	}
 	trap_FS_FCloseFile( f );
 
-	return qtrue;
+	return true;
 }
 DOOM_SAVE_CALLBACK("G_SavePersistant", G_SavePersistant);
 

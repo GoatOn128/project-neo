@@ -258,10 +258,10 @@ DOOM_SAVE_CALLBACK("G_RotatePoint", G_RotatePoint);
 ==================
 G_TryPushingEntity
 
-Returns qfalse if the move is blocked
+Returns false if the move is blocked
 ==================
 */
-qboolean    G_TryPushingEntity( gentity_t *check, gentity_t *pusher, vec3_t move, vec3_t amove ) {
+bool    G_TryPushingEntity( gentity_t *check, gentity_t *pusher, vec3_t move, vec3_t amove ) {
 	vec3_t org, org2, move2;
 	gentity_t   *block;
 	vec3_t matrix[3], transpose[3];
@@ -274,7 +274,7 @@ qboolean    G_TryPushingEntity( gentity_t *check, gentity_t *pusher, vec3_t move
 	if ( ( pusher->s.eFlags & EF_MOVER_STOP ) &&
 		 check->s.groundEntityNum != pusher->s.number ) {
 		//pusher->s.eFlags |= EF_MOVER_BLOCKED;
-		return qfalse;
+		return false;
 	}
 
 	// save off the old position
@@ -331,7 +331,7 @@ qboolean    G_TryPushingEntity( gentity_t *check, gentity_t *pusher, vec3_t move
 		} else {
 			VectorCopy( check->s.pos.trBase, check->r.currentOrigin );
 		}
-		return qtrue;
+		return true;
 	}
 
 	// RF, if still not valid, move them around to see if we can find a good spot
@@ -362,7 +362,7 @@ qboolean    G_TryPushingEntity( gentity_t *check, gentity_t *pusher, vec3_t move
 									} else {
 										VectorCopy( check->s.pos.trBase, check->r.currentOrigin );
 									}
-									return qtrue;
+									return true;
 								}
 							}
 					}
@@ -389,11 +389,11 @@ qboolean    G_TryPushingEntity( gentity_t *check, gentity_t *pusher, vec3_t move
 	if ( !block ) {
 		check->s.groundEntityNum = -1;
 		pushed_p--;
-		return qtrue;
+		return true;
 	}
 
 	// blocked
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("G_TryPushingEntity", G_TryPushingEntity);
 
@@ -403,10 +403,10 @@ G_MoverPush
 
 Objects need to be moved back on a failed push,
 otherwise riders would continue to slide.
-If qfalse is returned, *obstacle will be the blocking entity
+If false is returned, *obstacle will be the blocking entity
 ============
 */
-qboolean G_MoverPush( gentity_t *pusher, vec3_t move, vec3_t amove, gentity_t **obstacle ) {
+bool G_MoverPush( gentity_t *pusher, vec3_t move, vec3_t amove, gentity_t **obstacle ) {
 	int i, e;
 	gentity_t   *check;
 	vec3_t mins, maxs;
@@ -552,7 +552,7 @@ qboolean G_MoverPush( gentity_t *pusher, vec3_t move, vec3_t amove, gentity_t **
 			trap_LinkEntity( check );
 		}
 		// movement failed
-		return qfalse;
+		return false;
 	}
 	// link all entities at their final position
 	for ( e = 0; e < moveEntities; e++ ) {
@@ -561,7 +561,7 @@ qboolean G_MoverPush( gentity_t *pusher, vec3_t move, vec3_t amove, gentity_t **
 		trap_LinkEntity( check );
 	}
 	// movement was successfull
-	return qtrue;
+	return true;
 }
 DOOM_SAVE_CALLBACK("G_MoverPush", G_MoverPush);
 
@@ -691,14 +691,14 @@ SetMoverState
 void SetMoverState( gentity_t *ent, moverState_t moverState, int time ) {
 	vec3_t delta;
 	float f;
-	qboolean kicked = qfalse, soft = qfalse;
+	bool kicked = false, soft = false;
 
-	kicked = (qboolean)( ent->flags & FL_KICKACTIVATE );
-	soft = (qboolean)( ent->flags & FL_SOFTACTIVATE );    //----(SA)	added
+	kicked = (bool)( ent->flags & FL_KICKACTIVATE );
+	soft = (bool)( ent->flags & FL_SOFTACTIVATE );    //----(SA)	added
 
 	if ( ent->flags & FL_DOORNOISE ) { // this door is always 'regular' open
-		kicked = qfalse;
-		soft = qfalse;
+		kicked = false;
+		soft = false;
 	}
 
 	ent->moverState     = moverState;
@@ -708,7 +708,7 @@ void SetMoverState( gentity_t *ent, moverState_t moverState, int time ) {
 	case MOVER_POS1:
 		VectorCopy( ent->pos1, ent->s.pos.trBase );
 		ent->s.pos.trType = TR_STATIONARY;
-		ent->active = qfalse;
+		ent->active = false;
 		break;
 	case MOVER_POS2:
 		VectorCopy( ent->pos2, ent->s.pos.trBase );
@@ -798,7 +798,7 @@ void SetMoverState( gentity_t *ent, moverState_t moverState, int time ) {
 		}
 		VectorScale( ent->s.apos.trBase, -f, ent->s.apos.trDelta );
 		ent->s.apos.trType = TR_LINEAR_STOP;
-		ent->active = qfalse;
+		ent->active = false;
 		break;
 
 
@@ -809,9 +809,9 @@ void SetMoverState( gentity_t *ent, moverState_t moverState, int time ) {
 		// if this entity is blocking AAS, then update it
 		if ( ent->AASblocking && ent->s.pos.trType == TR_STATIONARY ) {
 			// reset old blocking areas
-			G_SetAASBlockingEntity( ent, qfalse );
+			G_SetAASBlockingEntity( ent, false );
 			// set new areas
-			G_SetAASBlockingEntity( ent, qtrue );
+			G_SetAASBlockingEntity( ent, true );
 		}
 	}
 }
@@ -930,7 +930,7 @@ ReturnToPos1Rotate
 ================
 */
 void ReturnToPos1Rotate( gentity_t *ent ) {
-	qboolean inPVS = qfalse;
+	bool inPVS = false;
 	gentity_t   *player;
 
 	MatchTeam( ent, MOVER_2TO1ROTATE, level.time );
@@ -961,19 +961,19 @@ Reached_BinaryMover
 ================
 */
 void Reached_BinaryMover( gentity_t *ent ) {
-	qboolean kicked = qfalse, soft = qfalse;
+	bool kicked = false, soft = false;
 	// stop the looping sound
 	ent->s.loopSound = 0;
 //	ent->s.loopSound = ent->soundLoop;
 
 	if ( ent->flags & FL_SOFTACTIVATE ) {
-		soft = qtrue;
+		soft = true;
 	}
 	if ( ent->flags & FL_KICKACTIVATE ) {
-		kicked = qtrue;
+		kicked = true;
 	}
 	if ( ent->flags & FL_DOORNOISE ) {
-		kicked = soft = qfalse;
+		kicked = soft = false;
 	}
 
 	if ( ent->moverState == MOVER_1TO2 ) {
@@ -995,7 +995,7 @@ void Reached_BinaryMover( gentity_t *ent ) {
 		G_UseTargets( ent, ent->activator );
 
 		if ( ent->flags & FL_TOGGLE ) {
-			ent->active = qfalse;   // enable door activation again
+			ent->active = false;   // enable door activation again
 			ent->think = ReturnToPos1;
 			ent->nextthink = 0;
 			return;
@@ -1021,7 +1021,7 @@ void Reached_BinaryMover( gentity_t *ent ) {
 
 		// close areaportals
 		if ( ent->teammaster == ent || !ent->teammaster ) {
-			trap_AdjustAreaPortalState( ent, qfalse );
+			trap_AdjustAreaPortalState( ent, false );
 		}
 	} else if ( ent->moverState == MOVER_1TO2ROTATE )   {
 		// reached pos2
@@ -1043,7 +1043,7 @@ void Reached_BinaryMover( gentity_t *ent ) {
 		G_UseTargets( ent, ent->activator );
 
 		if ( ent->flags & FL_TOGGLE ) {
-			ent->active = qfalse;   // enable door activation again
+			ent->active = false;   // enable door activation again
 			ent->think = ReturnToPos1Rotate;
 			ent->nextthink = 0;
 			return;
@@ -1061,7 +1061,7 @@ void Reached_BinaryMover( gentity_t *ent ) {
 
 		// to stop sound from being requested if not in pvs anoying bug
 		{
-			qboolean inPVS = qfalse;
+			bool inPVS = false;
 			gentity_t *player;
 
             player = G_FindActor("player");
@@ -1085,7 +1085,7 @@ void Reached_BinaryMover( gentity_t *ent ) {
 
 		// close areaportals
 		if ( ent->teammaster == ent || !ent->teammaster ) {
-			trap_AdjustAreaPortalState( ent, qfalse );
+			trap_AdjustAreaPortalState( ent, false );
 		}
 	} else {
 		G_Error( "Reached_BinaryMover: bad moverState" );
@@ -1102,26 +1102,26 @@ DOOM_SAVE_CALLBACK("Reached_BinaryMover", Reached_BinaryMover);
 IsBinaryMoverBlocked
 ================
 */
-qboolean IsBinaryMoverBlocked( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
+bool IsBinaryMoverBlocked( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 
 	vec3_t dir, angles;
 	vec3_t pos;
 	vec3_t vec;
 	float dot;
 	vec3_t forward;
-	qboolean is_relay = qfalse;
+	bool is_relay = false;
 
 	if ( Q_stricmp( ent->classname, "func_door_rotating" ) == 0 ) {
 		if ( ent->spawnflags & 32 ) {
-			return qfalse;
+			return false;
 		}
 
 		//----(SA)	only check for blockage by players
 		if ( !activator ) {
 			if ( Q_stricmp( other->classname, "target_relay" ) == 0 ) {
-				is_relay = qtrue;
+				is_relay = true;
 			} else if ( !activator->client )      {
-				return qfalse;
+				return false;
 			}
 		}
 		//----(SA)	end
@@ -1153,14 +1153,14 @@ qboolean IsBinaryMoverBlocked( gentity_t *ent, gentity_t *other, gentity_t *acti
 		dot = DotProduct( vec, forward );
 
 		if ( dot >= 0 ) {
-			return qtrue;
+			return true;
 		} else {
-			return qfalse;
+			return false;
 		}
 
 	}
 
-	return qfalse;
+	return false;
 
 }
 DOOM_SAVE_CALLBACK("IsBinaryMoverBlocked", IsBinaryMoverBlocked);
@@ -1195,7 +1195,7 @@ void Reached_TrinaryMover( gentity_t *ent ) {
 
 		// close areaportals
 		if ( ent->teammaster == ent || !ent->teammaster ) {
-			trap_AdjustAreaPortalState( ent, qfalse );
+			trap_AdjustAreaPortalState( ent, false );
 		}
 	} else if ( ent->moverState == MOVER_2TO3 )   {
 		// reached pos3
@@ -1242,7 +1242,7 @@ Use_TrinaryMover
 void Use_TrinaryMover( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 	int total;
 	int partial;
-	qboolean isblocked = qfalse;
+	bool isblocked = false;
 
 	isblocked = IsBinaryMoverBlocked( ent, other, activator );
 
@@ -1257,7 +1257,7 @@ void Use_TrinaryMover( gentity_t *ent, gentity_t *other, gentity_t *activator ) 
 
 		// open areaportal
 		if ( ent->teammaster == ent || !ent->teammaster ) {
-			trap_AdjustAreaPortalState( ent, qtrue );
+			trap_AdjustAreaPortalState( ent, true );
 		}
 		return;
 	}
@@ -1284,7 +1284,7 @@ void Use_TrinaryMover( gentity_t *ent, gentity_t *other, gentity_t *activator ) 
 
 		// open areaportal
 		if ( ent->teammaster == ent || !ent->teammaster ) {
-			trap_AdjustAreaPortalState( ent, qtrue );
+			trap_AdjustAreaPortalState( ent, true );
 		}
 		return;
 	}
@@ -1382,22 +1382,22 @@ Use_BinaryMover
 void Use_BinaryMover( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 //	int		total;
 //	int		partial;
-	qboolean kicked = qfalse, soft = qfalse;
-	qboolean isblocked = qfalse;
-	qboolean nosound = qfalse;
+	bool kicked = false, soft = false;
+	bool isblocked = false;
+	bool nosound = false;
 
 	if ( ent->flags & FL_SOFTACTIVATE ) {
-		soft = qtrue;
+		soft = true;
 	}
 	if ( ent->flags & FL_KICKACTIVATE ) {
-		kicked = qtrue;
+		kicked = true;
 	}
 	if ( ent->flags & FL_DOORNOISE ) {
-		kicked = soft = qfalse;
+		kicked = soft = false;
 	}
 
 	if ( level.time <= 4000 ) { // hack.  don't play door sounds if in the first /four/ seconds of game (FIXME: TODO: THIS IS STILL A HACK)
-		nosound = qtrue;
+		nosound = true;
 	}
 
 	// only the master should be used
@@ -1456,7 +1456,7 @@ void Use_BinaryMover( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 
 		// open areaportal
 		if ( ent->teammaster == ent || !ent->teammaster ) {
-			trap_AdjustAreaPortalState( ent, qtrue );
+			trap_AdjustAreaPortalState( ent, true );
 		}
 		return;
 	}
@@ -1489,7 +1489,7 @@ void Use_BinaryMover( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 
 		// open areaportal
 		if ( ent->teammaster == ent || !ent->teammaster ) {
-			trap_AdjustAreaPortalState( ent, qtrue );
+			trap_AdjustAreaPortalState( ent, true );
 		}
 		return;
 	}
@@ -1525,7 +1525,7 @@ void Use_BinaryMover( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 
 		// open areaportal
 		if ( ent->teammaster == ent || !ent->teammaster ) {
-			trap_AdjustAreaPortalState( ent, qtrue );
+			trap_AdjustAreaPortalState( ent, true );
 		}
 		return;
 	}
@@ -1614,7 +1614,7 @@ void InitMover( gentity_t *ent ) {
 	float distance;
 	float light;
 	vec3_t color;
-	qboolean lightSet, colorSet;
+	bool lightSet, colorSet;
 	char        *sound;
 
 	// if the "model2" key is set, use a seperate model
@@ -1718,7 +1718,7 @@ void InitMoverRotate( gentity_t *ent ) {
 	vec3_t move;
 	float light;
 	vec3_t color;
-	qboolean lightSet, colorSet;
+	bool lightSet, colorSet;
 
 	// if the "model2" key is set, use a seperate model
 	// for drawing, but clip against the brushes
@@ -1970,7 +1970,7 @@ void Think_SpawnNewDoorTrigger( gentity_t *ent ) {
 
 	// set all of the slaves as shootable
 	for ( other = ent ; other ; other = other->teamchain ) {
-		other->takedamage = qtrue;
+		other->takedamage = true;
 	}
 
 	// find the bounds of everything on the team
@@ -2019,22 +2019,22 @@ findNonAIBrushTargeter
 	(used now for checking which key to set for a door)
 ==============
 */
-qboolean findNonAIBrushTargeter( gentity_t *ent ) {
+bool findNonAIBrushTargeter( gentity_t *ent ) {
 	gentity_t *targeter = NULL;
 
 	if ( !( ent->targetname ) ) {
-		return qfalse;
+		return false;
 	}
 
 	while ( ( targeter = G_Find( targeter, FOFS( target ), ent->targetname ) ) != NULL )
 	{
 		if ( strcmp( targeter->classname,"trigger_aidoor" ) &&
 			 Q_stricmp( targeter->classname, "func_invisible_user" ) ) {
-			return qtrue;
+			return true;
 		}
 	}
 
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("findNonAIBrushTargeter", findNonAIBrushTargeter);
 
@@ -2059,7 +2059,7 @@ void finishSpawningKeyedMover( gentity_t *ent ) {
 //----(SA)	end
 
 	if ( ent->key ) {
-		G_SetAASBlockingEntity( ent, qtrue );
+		G_SetAASBlockingEntity( ent, true );
 	}
 
 	ent->nextthink = level.time + FRAMETIME;
@@ -2086,7 +2086,7 @@ void finishSpawningKeyedMover( gentity_t *ent ) {
 			slave->key = ent->key;
 
 			if ( slave->key ) {
-				G_SetAASBlockingEntity( slave, qtrue );
+				G_SetAASBlockingEntity( slave, true );
 			}
 		}
 	}
@@ -2139,7 +2139,7 @@ DoorSetSounds
 	(used by SP_func_door() and SP_func_door_rotating() )
 ==============
 */
-void DoorSetSounds( gentity_t *ent, int doortype, qboolean isRotating ) {
+void DoorSetSounds( gentity_t *ent, int doortype, bool isRotating ) {
 	ent->sound1to2 = G_SoundIndex( va( "door%i_open", doortype ) );      // opening
 	ent->soundPos2 = G_SoundIndex( va( "door%i_endo", doortype ) );      // open
 	ent->sound2to1 = G_SoundIndex( va( "door%i_close", doortype ) ); // closing
@@ -2171,19 +2171,19 @@ G_TryDoor
 ==============
 */
 void G_TryDoor( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
-	qboolean walking = qfalse, locked = qfalse;
+	bool walking = false, locked = false;
 
-	walking = (qboolean)( ent->flags & FL_SOFTACTIVATE );
+	walking = (bool)( ent->flags & FL_SOFTACTIVATE );
 
 
 	if ( ( ent->s.apos.trType == TR_STATIONARY && ent->s.pos.trType == TR_STATIONARY ) ) {
-		if ( ent->active == qfalse ) {
+		if ( ent->active == false ) {
 			if ( ent->key >= KEY_LOCKED_ENT ) {    // door force locked
-				locked = qtrue;
+				locked = true;
 			} else if ( ent->key == KEY_LOCKED_TARGET ) {
 				// door locked because it was targeted, check if the 'other' ent is targeting this door
 				if ( Q_stricmp( other->target, ent->targetname ) ) {
-					locked = qtrue;
+					locked = true;
 				}
 			}
 
@@ -2214,7 +2214,7 @@ void G_TryDoor( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 
 
 			if ( ent->teammaster && ent->team && ent != ent->teammaster ) {
-				ent->teammaster->active = qtrue;
+				ent->teammaster->active = true;
 				if ( walking ) {
 					ent->teammaster->flags |= FL_SOFTACTIVATE;      // no noise generated
 				}
@@ -2223,7 +2223,7 @@ void G_TryDoor( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 				G_UseTargets( ent->teammaster, activator );
 			} else
 			{
-				ent->active = qtrue;
+				ent->active = true;
 				if ( walking ) {
 					ent->flags |= FL_SOFTACTIVATE;      // no noise
 				}
@@ -2302,7 +2302,7 @@ void SP_func_door( gentity_t *ent ) {
 	G_SpawnInt( "type", "0", &doortype );
 
 	if ( doortype ) { // /*why on earthy did this check for <=8?*/ && doortype <= 8)	// no doortype = silent
-		DoorSetSounds( ent, doortype, qfalse );
+		DoorSetSounds( ent, doortype, false );
 	}
 
 	ent->blocked = Blocked_Door;
@@ -2383,7 +2383,7 @@ void SP_func_door( gentity_t *ent ) {
 
 		G_SpawnInt( "health", "0", &health );
 		if ( health ) {
-			ent->takedamage = qtrue;
+			ent->takedamage = true;
 		}
 	}
 
@@ -2500,7 +2500,7 @@ void SP_func_secret( gentity_t *ent ) {
 
 		G_SpawnInt( "health", "0", &health );
 		if ( health ) {
-			ent->takedamage = qtrue;
+			ent->takedamage = true;
 		}
 	}
 
@@ -2728,7 +2728,7 @@ void SP_func_button( gentity_t *ent ) {
 
 	if ( ent->health ) {
 		// shootable button
-		ent->takedamage = qtrue;
+		ent->takedamage = true;
 	} else if ( ent->spawnflags & 8 ) {
 		// touchable button
 		ent->touch = Touch_Button;
@@ -3124,7 +3124,7 @@ void BatMoveThink( gentity_t *bat ) {
 //	trace_t		tr;
 
 	owner = &g_entities[bat->r.ownerNum];
-	if ( owner->active == qtrue && owner->inuse ) { // move towards the owner
+	if ( owner->active == true && owner->inuse ) { // move towards the owner
 		BG_EvaluateTrajectory( &owner->s.pos, level.time, goalpos );
 
 		// randomize ther movedir as we go
@@ -3182,7 +3182,7 @@ void FuncBatsActivate( gentity_t *self, gentity_t * other, gentity_t * activator
 	vec3_t vec;
 
 	if ( !self->active ) {
-		self->active = qtrue;
+		self->active = true;
 
 		// spawn "count" bats
 		for ( i = 0; i < self->count; i++ ) {
@@ -3200,7 +3200,7 @@ void FuncBatsActivate( gentity_t *self, gentity_t * other, gentity_t * activator
 
 			bat->r.ownerNum = self->s.number;
 			bat->r.contents = 0; //CONTENTS_CORPSE;
-			bat->takedamage = qfalse;
+			bat->takedamage = false;
 			bat->health = 1;
 			bat->pain = NULL;
 			bat->die = NULL; //BatDie;
@@ -3273,17 +3273,17 @@ void FuncEndSpiritsThink( gentity_t *self ) {
 		if ( VectorDistance( self->s.origin, enemyPos ) < VectorDistance( self->s.origin, cEnt->s.origin ) ) {
 			// if we are not "spawning" then set the delay
 			if ( !self->botDelayBegin ) {
-				self->botDelayBegin = qtrue;
+				self->botDelayBegin = true;
 				// set the delay before we start spawning them
 				self->nextthink = level.time + (int)( self->delay * 1000.0 );
 			} else {
 				G_AddEvent( self, EV_SPAWN_SPIRIT, 0 );
 			}
 		} else {
-			self->botDelayBegin = qfalse;
+			self->botDelayBegin = false;
 		}
 	} else {
-		self->botDelayBegin = qfalse;
+		self->botDelayBegin = false;
 	}
 }
 DOOM_SAVE_CALLBACK("FuncEndSpiritsThink", FuncEndSpiritsThink);
@@ -3302,7 +3302,7 @@ void SP_func_bats( gentity_t *self ) {
 	}
 
 	// setup train waypoints
-	self->active = qfalse;
+	self->active = false;
 	self->use = FuncBatsActivate;
 
 	self->damage = 0;
@@ -3322,7 +3322,7 @@ void SP_func_bats( gentity_t *self ) {
 		self->s.otherEntityNum2 = 0;    // HACK: point to the player
 		self->s.time = (int)( self->delay * 1000 );
 		self->use = NULL;
-		self->botDelayBegin = qfalse;
+		self->botDelayBegin = false;
 		//
 		self->think = FuncEndSpiritsThink;
 		self->nextthink = level.time + ( self->wait * 1000 );
@@ -3592,13 +3592,13 @@ void Use_Static( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 		// DISABLED since func_static will carve up AAS anyway, so blocking makes no sense
 		// RF, AAS areas are now free
 		//if (ent->model)
-		//	G_SetAASBlockingEntity( ent, qfalse );
+		//	G_SetAASBlockingEntity( ent, false );
 	} else {
 		trap_LinkEntity( ent );
 		// DISABLED since func_static will carve up AAS anyway, so blocking makes no sense
 		// RF, AAS areas are now occupied
 		//if (ent->model)
-		//	G_SetAASBlockingEntity( ent, qtrue );
+		//	G_SetAASBlockingEntity( ent, true );
 	}
 }
 DOOM_SAVE_CALLBACK("Use_Static", Use_Static);
@@ -3637,9 +3637,9 @@ DOOM_SAVE_CALLBACK("Static_Pain", Static_Pain);
 
 void G_BlockThink( gentity_t *ent ) {
 	if ( ent->r.linked ) {
-		G_SetAASBlockingEntity( ent, qtrue );
+		G_SetAASBlockingEntity( ent, true );
 	} else {
-		G_SetAASBlockingEntity( ent, qfalse );
+		G_SetAASBlockingEntity( ent, false );
 	}
 }
 DOOM_SAVE_CALLBACK("G_BlockThink", G_BlockThink);
@@ -3748,7 +3748,7 @@ void SP_func_static( gentity_t *ent ) {
 
 		G_SpawnInt( "health", "0", &health );
 		if ( health ) {
-			ent->takedamage = qtrue;
+			ent->takedamage = true;
 		}
 	}
 
@@ -3761,9 +3761,9 @@ void SP_func_static( gentity_t *ent ) {
 			ent->delay *= 1000;
 		}
 
-		ent->takedamage = qtrue;
+		ent->takedamage = true;
 
-		ent->isProp = qtrue;
+		ent->isProp = true;
 
 		ent->health = 9999;
 
@@ -4004,7 +4004,7 @@ void SP_func_door_rotating( gentity_t *ent ) {
 	G_SpawnInt( "type", "0", &doortype );
 
 	if ( doortype ) {  // /*why on earthy did this check for <=8?*/ && doortype <= 8)	// no doortype = silent
-		DoorSetSounds( ent, doortype, qtrue );
+		DoorSetSounds( ent, doortype, true );
 		if ( doortype == 5 ) { // iron/jail always makes same noise
 			ent->flags |= FL_DOORNOISE;
 		}
@@ -4077,7 +4077,7 @@ void SP_func_door_rotating( gentity_t *ent ) {
 
 		G_SpawnInt( "health", "0", &health );
 		if ( health ) {
-			ent->takedamage = qtrue;
+			ent->takedamage = true;
 		}
 	}
 
@@ -4215,7 +4215,7 @@ ClearExplosive
 void ClearExplosive( gentity_t *self ) {
 	// RF, AAS areas are now free
 	if ( !( self->spawnflags & 16 ) ) {
-		G_SetAASBlockingEntity( self, qfalse );
+		G_SetAASBlockingEntity( self, false );
 	}
 
 	self->die   = NULL;
@@ -4243,7 +4243,7 @@ void func_explosive_explode( gentity_t *self, gentity_t *inflictor, gentity_t *a
 	gentity_t   *tent = 0;
 	int timeToDeath;            //----(SA)	added
 
-	self->takedamage = qfalse;          // don't allow anything try to hurt me now that i'm exploding
+	self->takedamage = false;          // don't allow anything try to hurt me now that i'm exploding
 
 	self->touch = NULL; //----(SA)	added
 
@@ -4368,7 +4368,7 @@ void func_explosive_spawn( gentity_t *self, gentity_t *other, gentity_t *activat
 
 	// RF, AAS areas are now occupied
 	if ( !( self->spawnflags & 16 ) ) {
-		G_SetAASBlockingEntity( self, qtrue );
+		G_SetAASBlockingEntity( self, true );
 	}
 }
 DOOM_SAVE_CALLBACK("func_explosive_spawn", func_explosive_spawn);
@@ -4499,7 +4499,7 @@ void SP_func_explosive( gentity_t *ent ) {
 	ent->damage = dam;
 
 	if ( ent->health ) {
-		ent->takedamage = qtrue;
+		ent->takedamage = true;
 	}
 
 	if ( G_SpawnInt( "mass", "75", &mass ) ) {
@@ -4745,7 +4745,7 @@ G_Activate
 */
 void G_Activate( gentity_t *ent, gentity_t *activator ) {
 	if ( ( ent->s.apos.trType == TR_STATIONARY && ent->s.pos.trType == TR_STATIONARY )
-		 && ent->active == qfalse ) {
+		 && ent->active == false ) {
 		// trigger the ent if possible, if not, then we'll just wait at the marker until it opens, which could be never(!?)
 		if ( ent->key >= KEY_LOCKED_TARGET ) { // ent force locked
 			return;
@@ -4768,19 +4768,19 @@ void G_Activate( gentity_t *ent, gentity_t *activator ) {
 		// hack fix for bigdoor1 on tram1_21
 
 		if ( !( ent->teammaster ) ) {
-			ent->active = qtrue;
+			ent->active = true;
 			Use_BinaryMover( ent, activator, activator );
 			G_UseTargets( ent->teammaster, activator );
 			return;
 		}
 
 		if ( ent->team && ent != ent->teammaster ) {
-			ent->teammaster->active = qtrue;
+			ent->teammaster->active = true;
 			Use_BinaryMover( ent->teammaster, activator, activator );
 			G_UseTargets( ent->teammaster, activator );
 		} else
 		{
-			ent->active = qtrue;
+			ent->active = true;
 			Use_BinaryMover( ent, activator, activator );
 			G_UseTargets( ent->teammaster, activator );
 		}
