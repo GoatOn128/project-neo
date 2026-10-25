@@ -740,6 +740,10 @@ char    *Q_strrchr( const char* string, int c );
 #define Q_putenv _putenv
 #else
 #define Q_putenv putenv
+// The fx code calls the MSVC stricmp helpers directly. glibc does not
+// have them, so map them onto the portable engine versions.
+#define stricmp Q_stricmp
+#define strnicmp Q_stricmpn
 #endif
 
 // buffer size safe library replacements
