@@ -103,7 +103,14 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add build.log test.log
+          # A failed build never writes test.log, so only the logs
+          # that exist are added. Without this the step fails and the
+          # build log never reaches the repository.
+          for log in build.log test.log; do
+            if [ -f "$log" ]; then
+              git add "$log"
+            fi
+          done
           if git diff --cached --quiet; then
             echo "build.log did not change."
           else
@@ -209,7 +216,14 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add build-x64.log test-x64.log
+          # A failed build never writes test-x64.log, so only the logs
+          # that exist are added. Without this the step fails and the
+          # build log never reaches the repository.
+          for log in build-x64.log test-x64.log; do
+            if [ -f "$log" ]; then
+              git add "$log"
+            fi
+          done
           if git diff --cached --quiet; then
             echo "build-x64.log did not change."
           else
