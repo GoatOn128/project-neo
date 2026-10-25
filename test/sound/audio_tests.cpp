@@ -29,7 +29,7 @@ std::vector<uint8_t> Read(const std::filesystem::path &path) {
 } // namespace
 
 // The port's snd_cache.cpp goes through the engine C API for files and
-// printing; the test provides the three functions it references.
+// printing; the test provides the four functions it references.
 int FS_ReadFile(const char *name, void **buffer) {
     std::ifstream input(std::string("base/") + name, std::ios::binary | std::ios::ate);
     if (!input.good()) {
@@ -52,6 +52,9 @@ void QDECL Com_Printf(const char *format, ...) {
     vsnprintf(text, sizeof(text), format, args);
     va_end(args);
     std::printf("%s", text);
+}
+void QDECL Com_Error(int, const char *message, ...) {
+    throw std::runtime_error(message);
 }
 
 int main() {
