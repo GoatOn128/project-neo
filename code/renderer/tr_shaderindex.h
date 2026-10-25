@@ -19,7 +19,7 @@ void R_BuildShaderTextIndex(char *text, shaderStringPointer_t *buckets, int coun
     char *cursor = text;
     while (cursor) {
         char *start = cursor;
-        const char *token = COM_ParseExt(&cursor, qtrue);
+        const char *token = COM_ParseExt(&cursor, true);
         if (!*token) {
             break;
         }

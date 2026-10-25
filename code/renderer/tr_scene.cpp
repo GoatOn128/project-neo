@@ -125,7 +125,7 @@ void R_AddPolygonSurfaces( void ) {
             R_LightDoomPoly(poly);
         }
 // GR - not tessellated
-		R_AddDrawSurf((surfaceType_t *)( ( void * )poly), sh, poly->fogIndex, qfalse );
+		R_AddDrawSurf((surfaceType_t *)( ( void * )poly), sh, poly->fogIndex, false );
 	}
 }
 
@@ -306,7 +306,7 @@ void RE_AddRefEntityToScene( const refEntity_t *ent ) {
 	}
 
 	backEndData[tr.smpFrame]->entities[r_numentities].e = *ent;
-	backEndData[tr.smpFrame]->entities[r_numentities].lightingCalculated = qfalse;
+	backEndData[tr.smpFrame]->entities[r_numentities].lightingCalculated = false;
 
 	r_numentities++;
 }
@@ -456,7 +456,7 @@ void RE_RenderScene( const refdef_t *fd ) {
 
 	// copy the areamask data over and note if it has changed, which
 	// will force a reset of the visible leafs even if the view hasn't moved
-	tr.refdef.areamaskModified = qfalse;
+	tr.refdef.areamaskModified = false;
 	if ( !( tr.refdef.rdflags & RDF_NOWORLDMODEL ) ) {
 		int areaDiff;
 		int i;
@@ -470,7 +470,7 @@ void RE_RenderScene( const refdef_t *fd ) {
 
 		if ( areaDiff ) {
 			// a door just opened or something
-			tr.refdef.areamaskModified = qtrue;
+			tr.refdef.areamaskModified = true;
 		}
 	}
 
@@ -521,7 +521,7 @@ void RE_RenderScene( const refdef_t *fd ) {
 	parms.viewportY = glConfig.vidHeight - ( tr.refdef.y + tr.refdef.height );
 	parms.viewportWidth = tr.refdef.width;
 	parms.viewportHeight = tr.refdef.height;
-	parms.isPortal = qfalse;
+	parms.isPortal = false;
 
 	parms.fovX = tr.refdef.fov_x;
 	parms.fovY = tr.refdef.fov_y;

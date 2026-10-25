@@ -57,7 +57,7 @@ surfaceType_t entitySurface = SF_ENTITY;
 // fog stuff
 glfog_t glfogsettings[NUM_FOGS];
 glfogType_t glfogNum = FOG_NONE;
-qboolean fogIsOn = qfalse;
+bool fogIsOn = false;
 
 
 /*
@@ -139,7 +139,7 @@ void R_Fog( glfog_t *curfog ) {
 	}
 
 
-	setfog.registered = qtrue;
+	setfog.registered = true;
 
 	qglClearColor( curfog->color[0], curfog->color[1], curfog->color[2], curfog->color[3] );
 
@@ -152,7 +152,7 @@ void R_FogOff( void ) {
 		return;
 	}
 	qglDisable( GL_FOG );
-	fogIsOn = qfalse;
+	fogIsOn = false;
 }
 
 void R_FogOn( void ) {
@@ -188,7 +188,7 @@ void R_FogOn( void ) {
 	}
 
 	qglEnable( GL_FOG );
-	fogIsOn = qtrue;
+	fogIsOn = true;
 }
 // done.
 
@@ -217,7 +217,7 @@ void R_SetFog( int fogvar, int var1, int var2, float r, float g, float b, float 
 	if ( fogvar != FOG_CMD_SWITCHFOG ) {   // just set the parameters and return
 
 		if ( var1 == 0 && var2 == 0 ) {    // clear this fog
-			glfogsettings[fogvar].registered = qfalse;
+			glfogsettings[fogvar].registered = false;
 			return;
 		}
 
@@ -229,18 +229,18 @@ void R_SetFog( int fogvar, int var1, int var2, float r, float g, float b, float 
 		glfogsettings[fogvar].end           = var2;
 		if ( density >= 1 ) {
 			glfogsettings[fogvar].mode          = GL_LINEAR;
-			glfogsettings[fogvar].drawsky       = qfalse;
-			glfogsettings[fogvar].clearscreen   = qtrue;
+			glfogsettings[fogvar].drawsky       = false;
+			glfogsettings[fogvar].clearscreen   = true;
 			glfogsettings[fogvar].density       = 1.0;
 		} else
 		{
 			glfogsettings[fogvar].mode          = GL_EXP;
-			glfogsettings[fogvar].drawsky       = qtrue;
-			glfogsettings[fogvar].clearscreen   = qfalse;
+			glfogsettings[fogvar].drawsky       = true;
+			glfogsettings[fogvar].clearscreen   = false;
 			glfogsettings[fogvar].density       = density;
 		}
 		glfogsettings[fogvar].hint          = GL_DONT_CARE;
-		glfogsettings[fogvar].registered    = qtrue;
+		glfogsettings[fogvar].registered    = true;
 
 		return;
 	}
@@ -260,14 +260,14 @@ void R_SetFog( int fogvar, int var1, int var2, float r, float g, float b, float 
 		memset( &glfogsettings[FOG_MAP], 0, sizeof( glfog_t ) );
 //		memset(&glfogsettings[FOG_CURRENT], 0, sizeof(glfog_t));
 		memset( &glfogsettings[FOG_TARGET], 0, sizeof( glfog_t ) );
-//		glfogsettings[FOG_CURRENT].registered = qfalse;
-//		glfogsettings[FOG_TARGET].registered = qfalse;
+//		glfogsettings[FOG_CURRENT].registered = false;
+//		glfogsettings[FOG_TARGET].registered = false;
 		glfogNum = FOG_NONE;
 		return;
 	}
 
 	// don't switch to invalid fogs
-	if ( glfogsettings[var1].registered != qtrue ) {
+	if ( glfogsettings[var1].registered != true ) {
 		return;
 	}
 
@@ -382,7 +382,7 @@ int R_CullPointAndRadius( vec3_t pt, float radius ) {
 	int i;
 	float dist;
 	cplane_t    *frust;
-	qboolean mightBeClipped = qfalse;
+	bool mightBeClipped = false;
 
 	if ( r_nocull->integer ) {
 		return CULL_CLIP;
@@ -397,7 +397,7 @@ int R_CullPointAndRadius( vec3_t pt, float radius ) {
 		if ( dist < -radius ) {
 			return CULL_OUT;
 		} else if ( dist <= radius )   {
-			mightBeClipped = qtrue;
+			mightBeClipped = true;
 		}
 	}
 
@@ -686,7 +686,7 @@ void R_SetFrameFog( void ) {
 
 			glfogsettings[FOG_CURRENT].density      = glfogsettings[FOG_TARGET].density;
 			glfogsettings[FOG_CURRENT].mode         = glfogsettings[FOG_TARGET].mode;
-			glfogsettings[FOG_CURRENT].registered   = qtrue;
+			glfogsettings[FOG_CURRENT].registered   = true;
 
 			// if either fog in the transition clears the screen, clear the background this frame to avoid hall of mirrors
 			glfogsettings[FOG_CURRENT].clearscreen  = ( glfogsettings[FOG_TARGET].clearscreen || glfogsettings[FOG_LAST].clearscreen );
@@ -979,12 +979,12 @@ R_GetPortalOrientation
 entityNum is the entity that the portal surface is a part of, which may
 be moving and rotating.
 
-Returns qtrue if it should be mirrored
+Returns true if it should be mirrored
 =================
 */
-qboolean R_GetPortalOrientations( drawSurf_t *drawSurf, int entityNum,
+bool R_GetPortalOrientations( drawSurf_t *drawSurf, int entityNum,
 								  orientation_t *surface, orientation_t *camera,
-								  vec3_t pvsOrigin, qboolean *mirror ) {
+								  vec3_t pvsOrigin, bool *mirror ) {
 	int i;
 	cplane_t originalPlane, plane;
 	trRefEntity_t   *e;
@@ -1044,8 +1044,8 @@ qboolean R_GetPortalOrientations( drawSurf_t *drawSurf, int entityNum,
 			VectorCopy( surface->axis[1], camera->axis[1] );
 			VectorCopy( surface->axis[2], camera->axis[2] );
 
-			*mirror = qtrue;
-			return qtrue;
+			*mirror = true;
+			return true;
 		}
 
 		// project the origin onto the surface plane to get
@@ -1082,8 +1082,8 @@ qboolean R_GetPortalOrientations( drawSurf_t *drawSurf, int entityNum,
 			RotatePointAroundVector( camera->axis[1], camera->axis[0], transformed, d );
 			CrossProduct( camera->axis[0], camera->axis[1], camera->axis[2] );
 		}
-		*mirror = qfalse;
-		return qtrue;
+		*mirror = false;
+		return true;
 	}
 
 	// if we didn't locate a portal entity, don't render anything.
@@ -1097,10 +1097,10 @@ qboolean R_GetPortalOrientations( drawSurf_t *drawSurf, int entityNum,
 
 	//ri.Printf( PRINT_ALL, "Portal surface without a portal entity\n" );
 
-	return qfalse;
+	return false;
 }
 
-static qboolean IsMirror( const drawSurf_t *drawSurf, int entityNum ) {
+static bool IsMirror( const drawSurf_t *drawSurf, int entityNum ) {
 	int i;
 	cplane_t originalPlane, plane;
 	trRefEntity_t   *e;
@@ -1148,12 +1148,12 @@ static qboolean IsMirror( const drawSurf_t *drawSurf, int entityNum ) {
 		if ( e->e.oldorigin[0] == e->e.origin[0] &&
 			 e->e.oldorigin[1] == e->e.origin[1] &&
 			 e->e.oldorigin[2] == e->e.origin[2] ) {
-			return qtrue;
+			return true;
 		}
 
-		return qfalse;
+		return false;
 	}
-	return qfalse;
+	return false;
 }
 
 /*
@@ -1161,7 +1161,7 @@ static qboolean IsMirror( const drawSurf_t *drawSurf, int entityNum ) {
 **
 ** Determines if a surface is completely offscreen.
 */
-static qboolean SurfIsOffscreen( const drawSurf_t *drawSurf, vec4_t clipDest[128] ) {
+static bool SurfIsOffscreen( const drawSurf_t *drawSurf, vec4_t clipDest[128] ) {
 	float shortest = 100000000;
 	int entityNum;
 	int dlighted;
@@ -1173,7 +1173,7 @@ static qboolean SurfIsOffscreen( const drawSurf_t *drawSurf, vec4_t clipDest[128
 	unsigned int pointAnd = (unsigned int)~0;
 
 	if ( glConfig.smpActive ) {     // FIXME!  we can't do RB_BeginSurface/RB_EndSurface stuff with smp!
-		return qfalse;
+		return false;
 	}
 
 	R_RotateForViewer();
@@ -1203,7 +1203,7 @@ static qboolean SurfIsOffscreen( const drawSurf_t *drawSurf, vec4_t clipDest[128
 
 	// trivially reject
 	if ( pointAnd ) {
-		return qtrue;
+		return true;
 	}
 
 	// determine if this surface is backfaced and also determine the distance
@@ -1231,30 +1231,30 @@ static qboolean SurfIsOffscreen( const drawSurf_t *drawSurf, vec4_t clipDest[128
 		}
 	}
 	if ( !numTriangles ) {
-		return qtrue;
+		return true;
 	}
 
 	// mirrors can early out at this point, since we don't do a fade over distance
 	// with them (although we could)
 	if ( IsMirror( drawSurf, entityNum ) ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( shortest > ( tess.shader->portalRange * tess.shader->portalRange ) ) {
-		return qtrue;
+		return true;
 	}
 
-	return qfalse;
+	return false;
 }
 
 /*
 ========================
 R_MirrorViewBySurface
 
-Returns qtrue if another view has been rendered
+Returns true if another view has been rendered
 ========================
 */
-qboolean R_MirrorViewBySurface( drawSurf_t *drawSurf, int entityNum ) {
+bool R_MirrorViewBySurface( drawSurf_t *drawSurf, int entityNum ) {
 	vec4_t clipDest[128];
 	viewParms_t newParms;
 	viewParms_t oldParms;
@@ -1263,27 +1263,27 @@ qboolean R_MirrorViewBySurface( drawSurf_t *drawSurf, int entityNum ) {
 	// don't recursively mirror
 	if ( tr.viewParms.isPortal ) {
 		ri.Printf( PRINT_DEVELOPER, "WARNING: recursive mirror/portal found\n" );
-		return qfalse;
+		return false;
 	}
 
 //	if ( r_noportals->integer || r_fastsky->integer || tr.levelGLFog) {
 	if ( r_noportals->integer || r_fastsky->integer ) {
-		return qfalse;
+		return false;
 	}
 
 	// trivially reject portal/mirror
 	if ( SurfIsOffscreen( drawSurf, clipDest ) ) {
-		return qfalse;
+		return false;
 	}
 
 	// save old viewParms so we can return to it after the mirror view
 	oldParms = tr.viewParms;
 
 	newParms = tr.viewParms;
-	newParms.isPortal = qtrue;
+	newParms.isPortal = true;
 	if ( !R_GetPortalOrientations( drawSurf, entityNum, &surface, &camera,
 								   newParms.pvsOrigin, &newParms.isMirror ) ) {
-		return qfalse;      // bad portal, no portalentity
+		return false;      // bad portal, no portalentity
 	}
 
 	R_MirrorPoint( oldParms.or.origin, &surface, &camera, newParms.or.origin );
@@ -1302,7 +1302,7 @@ qboolean R_MirrorViewBySurface( drawSurf_t *drawSurf, int entityNum ) {
 
 	tr.viewParms = oldParms;
 
-	return qtrue;
+	return true;
 }
 
 /*
@@ -1649,7 +1649,7 @@ void R_AddEntitySurfaces( void ) {
 		  tr.currentEntityNum++ ) {
 		ent = tr.currentEntity = &tr.refdef.entities[tr.currentEntityNum];
 
-		ent->needDlights = qfalse;
+		ent->needDlights = false;
 
 		// preshift the value we are going to OR into the drawsurf sort
 		tr.shiftedEntityNum = tr.currentEntityNum << QSORT_ENTITYNUM_SHIFT;
