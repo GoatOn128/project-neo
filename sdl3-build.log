@@ -627,24 +627,24 @@ Call Stack (most recent call first):
 -- were installed, then make sure you have set the
 -- CMAKE_C_FLAGS and CMAKE_PREFIX_PATH CMake variables correctly.
 -- 
--- Configuring done (18.0s)
+-- Configuring done (19.8s)
 -- Generating done (0.1s)
 -- Build files have been written to: /home/runner/work/project-neo/project-neo/sdl3-build
-[  1%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_common.c.o
+[  0%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_assert.c.o
+[  0%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_common.c.o
+[  0%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_compare.c.o
 [  1%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_atan2.c.o
-[  1%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_compare.c.o
-[  1%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_assert.c.o
 [  2%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_crc32.c.o
 [  2%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_font.c.o
-[  2%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_fuzzer.c.o
 [  2%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_exp.c.o
 [  2%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_fmod.c.o
+[  2%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_fuzzer.c.o
 [  2%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_harness.c.o
-[  3%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_log.c.o
-[  4%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_log.c.o
-[  4%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_log10.c.o
-[  4%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_md5.c.o
+[  3%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_log.c.o
+[  3%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_md5.c.o
+[  4%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_log.c.o
 [  4%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_memory.c.o
+[  4%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_log10.c.o
 [  4%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_pow.c.o
 [  4%] Linking C static library libSDL3_test.a
 [  4%] Built target SDL3_test
@@ -688,19 +688,19 @@ Call Stack (most recent call first):
 [ 14%] Generating wayland-generated-protocols/viewporter-client-protocol.h
 [ 15%] Generating wayland-generated-protocols/wayland-client-protocol.h
 [ 15%] Generating wayland-generated-protocols/xdg-activation-v1-client-protocol.h
+[ 15%] Generating wayland-generated-protocols/xdg-decoration-unstable-v1-client-protocol.h
 *******************************************************
 *                                                     *
 * WARNING: XML failed validation against built-in DTD *
 *                                                     *
 *******************************************************
-[ 15%] Generating wayland-generated-protocols/xdg-decoration-unstable-v1-client-protocol.h
 [ 15%] Generating wayland-generated-protocols/xdg-dialog-v1-client-protocol.h
-[ 16%] Generating wayland-generated-protocols/xdg-output-unstable-v1-client-protocol.h
 [ 16%] Generating wayland-generated-protocols/xdg-foreign-unstable-v2-client-protocol.h
+[ 16%] Generating wayland-generated-protocols/xdg-output-unstable-v1-client-protocol.h
 [ 16%] Generating wayland-generated-protocols/xdg-shell-client-protocol.h
 [ 16%] Generating wayland-generated-protocols/xdg-toplevel-icon-v1-protocol.c
-[ 16%] Generating wayland-generated-protocols/alpha-modifier-v1-protocol.c
 [ 16%] Generating wayland-generated-protocols/color-management-v1-protocol.c
+[ 16%] Generating wayland-generated-protocols/alpha-modifier-v1-protocol.c
 [ 16%] Generating wayland-generated-protocols/cursor-shape-v1-protocol.c
 [ 17%] Generating wayland-generated-protocols/fractional-scale-v1-protocol.c
 [ 17%] Generating wayland-generated-protocols/frog-color-management-v1-protocol.c
@@ -729,8 +729,8 @@ Call Stack (most recent call first):
 [ 22%] Generating wayland-generated-protocols/xdg-shell-protocol.c
 [ 23%] Building C object CMakeFiles/SDL3-shared.dir/cmake_pch.h.gch
 [ 23%] Building C object CMakeFiles/SDL3-shared.dir/src/dynapi/SDL_dynapi.c.o
-[ 23%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL_assert.c.o
 [ 23%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL.c.o
+[ 23%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL_assert.c.o
 [ 24%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL_error.c.o
 [ 24%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL_guid.c.o
 [ 24%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL_hashtable.c.o
@@ -808,16 +808,16 @@ Call Stack (most recent call first):
 [ 44%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_blendfillrect.c.o
 [ 44%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_blendline.c.o
 [ 44%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_blendpoint.c.o
-[ 45%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_drawline.c.o
 [ 45%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_drawpoint.c.o
-[ 45%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_render_sw.c.o
+[ 45%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_drawline.c.o
 [ 45%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_triangle.c.o
-[ 46%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vitagxm/SDL_render_vita_gxm.c.o
+[ 45%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_render_sw.c.o
 [ 46%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vitagxm/SDL_render_vita_gxm_memory.c.o
+[ 46%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vitagxm/SDL_render_vita_gxm.c.o
 [ 46%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vitagxm/SDL_render_vita_gxm_tools.c.o
 [ 46%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vulkan/SDL_render_vulkan.c.o
-[ 47%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vulkan/SDL_shaders_vulkan.c.o
 [ 47%] Building C object CMakeFiles/SDL3-shared.dir/src/sensor/SDL_sensor.c.o
+[ 47%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vulkan/SDL_shaders_vulkan.c.o
 [ 47%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_crc16.c.o
 [ 48%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_crc32.c.o
 [ 48%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_getenv.c.o
@@ -924,18 +924,18 @@ Call Stack (most recent call first):
 [ 75%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/text-input-unstable-v3-protocol.c.o
 [ 75%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/viewporter-protocol.c.o
 [ 76%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/wayland-protocol.c.o
-[ 76%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-decoration-unstable-v1-protocol.c.o
 [ 76%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-activation-v1-protocol.c.o
+[ 76%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-decoration-unstable-v1-protocol.c.o
 [ 76%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-dialog-v1-protocol.c.o
-[ 77%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-foreign-unstable-v2-protocol.c.o
 [ 77%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-output-unstable-v1-protocol.c.o
+[ 77%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-foreign-unstable-v2-protocol.c.o
 [ 77%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-shell-protocol.c.o
 [ 77%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-toplevel-icon-v1-protocol.c.o
 [ 78%] Building C object CMakeFiles/SDL3-shared.dir/src/tray/unix/SDL_tray.c.o
 [ 78%] Building C object CMakeFiles/SDL3-shared.dir/src/core/unix/SDL_appid.c.o
 [ 78%] Building C object CMakeFiles/SDL3-shared.dir/src/core/unix/SDL_fribidi.c.o
-[ 79%] Building C object CMakeFiles/SDL3-shared.dir/src/core/unix/SDL_gtk.c.o
 [ 79%] Building C object CMakeFiles/SDL3-shared.dir/src/core/unix/SDL_libthai.c.o
+[ 79%] Building C object CMakeFiles/SDL3-shared.dir/src/core/unix/SDL_gtk.c.o
 [ 79%] Building C object CMakeFiles/SDL3-shared.dir/src/core/unix/SDL_poll.c.o
 [ 79%] Building C object CMakeFiles/SDL3-shared.dir/src/camera/v4l2/SDL_camera_v4l2.c.o
 [ 80%] Building C object CMakeFiles/SDL3-shared.dir/src/haptic/linux/SDL_syshaptic.c.o
@@ -951,8 +951,8 @@ Call Stack (most recent call first):
 [ 82%] Building C object CMakeFiles/SDL3-shared.dir/src/core/linux/SDL_threadprio.c.o
 [ 83%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_8bitdo.c.o
 [ 83%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_combined.c.o
-[ 83%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_flydigi.c.o
 [ 83%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_gamecube.c.o
+[ 83%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_flydigi.c.o
 [ 84%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_gip.c.o
 [ 84%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_lg4ff.c.o
 [ 84%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_luna.c.o
@@ -998,8 +998,8 @@ Call Stack (most recent call first):
 [ 95%] Building C object CMakeFiles/SDL3-shared.dir/src/dialog/SDL_dialog_utils.c.o
 [ 95%] Building C object CMakeFiles/SDL3-shared.dir/src/dialog/unix/SDL_unixdialog.c.o
 [ 95%] Building C object CMakeFiles/SDL3-shared.dir/src/dialog/unix/SDL_portaldialog.c.o
-[ 96%] Building C object CMakeFiles/SDL3-shared.dir/src/dialog/unix/SDL_zenitydialog.c.o
 [ 96%] Building C object CMakeFiles/SDL3-shared.dir/src/dialog/unix/SDL_zenitymessagebox.c.o
+[ 96%] Building C object CMakeFiles/SDL3-shared.dir/src/dialog/unix/SDL_zenitydialog.c.o
 [ 96%] Building C object CMakeFiles/SDL3-shared.dir/src/process/SDL_process.c.o
 [ 97%] Building C object CMakeFiles/SDL3-shared.dir/src/process/posix/SDL_posixprocess.c.o
 [ 97%] Building C object CMakeFiles/SDL3-shared.dir/src/video/offscreen/SDL_offscreenevents.c.o
