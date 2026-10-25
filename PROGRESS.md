@@ -5,6 +5,11 @@ Plain English only. Update this file as work moves forward.
 
 ## Working on right now
 
+- C++ bool conversion: the old C-style qboolean (enum { qfalse,
+  qtrue } typedef int) is gone from every module. All 265 files that used
+  qtrue/qfalse/qboolean (botlib, cgame, ui, aas compiler, tests, engine core,
+  renderer, game) now use plain C++ bool, and the master declaration was
+  removed from q_shared.h last. Waiting on CI to confirm the build is green.
 - Task 2 (Q3VM removal): done. The engine and the game modules talk through
   plain C import and export tables (GetGameAPI, GetCGameAPI, GetUIAPI) and
   CI compiles everything warning-free.
