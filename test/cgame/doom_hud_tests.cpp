@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#ifndef _WIN32
+#include <strings.h>
+#endif
 #include "game/cgame/cg_doomhud.cpp"
 
 cg_t cg;
@@ -26,7 +29,13 @@ void Draw() {
     CG_DrawDoomHud();
 }
 }
-int Q_stricmp(const char *a,const char *b) { return _stricmp(a,b); }
+int Q_stricmp(const char *a,const char *b) {
+#ifdef _WIN32
+    return _stricmp(a,b);
+#else
+    return strcasecmp(a,b);
+#endif
+}
 char *Q_strlwr(char *s) { for (char *p=s;*p;++p) *p=(char)tolower(*p); return s; }
 void QDECL Com_sprintf(char *d,int n,const char *fmt,...) {
     va_list args; va_start(args,fmt); vsnprintf(d,n,fmt,args); va_end(args);

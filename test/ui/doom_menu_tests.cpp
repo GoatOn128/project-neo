@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#ifndef _WIN32
+#include <strings.h>
+#endif
 #include "game/ui/ui_doom.cpp"
 
 uiInfo_t uiInfo;
@@ -22,7 +25,13 @@ void Draw() { draws.clear(); UI_DoomDraw(); }
 void Open(uiMenuCommand_t mode=UIMENU_MAIN) { _UI_SetActiveMenu(mode); }
 }
 
-int Q_stricmp(const char *a,const char *b) { return _stricmp(a,b); }
+int Q_stricmp(const char *a,const char *b) {
+#ifdef _WIN32
+    return _stricmp(a,b);
+#else
+    return strcasecmp(a,b);
+#endif
+}
 char *Q_strlwr(char *s) { for (char *p=s;*p;++p) *p=(char)tolower(*p); return s; }
 void Q_strncpyz(char *d,const char *s,int n) { if (n>0) { strncpy(d,s,n-1); d[n-1]=0; } }
 void QDECL Com_sprintf(char *d,int n,const char *fmt,...) {

@@ -2,6 +2,9 @@
 #include "q_shared.h"
 #include "qcommon/qcommon.h"
 #include <cstdio>
+#ifndef _WIN32
+#include <strings.h>
+#endif
 #include <map>
 #include <stdexcept>
 #include <string>
@@ -18,7 +21,11 @@ void Check(bool condition, const char *message) {
 } // namespace
 
 int Q_stricmp(const char *a, const char *b) {
+#ifdef _WIN32
     return _stricmp(a, b);
+#else
+    return strcasecmp(a, b);
+#endif
 }
 int FS_FOpenFileRead(const char *path, fileHandle_t *file, bool unique) {
     Check(std::string(path) == "wad/DOOM.wad" && !unique,
