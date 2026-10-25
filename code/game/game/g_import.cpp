@@ -441,7 +441,7 @@ bool trap_AAS_GetRouteFirstVisPos( vec3_t srcpos, vec3_t destpos, int travelflag
 }
 DOOM_SAVE_CALLBACK("trap_AAS_GetRouteFirstVisPos", trap_AAS_GetRouteFirstVisPos);
 
-void trap_AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, bool blocking ) {
+void trap_AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, int blocking ) {
 	gameImports->AAS_SetAASBlockingEntity( absmin, absmax, blocking );
 }
 DOOM_SAVE_CALLBACK("trap_AAS_SetAASBlockingEntity", trap_AAS_SetAASBlockingEntity);
