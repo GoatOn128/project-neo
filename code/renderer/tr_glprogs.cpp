@@ -11,6 +11,12 @@ See COPYING.txt and the source distribution's additional terms.
 #include "tr_local.h"
 
 namespace {
+#ifndef _WIN32
+// windows.h calls a WGL entry point address a PROC. The code below only
+// compares that address against sentinel values, so on Linux it is a plain
+// address type with the same name.
+typedef void *PROC;
+#endif
 constexpr GLenum VERTEX_SHADER = 0x8B31;
 constexpr GLenum FRAGMENT_SHADER = 0x8B30;
 constexpr GLenum COMPILE_STATUS = 0x8B81;

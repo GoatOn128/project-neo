@@ -130,10 +130,10 @@ jobs:
             echo "build.log did not change."
           else
             git commit -m "Save the Windows x86 build and test logs"
-            # Another run can push its logs while this job builds, so
-            # the rebase and push is retried before the step gives up.
+            # Another run can push its logs while this job builds. The rebase
+            # takes this job's own log on a conflict and retries the push.
             for attempt in 1 2 3 4 5; do
-              if git pull --rebase && git push; then
+              if git pull --rebase -X theirs && git push; then
                 exit 0
               fi
               git rebase --abort 2>/dev/null || true
@@ -249,10 +249,10 @@ jobs:
             echo "build-x64.log did not change."
           else
             git commit -m "Save the Windows x64 build and test logs"
-            # Another run can push its logs while this job builds, so
-            # the rebase and push is retried before the step gives up.
+            # Another run can push its logs while this job builds. The rebase
+            # takes this job's own log on a conflict and retries the push.
             for attempt in 1 2 3 4 5; do
-              if git pull --rebase && git push; then
+              if git pull --rebase -X theirs && git push; then
                 exit 0
               fi
               git rebase --abort 2>/dev/null || true
@@ -384,10 +384,10 @@ jobs:
             echo "build-linux.log did not change."
           else
             git commit -m "Save the Linux x64 build and test logs"
-            # Another run can push its logs while this job builds, so
-            # the rebase and push is retried before the step gives up.
+            # Another run can push its logs while this job builds. The rebase
+            # takes this job's own log on a conflict and retries the push.
             for attempt in 1 2 3 4 5; do
-              if git pull --rebase && git push; then
+              if git pull --rebase -X theirs && git push; then
                 exit 0
               fi
               git rebase --abort 2>/dev/null || true

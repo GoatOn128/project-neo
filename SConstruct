@@ -107,7 +107,11 @@ if not os.path.exists(bin_base):
             'mklink /J "%s" "%s"' % (bin_base, os.path.abspath('base')),
             shell=True)
     else:
-        os.symlink('base', bin_base)
+        # The link target has to be absolute: a relative "base" resolves
+        # inside bin/ itself, so the linker followed the link back into
+        # itself and every game module failed with "Too many levels of
+        # symbolic links".
+        os.symlink(os.path.abspath('base'), bin_base)
 
 
 # --- the small support libraries ---
