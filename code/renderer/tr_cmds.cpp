@@ -30,7 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 
 volatile renderCommandList_t    *renderCommandList;
 
-volatile qboolean renderThreadActive;
+volatile bool renderThreadActive;
 
 
 /*
@@ -88,12 +88,12 @@ R_InitCommandBuffers
 ====================
 */
 void R_InitCommandBuffers( void ) {
-	glConfig.smpActive = qfalse;
+	glConfig.smpActive = false;
 	if ( r_smp->integer ) {
 		ri.Printf( PRINT_ALL, "Trying SMP acceleration...\n" );
 		if ( GLimp_SpawnRenderThread( RB_RenderThread ) ) {
 			ri.Printf( PRINT_ALL, "...succeeded.\n" );
-			glConfig.smpActive = qtrue;
+			glConfig.smpActive = true;
 		} else {
 			ri.Printf( PRINT_ALL, "...failed.\n" );
 		}
@@ -109,7 +109,7 @@ void R_ShutdownCommandBuffers( void ) {
 	// kill the rendering thread
 	if ( glConfig.smpActive ) {
 		GLimp_WakeRenderer( NULL );
-		glConfig.smpActive = qfalse;
+		glConfig.smpActive = false;
 	}
 }
 
@@ -121,7 +121,7 @@ R_IssueRenderCommands
 int c_blockedOnRender;
 int c_blockedOnMain;
 
-void R_IssueRenderCommands( qboolean runPerformanceCounters ) {
+void R_IssueRenderCommands( bool runPerformanceCounters ) {
 	renderCommandList_t *cmdList;
 
 	cmdList = &backEndData[tr.smpFrame]->commands;
@@ -182,7 +182,7 @@ void R_SyncRenderThread( void ) {
 	if ( !tr.registered ) {
 		return;
 	}
-	R_IssueRenderCommands( qfalse );
+	R_IssueRenderCommands( false );
 
 	if ( !glConfig.smpActive ) {
 		return;
@@ -354,7 +354,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	if ( !tr.registered ) {
 		return;
 	}
-	glState.finishCalled = qfalse;
+	glState.finishCalled = false;
 
 	tr.frameCount++;
 	tr.frameSceneNum = 0;
@@ -366,11 +366,11 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 		if ( glConfig.stencilBits < 4 ) {
 			ri.Printf( PRINT_ALL, "Warning: not enough stencil bits to measure overdraw: %d\n", glConfig.stencilBits );
 			ri.Cvar_Set( "r_measureOverdraw", "0" );
-			r_measureOverdraw->modified = qfalse;
+			r_measureOverdraw->modified = false;
 		} else if ( r_shadows->integer == 2 )   {
 			ri.Printf( PRINT_ALL, "Warning: stencil shadows and overdraw measurement are mutually exclusive\n" );
 			ri.Cvar_Set( "r_measureOverdraw", "0" );
-			r_measureOverdraw->modified = qfalse;
+			r_measureOverdraw->modified = false;
 		} else
 		{
 			R_SyncRenderThread();
@@ -380,7 +380,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			qglStencilFunc( GL_ALWAYS, 0U, ~0U );
 			qglStencilOp( GL_KEEP, GL_INCR, GL_INCR );
 		}
-		r_measureOverdraw->modified = qfalse;
+		r_measureOverdraw->modified = false;
 	} else
 	{
 		// this is only reached if it was on and is now off
@@ -388,7 +388,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			R_SyncRenderThread();
 			qglDisable( GL_STENCIL_TEST );
 		}
-		r_measureOverdraw->modified = qfalse;
+		r_measureOverdraw->modified = false;
 	}
 
 	//
@@ -397,14 +397,14 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	if ( r_textureMode->modified ) {
 		R_SyncRenderThread();
 		GL_TextureMode( r_textureMode->string );
-		r_textureMode->modified = qfalse;
+		r_textureMode->modified = false;
 	}
 
 	//
 	// gamma stuff
 	//
 	if ( r_gamma->modified ) {
-		r_gamma->modified = qfalse;
+		r_gamma->modified = false;
 
 		R_SyncRenderThread();
 		R_SetColorMappings();
@@ -469,7 +469,7 @@ void RE_EndFrame( int *frontEndMsec, int *backEndMsec ) {
 	}
 	cmd->commandId = RC_SWAP_BUFFERS;
 
-	R_IssueRenderCommands( qtrue );
+	R_IssueRenderCommands( true );
 
 	// use the other buffers next frame, because another CPU
 	// may still be rendering into the current ones

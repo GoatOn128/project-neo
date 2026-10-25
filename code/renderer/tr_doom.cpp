@@ -89,7 +89,7 @@ void R_InitDoomSurfaces(world_t *world) {
             }
         }
         tr.doomFogImage = R_CreateImage("*doomDistance", pixels, doomlight::Width,
-                                        doomlight::Levels, qfalse, qfalse, GL_CLAMP);
+                                        doomlight::Levels, false, false, GL_CLAMP);
     }
     for (int i = 0; i < world->numsurfaces; ++i) {
         auto *base = world->surfaces[i].shader;
@@ -103,7 +103,7 @@ void R_InitDoomSurfaces(world_t *world) {
         if (Q_stricmpn(texture, "sw", 2) || (texture[2] != '1' && texture[2] != '2'))
             continue;
         texture[2] = texture[2] == '1' ? '2' : '1';
-        auto *alternate = R_FindShader(name, LIGHTMAP_BY_VERTEX, qtrue);
+        auto *alternate = R_FindShader(name, LIGHTMAP_BY_VERTEX, true);
         if (!alternate->defaultShader)
             world->doomSwitchShaders[i] = alternate;
     }
@@ -206,13 +206,13 @@ void R_UpdateDoomVisibility() {
     w->doomVisibleCount = count;
 }
 
-qboolean R_DoomSurfaceVisible(msurface_t *surface) {
+bool R_DoomSurfaceVisible(msurface_t *surface) {
     world_t *w = tr.world;
     if (!w || !w->doomVisible)
-        return qtrue;
+        return true;
     int index = int(surface - w->surfaces);
     if (index < 0 || index >= w->numsurfaces)
-        return qtrue;
+        return true;
     int sector = w->doomSurfaceSectors[index].sector;
     return w->doomVisible[sector] != 0;
 }

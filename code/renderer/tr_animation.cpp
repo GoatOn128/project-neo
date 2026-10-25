@@ -74,7 +74,7 @@ static float lodRadius, lodScale;
 static int             *collapse_map, *pCollapseMap;
 static int collapse[ MDS_MAX_VERTS ], *pCollapse;
 static int p0, p1, p2;
-static qboolean isTorso, fullTorso;
+static bool isTorso, fullTorso;
 static vec4_t m1[4], m2[4];
 //static  vec4_t m3[4], m4[4], tmp1[4], tmp2[4]; // TTimo: unused
 static vec3_t t;
@@ -141,10 +141,10 @@ static int R_CullModel( mdsHeader_t *header, trRefEntity_t *ent ) {
 	vec3_t bounds[2];
 	mdsFrame_t  *oldFrame, *newFrame;
 	int i, frameSize;
-	qboolean cullSphere;
+	bool cullSphere;
 	float radScale;
 
-	cullSphere = qtrue;
+	cullSphere = true;
 
 	frameSize = (int) ( sizeof( mdsFrame_t ) - sizeof( mdsBoneFrameCompressed_t ) + header->numBones * sizeof( mdsBoneFrameCompressed_t ) );
 
@@ -155,11 +155,11 @@ static int R_CullModel( mdsHeader_t *header, trRefEntity_t *ent ) {
 	radScale = 1.0f;
 
 	if ( ent->e.nonNormalizedAxes ) {
-		cullSphere = qfalse;    // by defalut, cull bounding sphere ONLY if this is not an upscaled entity
+		cullSphere = false;    // by defalut, cull bounding sphere ONLY if this is not an upscaled entity
 
 		// but allow the radius to be scaled if specified
 //		if(ent->e.reFlags & REFLAG_SCALEDSPHERECULL) {
-//			cullSphere = qtrue;
+//			cullSphere = true;
 //			radScale = ent->e.radius;
 //		}
 	}
@@ -325,7 +325,7 @@ void R_AddAnimSurfaces( trRefEntity_t *ent ) {
 	mdsSurface_t    *surface;
 	shader_t        *shader = 0;
 	int i, fogNum, cull;
-	qboolean personalModel;
+	bool personalModel;
 
 	// don't add third_person objects if not in a portal
 	personalModel = ( ent->e.renderfx & RF_THIRD_PERSON ) && !tr.viewParms.isPortal;
@@ -398,7 +398,7 @@ void R_AddAnimSurfaces( trRefEntity_t *ent ) {
 
 		// don't add third_person objects if not viewing through a portal
 		if ( !personalModel ) {
-			R_AddDrawSurf((surfaceType_t *)( (void *)surface), shader, fogNum, qfalse );
+			R_AddDrawSurf((surfaceType_t *)( (void *)surface), shader, fogNum, false );
 		}
 
 		surface = ( mdsSurface_t * )( (byte *)surface + surface->ofsEnd );
@@ -677,13 +677,13 @@ void R_CalcBone( mdsHeader_t *header, const refEntity_t *refent, int boneNum ) {
 	thisBoneInfo = &boneInfo[boneNum];
 	if ( thisBoneInfo->torsoWeight ) {
 		cTBonePtr = &cBoneListTorso[boneNum];
-		isTorso = qtrue;
+		isTorso = true;
 		if ( thisBoneInfo->torsoWeight == 1.0f ) {
-			fullTorso = qtrue;
+			fullTorso = true;
 		}
 	} else {
-		isTorso = qfalse;
-		fullTorso = qfalse;
+		isTorso = false;
+		fullTorso = false;
 	}
 	cBonePtr = &cBoneList[boneNum];
 
@@ -839,13 +839,13 @@ void R_CalcBoneLerp( mdsHeader_t *header, const refEntity_t *refent, int boneNum
 	if ( thisBoneInfo->torsoWeight ) {
 		cTBonePtr = &cBoneListTorso[boneNum];
 		cOldTBonePtr = &cOldBoneListTorso[boneNum];
-		isTorso = qtrue;
+		isTorso = true;
 		if ( thisBoneInfo->torsoWeight == 1.0f ) {
-			fullTorso = qtrue;
+			fullTorso = true;
 		}
 	} else {
-		isTorso = qfalse;
-		fullTorso = qfalse;
+		isTorso = false;
+		fullTorso = false;
 	}
 	cBonePtr = &cBoneList[boneNum];
 	cOldBonePtr = &cOldBoneList[boneNum];
@@ -1061,7 +1061,7 @@ void R_CalcBones( mdsHeader_t *header, const refEntity_t *refent, int *boneList,
 	Matrix3Transpose( refent->torsoAxis, torsoAxis );
 
 #ifdef HIGH_PRECISION_BONES
-	if ( qtrue ) {
+	if ( true ) {
 #else
 	if ( !backlerp && !torsoBacklerp ) {
 #endif

@@ -69,7 +69,7 @@ typedef struct flare_s {
 
 	int addedFrame;
 
-	qboolean inPortal;                  // true if in a portal view of the scene
+	bool inPortal;                  // true if in a portal view of the scene
 	int frameSceneNum;
 	void        *surface;
 	int fogNum;
@@ -79,7 +79,7 @@ typedef struct flare_s {
 	int flags;
 	// for coronas, the client determines current visibility, but it's still inserted so it will fade out properly
 
-	qboolean visible;               // state of last test
+	bool visible;               // state of last test
 	float drawIntensity;            // may be non 0 even if !visible due to fading
 
 	int windowX, windowY;
@@ -187,7 +187,7 @@ void RB_AddFlare( void *surface, int fogNum, vec3_t point, vec3_t color, float s
 	f->flags = flags;
 
 	if ( f->addedFrame != backEnd.viewParms.frameCount - 1 ) {
-		f->visible = qfalse;
+		f->visible = false;
 		f->fadeTime = backEnd.refdef.time - 2000;
 	}
 
@@ -249,7 +249,7 @@ void RB_AddDlightFlares( void ) {
 			j = 0;
 		}
 
-		RB_AddFlare( (void *)l, j, l->origin, l->color, 1.0f, NULL, id++, qtrue );  //----(SA)	also set scale
+		RB_AddFlare( (void *)l, j, l->origin, l->color, 1.0f, NULL, id++, true );  //----(SA)	also set scale
 	}
 }
 
@@ -310,7 +310,7 @@ RB_TestFlare
 */
 void RB_TestFlare( flare_t *f ) {
 //	float			depth;
-	qboolean visible;
+	bool visible;
 	float fade;
 //	float			screenZ;
 
@@ -318,8 +318,8 @@ void RB_TestFlare( flare_t *f ) {
 
 	// doing a readpixels is as good as doing a glFinish(), so
 	// don't bother with another sync
-//	glState.finishCalled = qfalse;
-//	glState.finishCalled = qtrue;	// (SA) Hmm, shouldn't this be true?
+//	glState.finishCalled = false;
+//	glState.finishCalled = true;	// (SA) Hmm, shouldn't this be true?
 
 	// read back the z buffer contents
 //	qglReadPixels( f->windowX, f->windowY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth );
@@ -333,18 +333,18 @@ void RB_TestFlare( flare_t *f ) {
 //	visible = ( -f->eyeZ - -screenZ ) < 24;
 //	visible = ( -f->eyeZ - -screenZ ) < 6;
 
-//	visible = qtrue;
-	visible = (qboolean)( f->flags & 1 );
+//	visible = true;
+	visible = (bool)( f->flags & 1 );
 
 	if ( visible ) {
 		if ( !f->visible ) {
-			f->visible = qtrue;
+			f->visible = true;
 			f->fadeTime = backEnd.refdef.time - 1;
 		}
 		fade = ( ( backEnd.refdef.time - f->fadeTime ) / 1000.0f ) * r_flareFade->value;
 	} else {
 		if ( f->visible ) {
-			f->visible = qfalse;
+			f->visible = false;
 			f->fadeTime = backEnd.refdef.time - 1;
 		}
 		fade = 1.0f - ( ( backEnd.refdef.time - f->fadeTime ) / 1000.0f ) * r_flareFade->value;
@@ -469,7 +469,7 @@ extend past the portal edge will be overwritten.
 void RB_RenderFlares( void ) {
 	flare_t     *f;
 	flare_t     **prev;
-	qboolean draw;
+	bool draw;
 
 	if ( !r_flares->integer ) {
 		return;
@@ -480,7 +480,7 @@ void RB_RenderFlares( void ) {
 	RB_AddCoronaFlares();
 
 	// perform z buffer readback on each flare in this view
-	draw = qfalse;
+	draw = false;
 	prev = &r_activeFlares;
 	while ( ( f = *prev ) != NULL ) {
 		// throw out any flares that weren't added last frame
@@ -497,7 +497,7 @@ void RB_RenderFlares( void ) {
 			 && f->inPortal == backEnd.viewParms.isPortal ) {
 			RB_TestFlare( f );
 			if ( f->drawIntensity ) {
-				draw = qtrue;
+				draw = true;
 			} else {
 				// this flare has completely faded out, so remove it from the chain
 				*prev = f->next;

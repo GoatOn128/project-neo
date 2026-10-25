@@ -157,9 +157,9 @@ void RE_RegisterFont(const char *fontName, int pixelSize, fontInfo_t *font) {
     char imageName[32];
     Com_sprintf(imageName, sizeof(imageName), "fonts/rt%08x_%d", FontHash(fontName), pixelSize);
     R_SyncRenderThread();
-    auto *image = R_CreateImage(imageName, atlas, AtlasSize, AtlasSize, qfalse, qfalse, GL_CLAMP);
+    auto *image = R_CreateImage(imageName, atlas, AtlasSize, AtlasSize, false, false, GL_CLAMP);
     ri.Hunk_FreeTempMemory(atlas);
-    const auto shader = RE_RegisterShaderFromImage(imageName, LIGHTMAP_2D, image, qfalse);
+    const auto shader = RE_RegisterShaderFromImage(imageName, LIGHTMAP_2D, image, false);
     for (auto &glyph : font->glyphs) {
         glyph.glyph = shader;
         Q_strncpyz(glyph.shaderName, imageName, sizeof(glyph.shaderName));

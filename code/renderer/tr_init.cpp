@@ -204,7 +204,7 @@ int max_polys;
 cvar_t  *r_maxpolyverts;
 int max_polyverts;
 
-static void AssertCvarRange( cvar_t *cv, float minVal, float maxVal, qboolean shouldBeIntegral ) {
+static void AssertCvarRange( cvar_t *cv, float minVal, float maxVal, bool shouldBeIntegral ) {
 	if ( shouldBeIntegral ) {
 		if ( ( int ) cv->value != cv->integer ) {
 			ri.Printf( PRINT_WARNING, "WARNING: cvar '%s' must be integral (%f)\n", cv->name, cv->value );
@@ -323,25 +323,25 @@ void GL_CheckErrors( void ) {
 static const auto &r_vidModes = doomdisplay::modes;
 static int s_numVidModes = ( sizeof( r_vidModes ) / sizeof( r_vidModes[0] ) );
 
-qboolean R_GetModeInfo( int *width, int *height, float *windowAspect, int mode ) {
+bool R_GetModeInfo( int *width, int *height, float *windowAspect, int mode ) {
 	const doomdisplay::Mode *vm;
 
 	if ( mode < -1 ) {
-		return qfalse;
+		return false;
 	}
 	if ( mode >= s_numVidModes ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( mode == -1 ) {
 		if (!doomdisplay::IsWidescreen(r_customwidth->integer,r_customheight->integer)) {
 			ri.Printf(PRINT_WARNING,"Custom resolution must be 16:9 (for example 1280x720).\n");
-			return qfalse;
+			return false;
 		}
 		*width = r_customwidth->integer;
 		*height = r_customheight->integer;
 		*windowAspect = (float)*width / *height;
-		return qtrue;
+		return true;
 	}
 
 	vm = &r_vidModes[mode];
@@ -350,7 +350,7 @@ qboolean R_GetModeInfo( int *width, int *height, float *windowAspect, int mode )
 	*height = vm->height;
 	*windowAspect = (float)vm->width / ( vm->height * vm->pixelAspect );
 
-	return qtrue;
+	return true;
 }
 
 /*
@@ -576,7 +576,7 @@ void R_ScreenShot_f( void ) {
 	char checkname[MAX_OSPATH];
 	int len;
 	static int lastNumber = -1;
-	qboolean silent;
+	bool silent;
 
 	if ( !strcmp( ri.Cmd_Argv( 1 ), "levelshot" ) ) {
 		R_LevelShot();
@@ -584,9 +584,9 @@ void R_ScreenShot_f( void ) {
 	}
 
 	if ( !strcmp( ri.Cmd_Argv( 1 ), "silent" ) ) {
-		silent = qtrue;
+		silent = true;
 	} else {
-		silent = qfalse;
+		silent = false;
 	}
 
 	if ( ri.Cmd_Argc() == 2 && !silent ) {
@@ -631,7 +631,7 @@ void R_ScreenShotJPEG_f( void ) {
 	char checkname[MAX_OSPATH];
 	int len;
 	static int lastNumber = -1;
-	qboolean silent;
+	bool silent;
 
 	if ( !strcmp( ri.Cmd_Argv( 1 ), "levelshot" ) ) {
 		R_LevelShot();
@@ -639,9 +639,9 @@ void R_ScreenShotJPEG_f( void ) {
 	}
 
 	if ( !strcmp( ri.Cmd_Argv( 1 ), "silent" ) ) {
-		silent = qtrue;
+		silent = true;
 	} else {
-		silent = qfalse;
+		silent = false;
 	}
 
 	if ( ri.Cmd_Argc() == 2 && !silent ) {
@@ -841,8 +841,8 @@ void R_Register( void ) {
 	r_lowMemTextureThreshold = ri.Cvar_Get( "r_lowMemTextureThreshold", "15.0", CVAR_ARCHIVE | CVAR_LATCH );
 	r_rmse = ri.Cvar_Get( "r_rmse", "0.0", CVAR_ARCHIVE | CVAR_LATCH );
 	r_colorMipLevels = ri.Cvar_Get( "r_colorMipLevels", "0", CVAR_LATCH );
-	AssertCvarRange( r_picmip, 0, 16, qtrue );
-	AssertCvarRange( r_picmip2, 0, 16, qtrue );
+	AssertCvarRange( r_picmip, 0, 16, true );
+	AssertCvarRange( r_picmip2, 0, 16, true );
 	r_detailTextures = ri.Cvar_Get( "r_detailtextures", "1", CVAR_ARCHIVE | CVAR_LATCH );
 	r_texturebits = ri.Cvar_Get( "r_texturebits", "0", CVAR_ARCHIVE | CVAR_LATCH );
 	r_colorbits = ri.Cvar_Get( "r_colorbits", "0", CVAR_ARCHIVE | CVAR_LATCH );
@@ -883,7 +883,7 @@ void R_Register( void ) {
 	// temporary latched variables that can only change over a restart
 	//
 	r_displayRefresh = ri.Cvar_Get( "r_displayRefresh", "0", CVAR_LATCH );
-	AssertCvarRange( r_displayRefresh, 0, 200, qtrue );
+	AssertCvarRange( r_displayRefresh, 0, 200, true );
 	r_fullbright = ri.Cvar_Get( "r_fullbright", "0", CVAR_LATCH | CVAR_CHEAT );
 	r_mapOverBrightBits = ri.Cvar_Get( "r_mapOverBrightBits", "2", CVAR_LATCH );
 	r_intensity = ri.Cvar_Get( "r_intensity", "1", CVAR_LATCH );
@@ -896,7 +896,7 @@ void R_Register( void ) {
 	r_lodbias = ri.Cvar_Get( "r_lodbias", "0", CVAR_ARCHIVE );
 	r_flares = ri.Cvar_Get( "r_flares", "1", CVAR_ARCHIVE );
 	r_znear = ri.Cvar_Get( "r_znear", "4", CVAR_CHEAT );
-	AssertCvarRange( r_znear, 0.001f, 200, qtrue );
+	AssertCvarRange( r_znear, 0.001f, 200, true );
 //----(SA)	added
 	r_zfar = ri.Cvar_Get( "r_zfar", "0", CVAR_CHEAT );
 //----(SA)	end
@@ -1128,7 +1128,7 @@ void R_Init( void ) {
 RE_Shutdown
 ===============
 */
-void RE_Shutdown( qboolean destroyWindow ) {
+void RE_Shutdown( bool destroyWindow ) {
     if (tr.registered) {
         R_SyncRenderThread();
         hbao.Shutdown();
@@ -1197,7 +1197,7 @@ void RE_Shutdown( qboolean destroyWindow ) {
 		//ri.Tag_Free();	// wipe all render alloc'd zone memory
 	}
 
-	tr.registered = qfalse;
+	tr.registered = false;
 }
 
 

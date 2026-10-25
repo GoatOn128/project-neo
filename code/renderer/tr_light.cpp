@@ -299,13 +299,13 @@ void R_SetupEntityLighting( const trRefdef_t *refdef, trRefEntity_t *ent ) {
 	float d;
 	vec3_t lightDir;
 	vec3_t lightOrigin;
-//	qboolean		highlighted = qfalse; // TTimo: unused
+//	bool		highlighted = false; // TTimo: unused
 
 	// lighting calculations
 	if ( ent->lightingCalculated ) {
 		return;
 	}
-	ent->lightingCalculated = qtrue;
+	ent->lightingCalculated = true;
 
 	//
 	// trace a sample point down to find ambient light
@@ -415,19 +415,19 @@ int R_LightForPoint( vec3_t point, vec3_t ambientLight, vec3_t directedLight, ve
         VectorSet(ambientLight, doomLight, doomLight, doomLight);
         VectorClear(directedLight);
         VectorSet(lightDir, 0, 0, 1);
-        return qtrue;
+        return true;
     }
     VectorSet(ambientLight, 128, 128, 128);
     VectorClear(directedLight);
     VectorSet(lightDir, 0, 0, 1);
     if (!tr.world) {
-        return qfalse;
+        return false;
     }
     trRefEntity_t ent;
 
     // bk010103 - this segfaults with -nolight maps
 	if ( tr.world->lightGridData == NULL ) {
-		return qfalse;
+		return false;
 	}
 
 	Com_Memset( &ent, 0, sizeof( ent ) );
@@ -437,5 +437,5 @@ int R_LightForPoint( vec3_t point, vec3_t ambientLight, vec3_t directedLight, ve
 	VectorCopy( ent.directedLight, directedLight );
 	VectorCopy( ent.lightDir, lightDir );
 
-	return qtrue;
+	return true;
 }

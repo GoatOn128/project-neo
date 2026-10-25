@@ -89,10 +89,10 @@ static int R_CullModel( mdcHeader_t *header, trRefEntity_t *ent ) {
 	vec3_t bounds[2];
 	md3Frame_t  *oldFrame, *newFrame;
 	int i;
-	qboolean cullSphere;    //----(SA)	added
+	bool cullSphere;    //----(SA)	added
 	float radScale;
 
-	cullSphere = qtrue;
+	cullSphere = true;
 
 
 
@@ -103,11 +103,11 @@ static int R_CullModel( mdcHeader_t *header, trRefEntity_t *ent ) {
 	radScale = 1.0f;
 
 	if ( ent->e.nonNormalizedAxes ) {
-		cullSphere = qfalse;    // by defalut, cull bounding sphere ONLY if this is not an upscaled entity
+		cullSphere = false;    // by defalut, cull bounding sphere ONLY if this is not an upscaled entity
 
 		// but allow the radius to be scaled if specified
 //		if(ent->e.reFlags & REFLAG_SCALEDSPHERECULL) {
-//			cullSphere = qtrue;
+//			cullSphere = true;
 //			radScale = ent->e.radius;
 //		}
 	}
@@ -306,7 +306,7 @@ void R_AddMDCSurfaces( trRefEntity_t *ent ) {
 	int cull;
 	int lod;
 	int fogNum;
-	qboolean personalModel;
+	bool personalModel;
 
 	// don't add third_person objects if not in a portal
 	personalModel = ( ent->e.renderfx & RF_THIRD_PERSON ) && !tr.viewParms.isPortal;
@@ -413,7 +413,7 @@ void R_AddMDCSurfaces( trRefEntity_t *ent ) {
 			 && fogNum == 0
 			 && !( ent->e.renderfx & ( RF_NOSHADOW | RF_DEPTHHACK ) )
 			 && shader->sort == SS_OPAQUE ) {
-			R_AddDrawSurf((surfaceType_t *)( (void *)surface), tr.shadowShader, 0, qfalse );
+			R_AddDrawSurf((surfaceType_t *)( (void *)surface), tr.shadowShader, 0, false );
 		}
 
 //----(SA)
@@ -423,18 +423,18 @@ void R_AddMDCSurfaces( trRefEntity_t *ent ) {
 //			&& fogNum == 0
 //			&& (ent->e.renderfx & RF_SHADOW_PLANE )
 //			&& shader->sort == SS_OPAQUE ) {
-//			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse );
+//			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, false );
 //		}
 
 //----(SA)	for testing polygon shadows (on /all/ models)
 //		if ( r_shadows->integer == 4)
-//			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse );
+//			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, false );
 
 //----(SA)	done testing
 
 		// don't add third_person objects if not viewing through a portal
 		if ( !personalModel ) {
-			R_AddDrawSurf((surfaceType_t *)( (void *)surface), shader, fogNum, qfalse );
+			R_AddDrawSurf((surfaceType_t *)( (void *)surface), shader, fogNum, false );
 		}
 
 		surface = ( mdcSurface_t * )( (byte *)surface + surface->ofsEnd );
