@@ -42,6 +42,23 @@ LEGACY_INCLUDE_PATHS = [
     '#code/third-party',       # "openal/x.h", "fluidsynth/x.h", ...
 ]
 
+# Warning and language settings for the Linux build, matching what the
+# Windows flags do: full warnings, nothing pedantic beyond that.
+GCC_FLAGS = [
+    '-Wall',
+    '-Wno-unused-function',
+    '-fno-strict-aliasing',
+    '-fwrapv',
+]
+
+
+def pkg_config_libs(name):
+    """The linker flags for a system library, straight from pkg-config."""
+    import subprocess
+    return subprocess.check_output(
+        ['pkg-config', '--libs', name], text=True).split()
+
+
 def make_base_env(config, arch='x86'):
     """The starting point for every other environment in the build.
 
@@ -49,6 +66,9 @@ def make_base_env(config, arch='x86'):
     When clang-cl is missing, plain MSVC is used as a fallback.
     """
     from SCons.Script import Environment
+
+    if os.name != 'nt':
+        return make_base_env_linux(config)
 
     env = Environment(tools=['default'],
                       TARGET_ARCH='amd64' if arch == 'x64' else 'x86')
@@ -85,6 +105,39 @@ def make_base_env(config, arch='x86'):
         env.Append(CCFLAGS=['/MTd', '/Z7', '/Od'], LINKFLAGS=['/DEBUG'])
     else:
         env.Append(CCFLAGS=['/MT', '/O2'], CPPDEFINES=['NDEBUG'])
+
+    return env
+
+
+def make_base_env_linux(config):
+    """The base environment for the Linux build: gcc with the SDL3 that
+    pkg-config finds. The sources are the same as on Windows, only the
+    platform files differ."""
+    import subprocess
+    from SCons.Script import Environment
+
+    env = Environment(tools=['default'])
+
+    env['CCFLAGS'] = GCC_FLAGS + ['-fPIC']
+    env['CXXFLAGS'] = ['-std=c++17', '-fexceptions']
+    env['SHLIBPREFIX'] = ''
+    # The same definitions the Windows build sets, minus the ones that
+    # only mean something to the Microsoft headers.
+    env.Append(CPPDEFINES=['C_ONLY', 'NOMINMAX'])
+
+    if config == 'debug':
+        env.Append(CCFLAGS=['-g', '-O0'])
+    else:
+        env.Append(CCFLAGS=['-O2'], CPPDEFINES=['NDEBUG'])
+
+    # SDL3 comes from the pinned source CI builds (or a system package);
+    # pkg-config knows where its headers are.
+    cflags = subprocess.check_output(
+        ['pkg-config', '--cflags', 'sdl3'], text=True).split()
+    env.Append(CCFLAGS=cflags)
+
+    # Include folders that make the old include paths work, see above.
+    env.Append(CPPPATH=LEGACY_INCLUDE_PATHS)
 
     return env
 

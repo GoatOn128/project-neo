@@ -1,6 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "snd_fluidsynth.h"
-#include <windows.h>
+#include <SDL3/SDL.h>
+
+// The shared library is the Windows DLL on Windows and the system soname
+// on Linux; SDL loads either through the same call.
+#ifdef _WIN32
+static const char FLUIDSYNTH_MODULE[] = "libfluidsynth-3.dll";
+#else
+static const char FLUIDSYNTH_MODULE[] = "libfluidsynth.so.3";
+#endif
 
 namespace doomaudio {
 
@@ -8,7 +16,7 @@ bool FluidSynth::Load() {
     if (module) {
         return true;
     }
-    module = LoadLibrary("libfluidsynth-3.dll");
+    module = SDL_LoadObject(FLUIDSYNTH_MODULE);
     if (!module) {
         return false;
     }
@@ -35,7 +43,8 @@ bool FluidSynth::Load() {
         {"fluid_player_get_total_ticks", (void **)&player_get_total_ticks},
     };
     for (const Entry &entry : entries) {
-        *entry.target = reinterpret_cast<void *>(GetProcAddress((HMODULE)module, entry.name));
+        *entry.target = reinterpret_cast<void *>(
+            SDL_LoadFunction(reinterpret_cast<SDL_SharedObject *>(module), entry.name));
         if (!*entry.target) {
             Unload();
             return false;
@@ -46,7 +55,7 @@ bool FluidSynth::Load() {
 
 void FluidSynth::Unload() {
     if (module) {
-        FreeLibrary((HMODULE)module);
+        SDL_UnloadObject(reinterpret_cast<SDL_SharedObject *>(module));
         module = nullptr;
     }
     new_settings = nullptr;

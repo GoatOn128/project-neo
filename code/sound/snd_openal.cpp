@@ -4,7 +4,9 @@
 #include "../openal/include/AL/al.h"
 #include "../openal/include/AL/alc.h"
 #include "../openal/include/AL/alext.h"
+#ifdef _WIN32
 #include <windows.h>
+#endif
 #include "../sys/sys_local.h"
 #include <array>
 #include <vector>

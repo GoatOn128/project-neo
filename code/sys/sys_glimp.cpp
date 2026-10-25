@@ -39,7 +39,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "../renderer/tr_local.h"
 #include "../qcommon/qcommon.h"
 #include "sys_local.h"
+#ifdef _WIN32
 #include "win32/win_local.h"
+#endif
 
 typedef enum {
 	RSERR_OK,
@@ -530,6 +532,8 @@ SMP acceleration
 ===========================================================
 */
 
+#ifdef _WIN32
+
 HANDLE renderCommandsEvent;
 HANDLE renderCompletedEvent;
 HANDLE renderActiveEvent;
@@ -624,3 +628,28 @@ void GLimp_WakeRenderer( void *data ) {
 	WaitForSingleObject( renderActiveEvent, INFINITE );
 }
 
+
+
+#else
+
+// Linux has no SMP render thread yet, so the renderer stays
+// single-threaded: GLimp_SpawnRenderThread reports the failure the same
+// way the Win32 path does when CreateThread fails.
+bool GLimp_SpawnRenderThread( void ( *function )( void ) ) {
+	( void )function;
+	return false;
+}
+
+void *GLimp_RendererSleep( void ) {
+	// never reached without a render thread
+	return NULL;
+}
+
+void GLimp_FrontEndSleep( void ) {
+}
+
+void GLimp_WakeRenderer( void *data ) {
+	( void )data;
+}
+
+#endif

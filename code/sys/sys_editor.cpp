@@ -5,11 +5,14 @@
 #include "../tools/editor/EditorAPI.h"
 
 // The editor DLL carries the CPU suffix like the game modules, so the
-// 64-bit engine loads toolsx64.dll.
-#ifdef _WIN64
+// 64-bit engine loads toolsx64.dll. The editor is not built on Linux yet;
+// the name is there so the load fails with a clear message.
+#if defined( _WIN64 )
 static const char EDITOR_MODULE_NAME[] = "toolsx64.dll";
-#else
+#elif defined( _WIN32 )
 static const char EDITOR_MODULE_NAME[] = "toolsx86.dll";
+#else
+static const char EDITOR_MODULE_NAME[] = "toolsx64.so";
 #endif
 
 namespace {

@@ -71,7 +71,7 @@ void Sys_StartProcess( char *exeName, bool doexit ) {           // NERVE - SMF
 	SDL_Process *process;
 	const char *args[2];
 
-	Com_sprintf( cmd, sizeof( cmd ), "%s\\%s", Sys_Cwd(), exeName );
+	Com_sprintf( cmd, sizeof( cmd ), "%s%c%s", Sys_Cwd(), PATH_SEP, exeName );
 
 	args[0] = cmd;
 	args[1] = NULL;
@@ -287,7 +287,7 @@ static SDL_EnumerationResult SDLCALL FilteredFilesCallback( void *userdata, cons
 
 	if ( info.type == SDL_PATHTYPE_DIRECTORY ) {
 		if ( scan->subdirs[0] ) {
-			Com_sprintf( newsubdirs, sizeof( newsubdirs ), "%s\\%s", scan->subdirs, fname );
+			Com_sprintf( newsubdirs, sizeof( newsubdirs ), "%s%c%s", scan->subdirs, PATH_SEP, fname );
 		} else {
 			Com_sprintf( newsubdirs, sizeof( newsubdirs ), "%s", fname );
 		}
@@ -300,7 +300,7 @@ static SDL_EnumerationResult SDLCALL FilteredFilesCallback( void *userdata, cons
 
 	// keep the same entry naming as the old code, including the leading
 	// separator when scanning the base directory itself
-	Com_sprintf( filename, sizeof( filename ), "%s\\%s", scan->subdirs, fname );
+	Com_sprintf( filename, sizeof( filename ), "%s%c%s", scan->subdirs, PATH_SEP, fname );
 	if ( !Com_FilterPath( (char *)scan->filter, filename, false ) ) {
 		return SDL_ENUM_CONTINUE;
 	}
@@ -320,7 +320,7 @@ void Sys_ListFilteredFiles( const char *basedir, const char *subdirs, const char
 	}
 
 	if ( strlen( subdirs ) ) {
-		Com_sprintf( search, sizeof( search ), "%s\\%s", basedir, subdirs );
+		Com_sprintf( search, sizeof( search ), "%s%c%s", basedir, PATH_SEP, subdirs );
 	} else {
 		Com_sprintf( search, sizeof( search ), "%s", basedir );
 	}
@@ -608,15 +608,21 @@ void * QDECL Sys_LoadDll( const char *name, void **dllHandle, const char *entryN
 
 // The module DLL names end with the CPU suffix (cgamex86, cgamex64), so
 // the engine only ever loads modules built for its own word size.
+// Linux uses the same names with .so in place of .dll.
 #ifdef _WIN64
 #define SYS_DLL_NAME_SUFFIX "x64"
-#else
+#define SYS_DLL_NAME_EXTENSION ".dll"
+#elif defined( _WIN32 )
 #define SYS_DLL_NAME_SUFFIX "x86"
+#define SYS_DLL_NAME_EXTENSION ".dll"
+#else
+#define SYS_DLL_NAME_SUFFIX "x64"
+#define SYS_DLL_NAME_EXTENSION ".so"
 #endif
 #ifdef WOLF_SP_DEMO
-	Com_sprintf( filename, sizeof( filename ), "%s" SYS_DLL_NAME_SUFFIX "_d.dll", name );
+	Com_sprintf( filename, sizeof( filename ), "%s" SYS_DLL_NAME_SUFFIX "_d" SYS_DLL_NAME_EXTENSION, name );
 #else
-	Com_sprintf( filename, sizeof( filename ), "%s" SYS_DLL_NAME_SUFFIX ".dll", name );
+	Com_sprintf( filename, sizeof( filename ), "%s" SYS_DLL_NAME_SUFFIX SYS_DLL_NAME_EXTENSION, name );
 #endif
 
 
@@ -891,7 +897,11 @@ void Sys_Init( void ) {
 	Cmd_AddCommand( "in_restart", Sys_In_Restart_f );
 	Cmd_AddCommand( "net_restart", Sys_Net_Restart_f );
 
+#ifdef _WIN32
 	Cvar_Set( "arch", "winnt" );
+#else
+	Cvar_Set( "arch", "linux" );
+#endif
 
 	//
 	// figure out our CPU
