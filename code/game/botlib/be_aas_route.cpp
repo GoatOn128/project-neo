@@ -880,8 +880,8 @@ void AAS_CreateAllRoutingCache( void ) {
 unsigned short CRC_ProcessString( unsigned char *data, int length );
 
 //the route cache header
-//this header is followed by numportalcache + numareacache aas_routingcache_t
-//structures that store routing cache
+//this header is followed by numportalcache + numareacache records that each
+//store one routing cache in a fixed layout that every build can read
 typedef struct routecacheheader_s
 {
 	int ident;
@@ -893,14 +893,50 @@ typedef struct routecacheheader_s
 	int reachcrc;
 	int numportalcache;
 	int numareacache;
-	int cachesize;                    // sizeof( aas_routingcache_t ) of the build that wrote the file
 } routecacheheader_t;
 
 #define RCID                        ( ( 'C' << 24 ) + ( 'R' << 16 ) + ( 'E' << 8 ) + 'M' )
-#define RCVERSION                   16
+#define RCVERSION                   17
 
 void AAS_DecompressVis( byte *in, int numareas, byte *decompressed );
 int AAS_CompressVis( byte *vis, int numareas, byte *dest );
+
+// writes one routing cache in a fixed layout, so the file can be read by any
+// build no matter what sizeof( aas_routingcache_t ) is there
+void AAS_WriteRoutingCacheRecord( aas_routingcache_t *cache, fileHandle_t fp ) {
+	int i, numtraveltimes, value;
+	float f;
+	unsigned short int *traveltimes;
+
+	// one travel time and one reachability byte per entry
+	numtraveltimes = ( cache->size - (int)sizeof( aas_routingcache_t ) ) / 3;
+
+	value = LittleLong( numtraveltimes );
+	botimport.FS_Write( &value, sizeof( value ), fp );
+	f = LittleFloat( cache->time );
+	botimport.FS_Write( &f, sizeof( f ), fp );
+	value = LittleLong( cache->cluster );
+	botimport.FS_Write( &value, sizeof( value ), fp );
+	value = LittleLong( cache->areanum );
+	botimport.FS_Write( &value, sizeof( value ), fp );
+	for ( i = 0; i < 3; i++ ) {
+		f = LittleFloat( cache->origin[i] );
+		botimport.FS_Write( &f, sizeof( f ), fp );
+	} //end for
+	f = LittleFloat( cache->starttraveltime );
+	botimport.FS_Write( &f, sizeof( f ), fp );
+	value = LittleLong( cache->travelflags );
+	botimport.FS_Write( &value, sizeof( value ), fp );
+	// the travel times are byte swapped into a buffer so the file is always
+	// little endian, the reachabilities are single bytes already
+	traveltimes = (unsigned short int *) GetClearedMemory( numtraveltimes * sizeof( unsigned short int ) );
+	for ( i = 0; i < numtraveltimes; i++ ) {
+		traveltimes[i] = LittleShort( cache->traveltimes[i] );
+	} //end for
+	botimport.FS_Write( traveltimes, numtraveltimes * sizeof( unsigned short int ), fp );
+	FreeMemory( traveltimes );
+	botimport.FS_Write( cache->reachabilities, numtraveltimes * sizeof( unsigned char ), fp );
+} //end of the function AAS_WriteRoutingCacheRecord
 
 void AAS_WriteRouteCache( void ) {
 	int i, j, numportalcache, numareacache, size;
@@ -943,7 +979,6 @@ void AAS_WriteRouteCache( void ) {
 	  //create the header
 	routecacheheader.ident = RCID;
 	routecacheheader.version = RCVERSION;
-	routecacheheader.cachesize = sizeof( aas_routingcache_t );
 	routecacheheader.numareas = ( *aasworld ).numareas;
 	routecacheheader.numclusters = ( *aasworld ).numclusters;
 	routecacheheader.areacrc = CRC_ProcessString( (unsigned char *)( *aasworld ).areas, sizeof( aas_area_t ) * ( *aasworld ).numareas );
@@ -958,7 +993,7 @@ void AAS_WriteRouteCache( void ) {
 	{
 		for ( cache = ( *aasworld ).portalcache[i]; cache; cache = cache->next )
 		{
-			botimport.FS_Write( cache, cache->size, fp );
+			AAS_WriteRoutingCacheRecord( cache, fp );
 		} //end for
 	} //end for
 	for ( i = 0; i < ( *aasworld ).numclusters; i++ )
@@ -968,7 +1003,7 @@ void AAS_WriteRouteCache( void ) {
 		{
 			for ( cache = ( *aasworld ).clusterareacache[i][j]; cache; cache = cache->next )
 			{
-				botimport.FS_Write( cache, cache->size, fp );
+				AAS_WriteRoutingCacheRecord( cache, fp );
 			} //end for
 		} //end for
 	} //end for
@@ -998,22 +1033,27 @@ void AAS_WriteRouteCache( void ) {
 // Changes Globals:		-
 //===========================================================================
 aas_routingcache_t *AAS_ReadCache( fileHandle_t fp ) {
-	int i, size;
+	int i, numtraveltimes;
 	aas_routingcache_t *cache;
 
-	botimport.FS_Read( &size, sizeof( size ), fp );
-	size = LittleLong( size );
-	// the record has to fit this build's cache layout, the file stores the
-	// structs as raw memory so any other layout turns into garbage
-	if ( size < (int)sizeof( aas_routingcache_t ) + 3 ||
-		 ( size - (int)sizeof( aas_routingcache_t ) ) % 3 != 0 ||
-		 size > (int)sizeof( aas_routingcache_t ) + 3 * ( *aasworld ).numareas ) {
+	botimport.FS_Read( &numtraveltimes, sizeof( numtraveltimes ), fp );
+	numtraveltimes = LittleLong( numtraveltimes );
+	// every entry stores one travel time and one reachability byte, anything
+	// else means the record is not a valid routing cache
+	if ( numtraveltimes < 0 || numtraveltimes > ( *aasworld ).numareas ) {
 		return NULL;
 	} //end if
-	cache = (aas_routingcache_t *) AAS_RoutingGetMemory( size );
-	cache->size = size;
-	botimport.FS_Read( (unsigned char *)cache + sizeof( size ), size - sizeof( size ), fp );
-
+	// the record is stored in a fixed layout, so the in memory layout of this
+	// build does not have to match the one of the build that wrote the file
+	cache = AAS_AllocRoutingCache( numtraveltimes );
+	botimport.FS_Read( &cache->time, sizeof( cache->time ), fp );
+	botimport.FS_Read( &cache->cluster, sizeof( cache->cluster ), fp );
+	botimport.FS_Read( &cache->areanum, sizeof( cache->areanum ), fp );
+	botimport.FS_Read( &cache->origin, sizeof( cache->origin ), fp );
+	botimport.FS_Read( &cache->starttraveltime, sizeof( cache->starttraveltime ), fp );
+	botimport.FS_Read( &cache->travelflags, sizeof( cache->travelflags ), fp );
+	botimport.FS_Read( cache->traveltimes, numtraveltimes * sizeof( unsigned short int ), fp );
+	botimport.FS_Read( cache->reachabilities, numtraveltimes * sizeof( unsigned char ), fp );
 	if ( 1 != LittleLong( 1 ) ) {
 		cache->time = LittleFloat( cache->time );
 		cache->cluster = LittleLong( cache->cluster );
@@ -1023,18 +1063,10 @@ aas_routingcache_t *AAS_ReadCache( fileHandle_t fp ) {
 		cache->origin[2] = LittleFloat( cache->origin[2] );
 		cache->starttraveltime = LittleFloat( cache->starttraveltime );
 		cache->travelflags = LittleLong( cache->travelflags );
-	}
-
-//	cache->reachabilities = (unsigned char *) cache + sizeof(aas_routingcache_t) - sizeof(unsigned short) +
-//		(size - sizeof(aas_routingcache_t) + sizeof(unsigned short)) / 3 * 2;
-	cache->reachabilities = (unsigned char *) cache + sizeof( aas_routingcache_t ) +
-							( ( size - sizeof( aas_routingcache_t ) ) / 3 ) * 2;
-
-	//DAJ BUGFIX for missing byteswaps for traveltimes
-	size = ( size - sizeof( aas_routingcache_t ) ) / 3 + 1;
-	for ( i = 0; i < size; i++ ) {
-		cache->traveltimes[i] = LittleShort( cache->traveltimes[i] );
-	}
+		for ( i = 0; i < numtraveltimes; i++ ) {
+			cache->traveltimes[i] = LittleShort( cache->traveltimes[i] );
+		} //end for
+	} //end if
 	return cache;
 } //end of the function AAS_ReadCache
 //===========================================================================
@@ -1057,7 +1089,8 @@ int AAS_ReadRouteCache( void ) {
 	} //end if
 	botimport.FS_Read( &routecacheheader, sizeof( routecacheheader_t ), fp );
 
-	// GJD: route cache data MUST be written on a PC because I've not altered the writing code.
+	// the cache records are stored in a fixed little endian layout, so the same
+	// file loads on 32 bit, 64 bit and big endian builds
 
 	routecacheheader.areacrc = LittleLong( routecacheheader.areacrc );
 	routecacheheader.clustercrc = LittleLong( routecacheheader.clustercrc );
@@ -1068,7 +1101,6 @@ int AAS_ReadRouteCache( void ) {
 	routecacheheader.numportalcache = LittleLong( routecacheheader.numportalcache );
 	routecacheheader.reachcrc = LittleLong( routecacheheader.reachcrc );
 	routecacheheader.version = LittleLong( routecacheheader.version );
-	routecacheheader.cachesize = LittleLong( routecacheheader.cachesize );
 
 	if ( routecacheheader.ident != RCID ) {
 		botimport.FS_FCloseFile( fp );
@@ -1079,13 +1111,6 @@ int AAS_ReadRouteCache( void ) {
 	if ( routecacheheader.version != RCVERSION ) {
 		botimport.FS_FCloseFile( fp );
 		Com_Printf( "route cache dump has wrong version %d, should be %d", routecacheheader.version, RCVERSION );
-		return false;
-	} //end if
-	// a different struct size means the raw cache records were written by
-	// another build (e.g. the 32 bit one) and cannot be trusted
-	if ( routecacheheader.cachesize != sizeof( aas_routingcache_t ) ) {
-		botimport.FS_FCloseFile( fp );
-		Com_Printf( "route cache dump was written by a build with a different cache layout\n" );
 		return false;
 	} //end if
 	if ( routecacheheader.numareas != ( *aasworld ).numareas ) {
@@ -1122,7 +1147,8 @@ int AAS_ReadRouteCache( void ) {
 	for ( i = 0; i < routecacheheader.numportalcache; i++ )
 	{
 		cache = AAS_ReadCache( fp );
-		if ( !cache || cache->areanum < 0 || cache->areanum >= ( *aasworld ).numareas ) {
+		if ( !cache || cache->areanum < 0 || cache->areanum >= ( *aasworld ).numareas ||
+			 ( cache->size - (int)sizeof( aas_routingcache_t ) ) / 3 != ( *aasworld ).numportals ) {
 			if ( cache ) {
 				AAS_FreeRoutingCache( cache );
 			} //end if
@@ -1132,7 +1158,7 @@ int AAS_ReadRouteCache( void ) {
 			AAS_FreeAllPortalCache();
 			AAS_InitClusterAreaCache();
 			AAS_InitPortalCache();
-			Com_Printf( "%s is corrupt or written by an incompatible build\n", filename );
+			Com_Printf( "%s is corrupt\n", filename );
 			return false;
 		} //end if
 		cache->next = ( *aasworld ).portalcache[cache->areanum];
@@ -1147,7 +1173,9 @@ int AAS_ReadRouteCache( void ) {
 	{
 		cache = AAS_ReadCache( fp );
 		if ( !cache || cache->cluster < 0 || cache->cluster >= ( *aasworld ).numclusters ||
-			 cache->areanum < 0 || cache->areanum >= ( *aasworld ).numareas ) {
+			 cache->areanum < 0 || cache->areanum >= ( *aasworld ).numareas ||
+			 ( cache->size - (int)sizeof( aas_routingcache_t ) ) / 3 !=
+			 ( *aasworld ).clusters[cache->cluster].numreachabilityareas ) {
 			if ( cache ) {
 				AAS_FreeRoutingCache( cache );
 			} //end if
@@ -1157,7 +1185,7 @@ int AAS_ReadRouteCache( void ) {
 			AAS_FreeAllPortalCache();
 			AAS_InitClusterAreaCache();
 			AAS_InitPortalCache();
-			Com_Printf( "%s is corrupt or written by an incompatible build\n", filename );
+			Com_Printf( "%s is corrupt\n", filename );
 			return false;
 		} //end if
 		clusterareanum = AAS_ClusterAreaNum( cache->cluster, cache->areanum );
