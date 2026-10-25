@@ -341,7 +341,7 @@ void trap_AAS_EntityInfo( int entnum, void * info ) {
 }
 DOOM_SAVE_CALLBACK("trap_AAS_EntityInfo", trap_AAS_EntityInfo);
 
-int trap_AAS_Initialized(  ) {
+bool trap_AAS_Initialized(  ) {
 	return gameImports->AAS_Initialized();
 }
 DOOM_SAVE_CALLBACK("trap_AAS_Initialized", trap_AAS_Initialized);
@@ -411,12 +411,12 @@ int trap_AAS_AreaTravelTimeToGoalArea( int areanum, vec3_t origin, int goalarean
 }
 DOOM_SAVE_CALLBACK("trap_AAS_AreaTravelTimeToGoalArea", trap_AAS_AreaTravelTimeToGoalArea);
 
-int trap_AAS_Swimming( vec3_t origin ) {
+bool trap_AAS_Swimming( vec3_t origin ) {
 	return gameImports->AAS_Swimming( origin );
 }
 DOOM_SAVE_CALLBACK("trap_AAS_Swimming", trap_AAS_Swimming);
 
-int trap_AAS_PredictClientMovement( void * move, int entnum, vec3_t origin, int presencetype, int onground, vec3_t velocity, vec3_t cmdmove, int cmdframes, int maxframes, float frametime, int stopevent, int stopareanum, int visualize ) {
+bool trap_AAS_PredictClientMovement( void * move, int entnum, vec3_t origin, int presencetype, int onground, vec3_t velocity, vec3_t cmdmove, int cmdframes, int maxframes, float frametime, int stopevent, int stopareanum, int visualize ) {
 	return gameImports->AAS_PredictClientMovement( move, entnum, origin, presencetype, onground, velocity, cmdmove, cmdframes, maxframes, frametime, stopevent, stopareanum, visualize );
 }
 DOOM_SAVE_CALLBACK("trap_AAS_PredictClientMovement", trap_AAS_PredictClientMovement);

@@ -182,7 +182,7 @@ typedef struct {
 	int (*BotGetServerCommand)( int clientNum, char * message, int size );
 	void (*BotUserCommand)( int clientNum, usercmd_t * ucmd );
 	void (*AAS_EntityInfo)( int entnum, void * info );
-	int (*AAS_Initialized)(  );
+	bool (*AAS_Initialized)(  );
 	void (*AAS_PresenceTypeBoundingBox)( int presencetype, vec3_t mins, vec3_t maxs );
 	float (*AAS_Time)(  );
 	void (*AAS_SetCurrentWorld)( int index );
@@ -196,8 +196,8 @@ typedef struct {
 	bool (*AAS_IntForBSPEpairKey)( int ent, char * key, int * value );
 	int (*AAS_AreaReachability)( int areanum );
 	int (*AAS_AreaTravelTimeToGoalArea)( int areanum, vec3_t origin, int goalareanum, int travelflags );
-	int (*AAS_Swimming)( vec3_t origin );
-	int (*AAS_PredictClientMovement)( void * move, int entnum, vec3_t origin, int presencetype, int onground, vec3_t velocity, vec3_t cmdmove, int cmdframes, int maxframes, float frametime, int stopevent, int stopareanum, int visualize );
+	bool (*AAS_Swimming)( vec3_t origin );
+	bool (*AAS_PredictClientMovement)( void * move, int entnum, vec3_t origin, int presencetype, int onground, vec3_t velocity, vec3_t cmdmove, int cmdframes, int maxframes, float frametime, int stopevent, int stopareanum, int visualize );
 	void (*AAS_RT_ShowRoute)( vec3_t srcpos, int srcnum, int destnum );
 	bool (*AAS_RT_GetHidePos)( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos );
 	int (*AAS_FindAttackSpotWithinRange)( int srcnum, int rangenum, int enemynum, float rangedist, int travelflags, float * outpos );

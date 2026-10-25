@@ -212,7 +212,7 @@ bool AAS_OnGround( vec3_t origin, int presencetype, int passent ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_Swimming( vec3_t origin ) {
+bool AAS_Swimming( vec3_t origin ) {
 	vec3_t testorg;
 
 	VectorCopy( origin, testorg );
@@ -429,7 +429,7 @@ void AAS_ApplyFriction( vec3_t vel, float friction, float stopspeed,
 // Returns:					aas_clientmove_t
 // Changes Globals:		-
 //===========================================================================
-int AAS_PredictClientMovement( struct aas_clientmove_s *move,
+bool AAS_PredictClientMovement( struct aas_clientmove_s *move,
 							   int entnum, vec3_t origin,
 							   int presencetype, int onground,
 							   vec3_t velocity, vec3_t cmdmove,
@@ -874,7 +874,7 @@ void AAS_TestMovementPrediction( int entnum, vec3_t origin, vec3_t dir ) {
 // Returns:					false if too high or too far from start to end
 // Changes Globals:		-
 //===========================================================================
-int AAS_HorizontalVelocityForJump( float zvel, vec3_t start, vec3_t end, float *velocity ) {
+bool AAS_HorizontalVelocityForJump( float zvel, vec3_t start, vec3_t end, float *velocity ) {
 	float sv_gravity, sv_maxvelocity;
 	float maxjump, height2fall, t, top;
 	vec3_t dir;
@@ -891,7 +891,7 @@ int AAS_HorizontalVelocityForJump( float zvel, vec3_t start, vec3_t end, float *
 	//if the goal is to high to jump to
 	if ( height2fall < 0 ) {
 		*velocity = sv_maxvelocity;
-		return 0;
+		return false;
 	} //end if
 	  //time a player takes to fall the height
 	t = sqrt( height2fall / ( 0.5 * sv_gravity ) );
@@ -902,8 +902,8 @@ int AAS_HorizontalVelocityForJump( float zvel, vec3_t start, vec3_t end, float *
 	//the horizontal speed must be lower than the max speed
 	if ( *velocity > sv_maxvelocity ) {
 		*velocity = sv_maxvelocity;
-		return 0;
+		return false;
 	} //end if
-	return 1;
+	return true;
 } //end of the function AAS_HorizontalVelocityForJump
 

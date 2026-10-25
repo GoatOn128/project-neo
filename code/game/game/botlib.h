@@ -241,7 +241,7 @@ typedef struct aas_export_s
 	//-----------------------------------
 	// be_aas_main.h
 	//-----------------------------------
-	int ( *AAS_Initialized )( void );
+	bool ( *AAS_Initialized )( void );
 	void ( *AAS_PresenceTypeBoundingBox )( int presencetype, vec3_t mins, vec3_t maxs );
 	float ( *AAS_Time )( void );
 	//--------------------------------------------
@@ -269,8 +269,8 @@ typedef struct aas_export_s
 	//--------------------------------------------
 	// be_aas_move.cpp
 	//--------------------------------------------
-	int ( *AAS_Swimming )( vec3_t origin );
-	int ( *AAS_PredictClientMovement )( struct aas_clientmove_s *move,
+	bool ( *AAS_Swimming )( vec3_t origin );
+	bool ( *AAS_PredictClientMovement )( struct aas_clientmove_s *move,
 										int entnum, vec3_t origin,
 										int presencetype, int onground,
 										vec3_t velocity, vec3_t cmdmove,

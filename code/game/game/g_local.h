@@ -1220,7 +1220,7 @@ void    trap_BotUserCommand( int client, usercmd_t *ucmd );
 
 void        trap_AAS_EntityInfo( int entnum, void /* struct aas_entityinfo_s */ *info );
 
-int         trap_AAS_Initialized( void );
+bool         trap_AAS_Initialized( void );
 void        trap_AAS_PresenceTypeBoundingBox( int presencetype, vec3_t mins, vec3_t maxs );
 float       trap_AAS_Time( void );
 
@@ -1242,8 +1242,8 @@ int         trap_AAS_AreaReachability( int areanum );
 
 int         trap_AAS_AreaTravelTimeToGoalArea( int areanum, vec3_t origin, int goalareanum, int travelflags );
 
-int         trap_AAS_Swimming( vec3_t origin );
-int         trap_AAS_PredictClientMovement( void /* aas_clientmove_s */ *move, int entnum, vec3_t origin, int presencetype, int onground, vec3_t velocity, vec3_t cmdmove, int cmdframes, int maxframes, float frametime, int stopevent, int stopareanum, int visualize );
+bool         trap_AAS_Swimming( vec3_t origin );
+bool         trap_AAS_PredictClientMovement( void /* aas_clientmove_s */ *move, int entnum, vec3_t origin, int presencetype, int onground, vec3_t velocity, vec3_t cmdmove, int cmdframes, int maxframes, float frametime, int stopevent, int stopareanum, int visualize );
 
 // Ridah, route-tables
 void        trap_AAS_RT_ShowRoute( vec3_t srcpos, int srcnum, int destnum );
