@@ -66,24 +66,55 @@ jobs:
               re.IGNORECASE)
           warning_re = re.compile(r'\bwarning\b\s*:|warning C\d{4}', re.IGNORECASE)
 
+          # GCC reports errors inside system headers with the engine file that pulled
+          # the header in on an "In file included from" line right before the error.
+          # Remember that file and note it next to messages in system headers.
+          origin = None
+          origin_re = re.compile(r'(?:In file included from|from)\s+(code/[\w/.]+):\d+')
+          loc_re = re.compile(r'^([^:]+):\d+')
+
+          def annotate(entry):
+              lm = loc_re.match(entry)
+              if lm and not lm.group(1).startswith('code/') and origin:
+                  return entry + '   [in ' + origin + ']'
+              return entry
+
           errors = []
           warnings = []
           for line in lines:
+              m = origin_re.search(line)
+              if m:
+                  origin = m.group(1)
               if error_re.search(line):
-                  errors.append(line.strip())
+                  errors.append(annotate(line.strip()))
               elif warning_re.search(line):
-                  warnings.append(line.strip())
+                  warnings.append(annotate(line.strip()))
 
           def group(messages):
-              # The same message with the numbers swapped out counts as one.
+          # The same message with the numbers swapped out counts as one. Quoted
+                        # tokens are kept so different identifiers stay different errors.
               grouped = Counter()
               for message in messages:
-                  key = re.sub(r'\d+', 'N', message)
-                  key = re.sub(r'[\'"].*?[\'"]', "'file'", key)
+                        grouped[re.sub(r'\d+', 'N', message)] += 1
                   grouped[key] += 1
               return grouped
 
           warn_groups = group(warnings)
+
+          def count_by_file(messages):
+              # Every file that shows up in the log, with its message count, so files
+              # with only a few messages are not hidden by a top-30 cutoff.
+              counts = Counter()
+              for message in messages:
+                  lm = loc_re.match(message)
+                  if lm:
+                      counts[lm.group(1)] += 1
+                  elif '[in ' in message:
+                      counts[message.split('[in ', 1)[1].rstrip(']')] += 1
+              return counts
+
+          err_files = count_by_file(errors)
+          warn_files = count_by_file(warnings)
 
           out = []
           out.append('# Build log digest')
@@ -112,6 +143,15 @@ jobs:
                   out.append('| --- | --- |')
                   for err, count in err_groups.most_common(30):
                       out.append('| %d | %s |' % (count, err.replace('|', '\\|')))
+          if err_files:
+              out.append('')
+              out.append('## Errors by file')
+              out.append('')
+              out.append('| Count | File |')
+              out.append('| --- | --- |')
+              for file, count in err_files.most_common():
+                  out.append('| %d | %s |' % (count, file.replace('|', '\\|')))
+
           if warn_groups:
               out.append('')
               out.append('## Warnings that repeat, top 30')
@@ -120,6 +160,15 @@ jobs:
               out.append('| --- | --- |')
               for warning, count in warn_groups.most_common(30):
                   out.append('| %d | %s |' % (count, warning.replace('|', '\\|')))
+          if warn_files:
+              out.append('')
+              out.append('## Warnings by file')
+              out.append('')
+              out.append('| Count | File |')
+              out.append('| --- | --- |')
+              for file, count in warn_files.most_common():
+                  out.append('| %d | %s |' % (count, file.replace('|', '\\|')))
+
           out.append('')
           print('\n'.join(out))
           EOF
