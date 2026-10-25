@@ -243,16 +243,9 @@ void IN_Wbutton0Down( void )  { IN_KeyDown( &kb[KB_WBUTTONS0] );    }   //----(S
 void IN_Wbutton0Up( void )    { IN_KeyUp( &kb[KB_WBUTTONS0] );  }
 void IN_ZoomDown( void )      { IN_KeyDown( &kb[KB_WBUTTONS1] );    }   //----(SA)	zoom key
 void IN_ZoomUp( void )        { IN_KeyUp( &kb[KB_WBUTTONS1] );  }
-void IN_QuickGrenDown( void ) { IN_KeyDown( &kb[KB_WBUTTONS2] );    }   //----(SA)	"Quickgrenade"
-void IN_QuickGrenUp( void )   { IN_KeyUp( &kb[KB_WBUTTONS2] );  }
-void IN_ReloadDown( void )    { IN_KeyDown( &kb[KB_WBUTTONS3] );    }   //----(SA)	manual weapon re-load
-void IN_ReloadUp( void )      { IN_KeyUp( &kb[KB_WBUTTONS3] );  }
+void IN_ReloadDown( void )    { IN_KeyDown( &kb[KB_WBUTTONS2] );    }   //----(SA)	manual weapon re-load
+void IN_ReloadUp( void )      { IN_KeyUp( &kb[KB_WBUTTONS2] );  }
 
-// unused
-void IN_Wbutton6Down( void )  { IN_KeyDown( &kb[KB_WBUTTONS6] );    }
-void IN_Wbutton6Up( void )    { IN_KeyUp( &kb[KB_WBUTTONS6] );  }
-void IN_Wbutton7Down( void )  { IN_KeyDown( &kb[KB_WBUTTONS7] );    }
-void IN_Wbutton7Up( void )    { IN_KeyUp( &kb[KB_WBUTTONS7] );  }
 
 
 
@@ -523,7 +516,7 @@ void CL_CmdButtons( usercmd_t *cmd ) {
 		kb[KB_BUTTONS0 + i].wasPressed = false;
 	}
 
-	for ( i = 0 ; i < 7 ; i++ ) {
+	for ( i = 0 ; i < 3 ; i++ ) {
 		if ( kb[KB_WBUTTONS0 + i].active || kb[KB_WBUTTONS0 + i].wasPressed ) {
 			cmd->wbuttons |= 1 << i;
 		}
@@ -952,14 +945,8 @@ void CL_InitInput( void ) {
 	Cmd_AddCommand( "-attack2",      IN_Wbutton0Up );
 	Cmd_AddCommand( "+zoom",     IN_ZoomDown );       //
 	Cmd_AddCommand( "-zoom",     IN_ZoomUp );
-	Cmd_AddCommand( "+quickgren",    IN_QuickGrenDown );  //
-	Cmd_AddCommand( "-quickgren",    IN_QuickGrenUp );
 	Cmd_AddCommand( "+reload",       IN_ReloadDown );     //
 	Cmd_AddCommand( "-reload",       IN_ReloadUp );
-	Cmd_AddCommand( "+wbutton6", IN_Wbutton6Down );   //
-	Cmd_AddCommand( "-wbutton6", IN_Wbutton6Up );
-	Cmd_AddCommand( "+wbutton7", IN_Wbutton7Down );   //
-	Cmd_AddCommand( "-wbutton7", IN_Wbutton7Up );
 //----(SA) end
 
 	Cmd_AddCommand( "+mlook", IN_MLookDown );

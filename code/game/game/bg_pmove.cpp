@@ -2520,41 +2520,6 @@ DOOM_SAVE_CALLBACK("PM_WeaponClipEmpty", PM_WeaponClipEmpty);
 
 /*
 ==============
-PM_CoolWeapons
-==============
-*/
-void PM_CoolWeapons( void ) {
-	int wp;
-
-	for ( wp = 0; wp < WP_NUM_WEAPONS; wp++ ) {
-
-		// if you have the weapon
-		if ( COM_BitCheck( pm->ps->weapons, wp ) ) {
-			// and it's hot
-			if ( pm->ps->weapHeat[wp] ) {
-				pm->ps->weapHeat[wp] -= ( (float)ammoTable[wp].coolRate * pml.frametime );
-
-				if ( pm->ps->weapHeat[wp] < 0 ) {
-					pm->ps->weapHeat[wp] = 0;
-				}
-
-			}
-		}
-	}
-
-	// a weapon is currently selected, convert current heat value to 0-255 range for client transmission
-	if ( pm->ps->weapon ) {
-		pm->ps->curWeapHeat = ( ( (float)pm->ps->weapHeat[pm->ps->weapon] / (float)ammoTable[pm->ps->weapon].maxHeat ) ) * 255.0f;
-
-//		if(pm->ps->weapHeat[pm->ps->weapon])
-//			Com_Printf("pm heat: %d, %d\n", pm->ps->weapHeat[pm->ps->weapon], pm->ps->curWeapHeat);
-	}
-
-}
-DOOM_SAVE_CALLBACK("PM_CoolWeapons", PM_CoolWeapons);
-
-/*
-==============
 PM_AdjustAimSpreadScale
 ==============
 */
@@ -2830,18 +2795,6 @@ static void PM_Weapon( void ) {
 		}
 	}
 
-	// dec venom timer
-	if ( pm->ps->venomTime > 0 ) {
-		pm->ps->venomTime -= pml.msec;
-	}
-
-
-//----(SA)	removed 'quickgrenade'
-
-	// weapon cool down
-	PM_CoolWeapons();
-
-	// check for item using
 	if ( pm->cmd.buttons & BUTTON_USE_HOLDABLE ) {
 		if ( !( pm->ps->pm_flags & PMF_USE_ITEM_HELD ) ) {
 			gitem_t *item;
@@ -3293,10 +3246,6 @@ if ( PM_WeaponAmmoAvailable( pm->ps->weapon ) != -1 ) {
 
 // fire weapon
 
-// add weapon heat
-if ( ammoTable[pm->ps->weapon].maxHeat ) {
-	pm->ps->weapHeat[pm->ps->weapon] += ammoTable[pm->ps->weapon].nextShotTime;
-}
 
 // first person weapon animations
 
@@ -3502,20 +3451,6 @@ break;
 }
 
 
-// check for overheat
-
-// the weapon can overheat, and it's hot
-if ( ( pm->ps->aiChar != AICHAR_PROTOSOLDIER ) &&
-	 ( pm->ps->aiChar != AICHAR_SUPERSOLDIER ) &&
-	 ( ammoTable[pm->ps->weapon].maxHeat && pm->ps->weapHeat[pm->ps->weapon] ) ) {
-	// it is overheating
-	if ( pm->ps->weapHeat[pm->ps->weapon] >= ammoTable[pm->ps->weapon].maxHeat ) {
-		pm->ps->weapHeat[pm->ps->weapon] = ammoTable[pm->ps->weapon].maxHeat;       // cap heat to max
-		PM_AddEvent( EV_WEAP_OVERHEAT );
-//			PM_StartWeaponAnim(WEAP_IDLE1);	// removed.  client handles anim in overheat event
-		addTime = 2000;         // force "heat recovery minimum" to 2 sec right now
-	}
-}
 
 if ( pm->ps->powerups[PW_HASTE] ) {
 	addTime /= 1.3;

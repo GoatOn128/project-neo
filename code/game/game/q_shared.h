@@ -1234,13 +1234,6 @@ typedef struct playerState_s {
 	int aimSpreadScale;         // 0 - 255 increases with angular movement
 	int lastFireTime;           // used by server to hold last firing frame briefly when randomly releasing trigger (AI)
 
-	int quickGrenTime;
-
-	int weapHeat[MAX_WEAPONS];          // some weapons can overheat.  this tracks (server-side) how hot each weapon currently is.
-	int curWeapHeat;                    // value for the currently selected weapon (for transmission to client)
-
-	int venomTime;
-
 //----(SA)	added
 	int accShowBits;            // RF (changed from short), these should all be 32 bit
 	int accHideBits;
@@ -1282,12 +1275,7 @@ typedef struct playerState_s {
 //----(SA) wolf buttons
 #define WBUTTON_ATTACK2     1
 #define WBUTTON_ZOOM        2
-#define WBUTTON_QUICKGREN   4
-#define WBUTTON_RELOAD      8
-
-// unused
-#define WBUTTON_EXTRA6      64
-#define WBUTTON_EXTRA7      128
+#define WBUTTON_RELOAD      4   // moved to bit 2 after the quick grenade removal
 //----(SA) end
 
 #define MOVE_RUN            120         // if forwardmove or rightmove are >= MOVE_RUN,

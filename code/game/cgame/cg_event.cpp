@@ -1903,22 +1903,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		}
 		break;
 
-	case EV_WEAP_OVERHEAT:
-		DEBUGNAME( "EV_WEAP_OVERHEAT" );
-
-		// start weapon idle animation
-		if ( es->number == cg.snap->ps.clientNum ) {
-			if ( ( cg.predictedPlayerState.weapAnim & ~ANIM_TOGGLEBIT ) == WEAP_ATTACK1 ) { // if attacking, go idle while overheating
-				cg.predictedPlayerState.weapAnim = ( ( cg.predictedPlayerState.weapAnim & ANIM_TOGGLEBIT ) ^ ANIM_TOGGLEBIT ) | WEAP_IDLE1;
-			}
-			cent->overheatTime = cg.time;   // used to make the barrels smoke when overheated
-		}
-
-		if ( cg_weapons[es->weapon].overheatSound ) {
-			trap_S_StartSound( NULL, es->number, CHAN_AUTO, cg_weapons[es->weapon].overheatSound );
-		}
-		break;
-
 // JPW NERVE
 	case EV_SPINUP:
 		DEBUGNAME( "EV_SPINUP" );
@@ -2020,11 +2004,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		break;
 //----(SA)	end
 
-//----(SA)	added
-	case EV_FIRE_QUICKGREN:
-		// testing.  no client side effect yet
-		break;
-//----(SA)	end
 //----(SA)	added
 	case EV_NOFIRE_UNDERWATER:
 		DEBUGNAME( "EV_NOFIRE_UNDERWATER" );

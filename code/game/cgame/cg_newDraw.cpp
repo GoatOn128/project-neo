@@ -2127,32 +2127,6 @@ void CG_DrawWeapStability( rectDef_t *rect, vec4_t color, int align ) {
 
 /*
 ==============
-CG_DrawWeapHeat
-==============
-*/
-void CG_DrawWeapHeat( rectDef_t *rect, int align ) {
-	vec4_t color = {1, 0, 0, 0.2f}, color2 = {1, 0, 0, 0.5f};
-	int flags = 0;
-
-	if ( !( cg.snap->ps.curWeapHeat ) ) {
-		return;
-	}
-
-	if ( align != HUD_HORIZONTAL ) {
-		flags |= 4;   // BAR_VERT
-
-	}
-	flags |= 1;       // BAR_LEFT			- this is hardcoded now, but will be decided by the menu script
-	flags |= 16;      // BAR_BG			- draw the filled contrast box
-//	flags|=32;		// BAR_BGSPACING_X0Y5	- different style
-
-	flags |= 256;     // BAR_COLOR_LERP
-	CG_FilledBar( rect->x, rect->y, rect->w, rect->h, color, color2, NULL, (float)cg.snap->ps.curWeapHeat / 255.0f, flags );
-}
-
-
-/*
-==============
 CG_DrawFatigue
 ==============
 */
@@ -2290,9 +2264,6 @@ void CG_OwnerDraw( float x, float y, float w, float h, float text_x, float text_
 		break;
 	case CG_SELECTEDPLAYER_POWERUP:
 		CG_DrawSelectedPlayerPowerup( &rect, ownerDrawFlags & CG_SHOW_2DONLY );
-		break;
-	case CG_PLAYER_WEAPON_HEAT:
-		CG_DrawWeapHeat( &rect, align );
 		break;
 	case CG_PLAYER_WEAPON_STABILITY:
 		CG_DrawWeapStability( &rect, color, align );

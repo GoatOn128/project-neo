@@ -1439,7 +1439,6 @@ netField_t playerStateFields[] = {
     {PSF(teamNum), 8},
     {PSF(gunfx), 8},
     {PSF(onFireStart), 32},
-    {PSF(curWeapHeat), 8},
     {PSF(sprintTime), 16}, // FIXME: to be removed
     {PSF(aimSpreadScale), 8},
     {PSF(aiState), 2},
