@@ -84,7 +84,7 @@ typedef struct unz_file_info_internal_s
 	unsigned long offset_curfile; /* relative offset of static header 4 unsigned chars */
 } unz_file_info_internal;
 
-typedef void* ( *alloc_func )( void* opaque, unsigned int items, unsigned int size );
+typedef void* ( *alloc_func )( void* opaque, size_t items, size_t size );
 typedef void ( *free_func )( void* opaque, void* address );
 
 struct internal_state;

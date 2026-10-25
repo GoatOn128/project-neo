@@ -541,7 +541,7 @@ typedef struct {
 	int anim;
 } painAnimForTag_t;
 
-#define PEFOFS( x ) ( (int)&( ( (playerEntity_t *)0 )->x ) )
+#define PEFOFS( x ) ( (int)(size_t)&( ( (playerEntity_t *)0 )->x ) )
 
 void CG_PainEvent( centity_t *cent, int health, bool crouching ) {
 	char    *snd;

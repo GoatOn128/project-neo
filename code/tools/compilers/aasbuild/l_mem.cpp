@@ -147,7 +147,7 @@ void *Hunk_Alloc( int size ) {
 	memhunk_t *h;
 
 	if ( !size ) {
-		return (void *) memhunk_high_size;
+		return (void *)(size_t) memhunk_high_size;
 	}
 	//
     h = (memhunk_t *)(GetClearedMemory(size + sizeof(memhunk_t)));
