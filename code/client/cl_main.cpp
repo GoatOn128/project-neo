@@ -189,7 +189,7 @@ void CL_ChangeReliableCommand( void ) {
 	int index, l;
 
 	// keep consuming a random number to preserve the RNG sequence
-	random();
+	(void)random();
 	index = clc.reliableSequence & ( MAX_RELIABLE_COMMANDS - 1 );
 	l = strlen( clc.reliableCommands[ index ] );
 	if ( l >= MAX_STRING_CHARS - 1 ) {

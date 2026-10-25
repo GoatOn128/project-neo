@@ -562,8 +562,8 @@ static void Autosprite2Deform( void ) {
 			// we need to see which direction this edge
 			// is used to determine direction of projection
 			for ( k = 0 ; k < 5 ; k++ ) {
-				if ( tess.indexes[ indexes + k ] == i + edgeVerts[nums[j]][0]
-					 && tess.indexes[ indexes + k + 1 ] == i + edgeVerts[nums[j]][1] ) {
+				if ( tess.indexes[ indexes + k ] == (glIndex_t)( i + edgeVerts[nums[j]][0] )
+					 && tess.indexes[ indexes + k + 1 ] == (glIndex_t)( i + edgeVerts[nums[j]][1] ) ) {
 					break;
 				}
 			}
@@ -855,7 +855,7 @@ void RB_CalcFogTexCoords( float *st ) {
 	bool eyeOutside;
 	fog_t       *fog;
 	vec3_t local;
-	vec4_t fogDistanceVector, fogDepthVector;
+	vec4_t fogDistanceVector = { 0, 0, 0, 0 }, fogDepthVector = { 0, 0, 0, 0 };
 
     if (tr.world->doomNumSectors) {
         for (int index = 0; index < tess.numVertexes; ++index, st += 2) {

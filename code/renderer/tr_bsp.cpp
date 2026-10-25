@@ -178,7 +178,7 @@ static void R_LoadLightmaps( lump_t *l ) {
 				float g = buf_p[j * 3 + 1];
 				float b = buf_p[j * 3 + 2];
 				float intensity;
-				float out[3];
+				float out[3] = { 0, 0, 0 };
 
 				intensity = 0.33f * r + 0.685f * g + 0.063f * b;
 
@@ -1818,14 +1818,14 @@ static void R_LoadFogs( lump_t *l, lump_t *brushesLump, lump_t *sidesLump ) {
 	for ( i = 0 ; i < count ; i++, fogs++ ) {
 		out->originalBrushNumber = LittleLong( fogs->brushNum );
 
-		if ( (unsigned)out->originalBrushNumber >= brushesCount ) {
+		if ( (unsigned)out->originalBrushNumber >= (unsigned)brushesCount ) {
 			ri.Error( ERR_DROP, "fog brushNumber out of range" );
 		}
 		brush = brushes + out->originalBrushNumber;
 
 		firstSide = LittleLong( brush->firstSide );
 
-		if ( (unsigned)firstSide > sidesCount - 6 ) {
+		if ( (unsigned)firstSide > (unsigned)( sidesCount - 6 ) ) {
 			ri.Error( ERR_DROP, "fog brush sideNumber out of range" );
 		}
 
@@ -2214,7 +2214,7 @@ void RE_LoadWorldMap( const char *name ) {
 #endif
 
 	// swap all the lumps
-	for ( i = 0 ; i < sizeof( dheader_t ) / 4 ; i++ ) {
+	for ( i = 0 ; i < (int)( sizeof( dheader_t ) / 4 ) ; i++ ) {
 		( (int *)header )[i] = LittleLong( ( (int *)header )[i] );
 	}
 

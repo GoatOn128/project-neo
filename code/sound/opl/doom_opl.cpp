@@ -1217,7 +1217,7 @@ static void ReplaceExistingVoiceDoom1(void) {
 static void ReplaceExistingVoiceDoom2(opl_channel_data_t *channel) {
     int i;
     int result;
-    int priority;
+    unsigned int priority;
 
     result = 0;
 
@@ -1420,7 +1420,7 @@ static void KeyOnEvent(opl_track_data_t *track, midi_event_t *event) {
         if (!opl_opl3mode) {
             voicenum = 1;
         }
-        while (voice_alloced_num > num_opl_voices - voicenum) {
+        while (voice_alloced_num > (unsigned int)( num_opl_voices - voicenum )) {
             ReplaceExistingVoiceDoom1();
         }
 
@@ -1487,11 +1487,11 @@ static void SetChannelVolume(opl_channel_data_t *channel, unsigned int volume, b
 
     channel->volume_base = volume;
 
-    if (volume > current_music_volume) {
+    if (volume > (unsigned int)current_music_volume) {
         volume = current_music_volume;
     }
 
-    if (clip_start && volume > start_music_volume) {
+    if (clip_start && volume > (unsigned int)start_music_volume) {
         volume = start_music_volume;
     }
 
@@ -1527,7 +1527,7 @@ static void SetChannelPan(opl_channel_data_t *channel, unsigned int pan) {
         } else {
             reg_pan = 0x30;
         }
-        if (channel->pan != reg_pan) {
+        if (channel->pan != (int)reg_pan) {
             channel->pan = reg_pan;
             for (i = 0; i < num_opl_voices; i++) {
                 if (voices[i].channel == channel) {
@@ -1617,11 +1617,11 @@ static void PitchBendEvent(opl_track_data_t *track, midi_event_t *event) {
         }
     }
 
-    for (i = 0; i < voice_not_updated_num; i++) {
+    for (i = 0; i < (int)voice_not_updated_num; i++) {
         voice_alloced_list[i] = voice_not_updated_list[i];
     }
 
-    for (i = 0; i < voice_updated_num; i++) {
+    for (i = 0; i < (int)voice_updated_num; i++) {
         voice_alloced_list[i + voice_not_updated_num] = voice_updated_list[i];
     }
 }

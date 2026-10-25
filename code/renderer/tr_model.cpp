@@ -1169,7 +1169,7 @@ static bool R_LoadMDS( model_t *mod, void *buffer, const char *mod_name ) {
 				frame->localOrigin[j] = LittleFloat( frame->localOrigin[j] );
 				frame->parentOffset[j] = LittleFloat( frame->parentOffset[j] );
 			}
-			for ( j = 0 ; j < mds->numBones * sizeof( mdsBoneFrameCompressed_t ) / sizeof( short ) ; j++ ) {
+			for ( j = 0 ; j < (int)( mds->numBones * sizeof( mdsBoneFrameCompressed_t ) / sizeof( short ) ) ; j++ ) {
 				( (short *)frame->bones )[j] = LittleShort( ( (short *)frame->bones )[j] );
 			}
 		}

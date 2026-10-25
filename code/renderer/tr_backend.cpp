@@ -897,7 +897,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	bool depthRange, oldDepthRange;
 	int i;
 	drawSurf_t      *drawSurf;
-	int oldSort;
+	unsigned int oldSort;
 	float originalTime;
 	int oldNumVerts, oldNumIndex;
 #ifdef __MACOS__

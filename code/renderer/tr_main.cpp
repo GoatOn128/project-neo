@@ -66,7 +66,6 @@ R_Fog (void)
 =================
 */
 void R_Fog( glfog_t *curfog ) {
-	static glfog_t setfog;
 
 	if ( !r_wolffog->integer ) {
 		R_FogOff();
@@ -139,7 +138,6 @@ void R_Fog( glfog_t *curfog ) {
 	}
 
 
-	setfog.registered = true;
 
 	qglClearColor( curfog->color[0], curfog->color[1], curfog->color[2], curfog->color[3] );
 
