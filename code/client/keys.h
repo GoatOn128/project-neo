@@ -51,7 +51,7 @@ extern field_t historyEditLines[COMMAND_HISTORY];
 
 extern field_t g_consoleField;
 extern field_t chatField;
-extern bool anykeydown;
+extern int anykeydown;
 extern bool chat_team;
 extern bool chat_limbo;             // NERVE - SMF
 extern int chat_playerNum;
