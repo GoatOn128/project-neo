@@ -1060,7 +1060,7 @@ int             trap_LAN_AddServer( int source, const char *name, const char *ad
 void            trap_LAN_RemoveServer( int source, const char *addr );
 int             trap_LAN_GetServerPing( int source, int n );
 bool            trap_LAN_ServerIsVisible( int source, int n );
-int             trap_LAN_ServerStatus( const char *serverAddress, char *serverStatus, int maxLen );
+bool            trap_LAN_ServerStatus( const char *serverAddress, char *serverStatus, int maxLen );
 void            trap_LAN_SaveCachedServers();
 void            trap_LAN_LoadCachedServers();
 void            trap_LAN_MarkServerVisible( int source, int n, bool visible );

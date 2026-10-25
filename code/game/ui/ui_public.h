@@ -109,7 +109,7 @@ typedef struct {
 	void (*LAN_RemoveServer)( int source, const char * addr );
 	int (*LAN_GetServerPing)( int source, int n );
 	bool (*LAN_ServerIsVisible)( int source, int n );
-	int (*LAN_ServerStatus)( const char * serverAddress, char * serverStatus, int maxLen );
+	bool (*LAN_ServerStatus)( const char * serverAddress, char * serverStatus, int maxLen );
 	void (*LAN_SaveCachedServers)(  );
 	void (*LAN_LoadCachedServers)(  );
 	void (*LAN_MarkServerVisible)( int source, int n, bool visible );

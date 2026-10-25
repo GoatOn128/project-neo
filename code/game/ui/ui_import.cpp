@@ -315,7 +315,7 @@ bool trap_LAN_ServerIsVisible( int source, int n ) {
 	return uiImports->LAN_ServerIsVisible( source, n );
 }
 
-int trap_LAN_ServerStatus( const char * serverAddress, char * serverStatus, int maxLen ) {
+bool trap_LAN_ServerStatus( const char * serverAddress, char * serverStatus, int maxLen ) {
 	return uiImports->LAN_ServerStatus( serverAddress, serverStatus, maxLen );
 }
 
