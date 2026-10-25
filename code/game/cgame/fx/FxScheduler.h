@@ -4,6 +4,8 @@
 #endif
 
 #include <string>
+#include <map>
+#include <list>
 typedef std::string fxString_t;
 
 #ifndef FX_SCHEDULER_H_INC

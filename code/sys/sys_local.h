@@ -37,6 +37,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #include <SDL3/SDL.h>
 
+#include "../qcommon/qcommon.h"
+
 // Input subsystem
 
 void    IN_Init( void );

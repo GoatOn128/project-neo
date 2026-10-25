@@ -31,4 +31,10 @@ struct DoomEditorAPI {
     void (*resetGraphics)();
     bool (*sdlevent)(const void *event);  // a SDL_Event, consumed while the editor is shown
 };
+#if !defined( _WIN32 )
+// __cdecl is the MSVC calling convention keyword. GCC uses the cdecl
+// calling convention by default, so it expands to nothing on Linux.
+#define __cdecl
+#endif
+
 using DoomEditorGetAPI = const DoomEditorAPI *(__cdecl *)(uint32_t version);

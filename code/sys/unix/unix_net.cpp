@@ -31,6 +31,7 @@ along with RTCW SP Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <arpa/inet.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <string.h>

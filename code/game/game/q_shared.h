@@ -108,7 +108,11 @@ If you have questions concerning this license or the applicable additional terms
 #include <cstdlib>
 #include <cstring>
 #include <initializer_list>
+#include <list>
 #include <limits>
+#include <map>
+#include <set>
+#include <string>
 #include <vector>
 #endif
 
