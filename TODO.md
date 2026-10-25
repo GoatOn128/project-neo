@@ -127,4 +127,4 @@ the folder gets renamed.
 1. Auto download and replacement of dependencies (tasks 9 and 10).
 2. Botlib as a DLL with the parser in the engine (task 3).
 3. Full C++ with idLib (tasks 5 and 8).
-4. The x64 and Linux builds (task 12).
+4. The Linux build, the x64 half is done (task 12).
