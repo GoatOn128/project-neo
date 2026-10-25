@@ -410,7 +410,7 @@ int CL_GetPingQueueCount( void );
 void CL_ShutdownRef( void );
 void CL_InitRef( void );
 bool CL_CDKeyValidate( const char *key, const char *checksum );
-int CL_ServerStatus( char *serverAddress, char *serverStatusString, int maxLen );
+bool CL_ServerStatus( char *serverAddress, char *serverStatusString, int maxLen );
 
 void CL_AddToLimboChat( const char *str );                  // NERVE - SMF
 bool CL_GetLimboString( int index, char *buf );         // NERVE - SMF

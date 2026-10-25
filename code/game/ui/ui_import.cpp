@@ -113,7 +113,7 @@ int trap_FS_GetFileList( const char * path, const char * extension, char * listb
 	return uiImports->FS_GetFileList( path, extension, listbuf, bufsize );
 }
 
-int trap_FS_Delete( const char * filename ) {
+bool trap_FS_Delete( const char * filename ) {
 	return uiImports->FS_Delete( filename );
 }
 
@@ -241,7 +241,7 @@ void trap_GetGlconfig( glconfig_t * glconfig ) {
 	uiImports->GetGlconfig( glconfig );
 }
 
-int trap_GetConfigString( int index, char* buff, int buffsize ) {
+bool trap_GetConfigString( int index, char* buff, int buffsize ) {
 	return uiImports->GetConfigString( index, buff, buffsize );
 }
 
@@ -311,7 +311,7 @@ int trap_LAN_GetServerPing( int source, int n ) {
 	return uiImports->LAN_GetServerPing( source, n );
 }
 
-int trap_LAN_ServerIsVisible( int source, int n ) {
+bool trap_LAN_ServerIsVisible( int source, int n ) {
 	return uiImports->LAN_ServerIsVisible( source, n );
 }
 

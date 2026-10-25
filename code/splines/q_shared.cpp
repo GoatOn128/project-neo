@@ -154,10 +154,11 @@ const char *Com_StringContains( const char *str1, const char *str2, int casesens
 Com_Filter
 ============
 */
-int Com_Filter( const char *filter, const char *name, int casesensitive ) {
+bool Com_Filter( const char *filter, const char *name, int casesensitive ) {
 	char buf[MAX_TOKEN_CHARS];
 	const char *ptr;
-	int i, found;
+	int i;
+	bool found;
 
 	while ( *filter ) {
 		if ( *filter == '*' ) {

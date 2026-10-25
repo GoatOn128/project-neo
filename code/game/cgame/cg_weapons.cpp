@@ -48,7 +48,7 @@ vec3_t ejectBrassCasingOrigin;
 // forward decs
 static int getAltWeapon( int weapnum );
 int getEquivWeapon( int weapnum );
-int CG_WeaponIndex( int weapnum, int *bank, int *cycle );
+bool CG_WeaponIndex( int weapnum, int *bank, int *cycle );
 static bool CG_WeaponHasAmmo( int i );
 
 static int maxWeapBanks = MAX_WEAP_BANKS, maxWeapsInBank = MAX_WEAPS_IN_BANK; // JPW NERVE
@@ -3028,7 +3028,7 @@ static bool CG_WeaponSelectable( int i ) {
 CG_WeaponIndex
 ==============
 */
-int CG_WeaponIndex( int weapnum, int *bank, int *cycle ) {
+bool CG_WeaponIndex( int weapnum, int *bank, int *cycle ) {
 	static int bnk, cyc;
 
 	if ( weapnum <= 0 || weapnum >= WP_NUM_WEAPONS ) {
@@ -3038,7 +3038,7 @@ int CG_WeaponIndex( int weapnum, int *bank, int *cycle ) {
 		if ( cycle ) {
 			*cycle = 0;
 		}
-		return 0;
+		return false;
 	}
 
 	for ( bnk = 0; bnk < maxWeapBanks; bnk++ ) {
@@ -3058,7 +3058,7 @@ int CG_WeaponIndex( int weapnum, int *bank, int *cycle ) {
 					if ( cycle ) {
 						*cycle = cyc;
 					}
-					return 1;
+					return true;
 				}
 			}
 // JPW NERVE
@@ -3075,7 +3075,7 @@ int CG_WeaponIndex( int weapnum, int *bank, int *cycle ) {
 					if ( cycle ) {
 						*cycle = cyc;
 					}
-					return 1;
+					return true;
 				}
 			}
 // jpw
@@ -3085,7 +3085,7 @@ int CG_WeaponIndex( int weapnum, int *bank, int *cycle ) {
 	// failed to find the weapon in the table
 	// probably an alternate
 
-	return 0;
+	return false;
 }
 
 

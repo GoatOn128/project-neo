@@ -435,7 +435,7 @@ static facet_t facets[MAX_PATCH_PLANES];          //maybe MAX_FACETS ??
 CM_PlaneEqual
 ==================
 */
-int CM_PlaneEqual( patchPlane_t *p, float plane[4], int *flipped ) {
+bool CM_PlaneEqual( patchPlane_t *p, float plane[4], int *flipped ) {
 	float invplane[4];
 
 	if (
@@ -1346,7 +1346,7 @@ void CM_TracePointThroughPatchCollide( traceWork_t *tw, const struct patchCollid
 CM_CheckFacetPlane
 ====================
 */
-int CM_CheckFacetPlane( float *plane, vec3_t start, vec3_t end, float *enterFrac, float *leaveFrac, int *hit ) {
+bool CM_CheckFacetPlane( float *plane, vec3_t start, vec3_t end, float *enterFrac, float *leaveFrac, int *hit ) {
 	float d1, d2, f;
 
 	*hit = false;

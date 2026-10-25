@@ -568,7 +568,7 @@ char *Com_StringContains( char *str1, char *str2, int casesensitive ) {
 Com_Filter
 ============
 */
-int Com_Filter( char *filter, char *name, int casesensitive ) {
+bool Com_Filter( char *filter, char *name, int casesensitive ) {
 	char buf[MAX_TOKEN_CHARS];
 	char *ptr;
 	int i, found;
@@ -661,7 +661,7 @@ int Com_Filter( char *filter, char *name, int casesensitive ) {
 Com_FilterPath
 ============
 */
-int Com_FilterPath( char *filter, char *name, int casesensitive ) {
+bool Com_FilterPath( char *filter, char *name, int casesensitive ) {
 	int i;
 	char new_filter[MAX_QPATH];
 	char new_name[MAX_QPATH];

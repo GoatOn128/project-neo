@@ -1143,11 +1143,11 @@ G_SendMissionStats
 	for updating the g_missionStats string to the client
 ==============
 */
-int G_SendMissionStats() {
+bool G_SendMissionStats() {
 	char cmd[MAX_QPATH];
 	gentity_t   *player;
 	int i, attempts = 0, playtime = 0, minutes, objs = 0, sec = 0, treas = 0;
-	int canExit = 0;
+	bool canExit = false;
 
     player = G_FindActor("player");
     if (player) {
@@ -1180,7 +1180,7 @@ int G_SendMissionStats() {
 	// objectives
 	Q_strcat( cmd, sizeof( cmd ), va( ",%i,%i", objs, level.numObjectives ) );
 	if ( objs >= level.numObjectives ) { // you're ready to go!
-		canExit = 1;
+		canExit = true;
 	}
 
 	// secrets

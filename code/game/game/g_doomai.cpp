@@ -348,7 +348,7 @@ bool MissileRange(gentity_t *entity, bool visible) {
         return false;
     }
     if (npc.justHit) {
-        npc.justHit = 0;
+        npc.justHit = false;
         return true;
     }
     if (level.time < npc.attackReady) {
@@ -387,7 +387,7 @@ void ChaseDecision(gentity_t *entity) {
     }
     Animate(entity, Chase);
     if (npc.justAttacked) {
-        npc.justAttacked = 0;
+        npc.justAttacked = false;
         if (G_DoomSkill() < 4) {
             NewChaseDirection(entity);
             return;
@@ -401,7 +401,7 @@ void ChaseDecision(gentity_t *entity) {
     if ((npc.moveCount <= 0 || G_DoomSkill() >= 4) && MissileRange(entity, visible)) {
         Face(entity, enemy->r.currentOrigin);
         Animate(entity, Missile, true);
-        npc.justAttacked = 1;
+        npc.justAttacked = true;
         return;
     }
     if (--npc.moveCount < 0 || !CanMove(entity, npc.moveDirection)) {
@@ -855,7 +855,7 @@ void G_DoomAIRun(gentity_t *entity) {
         }
     } else if (!npc.bossDone &&
                level.time - npc.clipStart >= DurationMsec(Sprites(npc.type).clips[npc.clip])) {
-        npc.bossDone = 1;
+        npc.bossDone = true;
         G_DoomAIBossDeath(npc.type);
     }
     usercmd_t command{};
@@ -949,7 +949,7 @@ bool G_DoomAIDamage(gentity_t *entity, gentity_t *attacker, int damage, int flag
     if (attacker && attacker != entity && Alive(attacker) &&
         (npc.targetThreshold == 0 || npc.enemy == attacker->s.number)) {
         npc.enemy = attacker->s.number;
-        npc.justHit = 1;
+        npc.justHit = true;
         npc.targetThreshold = 100;
         npc.lastSeen = level.time;
         VectorCopy(attacker->r.currentOrigin, npc.lastKnown);

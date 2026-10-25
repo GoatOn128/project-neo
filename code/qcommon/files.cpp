@@ -1360,7 +1360,7 @@ TTimo - this was not in the 1.30 filesystem code
 using fs_homepath for the file to remove
 ==============
 */
-int FS_Delete( char *filename ) {
+bool FS_Delete( char *filename ) {
 	char *ospath;
 
 	if ( !fs_searchpaths ) {
@@ -1368,22 +1368,22 @@ int FS_Delete( char *filename ) {
 	}
 
 	if ( !filename || filename[0] == 0 ) {
-		return 0;
+		return false;
 	}
 
 	// for safety, only allow deletion from the save directory
 	if ( Q_strncmp( filename, "save/", 5 ) != 0 ) {
-		return 0;
+		return false;
 	}
 
 	ospath = FS_BuildOSPath( fs_homepath->string, fs_gamedir, filename );
 
 	if ( remove( ospath ) != -1 ) {  // success
-		return 1;
+		return true;
 	}
 
 
-	return 0;
+	return false;
 }
 
 

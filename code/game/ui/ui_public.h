@@ -63,7 +63,7 @@ typedef struct {
 	void (*FS_Write)( const void * buffer, int len, fileHandle_t f );
 	void (*FS_FCloseFile)( fileHandle_t f );
 	int (*FS_GetFileList)( const char * path, const char * extension, char * listbuf, int bufsize );
-	int (*FS_Delete)( const char * filename );
+	bool (*FS_Delete)( const char * filename );
 	qhandle_t (*R_RegisterModel)( const char * name );
 	qhandle_t (*R_RegisterSkin)( const char * name );
 	void (*R_RegisterFont)( const char * fontName, int pointSize, fontInfo_t * font );
@@ -95,7 +95,7 @@ typedef struct {
 	void (*GetClipboardData)( char * buf, int bufsize );
 	void (*GetClientState)( uiClientState_t * state );
 	void (*GetGlconfig)( glconfig_t * glconfig );
-	int (*GetConfigString)( int index, char* buff, int buffsize );
+	bool (*GetConfigString)( int index, char* buff, int buffsize );
 	int (*LAN_GetPingQueueCount)(  );
 	void (*LAN_ClearPing)( int n );
 	void (*LAN_GetPing)( int n, char * buf, int buflen, int * pingtime );
@@ -108,7 +108,7 @@ typedef struct {
 	int (*LAN_AddServer)( int source, const char * name, const char * addr );
 	void (*LAN_RemoveServer)( int source, const char * addr );
 	int (*LAN_GetServerPing)( int source, int n );
-	int (*LAN_ServerIsVisible)( int source, int n );
+	bool (*LAN_ServerIsVisible)( int source, int n );
 	int (*LAN_ServerStatus)( const char * serverAddress, char * serverStatus, int maxLen );
 	void (*LAN_SaveCachedServers)(  );
 	void (*LAN_LoadCachedServers)(  );

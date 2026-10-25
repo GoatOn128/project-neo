@@ -1358,7 +1358,7 @@ static void PM_CrashLand( void ) {
 PM_CorrectAllSolid
 =============
 */
-static int PM_CorrectAllSolid( trace_t *trace ) {
+static bool PM_CorrectAllSolid( trace_t *trace ) {
 	int i, j, k;
 	vec3_t point;
 
@@ -2503,18 +2503,18 @@ PM_WeaponClipEmpty
 	accounts for clips being used/not used
 ==============
 */
-int PM_WeaponClipEmpty( int wp ) {
+bool PM_WeaponClipEmpty( int wp ) {
 	if ( pm->noWeapClips ) {
 		if ( !( pm->ps->ammo[ BG_FindAmmoForWeapon((weapon_t)( wp ))] ) ) {
-			return 1;
+			return true;
 		}
 	} else {
 		if ( !( pm->ps->ammoclip[BG_FindClipForWeapon((weapon_t)( wp ))] ) ) {
-			return 1;
+			return true;
 		}
 	}
 
-	return 0;
+	return false;
 }
 DOOM_SAVE_CALLBACK("PM_WeaponClipEmpty", PM_WeaponClipEmpty);
 

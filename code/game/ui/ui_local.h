@@ -1006,7 +1006,7 @@ void            trap_FS_Seek( fileHandle_t f, long offset, int origin ); //----(
 void            trap_FS_Write( const void *buffer, int len, fileHandle_t f );
 void            trap_FS_FCloseFile( fileHandle_t f );
 int             trap_FS_GetFileList(  const char *path, const char *extension, char *listbuf, int bufsize );
-int             trap_FS_Delete( const char *filename );
+bool            trap_FS_Delete( const char *filename );
 qhandle_t       trap_R_RegisterModel( const char *name );
 qhandle_t       trap_R_RegisterSkin( const char *name );
 qhandle_t       trap_R_RegisterShaderNoMip( const char *name );
@@ -1036,7 +1036,7 @@ void            trap_Key_SetCatcher( int catcher );
 void            trap_GetClipboardData( char *buf, int bufsize );
 void            trap_GetClientState( uiClientState_t *state );
 void            trap_GetGlconfig( glconfig_t *glconfig );
-int             trap_GetConfigString( int index, char* buff, int buffsize );
+bool            trap_GetConfigString( int index, char* buff, int buffsize );
 int             trap_LAN_GetServerCount( int source );          // NERVE - SMF
 int             trap_LAN_GetLocalServerCount( void );
 void            trap_LAN_GetLocalServerAddressString( int n, char *buf, int buflen );
@@ -1059,7 +1059,7 @@ void trap_LAN_GetServerInfo( int source, int n, char *buf, int buflen );
 int             trap_LAN_AddServer( int source, const char *name, const char *addr );
 void            trap_LAN_RemoveServer( int source, const char *addr );
 int             trap_LAN_GetServerPing( int source, int n );
-int             trap_LAN_ServerIsVisible( int source, int n );
+bool            trap_LAN_ServerIsVisible( int source, int n );
 int             trap_LAN_ServerStatus( const char *serverAddress, char *serverStatus, int maxLen );
 void            trap_LAN_SaveCachedServers();
 void            trap_LAN_LoadCachedServers();

@@ -586,7 +586,7 @@ static void LAN_MarkServerVisible( int source, int n, bool visible ) {
 LAN_ServerIsVisible
 =======================
 */
-static int LAN_ServerIsVisible( int source, int n ) {
+static bool LAN_ServerIsVisible( int source, int n ) {
 	switch ( source ) {
 	case AS_LOCAL:
 		if ( n >= 0 && n < MAX_OTHER_SERVERS ) {
@@ -626,7 +626,7 @@ bool LAN_UpdateVisiblePings( int source ) {
 LAN_GetServerStatus
 ====================
 */
-int LAN_GetServerStatus( char *serverAddress, char *serverStatus, int maxLen ) {
+bool LAN_GetServerStatus( char *serverAddress, char *serverStatus, int maxLen ) {
 	return CL_ServerStatus( serverAddress, serverStatus, maxLen );
 }
 
@@ -747,7 +747,7 @@ static void CLUI_SetCDKey( char *buf ) {
 GetConfigString
 ====================
 */
-static int GetConfigString( int index, char *buf, int size ) {
+static bool GetConfigString( int index, char *buf, int size ) {
 	int offset;
 
 	if ( index < 0 || index >= MAX_CONFIGSTRINGS ) {

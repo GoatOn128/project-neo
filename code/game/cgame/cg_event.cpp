@@ -407,7 +407,7 @@ static void CG_UseItem( centity_t *cent ) {
 }
 
 // from cg_weapons.cpp
-extern int CG_WeaponIndex( int weapnum, int *bank, int *cycle );
+extern bool CG_WeaponIndex( int weapnum, int *bank, int *cycle );
 
 
 /*

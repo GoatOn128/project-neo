@@ -138,15 +138,15 @@ float VectorLengthSquared(const vec3_t v) {
     return DotProduct(v, v);
 }
 
-int VectorCompare(const vec3_t v1, const vec3_t v2) {
+bool VectorCompare(const vec3_t v1, const vec3_t v2) {
     int i;
 
     for ( i = 0 ; i < 3 ; i++ )
 		if ( fabs( v1[i] - v2[i] ) > EQUAL_EPSILON ) {
-			return 0;
+			return false;
 		}
 
-	return 1;
+	return true;
 }
 
 vec_t Q_rint( vec_t in ) {

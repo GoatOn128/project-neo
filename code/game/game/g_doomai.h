@@ -5,8 +5,9 @@
 // Saved with gentity_t. No heap pointers or client rendering handles.
 struct doomNpc_t {
     int type, options, enemy, clip, clipStart, eventStep, nextDecision, nextRoute;
-    int attackReady, lastSeen, charging, bossDone, shots, routes;
-    int moveDirection, moveCount, justAttacked, justHit, targetThreshold;
+    int attackReady, lastSeen, charging, shots, routes;
+    bool justAttacked, justHit, bossDone;
+    int moveDirection, moveCount, targetThreshold;
     unsigned int randomState;
     vec3_t lastKnown, routePoint;
 };

@@ -1468,7 +1468,7 @@ static void CG_SetAnim( centity_t *cent, lerpFrame_t *lf, int newSequence ) {
 CG_NewAnim
 ==============
 */
-static int CG_NewAnim( centity_t *cent, lerpFrame_t *lf, animation_t *anim, int initialSequence ) {
+static void CG_NewAnim( centity_t *cent, lerpFrame_t *lf, animation_t *anim, int initialSequence ) {
 
 	lf->frameTime       =
 		lf->oldFrameTime    = cg.time;
@@ -1482,7 +1482,6 @@ static int CG_NewAnim( centity_t *cent, lerpFrame_t *lf, animation_t *anim, int 
 	lf->frame           =
 		lf->oldFrame        = lf->animation->firstFrame;
 
-	return 0;
 }
 //----(SA)	end
 

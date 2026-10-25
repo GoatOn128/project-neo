@@ -996,7 +996,7 @@ void QDECL G_DPrintf( const char *fmt, ... );
 void QDECL G_Error( const char *fmt, ... );
 //----(SA)	added
 void G_EndGame( void );
-int G_SendMissionStats( void );   // return '0' if objectives not met, '1' if met
+bool G_SendMissionStats( void );   // returns true if the objectives are met, false otherwise
 void G_ChangeLevel( char *mapName );
 //----(SA)	end
 

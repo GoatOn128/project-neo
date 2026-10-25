@@ -523,7 +523,7 @@ int     FS_FOpenFileRead( const char *qpath, fileHandle_t *file, bool uniqueFILE
 int     FS_FileIsInPAK( const char *filename, int *pChecksum );
 // returns 1 if a file is in the PAK file, otherwise -1
 
-int     FS_Delete( char *filename );    // only works inside the 'save' directory (for deleting savegames/images)
+bool    FS_Delete( char *filename );    // only works inside the 'save' directory (for deleting savegames/images)
 
 int     FS_Write( const void *buffer, int len, fileHandle_t f );
 
@@ -656,8 +656,8 @@ int         Com_Milliseconds( void );   // will be journaled properly
 unsigned    Com_BlockChecksum( const void *buffer, int length );
 unsigned    Com_BlockChecksumKey( void *buffer, int length, int key );
 int         Com_HashKey( char *string, int maxlen );
-int         Com_Filter( char *filter, char *name, int casesensitive );
-int         Com_FilterPath( char *filter, char *name, int casesensitive );
+bool        Com_Filter( char *filter, char *name, int casesensitive );
+bool        Com_FilterPath( char *filter, char *name, int casesensitive );
 int         Com_RealTime( qtime_t *qtime );
 bool    Com_SafeMode( void );
 

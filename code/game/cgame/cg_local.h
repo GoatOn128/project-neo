@@ -174,7 +174,7 @@ typedef struct {
 	int painDirection;              // flip from 0 to 1
 	int painAnimTorso;
 	int painAnimLegs;
-	int lightningFiring;
+	bool lightningFiring;
 
 	// railgun trail spawning
 	vec3_t railgunImpact;
