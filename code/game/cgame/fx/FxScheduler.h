@@ -392,7 +392,7 @@ struct SEffectTemplate {
     int mRepeatDelay;
     CPrimitiveTemplate *mPrimitives[FX_MAX_EFFECT_COMPONENTS];
 
-    bool operator==(const char *name) const { return !stricmp(mEffectName, name); }
+    bool operator==(const char *name) const { return !Q_stricmp(mEffectName, name); }
     void operator=(const SEffectTemplate &that);
 };
 
