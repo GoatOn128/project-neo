@@ -22,6 +22,14 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Two pushes a few seconds apart used to start two Build runs at the same
+# time, and both runs then tried to commit the same log files. Retrying
+# the push cannot fix that conflict, so the newer run cancels the older
+# one and only one run commits logs at a time.
+concurrency:
+  group: build
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
