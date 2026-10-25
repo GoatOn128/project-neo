@@ -893,10 +893,11 @@ typedef struct routecacheheader_s
 	int reachcrc;
 	int numportalcache;
 	int numareacache;
+	int cachesize;                    // sizeof( aas_routingcache_t ) of the build that wrote the file
 } routecacheheader_t;
 
 #define RCID                        ( ( 'C' << 24 ) + ( 'R' << 16 ) + ( 'E' << 8 ) + 'M' )
-#define RCVERSION                   15
+#define RCVERSION                   16
 
 void AAS_DecompressVis( byte *in, int numareas, byte *decompressed );
 int AAS_CompressVis( byte *vis, int numareas, byte *dest );
@@ -942,6 +943,7 @@ void AAS_WriteRouteCache( void ) {
 	  //create the header
 	routecacheheader.ident = RCID;
 	routecacheheader.version = RCVERSION;
+	routecacheheader.cachesize = sizeof( aas_routingcache_t );
 	routecacheheader.numareas = ( *aasworld ).numareas;
 	routecacheheader.numclusters = ( *aasworld ).numclusters;
 	routecacheheader.areacrc = CRC_ProcessString( (unsigned char *)( *aasworld ).areas, sizeof( aas_area_t ) * ( *aasworld ).numareas );
@@ -1001,6 +1003,13 @@ aas_routingcache_t *AAS_ReadCache( fileHandle_t fp ) {
 
 	botimport.FS_Read( &size, sizeof( size ), fp );
 	size = LittleLong( size );
+	// the record has to fit this build's cache layout, the file stores the
+	// structs as raw memory so any other layout turns into garbage
+	if ( size < (int)sizeof( aas_routingcache_t ) + 3 ||
+		 ( size - (int)sizeof( aas_routingcache_t ) ) % 3 != 0 ||
+		 size > (int)sizeof( aas_routingcache_t ) + 3 * ( *aasworld ).numareas ) {
+		return NULL;
+	} //end if
 	cache = (aas_routingcache_t *) AAS_RoutingGetMemory( size );
 	cache->size = size;
 	botimport.FS_Read( (unsigned char *)cache + sizeof( size ), size - sizeof( size ), fp );
@@ -1059,6 +1068,7 @@ int AAS_ReadRouteCache( void ) {
 	routecacheheader.numportalcache = LittleLong( routecacheheader.numportalcache );
 	routecacheheader.reachcrc = LittleLong( routecacheheader.reachcrc );
 	routecacheheader.version = LittleLong( routecacheheader.version );
+	routecacheheader.cachesize = LittleLong( routecacheheader.cachesize );
 
 	if ( routecacheheader.ident != RCID ) {
 		botimport.FS_FCloseFile( fp );
@@ -1069,6 +1079,13 @@ int AAS_ReadRouteCache( void ) {
 	if ( routecacheheader.version != RCVERSION ) {
 		botimport.FS_FCloseFile( fp );
 		Com_Printf( "route cache dump has wrong version %d, should be %d", routecacheheader.version, RCVERSION );
+		return false;
+	} //end if
+	// a different struct size means the raw cache records were written by
+	// another build (e.g. the 32 bit one) and cannot be trusted
+	if ( routecacheheader.cachesize != sizeof( aas_routingcache_t ) ) {
+		botimport.FS_FCloseFile( fp );
+		Com_Printf( "route cache dump was written by a build with a different cache layout\n" );
 		return false;
 	} //end if
 	if ( routecacheheader.numareas != ( *aasworld ).numareas ) {
@@ -1105,6 +1122,19 @@ int AAS_ReadRouteCache( void ) {
 	for ( i = 0; i < routecacheheader.numportalcache; i++ )
 	{
 		cache = AAS_ReadCache( fp );
+		if ( !cache || cache->areanum < 0 || cache->areanum >= ( *aasworld ).numareas ) {
+			if ( cache ) {
+				AAS_FreeRoutingCache( cache );
+			} //end if
+			botimport.FS_FCloseFile( fp );
+			// drop what was read so far and let routing recompute from scratch
+			AAS_FreeAllClusterAreaCache();
+			AAS_FreeAllPortalCache();
+			AAS_InitClusterAreaCache();
+			AAS_InitPortalCache();
+			Com_Printf( "%s is corrupt or written by an incompatible build\n", filename );
+			return false;
+		} //end if
 		cache->next = ( *aasworld ).portalcache[cache->areanum];
 		cache->prev = NULL;
 		if ( ( *aasworld ).portalcache[cache->areanum] ) {
@@ -1116,6 +1146,20 @@ int AAS_ReadRouteCache( void ) {
 	for ( i = 0; i < routecacheheader.numareacache; i++ )
 	{
 		cache = AAS_ReadCache( fp );
+		if ( !cache || cache->cluster < 0 || cache->cluster >= ( *aasworld ).numclusters ||
+			 cache->areanum < 0 || cache->areanum >= ( *aasworld ).numareas ) {
+			if ( cache ) {
+				AAS_FreeRoutingCache( cache );
+			} //end if
+			botimport.FS_FCloseFile( fp );
+			// drop what was read so far and let routing recompute from scratch
+			AAS_FreeAllClusterAreaCache();
+			AAS_FreeAllPortalCache();
+			AAS_InitClusterAreaCache();
+			AAS_InitPortalCache();
+			Com_Printf( "%s is corrupt or written by an incompatible build\n", filename );
+			return false;
+		} //end if
 		clusterareanum = AAS_ClusterAreaNum( cache->cluster, cache->areanum );
 		cache->next = ( *aasworld ).clusterareacache[cache->cluster][clusterareanum];
 		cache->prev = NULL;
