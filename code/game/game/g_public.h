@@ -72,13 +72,13 @@ If you have questions concerning this license or the applicable additional terms
 typedef struct {
 	entityState_t s;                // communicated by server to clients
 
-	qboolean linked;                // qfalse if not in any good cluster
+	bool linked;                // false if not in any good cluster
 	int linkcount;
 
 	int svFlags;                    // SVF_NOCLIENT, SVF_BROADCAST, etc
 	int singleClient;               // only send to this client when SVF_SINGLECLIENT is set
 
-	qboolean bmodel;                // if false, assume an explicit mins / maxs bounding box
+	bool bmodel;                // if false, assume an explicit mins / maxs bounding box
 									// only set by trap_SetBrushModel
 	vec3_t mins, maxs;
 	int contents;                   // CONTENTS_TRIGGER, CONTENTS_SOLID, CONTENTS_BODY, etc
@@ -151,24 +151,24 @@ typedef struct {
 	void (*Trace)( trace_t * results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask );
 	void (*TraceCapsule)( trace_t * results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask );
 	int (*PointContents)( const vec3_t point, int passEntityNum );
-	qboolean (*InPVS)( const vec3_t p1, const vec3_t p2 );
-	qboolean (*InPVSIgnorePortals)( const vec3_t p1, const vec3_t p2 );
-	void (*AdjustAreaPortalState)( void * ent, qboolean open );
-	qboolean (*AreasConnected)( int area1, int area2 );
+	bool (*InPVS)( const vec3_t p1, const vec3_t p2 );
+	bool (*InPVSIgnorePortals)( const vec3_t p1, const vec3_t p2 );
+	void (*AdjustAreaPortalState)( void * ent, bool open );
+	bool (*AreasConnected)( int area1, int area2 );
 	void (*LinkEntity)( void * ent );
 	void (*UnlinkEntity)( void * ent );
 	int (*EntitiesInBox)( const vec3_t mins, const vec3_t maxs, int * list, int maxcount );
-	qboolean (*EntityContact)( const vec3_t mins, const vec3_t maxs, const void * ent );
-	qboolean (*EntityContactCapsule)( const vec3_t mins, const vec3_t maxs, const void * ent );
+	bool (*EntityContact)( const vec3_t mins, const vec3_t maxs, const void * ent );
+	bool (*EntityContactCapsule)( const vec3_t mins, const vec3_t maxs, const void * ent );
 	int (*BotAllocateClient)(  );
 	void (*BotFreeClient)( int clientNum );
 	void (*GetUsercmd)( int clientNum, usercmd_t * cmd );
-	qboolean (*GetEntityToken)( char * buffer, int bufferSize );
+	bool (*GetEntityToken)( char * buffer, int bufferSize );
 	int (*DebugPolygonCreate)( int color, int numPoints, vec3_t * points );
 	void (*DebugPolygonDelete)( int id );
 	int (*RealTime)( qtime_t * qtime );
 	void (*SnapVector)( float * v );
-	qboolean (*GetTag)( int clientNum, char * tagName, orientation_t * or );
+	bool (*GetTag)( int clientNum, char * tagName, orientation_t * or );
 	int (*BotLibSetup)(  );
 	int (*BotLibShutdown)(  );
 	int (*BotLibVarSet)( char * var_name, char * value );
@@ -199,10 +199,10 @@ typedef struct {
 	int (*AAS_Swimming)( vec3_t origin );
 	int (*AAS_PredictClientMovement)( void * move, int entnum, vec3_t origin, int presencetype, int onground, vec3_t velocity, vec3_t cmdmove, int cmdframes, int maxframes, float frametime, int stopevent, int stopareanum, int visualize );
 	void (*AAS_RT_ShowRoute)( vec3_t srcpos, int srcnum, int destnum );
-	qboolean (*AAS_RT_GetHidePos)( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos );
+	bool (*AAS_RT_GetHidePos)( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos );
 	int (*AAS_FindAttackSpotWithinRange)( int srcnum, int rangenum, int enemynum, float rangedist, int travelflags, float * outpos );
-	qboolean (*AAS_GetRouteFirstVisPos)( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos );
-	void (*AAS_SetAASBlockingEntity)( vec3_t absmin, vec3_t absmax, qboolean blocking );
+	bool (*AAS_GetRouteFirstVisPos)( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos );
+	void (*AAS_SetAASBlockingEntity)( vec3_t absmin, vec3_t absmax, bool blocking );
 	void (*EA_Say)( int client, char * str );
 	void (*EA_SayTeam)( int client, char * str );
 	void (*EA_UseItem)( int client, char * it );
@@ -305,8 +305,8 @@ typedef struct {
 	void (*BotFreeWeaponState)( int weaponstate );
 	void (*BotResetWeaponState)( int weaponstate );
 	int (*GeneticParentsAndChildSelection)( int numranks, float * ranks, int * parent1, int * parent2, int * child );
-	qboolean (*AAS_Route)( vec3_t origin, vec3_t goal, int flags, vec3_t point );
-	qboolean (*AAS_DoomPlayerRoute)( vec3_t origin, vec3_t goal, int flags, void * route );
+	bool (*AAS_Route)( vec3_t origin, vec3_t goal, int flags, vec3_t point );
+	bool (*AAS_DoomPlayerRoute)( vec3_t origin, vec3_t goal, int flags, void * route );
 } gameImport_t;
 
 // set by the engine right before the module entry point runs
@@ -319,19 +319,19 @@ typedef struct {
 	int apiVersion;
 	void (*Init)( int levelTime, int randomSeed, int restart );
 	void (*Shutdown)( int restart );
-	const char * (*ClientConnect)( int clientNum, qboolean firstTime, qboolean isBot );
+	const char * (*ClientConnect)( int clientNum, bool firstTime, bool isBot );
 	void (*ClientBegin)( int clientNum );
 	void (*ClientUserinfoChanged)( int clientNum );
 	void (*ClientDisconnect)( int clientNum );
 	void (*ClientCommand)( int clientNum );
 	void (*ClientThink)( int clientNum );
 	void (*RunFrame)( int levelTime );
-	qboolean (*ConsoleCommand)( void );
-	qboolean (*AnimationFrame)( int time );
-	qboolean (*EntityVisibleFromPos)( vec3_t srcpos, int srcnum, vec3_t destpos, int destnum, qboolean updateVisPos );
-	qboolean (*EntityCanAttackFromPos)( int entnum, int enemy, vec3_t pos, qboolean ducking, qboolean allowHitWorld );
+	bool (*ConsoleCommand)( void );
+	bool (*AnimationFrame)( int time );
+	bool (*EntityVisibleFromPos)( vec3_t srcpos, int srcnum, vec3_t destpos, int destnum, bool updateVisPos );
+	bool (*EntityCanAttackFromPos)( int entnum, int enemy, vec3_t pos, bool ducking, bool allowHitWorld );
 	void (*RetrieveMoveSpeedsFromClient)( int clientNum, char * buf );
-	qboolean (*GetModelInfo)( int clientNum, char * tagName, void ** out );
+	bool (*GetModelInfo)( int clientNum, char * tagName, void ** out );
 } gameExport_t;
 
 #endif

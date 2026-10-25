@@ -36,7 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_save_callbacks.h"
 #include "g_local.h"
 
-qboolean    G_SpawnString( const char *key, const char *defaultString, char **out ) {
+bool    G_SpawnString( const char *key, const char *defaultString, char **out ) {
 	int i;
 
 	if ( !level.spawning ) {
@@ -47,18 +47,18 @@ qboolean    G_SpawnString( const char *key, const char *defaultString, char **ou
 	for ( i = 0 ; i < level.numSpawnVars ; i++ ) {
 		if ( !strcmp( key, level.spawnVars[i][0] ) ) {
 			*out = level.spawnVars[i][1];
-			return qtrue;
+			return true;
 		}
 	}
 
 	*out = (char *)defaultString;
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("G_SpawnString", G_SpawnString);
 
-qboolean    G_SpawnFloat( const char *key, const char *defaultString, float *out ) {
+bool    G_SpawnFloat( const char *key, const char *defaultString, float *out ) {
 	char        *s;
-	qboolean present;
+	bool present;
 
 	present = G_SpawnString( key, defaultString, &s );
 	*out = atof( s );
@@ -66,9 +66,9 @@ qboolean    G_SpawnFloat( const char *key, const char *defaultString, float *out
 }
 DOOM_SAVE_CALLBACK("G_SpawnFloat", G_SpawnFloat);
 
-qboolean    G_SpawnInt( const char *key, const char *defaultString, int *out ) {
+bool    G_SpawnInt( const char *key, const char *defaultString, int *out ) {
 	char        *s;
-	qboolean present;
+	bool present;
 
 	present = G_SpawnString( key, defaultString, &s );
 	*out = atoi( s );
@@ -76,9 +76,9 @@ qboolean    G_SpawnInt( const char *key, const char *defaultString, int *out ) {
 }
 DOOM_SAVE_CALLBACK("G_SpawnInt", G_SpawnInt);
 
-qboolean    G_SpawnVector( const char *key, const char *defaultString, float *out ) {
+bool    G_SpawnVector( const char *key, const char *defaultString, float *out ) {
 	char        *s;
-	qboolean present;
+	bool present;
 
 	present = G_SpawnString( key, defaultString, &s );
 	sscanf( s, "%f %f %f", &out[0], &out[1], &out[2] );
@@ -656,20 +656,20 @@ spawn_t spawns[] = {{"doom_line", SP_doom_line},
 G_CallSpawn
 
 Finds the spawn function for the entity and calls it,
-returning qfalse if not found
+returning false if not found
 ===============
 */
-qboolean G_CallSpawn( gentity_t *ent ) {
+bool G_CallSpawn( gentity_t *ent ) {
 	spawn_t *s;
 	gitem_t *item;
 
 	if ( !ent->classname ) {
 		G_Printf( "G_CallSpawn: NULL classname\n" );
-		return qfalse;
+		return false;
 	}
 
     if (G_DoomAIConfigure(ent)) {
-        return qtrue;
+        return true;
     }
 
     // check item spawn functions
@@ -678,10 +678,10 @@ qboolean G_CallSpawn( gentity_t *ent ) {
 			// found it
 			// DHM - Nerve :: allow flags in GTWOLF
 			if ( item->giType == IT_TEAM && ( g_gametype.integer != GT_CTF && g_gametype.integer != GT_WOLF ) ) {
-				return qfalse;
+				return false;
 			}
 			G_SpawnItem( ent, item );
-			return qtrue;
+			return true;
 		}
 	}
 
@@ -697,11 +697,11 @@ qboolean G_CallSpawn( gentity_t *ent ) {
 				G_Script_ScriptEvent( ent, "spawn", "" );
 			}
 
-			return qtrue;
+			return true;
 		}
 	}
 	G_Printf( "%s doesn't have a spawn function\n", ent->classname );
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("G_CallSpawn", G_CallSpawn);
 
@@ -877,7 +877,7 @@ level's entity strings into level.spawnVars[]
 This does not actually spawn an entity.
 ====================
 */
-qboolean G_ParseSpawnVars( void ) {
+bool G_ParseSpawnVars( void ) {
 	char keyname[MAX_TOKEN_CHARS];
 	char com_token[MAX_TOKEN_CHARS];
 
@@ -887,7 +887,7 @@ qboolean G_ParseSpawnVars( void ) {
 	// parse the opening brace
 	if ( !trap_GetEntityToken( com_token, sizeof( com_token ) ) ) {
 		// end of spawn string
-		return qfalse;
+		return false;
 	}
 	if ( com_token[0] != '{' ) {
 		G_Error( "G_ParseSpawnVars: found %s when expecting {",com_token );
@@ -920,7 +920,7 @@ qboolean G_ParseSpawnVars( void ) {
 		level.numSpawnVars++;
 	}
 
-	return qtrue;
+	return true;
 }
 DOOM_SAVE_CALLBACK("G_ParseSpawnVars", G_ParseSpawnVars);
 
@@ -1000,7 +1000,7 @@ Parses textual entity definitions out of an entstring and spawns gentities.
 */
 void G_SpawnEntitiesFromString( void ) {
 	// allow calls to G_Spawn*()
-	level.spawning = qtrue;
+	level.spawning = true;
 	level.numSpawnVars = 0;
 
 	// the worldspawn is not an actual entity, but it still
@@ -1017,6 +1017,6 @@ void G_SpawnEntitiesFromString( void ) {
 	}
 
 	G_DoomInitMap();
-	level.spawning = qfalse;            // any future calls to G_Spawn*() will be errors
+	level.spawning = false;            // any future calls to G_Spawn*() will be errors
 }
 DOOM_SAVE_CALLBACK("G_SpawnEntitiesFromString", G_SpawnEntitiesFromString);

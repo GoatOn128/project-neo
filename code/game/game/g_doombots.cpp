@@ -12,7 +12,7 @@ bool DoomBotsActive() {
     return G_DoomMapActive() && (g_gametype.integer == GT_FFA || g_gametype.integer == GT_TEAM);
 }
 static int readyTime, nextPopulation, serial;
-static qboolean keepingRoster;
+static bool keepingRoster;
 
 unsigned int DoomBotRandom(doomBot_t &bot) {
     bot.randomState = bot.randomState * 1664525u + 1013904223u;
@@ -49,12 +49,12 @@ static int PlayerLimit() {
     return g_maxGameClients.integer > 0 ? min(level.maxclients, g_maxGameClients.integer)
                                         : level.maxclients;
 }
-static void DropBot(doomBot_t &bot, qboolean keep) {
+static void DropBot(doomBot_t &bot, bool keep) {
     int clientNum = bot.clientNum;
     if (clientNum >= 0) {
         keepingRoster = keep;
         trap_DropClient(clientNum, "Player bot removed");
-        keepingRoster = qfalse;
+        keepingRoster = false;
         trap_BotFreeClient(clientNum);
     }
     bot.clientNum = -1;
@@ -86,7 +86,7 @@ void G_DoomBotsMakeRoom() {
         if (doomBots[i].clientNum < 0) {
             continue;
         }
-        DropBot(doomBots[i], qtrue);
+        DropBot(doomBots[i], true);
         nextPopulation = level.time + 1500;
         break;
     }
@@ -99,13 +99,13 @@ static void Configure(doomBot_t &bot, int team, int skill, const char *name) {
     bot.randomState = ++serial * 7919u + 17;
     Q_strncpyz(bot.name, name, sizeof(bot.name));
 }
-static qboolean SpawnBot(doomBot_t &bot) {
+static bool SpawnBot(doomBot_t &bot) {
     if (PlayerCount() >= PlayerLimit()) {
-        return qfalse;
+        return false;
     }
     int clientNum = trap_BotAllocateClient();
     if (clientNum < 1) {
-        return qfalse;
+        return false;
     }
     gentity_t *ent = &g_entities[clientNum];
     memset(ent, 0, sizeof(*ent));
@@ -125,11 +125,11 @@ static qboolean SpawnBot(doomBot_t &bot) {
     Info_SetValueForKey(userinfo, "handicap", "100");
     Info_SetValueForKey(userinfo, "password", g_password.string);
     trap_SetUserinfo(clientNum, userinfo);
-    char *denied = ClientConnect(clientNum, qtrue, qtrue);
+    char *denied = ClientConnect(clientNum, true, true);
     if (denied) {
         G_Printf("Doom bot rejected: %s\n", denied);
         trap_BotFreeClient(clientNum);
-        return qfalse;
+        return false;
     }
     bot.clientNum = clientNum;
     if (g_gametype.integer == GT_TEAM) {
@@ -148,7 +148,7 @@ static qboolean SpawnBot(doomBot_t &bot) {
     VectorCopy(ent->r.currentOrigin, bot.progressOrigin);
     G_Printf("Doom player bot joined: client=%d name=%s team=%d skill=%d\n", clientNum, bot.name,
              bot.team, bot.skill);
-    return qtrue;
+    return true;
 }
 void G_DoomBotsInit() {
     trap_Cvar_Register(&botCount, "doom_botCount", "0", CVAR_ARCHIVE);
@@ -164,7 +164,7 @@ void G_DoomBotsInit() {
                   atoi(Info_ValueForKey(info, "skill")), name);
     }
     readyTime = nextPopulation = level.time + 600;
-    keepingRoster = qfalse;
+    keepingRoster = false;
 }
 void G_DoomBotsShutdown() {
     // No disconnect effects during shutdown. Private roster cvars survive DLL
@@ -192,7 +192,7 @@ static void Population() {
     if (count != wanted) {
         for (int i = DOOM_MAX_BOTS - 1; i >= 0 && count > wanted; --i) {
             if (doomBots[i].name[0]) {
-                DropBot(doomBots[i], qfalse);
+                DropBot(doomBots[i], false);
                 --count;
             }
         }
@@ -207,7 +207,7 @@ static void Population() {
     }
     for (int i = DOOM_MAX_BOTS - 1; i >= 0 && PlayerCount() > PlayerLimit(); --i) {
         if (doomBots[i].clientNum >= 0) {
-            DropBot(doomBots[i], qtrue);
+            DropBot(doomBots[i], true);
         }
     }
     for (int i = 0; i < DOOM_MAX_BOTS; ++i) {
@@ -247,7 +247,7 @@ void G_DoomBotsFrame() {
         self->client->inactivityTime = level.time + 60000;
         if (self->health <= 0) {
             bot.enemyNum = -1;
-            bot.hasGoal = qfalse;
+            bot.hasGoal = false;
             // Bots own their respawn decision on the server. Use the ordinary
             // player spawn path without depending on dead-player input processing.
             if (!level.intermissiontime && level.time > self->client->respawnTime + 500) {
@@ -263,7 +263,7 @@ void G_DoomBotsFrame() {
             if (spawn != bot.spawnCount) {
                 bot.spawnCount = spawn;
                 bot.enemyNum = -1;
-                bot.hasGoal = qfalse;
+                bot.hasGoal = false;
                 bot.escapeUntil = 0;
                 bot.nextDecision = bot.nextRoute = level.time;
                 VectorCopy(self->r.currentOrigin, bot.progressOrigin);
@@ -289,7 +289,7 @@ void G_DoomBotsFrame() {
         ++bot.commands;
     }
 }
-qboolean G_DoomBotCommand(const char *command) {
+bool G_DoomBotCommand(const char *command) {
     if (!Q_stricmp(command, "botstatus")) {
         int count = 0;
         for (auto &bot : doomBots) {
@@ -321,10 +321,10 @@ qboolean G_DoomBotCommand(const char *command) {
             }
         }
         G_Printf("Doom bot roster: %d mode=%d\n", count, g_gametype.integer);
-        return qtrue;
+        return true;
     }
     if (Q_stricmp(command, "addbot") && Q_stricmp(command, "removebot")) {
-        return qfalse;
+        return false;
     }
     char name[32];
     trap_Argv(1, name, sizeof(name));
@@ -332,17 +332,17 @@ qboolean G_DoomBotCommand(const char *command) {
         int removed = 0;
         for (auto &bot : doomBots) {
             if (bot.name[0] && (!Q_stricmp(name, "all") || !Q_stricmp(name, bot.name))) {
-                DropBot(bot, qfalse);
+                DropBot(bot, false);
                 ++removed;
             }
         }
         StoreRoster();
         G_Printf("Removed %d Doom bots. Usage: removebot <name|all>\n", removed);
-        return qtrue;
+        return true;
     }
     if (!DoomBotsActive()) {
         G_Printf("Doom bots require a deathmatch or team deathmatch server.\n");
-        return qtrue;
+        return true;
     }
     char skillText[16], teamText[16];
     trap_Argv(2, skillText, sizeof(skillText));
@@ -356,19 +356,19 @@ qboolean G_DoomBotCommand(const char *command) {
         (teamText[0] && Q_stricmp(teamText, "red") && Q_stricmp(teamText, "blue") &&
          Q_stricmp(teamText, "auto"))) {
         G_Printf("Usage: addbot <name> [skill 1..5] [red|blue|auto]\n");
-        return qtrue;
+        return true;
     }
     for (const char *p = name; *p; ++p) {
         if (static_cast<unsigned char>(*p) < 32 || *p == '"' || *p == '\\' || *p == ';') {
             G_Printf("Invalid bot name.\n");
-            return qtrue;
+            return true;
         }
     }
     doomBot_t *freeSlot = nullptr;
     for (auto &bot : doomBots) {
         if (!Q_stricmp(name, bot.name)) {
             G_Printf("Bot name already exists.\n");
-            return qtrue;
+            return true;
         }
         if (!bot.name[0] && !freeSlot) {
             freeSlot = &bot;
@@ -376,10 +376,10 @@ qboolean G_DoomBotCommand(const char *command) {
     }
     if (!freeSlot || PlayerCount() >= PlayerLimit()) {
         G_Printf("No Doom bot capacity available.\n");
-        return qtrue;
+        return true;
     }
     Configure(*freeSlot, team, skill, name);
     StoreRoster();
     nextPopulation = level.time;
-    return qtrue;
+    return true;
 }

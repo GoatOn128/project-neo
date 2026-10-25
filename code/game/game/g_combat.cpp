@@ -69,7 +69,7 @@ void AddScore( gentity_t *ent, int score ) {
 }
 DOOM_SAVE_CALLBACK("AddScore", AddScore);
 
-extern qboolean G_ThrowChair( gentity_t *ent, vec3_t dir, qboolean force );
+extern bool G_ThrowChair( gentity_t *ent, vec3_t dir, bool force );
 
 /*
 =================
@@ -103,7 +103,7 @@ void TossClientItems( gentity_t *self ) {
 
 	AngleVectors( self->r.currentAngles, forward, NULL, NULL );
 
-	G_ThrowChair( self, forward, qtrue ); // drop chair if you're holding one  //----(SA)	added
+	G_ThrowChair( self, forward, true ); // drop chair if you're holding one  //----(SA)	added
 
 	// make a special check to see if they are changing to a new
 	// weapon that isn't the mg or gauntlet.  Without this, a client
@@ -141,7 +141,7 @@ void TossClientItems( gentity_t *self ) {
 
 		// Rafael
 		if ( !( self->client->ps.persistant[PERS_HWEAPON_USE] ) ) {
-			drop = Drop_Item( self, item, 0, qfalse );
+			drop = Drop_Item( self, item, 0, false );
 		}
 	}
 
@@ -159,7 +159,7 @@ void TossClientItems( gentity_t *self ) {
 				if ( !item ) {
 					continue;
 				}
-				drop = Drop_Item( self, item, angle, qfalse );
+				drop = Drop_Item( self, item, angle, false );
 				// decide how many seconds it has left
 				drop->count = ( self->client->ps.powerups[ i ] - level.time ) / 1000;
 				if ( drop->count < 1 ) {
@@ -229,7 +229,7 @@ void GibEntity( gentity_t *self, int killer ) {
 	}
 
 	G_AddEvent( self, EV_GIB_PLAYER, DirToByte( dir ) );
-	self->takedamage = qfalse;
+	self->takedamage = false;
 	self->s.eType = ET_INVISIBLE;
 	self->r.contents = 0;
 }
@@ -348,7 +348,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 	int killer;
 	int i;
 	char        *killerName, *obit;
-	qboolean nogib = qtrue;
+	bool nogib = true;
 	gitem_t     *item = NULL; // JPW NERVE for flag drop
 	vec3_t launchvel;      // JPW NERVE
 	gentity_t   *flag; // JPW NERVE
@@ -501,7 +501,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		}
 	}
 
-	self->takedamage = qtrue;   // can still be gibbed
+	self->takedamage = true;   // can still be gibbed
 
 	self->s.powerups = 0;
 // JPW NERVE -- only corpse in SP; in MP, need CONTENTS_BODY so medic can operate
@@ -545,7 +545,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 //		else	// gib death
 //		{
 		GibEntity( self, killer );
-		nogib = qfalse;
+		nogib = false;
 //		}
 	}
 
@@ -647,22 +647,22 @@ DOOM_SAVE_CALLBACK("CheckArmor", CheckArmor);
 IsHeadShotWeapon
 ==============
 */
-qboolean IsHeadShotWeapon( int mod, gentity_t *targ, gentity_t *attacker ) {
+bool IsHeadShotWeapon( int mod, gentity_t *targ, gentity_t *attacker ) {
 	// distance rejection
 	if ( DistanceSquared( targ->r.currentOrigin, attacker->r.currentOrigin )  >  ( g_headshotMaxDist.integer * g_headshotMaxDist.integer ) ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( attacker->aiCharacter ) {
 		// ai's are always allowed headshots from these weapons
 		if ( mod == MOD_SNIPERRIFLE ||
 			 mod == MOD_SNOOPERSCOPE ) {
-			return qtrue;
+			return true;
 		}
 
 		if ( g_gameskill.integer != GSKILL_MAX ) {
 			// ai's allowed headshots in skill==GSKILL_MAX
-			return qfalse;
+			return false;
 		}
 	}
 
@@ -673,7 +673,7 @@ qboolean IsHeadShotWeapon( int mod, gentity_t *targ, gentity_t *attacker ) {
 	case AICHAR_HELGA:      // boss1 (beast)
 	case AICHAR_LOPER:
 	case AICHAR_VENOM:      //----(SA)	added
-		return qfalse;
+		return false;
 	default:
 		break;
 	}
@@ -694,10 +694,10 @@ qboolean IsHeadShotWeapon( int mod, gentity_t *targ, gentity_t *attacker ) {
 	case MOD_FG42SCOPE:
 	case MOD_SNOOPERSCOPE:
 	case MOD_SNIPERRIFLE:
-		return qtrue;
+		return true;
 	}
 
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("IsHeadShotWeapon", IsHeadShotWeapon);
 
@@ -706,22 +706,22 @@ DOOM_SAVE_CALLBACK("IsHeadShotWeapon", IsHeadShotWeapon);
 IsHeadShot
 ==============
 */
-qboolean IsHeadShot( gentity_t *targ, gentity_t *attacker, vec3_t dir, vec3_t point, int mod ) {
+bool IsHeadShot( gentity_t *targ, gentity_t *attacker, vec3_t dir, vec3_t point, int mod ) {
 	gentity_t   *head;
 	trace_t tr;
 	vec3_t start, end;
 	gentity_t   *traceEnt;
 	orientation_t or;
 
-	qboolean head_shot_weapon = qfalse;
+	bool head_shot_weapon = false;
 
 	// not a player or critter so bail
 	if ( !( targ->client ) ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( targ->health <= 0 ) {
-		return qfalse;
+		return false;
 	}
 
 	head_shot_weapon = IsHeadShotWeapon( mod, targ, attacker );
@@ -789,11 +789,11 @@ qboolean IsHeadShot( gentity_t *targ, gentity_t *attacker, vec3_t dir, vec3_t po
 		G_FreeEntity( head );
 
 		if ( traceEnt == head ) {
-			return qtrue;
+			return true;
 		}
 	}
 
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("IsHeadShot", IsHeadShot);
 
@@ -843,7 +843,7 @@ void G_ArmorDamage( gentity_t *targ ) {
 	brokeparts = (int)( ( 1 - ( (float)( targ->health ) / (float)( targ->client->ps.stats[STAT_MAX_HEALTH] ) ) ) * numParts );
 
 	// RF, remove flame protection after enough parts gone
-    if (qfalse && ((float)brokeparts / (float)numParts >= 5.0 / 6.0)) { // figure from DM
+    if (false && ((float)brokeparts / (float)numParts >= 5.0 / 6.0)) { // figure from DM
     }
 
     if (brokeparts && ((targ->s.dmgFlags & ((1 << numParts) - 1)) !=
@@ -1166,7 +1166,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	// calculated after knockback, so rocket jumping works
 	if ( g_gametype.integer == GT_SINGLE_PLAYER ) {     // JPW NERVE -- removed from multiplayer -- plays havoc with pfaust & demolition balancing
 
-		qboolean dynamite = (qboolean)( mod == MOD_DYNAMITE || mod == MOD_DYNAMITE_SPLASH );
+		bool dynamite = (bool)( mod == MOD_DYNAMITE || mod == MOD_DYNAMITE_SPLASH );
 
 		if ( targ == attacker ) {
 			if ( !dynamite ) {
@@ -1291,10 +1291,10 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 
 		if ( dir ) {
 			VectorCopy( dir, client->damage_from );
-			client->damage_fromWorld = qfalse;
+			client->damage_fromWorld = false;
 		} else {
 			VectorCopy( targ->r.currentOrigin, client->damage_from );
-			client->damage_fromWorld = qtrue;
+			client->damage_fromWorld = true;
 		}
 	}
 
@@ -1372,11 +1372,11 @@ DOOM_SAVE_CALLBACK("G_Damage", G_Damage);
 ============
 CanDamage
 
-Returns qtrue if the inflictor can directly damage the target.  Used for
+Returns true if the inflictor can directly damage the target.  Used for
 explosions and melee attacks.
 ============
 */
-qboolean CanDamage( gentity_t *targ, vec3_t origin ) {
+bool CanDamage( gentity_t *targ, vec3_t origin ) {
 	vec3_t dest;
 	trace_t tr;
 	vec3_t midpoint;
@@ -1389,13 +1389,13 @@ qboolean CanDamage( gentity_t *targ, vec3_t origin ) {
 	VectorCopy( midpoint, dest );
 	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 	if ( tr.fraction == 1.0 ) {
-		return qtrue;
+		return true;
 	}
 
 
 
 	if ( &g_entities[tr.entityNum] == targ ) {
-		return qtrue;
+		return true;
 	}
 
 	// this should probably check in the plane of projection,
@@ -1405,7 +1405,7 @@ qboolean CanDamage( gentity_t *targ, vec3_t origin ) {
 	dest[1] += 15.0;
 	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 	if ( tr.fraction == 1.0 ) {
-		return qtrue;
+		return true;
 	}
 
 	VectorCopy( midpoint, dest );
@@ -1413,7 +1413,7 @@ qboolean CanDamage( gentity_t *targ, vec3_t origin ) {
 	dest[1] -= 15.0;
 	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 	if ( tr.fraction == 1.0 ) {
-		return qtrue;
+		return true;
 	}
 
 	VectorCopy( midpoint, dest );
@@ -1421,7 +1421,7 @@ qboolean CanDamage( gentity_t *targ, vec3_t origin ) {
 	dest[1] += 15.0;
 	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 	if ( tr.fraction == 1.0 ) {
-		return qtrue;
+		return true;
 	}
 
 	VectorCopy( midpoint, dest );
@@ -1429,11 +1429,11 @@ qboolean CanDamage( gentity_t *targ, vec3_t origin ) {
 	dest[1] -= 15.0;
 	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 	if ( tr.fraction == 1.0 ) {
-		return qtrue;
+		return true;
 	}
 
 
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("CanDamage", CanDamage);
 
@@ -1442,7 +1442,7 @@ DOOM_SAVE_CALLBACK("CanDamage", CanDamage);
 G_RadiusDamage
 ============
 */
-qboolean G_RadiusDamage( vec3_t origin, gentity_t *attacker, float damage, float radius,
+bool G_RadiusDamage( vec3_t origin, gentity_t *attacker, float damage, float radius,
 						 gentity_t *ignore, int mod ) {
 	float points, dist;
 	gentity_t   *ent;
@@ -1452,7 +1452,7 @@ qboolean G_RadiusDamage( vec3_t origin, gentity_t *attacker, float damage, float
 	vec3_t v;
 	vec3_t dir;
 	int i, e;
-	qboolean hitClient = qfalse;
+	bool hitClient = false;
 // JPW NERVE
 	float boxradius;
 	vec3_t dest;
@@ -1522,7 +1522,7 @@ qboolean G_RadiusDamage( vec3_t origin, gentity_t *attacker, float damage, float
 // JPW NERVE -- different radiusdmg behavior for MP -- big explosions should do less damage (over less distance) through failed traces
 		if ( CanDamage( ent, origin ) ) {
 			if ( LogAccuracyHit( ent, attacker ) ) {
-				hitClient = qtrue;
+				hitClient = true;
 			}
 			VectorSubtract( ent->r.currentOrigin, origin, dir );
 			// push the center of mass higher than the origin so players
@@ -1544,7 +1544,7 @@ qboolean G_RadiusDamage( vec3_t origin, gentity_t *attacker, float damage, float
 					dist = VectorLength( dest );
 					if ( dist < radius * 0.2f ) { // closer than 1/4 dist
 						if ( LogAccuracyHit( ent, attacker ) ) {
-							hitClient = qtrue;
+							hitClient = true;
 						}
 						VectorSubtract( ent->r.currentOrigin, origin, dir );
 						dir[2] += 24;

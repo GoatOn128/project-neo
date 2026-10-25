@@ -570,7 +570,7 @@ void target_kill_use( gentity_t *self, gentity_t *other, gentity_t *activator ) 
 
 	while ( ( targ = G_Find( targ, FOFS( targetname ), self->target ) ) != NULL ) {
 		if ( targ->aiCharacter ) {       // (SA) if it's an ai character, free it nicely
-			targ->aiInactive = qtrue;
+			targ->aiInactive = true;
 		} else
 		{
 			// make sure it isn't going to respawn or show any events
@@ -620,7 +620,7 @@ void target_location_linkup( gentity_t *ent ) {
 		return;
 	}
 
-	level.locationLinked = qtrue;
+	level.locationLinked = true;
 
 	level.locationHead = NULL;
 
@@ -1009,7 +1009,7 @@ void target_rumble_think( gentity_t * ent ) {
 	float ratio;
 	float time, time2;
 	float dapitch;
-	qboolean validrumble = qtrue;
+	bool validrumble = true;
 
 	if ( !( ent->count ) ) {
 		ent->timestamp = level.time;
@@ -1037,7 +1037,7 @@ void target_rumble_think( gentity_t * ent ) {
 			time2 = ( ent->timestamp + ent->start_size + ent->end_size ) - ent->timestamp;
 			ratio = time2 / time;
 		} else {
-			validrumble = qfalse;
+			validrumble = false;
 		}
 	}
 

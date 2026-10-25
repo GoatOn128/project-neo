@@ -130,7 +130,7 @@ void InitTramcar( gentity_t *ent ) {
 	float distance;
 	float light;
 	vec3_t color;
-	qboolean lightSet, colorSet;
+	bool lightSet, colorSet;
 	char        *sound;
 
 	// This is here just for show
@@ -348,7 +348,7 @@ void Reached_Tramcar( gentity_t *ent ) {
 			GetNextTrack( ent );
 			Think_SetupAirplaneWaypoints( ent );
 		} else if ( ( next->spawnflags & 2 ) && ( ent->spawnflags & 8 ) && ent->health <= 0 && ent->takedamage )         { // death path
-			ent->takedamage = qfalse;
+			ent->takedamage = false;
 
 			GetNextTrack( ent );
 			Think_SetupAirplaneWaypoints( ent );
@@ -599,9 +599,9 @@ void Tramcar_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, in
 
 	self->use = NULL;
 
-	self->is_dead = qtrue;
+	self->is_dead = true;
 
-	self->takedamage = qfalse;
+	self->takedamage = false;
 
 	if ( self->nextTrain ) {
 		self->nextTrain = 0;
@@ -722,11 +722,11 @@ void SP_func_tramcar( gentity_t *self ) {
 			self->health = 50;
 		}
 
-		self->takedamage = qtrue;
+		self->takedamage = true;
 		self->die = Tramcar_die;
 
 		if ( self->health < 999 ) {
-			self->isProp = qtrue;
+			self->isProp = true;
 		}
 	}
 
@@ -971,7 +971,7 @@ void Plane_Fire_Lead( gentity_t *self ) {
 }
 DOOM_SAVE_CALLBACK("Plane_Fire_Lead", Plane_Fire_Lead);
 
-void Plane_Attack( gentity_t *self, qboolean in_PVS ) {
+void Plane_Attack( gentity_t *self, bool in_PVS ) {
 	if ( self->nextTrain->spawnflags & 16 ) {
 		self->count++;
 
@@ -998,7 +998,7 @@ DOOM_SAVE_CALLBACK("Plane_Attack", Plane_Attack);
 
 void props_me109_think( gentity_t *self ) {
 
-	qboolean in_PVS = qfalse;
+	bool in_PVS = false;
 
 	{
 		gentity_t *player;
@@ -1191,7 +1191,7 @@ void SP_props_me109( gentity_t *ent ) {
 	ent->r.svFlags  = SVF_USE_CURRENT_ORIGIN;
 	ent->s.eType = ET_MOVER;
 
-	ent->isProp = qtrue;
+	ent->isProp = true;
 
 	ent->s.modelindex = G_ModelIndex( "models/mapobjects/vehicles/m109.md3" );
 
@@ -1199,7 +1199,7 @@ void SP_props_me109( gentity_t *ent ) {
 		ent->health = 500;
 	}
 
-	ent->takedamage = qtrue;
+	ent->takedamage = true;
 
 	ent->die = props_me109_die;
 	ent->pain = props_me109_pain;
@@ -1282,7 +1282,7 @@ void truck_cam_touch( gentity_t *self, gentity_t *other, trace_t *trace ) {
 		VectorCopy( point, other->client->ps.origin );
 
 		// save results of pmove
-		BG_PlayerStateToEntityState( &other->client->ps, &other->s, qtrue );
+		BG_PlayerStateToEntityState( &other->client->ps, &other->s, true );
 
 		// use the precise origin for linking
 		VectorCopy( other->client->ps.origin, other->r.currentOrigin );
@@ -1424,7 +1424,7 @@ void camera_cam_think( gentity_t *ent ) {
 		VectorCopy( point, player->client->ps.origin );
 
 		// save results of pmove
-		BG_PlayerStateToEntityState( &player->client->ps, &player->s, qtrue );
+		BG_PlayerStateToEntityState( &player->client->ps, &player->s, true );
 
 		// use the precise origin for linking
 		VectorCopy( player->client->ps.origin, player->r.currentOrigin );
@@ -1614,7 +1614,7 @@ void reset_players_pos( gentity_t *ent, gentity_t *other, gentity_t *activator )
 	VectorCopy( ent->s.origin2, player->client->ps.origin );
 
 	// save results of pmove
-	BG_PlayerStateToEntityState( &player->client->ps, &player->s, qtrue );
+	BG_PlayerStateToEntityState( &player->client->ps, &player->s, true );
 
 	// use the precise origin for linking
 	VectorCopy( player->client->ps.origin, player->r.currentOrigin );

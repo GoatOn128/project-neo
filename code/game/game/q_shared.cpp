@@ -129,7 +129,7 @@ COM_BitCheck
   Allows bit-wise checks on arrays with more than one item (> 32 bits)
 ==================
 */
-qboolean COM_BitCheck( const int array[], int bitNum ) {
+bool COM_BitCheck( const int array[], int bitNum ) {
 	int i;
 
 	i = 0;
@@ -398,7 +398,7 @@ COM_Parse
 ================
 */
 char *COM_Parse( char **data_p ) {
-	return COM_ParseExt( data_p, qtrue );
+	return COM_ParseExt( data_p, true );
 }
 DOOM_SAVE_CALLBACK("COM_Parse", COM_Parse);
 
@@ -443,18 +443,18 @@ SkipWhitespace
 Parse a token out of a string
 Will never return NULL, just empty strings
 
-If "allowLineBreaks" is qtrue then an empty
+If "allowLineBreaks" is true then an empty
 string will be returned if the next token is
 a newline.
 ==============
 */
-char *SkipWhitespace( char *data, qboolean *hasNewLines ) {
+char *SkipWhitespace( char *data, bool *hasNewLines ) {
 	int c;
 
 	while ( ( c = *data ) <= ' ' ) {
 		if ( c == '\n' ) {
 			com_lines++;
-			*hasNewLines = qtrue;
+			*hasNewLines = true;
 		} else if ( !c )   {
 			return NULL;
 		}
@@ -473,7 +473,7 @@ COM_Compress
 int COM_Compress( char *data_p ) {
 	char *datai, *datao;
 	int c, size;
-	qboolean ws = qfalse;
+	bool ws = false;
 
 	size = 0;
 	datai = datao = data_p;
@@ -482,7 +482,7 @@ int COM_Compress( char *data_p ) {
 			if ( c == 13 || c == 10 ) {
 				*datao = c;
 				datao++;
-				ws = qfalse;
+				ws = false;
 				datai++;
 				size++;
 				// skip double slash comments
@@ -490,7 +490,7 @@ int COM_Compress( char *data_p ) {
 				while ( *datai && *datai != '\n' ) {
 					datai++;
 				}
-				ws = qfalse;
+				ws = false;
 				// skip /* */ comments
 			} else if ( c == '/' && datai[1] == '*' ) {
 				while ( *datai && ( *datai != '*' || datai[1] != '/' ) ) {
@@ -499,7 +499,7 @@ int COM_Compress( char *data_p ) {
 				if ( *datai ) {
 					datai += 2;
 				}
-				ws = qfalse;
+				ws = false;
 			} else {
 				if ( ws ) {
 					*datao = ' ';
@@ -508,7 +508,7 @@ int COM_Compress( char *data_p ) {
 				*datao = c;
 				datao++;
 				datai++;
-				ws = qfalse;
+				ws = false;
 				size++;
 			}
 		}
@@ -523,9 +523,9 @@ DOOM_SAVE_CALLBACK("COM_Compress", COM_Compress);
 COM_ParseExt
 ================
 */
-char *COM_ParseExt( char **data_p, qboolean allowLineBreaks ) {
+char *COM_ParseExt( char **data_p, bool allowLineBreaks ) {
 	int c = 0, len;
-	qboolean hasNewLines = qfalse;
+	bool hasNewLines = false;
 	char *data;
 
 	data = *data_p;
@@ -653,7 +653,7 @@ void SkipBracedSection( char **program ) {
 
 	depth = 0;
 	do {
-		token = COM_ParseExt( program, qtrue );
+		token = COM_ParseExt( program, true );
 		if ( token[1] == 0 ) {
 			if ( token[0] == '{' ) {
 				depth++;
@@ -1350,14 +1350,14 @@ Some characters are illegal in info strings because they
 can mess up the server's parsing
 ==================
 */
-qboolean Info_Validate( const char *s ) {
+bool Info_Validate( const char *s ) {
 	if ( strchr( s, '\"' ) ) {
-		return qfalse;
+		return false;
 	}
 	if ( strchr( s, ';' ) ) {
-		return qfalse;
+		return false;
 	}
-	return qtrue;
+	return true;
 }
 DOOM_SAVE_CALLBACK("Info_Validate", Info_Validate);
 

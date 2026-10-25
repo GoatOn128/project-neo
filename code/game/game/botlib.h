@@ -147,8 +147,8 @@ typedef struct bsp_surface_s
 //a trace is returned when a box is swept through the world
 typedef struct bsp_trace_s
 {
-	qboolean allsolid;          // if true, plane is not valid
-	qboolean startsolid;        // if true, the initial point was in a solid area
+	bool allsolid;          // if true, plane is not valid
+	bool startsolid;        // if true, the initial point was in a solid area
 	float fraction;             // time completed, 1.0 = didn't hit anything
 	vec3_t endpos;              // final position
 	cplane_t plane;             // surface normal at impact
@@ -225,10 +225,10 @@ typedef struct botlib_import_s
 	void ( *DebugPolygonDelete )( int id );
 	//
 	// Ridah, Cast AI stuff
-    qboolean (*EntityVisibleFromPos)(vec3_t srcpos, int srcnum, vec3_t destpos, int destnum,
-                                     qboolean updateVisPos);
-    qboolean (*EntityCanAttackFromPos)(int entnum, int enemy, vec3_t pos, qboolean ducking,
-                                       qboolean allowHitWorld);
+    bool (*EntityVisibleFromPos)(vec3_t srcpos, int srcnum, vec3_t destpos, int destnum,
+                                     bool updateVisPos);
+    bool (*EntityCanAttackFromPos)(int entnum, int enemy, vec3_t pos, bool ducking,
+                                       bool allowHitWorld);
     // done.
 } botlib_import_t;
 
@@ -283,12 +283,12 @@ typedef struct aas_export_s
 	// be_aas_routetable.cpp
 	//--------------------------------------------
 	void ( *AAS_RT_ShowRoute )( vec3_t srcpos, int srcnum, int destnum );
-	qboolean ( *AAS_RT_GetHidePos )( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos );
+	bool ( *AAS_RT_GetHidePos )( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos );
 	int ( *AAS_FindAttackSpotWithinRange )( int srcnum, int rangenum, int enemynum, float rangedist, int travelflags, float *outpos );
-	qboolean ( *AAS_GetRouteFirstVisPos )( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos );
-	void ( *AAS_SetAASBlockingEntity )( vec3_t absmin, vec3_t absmax, qboolean blocking );
-    qboolean (*AAS_Route)(vec3_t origin, vec3_t goal, int flags, vec3_t point);
-    qboolean (*AAS_DoomPlayerRoute)(vec3_t origin, vec3_t goal, int flags, doomAasRoute_t *route);
+	bool ( *AAS_GetRouteFirstVisPos )( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos );
+	void ( *AAS_SetAASBlockingEntity )( vec3_t absmin, vec3_t absmax, bool blocking );
+    bool (*AAS_Route)(vec3_t origin, vec3_t goal, int flags, vec3_t point);
+    bool (*AAS_DoomPlayerRoute)(vec3_t origin, vec3_t goal, int flags, doomAasRoute_t *route);
     // done.
 
     // Ridah

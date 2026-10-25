@@ -309,13 +309,13 @@ Add_Ammo
 	fillClip will push the ammo straight through into the clip and leave the rest in reserve
 ==============
 */
-void Add_Ammo( gentity_t *ent, int weapon, int count, qboolean fillClip ) {
+void Add_Ammo( gentity_t *ent, int weapon, int count, bool fillClip ) {
     if (doomweapon::IsWeapon(weapon)) {
         doomweapon::AddAmmo(ent->client->ps, weapon, count);
         return;
     }
     int ammoweap = BG_FindAmmoForWeapon((weapon_t)( weapon ));
-	qboolean noPack = qfalse;       // no extra ammo in your 'pack'
+	bool noPack = false;       // no extra ammo in your 'pack'
 
 	ent->client->ps.ammo[ammoweap] += count;
 
@@ -329,7 +329,7 @@ void Add_Ammo( gentity_t *ent, int weapon, int count, qboolean fillClip ) {
 
 	case WP_TESLA:
 	case WP_FLAMETHROWER:
-		noPack = qtrue;
+		noPack = true;
 		break;
 	default:
 		break;
@@ -340,7 +340,7 @@ void Add_Ammo( gentity_t *ent, int weapon, int count, qboolean fillClip ) {
 	}
 
 	if ( ent->aiCharacter ) {
-		noPack = qfalse;    // let AI's deal with their own clip/ammo handling
+		noPack = false;    // let AI's deal with their own clip/ammo handling
 
 	}
 	// cap to max ammo
@@ -384,7 +384,7 @@ int Pickup_Ammo( gentity_t *ent, gentity_t *other ) {
 		}
 	}
 
-	Add_Ammo( other, ent->item->giTag, quantity, qfalse );   //----(SA)	modified
+	Add_Ammo( other, ent->item->giTag, quantity, false );   //----(SA)	modified
 
 	// single player has no respawns	(SA)
 	if ( g_gametype.integer == GT_SINGLE_PLAYER ) {
@@ -402,7 +402,7 @@ DOOM_SAVE_CALLBACK("Pickup_Ammo", Pickup_Ammo);
 
 int Pickup_Weapon( gentity_t *ent, gentity_t *other ) {
 	int quantity;
-	qboolean alreadyHave = qfalse;
+	bool alreadyHave = false;
 	int weapon;
 
 	weapon = ent->item->giTag;
@@ -630,7 +630,7 @@ void Touch_Item_Auto( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 		return;
 	}
 
-	ent->active = qtrue;
+	ent->active = true;
 	Touch_Item( ent, other, trace );
 
 	if ( other->client->pers.autoActivate == PICKUP_FORCE ) {      // autoactivate probably forced by the "Cmd_Activate_f()" function
@@ -653,7 +653,7 @@ void Touch_Item( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 		return;
 	} else {
 		// need to set active to false if player is maxed out
-		ent->active = qfalse;
+		ent->active = false;
 	}
 
 	if ( !other->client ) {
@@ -754,7 +754,7 @@ void Touch_Item( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 		ent->r.svFlags |= SVF_NOCLIENT; // (SA) commented back in.
 		ent->s.eFlags |= EF_NODRAW;
 		ent->r.contents = 0;
-		ent->unlinkAfterEvent = qtrue;
+		ent->unlinkAfterEvent = true;
 		return;
 	}
 
@@ -762,7 +762,7 @@ void Touch_Item( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 	// (partial use things that leave a spent modle (ex. plate for turkey)
 	if ( respawn == RESPAWN_PARTIAL_DONE ) {
 		ent->s.density = ( 1 << 9 );    // (10 bits of data transmission for density)
-		ent->active = qtrue;        // re-activate
+		ent->active = true;        // re-activate
 		trap_LinkEntity( ent );
 		return;
 	}
@@ -770,7 +770,7 @@ void Touch_Item( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 	if ( respawn == RESPAWN_PARTIAL ) {    // multi-stage health
 		ent->s.density--;
 		if ( ent->s.density ) {        // still not completely used up ( (SA) this will change to == 0 and stage 1 will be a destroyable item (plate/etc.) )
-			ent->active = qtrue;        // re-activate
+			ent->active = true;        // re-activate
 			trap_LinkEntity( ent );
 			return;
 		}
@@ -792,7 +792,7 @@ void Touch_Item( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 
 	// dropped items will not respawn
 	if ( ent->flags & FL_DROPPED_ITEM ) {
-		ent->freeAfterEvent = qtrue;
+		ent->freeAfterEvent = true;
 	}
 
 	// picked up items still stay around, they just don't
@@ -882,7 +882,7 @@ Drop_Item
 Spawns an item and tosses it forward
 ================
 */
-gentity_t *Drop_Item( gentity_t *ent, gitem_t *item, float angle, qboolean novelocity ) {
+gentity_t *Drop_Item( gentity_t *ent, gitem_t *item, float angle, bool novelocity ) {
 	vec3_t velocity;
 	vec3_t angles;
 
@@ -960,9 +960,9 @@ void FinishSpawningItem( gentity_t *ent ) {
 	// if clipboard, add the menu name string to the client's configstrings
 	if ( ent->item->giType == IT_CLIPBOARD ) {
 		if ( !ent->message ) {
-			ent->s.density = G_FindConfigstringIndex( "clip_test", CS_CLIPBOARDS, MAX_CLIPBOARD_CONFIGSTRINGS, qtrue );
+			ent->s.density = G_FindConfigstringIndex( "clip_test", CS_CLIPBOARDS, MAX_CLIPBOARD_CONFIGSTRINGS, true );
 		} else {
-			ent->s.density = G_FindConfigstringIndex( ent->message, CS_CLIPBOARDS, MAX_CLIPBOARD_CONFIGSTRINGS, qtrue );
+			ent->s.density = G_FindConfigstringIndex( ent->message, CS_CLIPBOARDS, MAX_CLIPBOARD_CONFIGSTRINGS, true );
 		}
 
 		ent->touch = Touch_Item;    // no auto-pickup, only activate
@@ -1056,7 +1056,7 @@ void FinishSpawningItem( gentity_t *ent ) {
 }
 DOOM_SAVE_CALLBACK("FinishSpawningItem", FinishSpawningItem);
 
-qboolean itemRegistered[MAX_ITEMS];
+bool itemRegistered[MAX_ITEMS];
 
 /*
 ==================
@@ -1109,7 +1109,7 @@ void RegisterItem( gitem_t *item ) {
 	if ( !item ) {
 		G_Error( "RegisterItem: NULL" );
 	}
-	itemRegistered[ item - bg_itemlist ] = qtrue;
+	itemRegistered[ item - bg_itemlist ] = true;
 }
 DOOM_SAVE_CALLBACK("RegisterItem", RegisterItem);
 
@@ -1255,13 +1255,13 @@ void G_RunItemProp( gentity_t *ent, vec3_t origin ) {
 
 	if ( owner->client && trace.startsolid && traceEnt != owner && traceEnt != ent /* && !traceEnt->active*/ ) {
 
-		ent->takedamage = qfalse;
+		ent->takedamage = false;
 		ent->die( ent, ent, NULL, 10, 0 );
 		Prop_Break_Sound( ent );
 
 		return;
 	} else if ( trace.surfaceFlags & SURF_NOIMPACT )    {
-		ent->takedamage = qfalse;
+		ent->takedamage = false;
 
 		Props_Chair_Skyboxtouch( ent );
 

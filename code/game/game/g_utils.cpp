@@ -95,7 +95,7 @@ G_FindConfigstringIndex
 
 ================
 */
-int G_FindConfigstringIndex( const char *name, int start, int max, qboolean create ) {
+int G_FindConfigstringIndex( const char *name, int start, int max, bool create ) {
 	int i;
 	char s[MAX_STRING_CHARS];
 
@@ -128,12 +128,12 @@ int G_FindConfigstringIndex( const char *name, int start, int max, qboolean crea
 DOOM_SAVE_CALLBACK("G_FindConfigstringIndex", G_FindConfigstringIndex);
 
 int G_ModelIndex( char *name ) {
-	return G_FindConfigstringIndex( name, CS_MODELS, MAX_MODELS, qtrue );
+	return G_FindConfigstringIndex( name, CS_MODELS, MAX_MODELS, true );
 }
 DOOM_SAVE_CALLBACK("G_ModelIndex", G_ModelIndex);
 
 int G_SoundIndex( const char *name ) {
-	return G_FindConfigstringIndex( name, CS_SOUNDS, MAX_SOUNDS, qtrue );
+	return G_FindConfigstringIndex( name, CS_SOUNDS, MAX_SOUNDS, true );
 }
 DOOM_SAVE_CALLBACK("G_SoundIndex", G_SoundIndex);
 
@@ -395,14 +395,14 @@ void G_SetMovedir( vec3_t angles, vec3_t movedir ) {
 DOOM_SAVE_CALLBACK("G_SetMovedir", G_SetMovedir);
 
 void G_InitGentity( gentity_t *e ) {
-	e->inuse = qtrue;
+	e->inuse = true;
 	e->classname = "noclass";
 	e->s.number = e - g_entities;
 	e->r.ownerNum = ENTITYNUM_NONE;
 	e->headshotDamageScale = 1.0;   // RF, default value
 	e->eventTime = 0;
-	e->freeAfterEvent = qfalse;
-	e->neverFree = qfalse;
+	e->freeAfterEvent = false;
+	e->neverFree = false;
 
 	// RF, init scripting
 	e->scriptStatus.scriptEventIndex = -1;
@@ -477,7 +477,7 @@ DOOM_SAVE_CALLBACK("G_Spawn", G_Spawn);
 G_EntitiesFree
 =================
 */
-qboolean G_EntitiesFree( void ) {
+bool G_EntitiesFree( void ) {
 	int i;
 	gentity_t   *e;
 
@@ -487,9 +487,9 @@ qboolean G_EntitiesFree( void ) {
 			continue;
 		}
 		// slot available
-		return qtrue;
+		return true;
 	}
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("G_EntitiesFree", G_EntitiesFree);
 
@@ -510,7 +510,7 @@ void G_FreeEntity( gentity_t *ed ) {
 	memset( ed, 0, sizeof( *ed ) );
 	ed->classname = "freed";
 	ed->freetime = level.time;
-	ed->inuse = qfalse;
+	ed->inuse = false;
 }
 DOOM_SAVE_CALLBACK("G_FreeEntity", G_FreeEntity);
 
@@ -533,7 +533,7 @@ gentity_t *G_TempEntity( vec3_t origin, int event ) {
 	e->classname = "tempEntity";
 	e->eventTime = level.time;
 	e->r.eventTime = level.time;
-	e->freeAfterEvent = qtrue;
+	e->freeAfterEvent = true;
 
 	VectorCopy( origin, snapped );
 	SnapVector( snapped );      // save network bandwidth
@@ -731,7 +731,7 @@ infront
 ====================
 */
 
-qboolean infront( gentity_t *self, gentity_t *other ) {
+bool infront( gentity_t *self, gentity_t *other ) {
 	vec3_t vec;
 	float dot;
 	vec3_t forward, otherOrigin;
@@ -760,16 +760,16 @@ qboolean infront( gentity_t *self, gentity_t *other ) {
 		float angle;
 		angle = RAD2DEG( M_PI - acos( dot ) );
 		if ( angle < ( self->activateArc * 2.0 ) ) { // arc is 'half arc' since that's the way the other angles in the mg42 were done
-			return qfalse;
+			return false;
 		} else {
-			return qtrue;
+			return true;
 		}
 	}
 
 	if ( dot > 0.0 ) {
-		return qtrue;
+		return true;
 	}
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("infront", infront);
 
@@ -779,14 +779,14 @@ DOOM_SAVE_CALLBACK("infront", infront);
 G_ProcessTagConnect
 ==================
 */
-void G_ProcessTagConnect( gentity_t *ent, qboolean clearAngles ) {
+void G_ProcessTagConnect( gentity_t *ent, bool clearAngles ) {
 	if ( !ent->tagName ) {
 		G_Error( "G_ProcessTagConnect: NULL ent->tagName\n" );
 	}
 	if ( !ent->tagParent ) {
 		G_Error( "G_ProcessTagConnect: NULL ent->tagParent\n" );
 	}
-	G_FindConfigstringIndex( va( "%i %i %s", ent->s.number, ent->tagParent->s.number, ent->tagName ), CS_TAGCONNECTS, MAX_TAGCONNECTS, qtrue );
+	G_FindConfigstringIndex( va( "%i %i %s", ent->s.number, ent->tagParent->s.number, ent->tagName ), CS_TAGCONNECTS, MAX_TAGCONNECTS, true );
 	ent->s.eFlags |= EF_TAGCONNECT;
 
 	if ( clearAngles ) {

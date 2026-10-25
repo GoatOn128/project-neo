@@ -115,20 +115,20 @@ DOOM_SAVE_CALLBACK("PrintMsg", PrintMsg);
 OnSameTeam
 ==============
 */
-qboolean OnSameTeam( gentity_t *ent1, gentity_t *ent2 ) {
+bool OnSameTeam( gentity_t *ent1, gentity_t *ent2 ) {
 	if ( !ent1->client || !ent2->client ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( g_gametype.integer < GT_TEAM ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( ent1->client->sess.sessionTeam == ent2->client->sess.sessionTeam ) {
-		return qtrue;
+		return true;
 	}
 
-	return qfalse;
+	return false;
 }
 DOOM_SAVE_CALLBACK("OnSameTeam", OnSameTeam);
 
@@ -586,13 +586,13 @@ Team_GetLocation
 Report a location for the player. Uses placed nearby target_location entities
 ============
 */
-qboolean Team_GetLocationMsg( gentity_t *ent, char *loc, int loclen ) {
+bool Team_GetLocationMsg( gentity_t *ent, char *loc, int loclen ) {
 	gentity_t *best;
 
 	best = Team_GetLocation( ent );
 
 	if ( !best ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( best->count ) {
@@ -607,7 +607,7 @@ qboolean Team_GetLocationMsg( gentity_t *ent, char *loc, int loclen ) {
 		Com_sprintf( loc, loclen, "%s", best->message );
 	}
 
-	return qtrue;
+	return true;
 }
 DOOM_SAVE_CALLBACK("Team_GetLocationMsg", Team_GetLocationMsg);
 
@@ -666,7 +666,7 @@ gentity_t *SelectRandomTeamSpawnPoint( int teamstate, team_t team ) {
 	int selection;
 	gentity_t   *spots[MAX_TEAM_SPAWN_POINTS];
 	char        *classname;
-	qboolean initialSpawn = qfalse;     // DHM - Nerve
+	bool initialSpawn = false;     // DHM - Nerve
 	int i = 0,j;       // JPW NERVE
 	int closest;         // JPW NERVE
 	float shortest,tmp;       // JPW NERVE
@@ -676,7 +676,7 @@ gentity_t *SelectRandomTeamSpawnPoint( int teamstate, team_t team ) {
 	if ( teamstate == TEAM_BEGIN ) {
 
 		// DHM - Nerve :: Don't check if spawn is active initially
-		initialSpawn = qtrue;
+		initialSpawn = true;
 
 		if ( team == TEAM_RED ) {
 			classname = "team_CTF_redplayer";

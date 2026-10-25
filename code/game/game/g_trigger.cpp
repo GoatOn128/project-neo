@@ -100,7 +100,7 @@ void Enable_Trigger_Touch( gentity_t *ent ) {
 	int entTemp1, entTemp2;
 	vec3_t dir, forward, kvel;
 	float angle;
-	qboolean thisone = qfalse;
+	bool thisone = false;
 
 
 	// ent->touch = Touch_Multi;
@@ -143,7 +143,7 @@ void Enable_Trigger_Touch( gentity_t *ent ) {
 
 			if ( daent == ent ) { // wooo hooo
 				multi_trigger( ent, targ );
-				thisone = qtrue;
+				thisone = true;
 			}
 		}
 

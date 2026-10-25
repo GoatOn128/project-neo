@@ -186,22 +186,22 @@ int trap_PointContents( const vec3_t point, int passEntityNum ) {
 }
 DOOM_SAVE_CALLBACK("trap_PointContents", trap_PointContents);
 
-qboolean trap_InPVS( const vec3_t p1, const vec3_t p2 ) {
+bool trap_InPVS( const vec3_t p1, const vec3_t p2 ) {
 	return gameImports->InPVS( p1, p2 );
 }
 DOOM_SAVE_CALLBACK("trap_InPVS", trap_InPVS);
 
-qboolean trap_InPVSIgnorePortals( const vec3_t p1, const vec3_t p2 ) {
+bool trap_InPVSIgnorePortals( const vec3_t p1, const vec3_t p2 ) {
 	return gameImports->InPVSIgnorePortals( p1, p2 );
 }
 DOOM_SAVE_CALLBACK("trap_InPVSIgnorePortals", trap_InPVSIgnorePortals);
 
-void trap_AdjustAreaPortalState( gentity_t * ent, qboolean open ) {
+void trap_AdjustAreaPortalState( gentity_t * ent, bool open ) {
 	gameImports->AdjustAreaPortalState( ent, open );
 }
 DOOM_SAVE_CALLBACK("trap_AdjustAreaPortalState", trap_AdjustAreaPortalState);
 
-qboolean trap_AreasConnected( int area1, int area2 ) {
+bool trap_AreasConnected( int area1, int area2 ) {
 	return gameImports->AreasConnected( area1, area2 );
 }
 DOOM_SAVE_CALLBACK("trap_AreasConnected", trap_AreasConnected);
@@ -221,12 +221,12 @@ int trap_EntitiesInBox( const vec3_t mins, const vec3_t maxs, int * list, int ma
 }
 DOOM_SAVE_CALLBACK("trap_EntitiesInBox", trap_EntitiesInBox);
 
-qboolean trap_EntityContact( const vec3_t mins, const vec3_t maxs, const gentity_t * ent ) {
+bool trap_EntityContact( const vec3_t mins, const vec3_t maxs, const gentity_t * ent ) {
 	return gameImports->EntityContact( mins, maxs, ent );
 }
 DOOM_SAVE_CALLBACK("trap_EntityContact", trap_EntityContact);
 
-qboolean trap_EntityContactCapsule( const vec3_t mins, const vec3_t maxs, const gentity_t * ent ) {
+bool trap_EntityContactCapsule( const vec3_t mins, const vec3_t maxs, const gentity_t * ent ) {
 	return gameImports->EntityContactCapsule( mins, maxs, ent );
 }
 DOOM_SAVE_CALLBACK("trap_EntityContactCapsule", trap_EntityContactCapsule);
@@ -246,7 +246,7 @@ void trap_GetUsercmd( int clientNum, usercmd_t * cmd ) {
 }
 DOOM_SAVE_CALLBACK("trap_GetUsercmd", trap_GetUsercmd);
 
-qboolean trap_GetEntityToken( char * buffer, int bufferSize ) {
+bool trap_GetEntityToken( char * buffer, int bufferSize ) {
 	return gameImports->GetEntityToken( buffer, bufferSize );
 }
 DOOM_SAVE_CALLBACK("trap_GetEntityToken", trap_GetEntityToken);
@@ -271,7 +271,7 @@ void trap_SnapVector( float * v ) {
 }
 DOOM_SAVE_CALLBACK("trap_SnapVector", trap_SnapVector);
 
-qboolean trap_GetTag( int clientNum, char * tagName, orientation_t * or ) {
+bool trap_GetTag( int clientNum, char * tagName, orientation_t * or ) {
 	return gameImports->GetTag( clientNum, tagName, or );
 }
 DOOM_SAVE_CALLBACK("trap_GetTag", trap_GetTag);
@@ -426,7 +426,7 @@ void trap_AAS_RT_ShowRoute( vec3_t srcpos, int srcnum, int destnum ) {
 }
 DOOM_SAVE_CALLBACK("trap_AAS_RT_ShowRoute", trap_AAS_RT_ShowRoute);
 
-qboolean trap_AAS_RT_GetHidePos( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos ) {
+bool trap_AAS_RT_GetHidePos( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos ) {
 	return gameImports->AAS_RT_GetHidePos( srcpos, srcnum, srcarea, destpos, destnum, destarea, returnPos );
 }
 DOOM_SAVE_CALLBACK("trap_AAS_RT_GetHidePos", trap_AAS_RT_GetHidePos);
@@ -436,12 +436,12 @@ int trap_AAS_FindAttackSpotWithinRange( int srcnum, int rangenum, int enemynum, 
 }
 DOOM_SAVE_CALLBACK("trap_AAS_FindAttackSpotWithinRange", trap_AAS_FindAttackSpotWithinRange);
 
-qboolean trap_AAS_GetRouteFirstVisPos( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos ) {
+bool trap_AAS_GetRouteFirstVisPos( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos ) {
 	return gameImports->AAS_GetRouteFirstVisPos( srcpos, destpos, travelflags, retpos );
 }
 DOOM_SAVE_CALLBACK("trap_AAS_GetRouteFirstVisPos", trap_AAS_GetRouteFirstVisPos);
 
-void trap_AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, qboolean blocking ) {
+void trap_AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, bool blocking ) {
 	gameImports->AAS_SetAASBlockingEntity( absmin, absmax, blocking );
 }
 DOOM_SAVE_CALLBACK("trap_AAS_SetAASBlockingEntity", trap_AAS_SetAASBlockingEntity);
@@ -956,12 +956,12 @@ int trap_GeneticParentsAndChildSelection( int numranks, float * ranks, int * par
 }
 DOOM_SAVE_CALLBACK("trap_GeneticParentsAndChildSelection", trap_GeneticParentsAndChildSelection);
 
-qboolean trap_AAS_Route( vec3_t origin, vec3_t goal, int flags, vec3_t point ) {
+bool trap_AAS_Route( vec3_t origin, vec3_t goal, int flags, vec3_t point ) {
 	return gameImports->AAS_Route( origin, goal, flags, point );
 }
 DOOM_SAVE_CALLBACK("trap_AAS_Route", trap_AAS_Route);
 
-qboolean trap_AAS_DoomPlayerRoute( vec3_t origin, vec3_t goal, int flags, doomAasRoute_t * route ) {
+bool trap_AAS_DoomPlayerRoute( vec3_t origin, vec3_t goal, int flags, doomAasRoute_t * route ) {
 	return gameImports->AAS_DoomPlayerRoute( origin, goal, flags, route );
 }
 DOOM_SAVE_CALLBACK("trap_AAS_DoomPlayerRoute", trap_AAS_DoomPlayerRoute);

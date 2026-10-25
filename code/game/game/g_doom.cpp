@@ -9,7 +9,7 @@
 
 void InitMover(gentity_t *ent);
 void SetMoverState(gentity_t *ent, moverState_t state, int time);
-static qboolean DoomTeleport(gentity_t *line, gentity_t *actor);
+static bool DoomTeleport(gentity_t *line, gentity_t *actor);
 
 namespace {
 void DoomMoverSound(gentity_t *entity, const char *name) {
@@ -91,20 +91,20 @@ void DoomBlocked(gentity_t *ent, gentity_t *other) {
 }
 DOOM_SAVE_CALLBACK("DoomBlocked", DoomBlocked);
 
-qboolean DoomActivateMover(gentity_t *ent, int special) {
+bool DoomActivateMover(gentity_t *ent, int special) {
     doom::Action action = doom::action(special);
     doom::Kind kind = action.kind;
     if (ent->doom.plane ? !doom::ceilingMoves(kind) : !doom::floorMoves(kind))
-        return qfalse;
+        return false;
     if (ent->doom.busy) {
         if (action.local && ent->doom.plane) {
             ent->doom.special = special;
             float target = ent->s.pos.trDelta[2] < 0 ? ent->doom.high : ent->doom.floor;
             ent->doom.returning = target == ent->doom.floor;
             DoomMoveTo(ent, target, 70);
-            return qtrue;
+            return true;
         }
-        return qfalse;
+        return false;
     }
     ent->doom.special = special;
     float current = ent->r.currentOrigin[2] + ent->doom.base;
@@ -211,13 +211,13 @@ qboolean DoomActivateMover(gentity_t *ent, int special) {
         target = ent->doom.plane ? ent->doom.highceil : ent->doom.lowfloor;
         break;
     default:
-        return qfalse;
+        return false;
     }
     if (fabs(target - current) < 0.01f)
-        return qfalse;
+        return false;
     ent->doom.busy = 1;
     DoomMoveTo(ent, target, speed);
-    return qtrue;
+    return true;
 }
 DOOM_SAVE_CALLBACK("DoomActivateMover", DoomActivateMover);
 
@@ -248,32 +248,32 @@ void DoomResetSwitch(gentity_t *line) {
 }
 DOOM_SAVE_CALLBACK("DoomResetSwitch", DoomResetSwitch);
 
-qboolean DoomLineActivate(gentity_t *line, gentity_t *activator) {
+bool DoomLineActivate(gentity_t *line, gentity_t *activator) {
     if (!activator || !activator->client)
-        return qfalse;
+        return false;
     auto action = doom::action(line->doom.special);
     if (activator->doomNpc.type) {
         const int special = line->doom.special;
         const bool allowed = special == 1 || special == 4 || special == 10 || special == 39 ||
                              special == 88 || special == 97 || special == 125 || special == 126;
         if (!allowed || (action.use && special != 1)) {
-            return qfalse;
+            return false;
         }
     }
     if (line->doom.lightMax && line->doom.plane && action.repeat)
-        return qfalse; // A repeatable button stays pressed for one second.
+        return false; // A repeatable button stays pressed for one second.
     if (line->doom.activated && !action.repeat)
-        return qfalse;
+        return false;
     if (action.key && !(activator->client->ps.stats[STAT_KEYS] & (1 << action.key)))
-        return qfalse;
-    qboolean success = qfalse;
+        return false;
+    bool success = false;
     if (action.kind == doom::Teleport) {
         if ((line->doom.special == 125 || line->doom.special == 126) && !activator->doomNpc.type)
-            return qfalse;
+            return false;
         success = DoomTeleport(line, activator);
     } else if (action.kind == doom::Exit || action.kind == doom::SecretExit) {
         success =
-            G_DoomBeginIntermission(activator, action.kind == doom::SecretExit) ? qtrue : qfalse;
+            G_DoomBeginIntermission(activator, action.kind == doom::SecretExit) ? true : false;
     }
     for (int i = MAX_CLIENTS; i < level.num_entities; ++i) {
         gentity_t *ent = &g_entities[i];
@@ -294,7 +294,7 @@ qboolean DoomLineActivate(gentity_t *line, gentity_t *activator) {
                 VectorCopy(ent->r.currentOrigin, ent->s.pos.trBase);
                 ent->nextthink = 0;
                 ent->doom.busy = 0;
-                success = qtrue;
+                success = true;
             } else
                 success |= DoomActivateMover(ent, line->doom.special);
         } else if (!Q_stricmp(ent->classname, "doom_sector")) {
@@ -311,7 +311,7 @@ qboolean DoomLineActivate(gentity_t *line, gentity_t *activator) {
                 light = 256;
             if (light >= 0) {
                 DoomSetSectorLight(ent->doom.sector, light);
-                success = qtrue;
+                success = true;
             }
         }
     }
@@ -390,7 +390,7 @@ void G_DoomCrossLines(gentity_t *actor) {
 }
 DOOM_SAVE_CALLBACK("G_DoomCrossLines", G_DoomCrossLines);
 
-qboolean G_DoomTraceLine(gentity_t *player, const vec3_t start, const vec3_t end, qboolean shot) {
+bool G_DoomTraceLine(gentity_t *player, const vec3_t start, const vec3_t end, bool shot) {
     gentity_t *best = nullptr;
     float bestT = 2;
     float dx = end[0] - start[0], dy = end[1] - start[1];
@@ -418,9 +418,9 @@ qboolean G_DoomTraceLine(gentity_t *player, const vec3_t start, const vec3_t end
         }
     }
     if (!best)
-        return qfalse;
+        return false;
     DoomLineActivate(best, player);
-    return qtrue;
+    return true;
 }
 DOOM_SAVE_CALLBACK("G_DoomTraceLine", G_DoomTraceLine);
 
@@ -516,10 +516,10 @@ static float *doomSoundFloors, *doomSoundCeilings;
 static int doomSoundTime = -1;
 static vec3_t doomSoundOrigin;
 
-static qboolean DoomTeleport(gentity_t *line, gentity_t *actor) {
+static bool DoomTeleport(gentity_t *line, gentity_t *actor) {
     if (actor->health <= 0 || actor->client->noclip ||
         actor->client->sess.sessionTeam == TEAM_SPECTATOR) {
-        return qfalse;
+        return false;
     }
     // Match Doom's sector order, then original thing order. The BSP metadata
     // also works with already compiled maps and is independent of spawn flags.
@@ -536,7 +536,7 @@ static qboolean DoomTeleport(gentity_t *line, gentity_t *actor) {
         }
     }
     if (!destination) {
-        return qfalse;
+        return false;
     }
     float floor = static_cast<float>(doomSectorData[destination->sector].floor);
     for (int i = MAX_CLIENTS; i < level.num_entities; ++i) {
@@ -553,7 +553,7 @@ static qboolean DoomTeleport(gentity_t *line, gentity_t *actor) {
     const int mask = MASK_SOLID | (actor->doomNpc.type ? CONTENTS_BODY : 0);
     trap_TraceCapsule(&trace, origin, actor->r.mins, actor->r.maxs, origin, actor->s.number, mask);
     if (trace.startsolid || trace.allsolid) {
-        return qfalse;
+        return false;
     }
     vec3_t source;
     VectorCopy(actor->client->ps.origin, source);
@@ -576,7 +576,7 @@ static qboolean DoomTeleport(gentity_t *line, gentity_t *actor) {
     if (actor->doomNpc.type) {
         G_DoomAIReplicate(actor);
     } else {
-        BG_PlayerStateToEntityState(&ps, &actor->s, qtrue);
+        BG_PlayerStateToEntityState(&ps, &actor->s, true);
     }
     VectorCopy(origin, actor->r.currentOrigin);
     VectorCopy(origin, actor->client->oldOrigin);
@@ -588,7 +588,7 @@ static qboolean DoomTeleport(gentity_t *line, gentity_t *actor) {
     VectorMA(fog, 20, forward, fog);
     event = G_TempEntity(fog, EV_PLAYER_TELEPORT_IN);
     event->s.eventParm = 1;
-    return qtrue;
+    return true;
 }
 
 static int DoomPointSector(const vec3_t point) {
@@ -722,7 +722,7 @@ void G_DoomShutdown() {
 }
 DOOM_SAVE_CALLBACK("G_DoomShutdown", G_DoomShutdown);
 
-qboolean G_DoomMapActive() {
+bool G_DoomMapActive() {
     return doomSectorCount > 0;
 }
 DOOM_SAVE_CALLBACK("G_DoomMapActive", G_DoomMapActive);
