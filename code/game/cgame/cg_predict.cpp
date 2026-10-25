@@ -616,7 +616,6 @@ void CG_PredictPlayerState( void ) {
         cg.predictedPlayerState.weapAnim = oldPlayerState.weapAnim;
         cg.predictedPlayerState.weapAnimTimer = oldPlayerState.weapAnimTimer;
     }
-    cg.predictedPlayerState.venomTime = oldPlayerState.venomTime;
     // show_bug.cgi?id=416
 	// FIXME TTimo this causing a double weapon reload sound if you hit reload at the same time you run out of ammo
 	// cg.predictedPlayerState.weaponstate				= oldPlayerState.weaponstate;	// RF, added this, since they can become unsynched on loadgame, leaving incorrect anims
