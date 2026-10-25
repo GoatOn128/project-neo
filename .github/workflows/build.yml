@@ -273,14 +273,19 @@ jobs:
             libasound2-dev libpulse-dev libdbus-1-dev libudev-dev
 
       - name: Build and install the pinned SDL3
+        # The output goes to sdl3-build.log so a failure in this step can
+        # be read from the repository like the scons logs instead of only
+        # from the job page that needs a login.
+        shell: bash
         run: |
-          curl -fsSL -o SDL3-3.4.18.tar.gz \
+          set -o pipefail
+          curl -fsSL --retry 3 -o SDL3-3.4.18.tar.gz \
             https://github.com/libsdl-org/SDL/releases/download/release-3.4.18/SDL3-3.4.18.tar.gz
           tar xf SDL3-3.4.18.tar.gz
           cmake -S SDL3-3.4.18 -B sdl3-build -DCMAKE_BUILD_TYPE=Release \
-            -DSDL_AUDIO=OFF -DSDL_RENDER=OFF -DSDL_VULKAN=OFF -DSDL_TESTS=OFF
-          cmake --build sdl3-build -j"$(nproc)"
-          sudo cmake --install sdl3-build
+            -DSDL_AUDIO=OFF -DSDL_RENDER=OFF -DSDL_VULKAN=OFF -DSDL_TESTS=OFF 2>&1 | tee sdl3-build.log
+          cmake --build sdl3-build -j"$(nproc)" 2>&1 | tee -a sdl3-build.log
+          sudo cmake --install sdl3-build 2>&1 | tee -a sdl3-build.log
           sudo ldconfig
 
       - name: Build (Linux x64)
@@ -309,6 +314,11 @@ jobs:
             echo '```'
             grep -i -E 'error|scons: \*\*\*' build-linux.log | head -40 || true
             echo '```'
+            echo '### SDL3 build errors (Linux)'
+            echo ''
+            echo '```'
+            grep -i -E 'error|scons: \*\*\*|fatal' sdl3-build.log | head -40 || true
+            echo '```'
             echo '### Test errors (Linux)'
             echo ''
             echo '```'
@@ -325,7 +335,7 @@ jobs:
           # A failed build never writes test-linux.log, so only the logs
           # that exist are added. Without this the step fails and the
           # build log never reaches the repository.
-          for log in build-linux.log test-linux.log; do
+          for log in build-linux.log test-linux.log sdl3-build.log; do
             if [ -f "$log" ]; then
               git add "$log"
             fi
