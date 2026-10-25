@@ -9,57 +9,17 @@ clang-cl /Fobuild\release\wolf\code\client\cl_cgame.obj /c code\client\cl_cgame.
 clang-cl /Fobuild\release\wolf\code\client\cl_cin.obj /c code\client\cl_cin.cpp /std:c++17 /EHsc --target=i686-pc-windows-msvc /W3 /clang:-ferror-limit=0 /clang:-Wno-writable-strings /clang:-Wno-deprecated-declarations /clang:-Wno-microsoft-enum-value /clang:-fno-operator-names /clang:-fno-strict-aliasing /clang:-fwrapv /MT /O2 /DWIN32 /DC_ONLY /D_USE_32BIT_TIME_T /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /DNOMINMAX /DNDEBUG /D_WINDOWS /D__USEA3D /D__A3D_GEOM /Icode\game /Icode\game\cgame /Icode\game\game /Icode\game\game\tests /Icode\client /Icode\sys /Icode\third-party\SDL3\include /Icode\third-party /Icode /Icode\third-party\openal\include /Icode\third-party\fluidsynth\include /Icode\third-party\stb /Icode\third-party\miniz /Ibuild\release\generated
 clang-cl /Fobuild\release\wolf\code\client\cl_console.obj /c code\client\cl_console.cpp /std:c++17 /EHsc --target=i686-pc-windows-msvc /W3 /clang:-ferror-limit=0 /clang:-Wno-writable-strings /clang:-Wno-deprecated-declarations /clang:-Wno-microsoft-enum-value /clang:-fno-operator-names /clang:-fno-strict-aliasing /clang:-fwrapv /MT /O2 /DWIN32 /DC_ONLY /D_USE_32BIT_TIME_T /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /DNOMINMAX /DNDEBUG /D_WINDOWS /D__USEA3D /D__A3D_GEOM /Icode\game /Icode\game\cgame /Icode\game\game /Icode\game\game\tests /Icode\client /Icode\sys /Icode\third-party\SDL3\include /Icode\third-party /Icode /Icode\third-party\openal\include /Icode\third-party\fluidsynth\include /Icode\third-party\stb /Icode\third-party\miniz /Ibuild\release\generated
 clang-cl /Fobuild\release\wolf\code\client\cl_input.obj /c code\client\cl_input.cpp /std:c++17 /EHsc --target=i686-pc-windows-msvc /W3 /clang:-ferror-limit=0 /clang:-Wno-writable-strings /clang:-Wno-deprecated-declarations /clang:-Wno-microsoft-enum-value /clang:-fno-operator-names /clang:-fno-strict-aliasing /clang:-fwrapv /MT /O2 /DWIN32 /DC_ONLY /D_USE_32BIT_TIME_T /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /DNOMINMAX /DNDEBUG /D_WINDOWS /D__USEA3D /D__A3D_GEOM /Icode\game /Icode\game\cgame /Icode\game\game /Icode\game\game\tests /Icode\client /Icode\sys /Icode\third-party\SDL3\include /Icode\third-party /Icode /Icode\third-party\openal\include /Icode\third-party\fluidsynth\include /Icode\third-party\stb /Icode\third-party\miniz /Ibuild\release\generated
-code\client\cl_cgame.cpp(462,2): error: no viable conversion from '(lambda at code/client/cl_cgame.cpp:462:2)' to 'void (*)(bool)'
-  462 |         []( qboolean killall ) {
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~
-  463 |                 S_ClearLoopingSounds(); // (SA) so no_pvs sounds can function
-      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  464 |                 // RF, if killall, then stop all sounds
-      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  465 |                 if ( killall == 1 ) {
-      |                 ~~~~~~~~~~~~~~~~~~~~~
-  466 |                         S_ClearSounds( qtrue, qfalse );
-      |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+code\client\cl_cgame.cpp(467,23): warning: result of comparison of constant 2 with expression of type 'bool' is always false [-Wtautological-constant-out-of-range-compare]
   467 |                 } else if ( killall == 2 ) {
-      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  468 |                         S_ClearSounds( qtrue, qtrue );
-      |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  469 |                 }
-      |                 ~
-  470 |         },
-      |         ~
-code\client\cl_cgame.cpp(462,2): note: candidate function
-code\client\cl_cgame.cpp(491,2): error: no viable conversion from '(lambda at code/client/cl_cgame.cpp:491:2)' to 'bool (*)(qhandle_t, const char *, char *)' (aka 'bool (*)(int, const char *, char *)')
-  491 |         []( qhandle_t skinid, const char *type, char *name ) { return re.GetSkinModel( skinid, type, name ); },
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-code\client\cl_cgame.cpp(491,2): note: candidate function
-code\client\cl_cgame.cpp(515,2): error: cannot initialize a member subobject of type 'bool (*)(int, snapshot_t *)' with an lvalue of type 'qboolean (int, snapshot_t *)' (aka 'int (int, snapshot_t *)'): different return type ('bool' vs 'qboolean' (aka 'int'))
-  515 |         CL_GetSnapshot,
-      |         ^~~~~~~~~~~~~~
-code\client\cl_cgame.cpp(516,2): error: cannot initialize a member subobject of type 'bool (*)(int)' with an lvalue of type 'qboolean (int)' (aka 'int (int)'): different return type ('bool' vs 'qboolean' (aka 'int'))
-  516 |         CL_GetServerCommand,
-      |         ^~~~~~~~~~~~~~~~~~~
-code\client\cl_cgame.cpp(518,2): error: cannot initialize a member subobject of type 'bool (*)(int, usercmd_t *)' (aka 'bool (*)(int, struct usercmd_s *)') with an lvalue of type 'qboolean (int, usercmd_t *)' (aka 'int (int, struct usercmd_s *)'): different return type ('bool' vs 'qboolean' (aka 'int'))
-  518 |         CL_GetUserCmd,
-      |         ^~~~~~~~~~~~~
+      |                             ~~~~~~~ ^  ~
+code\client\cl_cin.cpp(1350,35): error: cannot decrement expression of type bool
+ 1350 |                 cinTable[currentHandle].inMemory--; framedata += 8; goto redump;
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
 code\client\cl_cgame.cpp(521,2): error: cannot initialize a member subobject of type 'bool (*)(int, const char *)' with an lvalue of type 'int (int, const char *)': different return type ('bool' vs 'int')
   521 |         loadCamera,
       |         ^~~~~~~~~~
-code\client\cl_cgame.cpp(533,2): error: no viable conversion from '(lambda at code/client/cl_cgame.cpp:533:2)' to 'bool (*)(int, int, vec3_t *, vec3_t *, float *)' (aka 'bool (*)(int, int, float (*)[3], float (*)[3], float *)')
-  533 |         []( int camNum, int time, vec3_t *origin, vec3_t *angles, float *fov ) { return (qboolean)getCameraInfo( camNum, time, *origin, *angles, fov ); },
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-code\client\cl_cgame.cpp(533,2): note: candidate function
-code\client\cl_cgame.cpp(534,2): error: cannot initialize a member subobject of type 'bool (*)(int)' with an lvalue of type 'qboolean (int)' (aka 'int (int)'): different return type ('bool' vs 'qboolean' (aka 'int'))
-  534 |         Key_IsDown,
-      |         ^~~~~~~~~~
-code\client\cl_cgame.cpp(552,2): error: no viable conversion from '(lambda at code/client/cl_cgame.cpp:552:2)' to 'bool (*)(char *, int)'
-  552 |         []( char *buffer, int bufferSize ) { return re.GetEntityToken( buffer, bufferSize ); },
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-code\client\cl_cgame.cpp(552,2): note: candidate function
-code\client\cl_cgame.cpp(577,2): error: no viable conversion from '(lambda at code/client/cl_cgame.cpp:577:2)' to 'bool (*)(int, char *, void **)'
-  577 |         []( int clientNum, char *modelName, void **modelInfo ) { return SV_GetModelInfo( clientNum, modelName, (animModelInfo_t **)modelInfo ); },
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-code\client\cl_cgame.cpp(577,2): note: candidate function
-10 errors generated.
+1 error generated.
+1 warning and 1 error generated.
+scons: *** [build\release\wolf\code\client\cl_cin.obj] Error 1
 scons: *** [build\release\wolf\code\client\cl_cgame.obj] Error 1
 scons: building terminated because of errors.
