@@ -36,7 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef AASINTERN
 
-extern aas_t( *aasworld );
+extern aas_t *aasworld;
 
 //AAS error message
 void QDECL AAS_Error( char *fmt, ... );

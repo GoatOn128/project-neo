@@ -47,10 +47,6 @@ LEGACY_INCLUDE_PATHS = [
 GCC_FLAGS = [
     '-Wall',
     '-Wno-unused-function',
-    # The engine code uses and, or and not as identifiers, so the
-    # alternative operator names have to stay off. The Windows build passes
-    # the same thing to Clang.
-    '-fno-operator-names',
     # GCC warns about assigning string constants to plain char pointers,
     # MSVC and Clang do not. The Windows build turns the Clang version of
     # the warning off, this matches it.
@@ -127,7 +123,10 @@ def make_base_env_linux(config):
     env = Environment(tools=['default'])
 
     env['CCFLAGS'] = GCC_FLAGS + ['-fPIC']
-    env['CXXFLAGS'] = ['-std=c++17', '-fexceptions']
+    # The engine code uses and, or and not as identifiers, so the
+    # alternative operator names have to stay off. The flag only exists
+    # for C++, GCC warns for every C file it is given.
+    env['CXXFLAGS'] = ['-std=c++17', '-fexceptions', '-fno-operator-names']
     env['SHLIBPREFIX'] = ''
     # The same definitions the Windows build sets, minus the ones that
     # only mean something to the Microsoft headers.
