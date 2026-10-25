@@ -27,8 +27,8 @@ cvar_t *Cvar_Get(const char *, const char *, int) {
     static cvar_t value{};
     return &value;
 }
-qboolean Sys_StringToAdr(const char *, netadr_t *) {
-    return qfalse;
+bool Sys_StringToAdr(const char *, netadr_t *) {
+    return false;
 }
 
 int main() {

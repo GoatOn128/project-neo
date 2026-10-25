@@ -26,8 +26,8 @@ void Check(bool value, const char *message) {
 int G_DoomSkill() {
     return 2;
 }
-qboolean G_DoomMapActive() {
-    return qtrue;
+bool G_DoomMapActive() {
+    return true;
 }
 gentity_t *G_FindActor(const char *) {
     return &g_entities[0];
@@ -80,7 +80,7 @@ int main() {
         input.read(bytes.data(), bytes.size());
         g_gametype.integer = GT_SINGLE_PLAYER;
         auto &player = g_entities[0];
-        player.inuse = qtrue;
+        player.inuse = true;
         player.client = &human;
         doomweapon::Initialize(human.ps);
         player.health = human.ps.stats[STAT_HEALTH] = 186;
@@ -92,9 +92,9 @@ int main() {
         human.ps.ammo[WP_DOOM_SHOTGUN] = 7;
         COM_BitSet(human.ps.weapons, WP_DOOM_SHOTGUN);
         human.ps.weapon = WP_DOOM_SHOTGUN;
-        g_entities[1].inuse = qtrue;
+        g_entities[1].inuse = true;
         g_entities[1].doomNpc.type = doommonster::Zombie;
-        g_entities[2].inuse = qtrue;
+        g_entities[2].inuse = true;
         g_entities[2].doomNpc.type = doommonster::LostSoul;
         level.num_entities = MAX_CLIENTS;
         level.time = 31000;

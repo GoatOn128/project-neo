@@ -9,7 +9,7 @@ gclient_t clients[MAX_CLIENTS]{};
 vmCvar_t g_gametype{}, g_reloading{}, g_cheats{};
 vmCvar_t g_soldierChargeTime{}, g_engineerChargeTime{};
 doomProgress_t doomProgress{};
-qboolean saveGamePending;
+bool saveGamePending;
 
 namespace {
 int skill = 2, damageCalls, releasedActors;
@@ -27,7 +27,7 @@ gentity_t *Spawn(int type, float x) {
     auto *source = &g_entities[MAX_CLIENTS + type];
     memset(source, 0, sizeof(*source));
     source->s.number = MAX_CLIENTS + type;
-    source->inuse = qtrue;
+    source->inuse = true;
     source->classname = const_cast<char *>(doommonster::definitions[type].classname);
     source->doomNpc.type = type;
     source->doomNpc.options = 7;
@@ -123,8 +123,8 @@ int trap_AAS_Initialized() {
 int trap_AAS_PointAreaNum(vec3_t) {
     return 0;
 }
-qboolean trap_AAS_Route(vec3_t, vec3_t, int, vec3_t) {
-    return qfalse;
+bool trap_AAS_Route(vec3_t, vec3_t, int, vec3_t) {
+    return false;
 }
 void trap_Argv(int, char *buffer, int) {
     buffer[0] = 0;
@@ -149,16 +149,16 @@ void trap_BotFreeClient(int slot) {
           "Only native map actor slots may be released");
     ++releasedActors;
 }
-qboolean G_SpawnInt(const char *, const char *value, int *result) {
+bool G_SpawnInt(const char *, const char *value, int *result) {
     *result = atoi(value);
-    return qtrue;
+    return true;
 }
 void G_FreeEntity(gentity_t *entity) {
-    entity->inuse = qfalse;
+    entity->inuse = false;
 }
 gentity_t *G_Spawn() {
     memset(&missile, 0, sizeof(missile));
-    missile.inuse = qtrue;
+    missile.inuse = true;
     return &missile;
 }
 void G_SetOrigin(gentity_t *entity, vec3_t origin) {
@@ -177,11 +177,11 @@ void G_TouchTriggers(gentity_t *) {
 }
 void G_DoomPlayerSector(gentity_t *) {
 }
-qboolean G_DoomTraceLine(gentity_t *, const vec3_t, const vec3_t, qboolean) {
-    return qfalse;
+bool G_DoomTraceLine(gentity_t *, const vec3_t, const vec3_t, bool) {
+    return false;
 }
-qboolean G_RadiusDamage(vec3_t, gentity_t *, float, float, gentity_t *, int) {
-    return qtrue;
+bool G_RadiusDamage(vec3_t, gentity_t *, float, float, gentity_t *, int) {
+    return true;
 }
 int trap_PointContents(const vec3_t, int) {
     return 0;
@@ -261,7 +261,7 @@ int main() {
         level.num_entities = MAX_CLIENTS + 100;
         level.time = 1000;
         auto *player = &g_entities[0];
-        player->inuse = qtrue;
+        player->inuse = true;
         player->client = &clients[0];
         player->health = 1000;
         clients[0].pers.connected = CON_CONNECTED;

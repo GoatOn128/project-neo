@@ -116,9 +116,9 @@ int main() {
         ps.stats[STAT_HEALTH]=0; Draw();
         Check(Drawn("ui/doom/stfdead0"),"Death face must remain visible even during invulnerability");
         cg_drawStatus.integer=0; Draw(); Check(draws.empty() && CG_DoomHudHeight()==0,"Hidden HUD must release its viewport area");
-        cg_drawStatus.integer=1; cg.levelShot=qtrue; Check(!CG_DoomHudVisible(),"Levelshots must hide HUD");
-        cg.levelShot=qfalse; cg.cameraMode=qtrue; Check(!CG_DoomHudVisible(),"Cinematics must hide HUD");
-        cg.cameraMode=qfalse; ps.pm_type=PM_INTERMISSION; Check(!CG_DoomHudVisible(),"Intermissions must retain their own layout");
+        cg_drawStatus.integer=1; cg.levelShot=true; Check(!CG_DoomHudVisible(),"Levelshots must hide HUD");
+        cg.levelShot=false; cg.cameraMode=true; Check(!CG_DoomHudVisible(),"Cinematics must hide HUD");
+        cg.cameraMode=false; ps.pm_type=PM_INTERMISSION; Check(!CG_DoomHudVisible(),"Intermissions must retain their own layout");
         ps.pm_type = PM_NORMAL;
         ps.stats[STAT_HEALTH] = 100;
         ps.powerups[PW_INVULNERABLE] = 0;

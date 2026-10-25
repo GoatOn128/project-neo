@@ -316,7 +316,7 @@ int main() {
     cg.time = 20000;
     int before = decals;
     vec3_t normal = {0, 0, 1};
-    CG_ImpactMark(1, origin, normal, 37, .6f, .2f, .1f, .5f, qtrue, 16, qfalse, 1000);
+    CG_ImpactMark(1, origin, normal, 37, .6f, .2f, .1f, .5f, true, 16, false, 1000);
     CG_AddMarks();
     CHECK(decals == before + 1 && lastDecal.shaderRGBA[3] == 127);
     cg.time = 20750;
@@ -326,14 +326,14 @@ int main() {
     cg.time = 21000;
     CG_AddMarks();
     CHECK(decals == before);
-    CG_ImpactMark(1, origin, normal, 0, 1, 1, 1, 1, qtrue, 16, qtrue, 1000);
+    CG_ImpactMark(1, origin, normal, 0, 1, 1, 1, 1, true, 16, true, 1000);
     CHECK(decals == before + 1);
     CG_AddMarks();
     CHECK(decals == before + 1);
-    CG_ImpactMark(1, origin, normal, 0, 1, 1, 1, 1, qtrue, 0, qfalse, 1000);
+    CG_ImpactMark(1, origin, normal, 0, 1, 1, 1, 1, true, 0, false, 1000);
     CHECK(decals == before + 1);
     for (int i = 0; i < MAX_MARK_POLYS + 8; ++i) {
-        CG_ImpactMark(1, origin, normal, 0, 1, 1, 1, 1, qtrue, 16, qfalse, 1000);
+        CG_ImpactMark(1, origin, normal, 0, 1, 1, 1, 1, true, 16, false, 1000);
     }
     before = decals;
     CG_AddMarks();

@@ -32,7 +32,7 @@ void QDECL Com_Error(int, const char *message, ...) {
     throw std::runtime_error(message);
 }
 void G_FreeEntity(gentity_t *entity) {
-    entity->inuse = qfalse;
+    entity->inuse = false;
     ++removed;
 }
 gentity_t *G_Spawn() {
@@ -115,7 +115,7 @@ int main() {
         VectorSet(player.r.maxs, 16, 16, 32);
         player.r.currentOrigin[2] = 24;
         item.s.frame = ForThing(2012);
-        item.inuse = qtrue;
+        item.inuse = true;
         G_DoomItemTouch(&item, &player, nullptr);
         Check(player.health == 75 && client.ps.stats[STAT_HEALTH] == 75 && removed == 1 &&
                   events == 1 && notices == 2,
@@ -130,7 +130,7 @@ int main() {
         item.doom.base = 64;
         level.num_entities = MAX_CLIENTS + 1;
         auto &floor = g_entities[MAX_CLIENTS];
-        floor.inuse = qtrue;
+        floor.inuse = true;
         floor.classname = "doom_mover";
         floor.doom.sector = 7;
         floor.doom.plane = 0;
@@ -145,7 +145,7 @@ int main() {
         player.doomNpc.type = 0;
         player.health = client.ps.stats[STAT_HEALTH] = 50;
         item.r.currentOrigin[2] = 0;
-        item.inuse = qtrue;
+        item.inuse = true;
         item.s.frame = ForThing(2012);
         G_DoomItemTouch(&item, &player, nullptr);
         Check(item.inuse && (item.s.eFlags & EF_NODRAW) && !item.r.contents &&

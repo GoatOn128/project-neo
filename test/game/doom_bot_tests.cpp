@@ -18,22 +18,22 @@ void QDECL Com_Error(int, const char *why, ...) {
 int trap_AAS_Initialized() {
     return 1;
 }
-qboolean DoomBotRoute(gentity_t *, const vec3_t goal, doomAasRoute_t &route) {
+bool DoomBotRoute(gentity_t *, const vec3_t goal, doomAasRoute_t &route) {
     route = {};
     VectorCopy(goal, route.point);
     route.travelTime = 100;
-    return qtrue;
+    return true;
 }
 static void Touch(gentity_t *, gentity_t *, trace_t *) {
 }
 
-qboolean OnSameTeam(gentity_t *a, gentity_t *b) {
+bool OnSameTeam(gentity_t *a, gentity_t *b) {
     return a->client && b->client && a->client->sess.sessionTeam == b->client->sess.sessionTeam
-               ? qtrue
-               : qfalse;
+               ? true
+               : false;
 }
-qboolean trap_InPVS(const vec3_t, const vec3_t) {
-    return pvs ? qtrue : qfalse;
+bool trap_InPVS(const vec3_t, const vec3_t) {
+    return pvs ? true : false;
 }
 void trap_Trace(trace_t *trace, const vec3_t, const vec3_t, const vec3_t, const vec3_t end, int,
                 int) {
@@ -45,8 +45,8 @@ void trap_Trace(trace_t *trace, const vec3_t, const vec3_t, const vec3_t, const 
 unsigned int DoomBotRandom(doomBot_t &) {
     return 1;
 }
-qboolean DoomBotSafeStep(gentity_t *, const vec3_t, qboolean, qboolean) {
-    return qtrue;
+bool DoomBotSafeStep(gentity_t *, const vec3_t, bool, bool) {
+    return true;
 }
 void DoomBotView(gentity_t *self, usercmd_t &cmd, const vec3_t desired, float) {
     for (int axis = 0; axis < 3; ++axis) {
@@ -72,7 +72,7 @@ int main() {
         level.maxclients = 4;
         for (int i = 1; i < 4; ++i) {
             auto &entity = g_entities[i];
-            entity.inuse = entity.takedamage = qtrue;
+            entity.inuse = entity.takedamage = true;
             entity.health = 100;
             entity.s.number = i;
             entity.client = &clients[i];
@@ -109,7 +109,7 @@ int main() {
         doomBot_t bot{};
         bot.clientNum = 1;
         bot.enemyNum = 3;
-        bot.visible = qtrue;
+        bot.visible = true;
         bot.skill = 5;
         bot.goalType = DOOM_BOT_ENEMY;
         usercmd_t command{};
@@ -131,7 +131,7 @@ int main() {
         ps.ammo[WP_DOOM_PISTOL] = 10;
         level.num_entities = MAX_CLIENTS + 2;
         auto &shotgun = g_entities[MAX_CLIENTS];
-        shotgun.inuse = qtrue;
+        shotgun.inuse = true;
         shotgun.s.eType = ET_DOOM_PICKUP;
         shotgun.s.frame = doomitem::ForThing(2001);
         shotgun.r.contents = CONTENTS_TRIGGER;
@@ -143,7 +143,7 @@ int main() {
         VectorSet(ammo.r.currentOrigin, 200, 0, 0);
         VectorSet(self->r.currentOrigin, 50, 0, 24);
         bot = {};
-        bot.hasGoal = qtrue;
+        bot.hasGoal = true;
         bot.goalType = DOOM_BOT_ITEM;
         bot.goalNum = MAX_CLIENTS;
         bot.goalUntil = level.time + 10000;

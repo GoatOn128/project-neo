@@ -32,9 +32,9 @@ void CG_Trace(trace_t *trace, const vec3_t start, const vec3_t, const vec3_t, co
     trace->entityNum = wallEntity;
     trace->surfaceFlags = flags;
     trace->contents = contents;
-    trace->startsolid = startSolid ? qtrue : qfalse;
+    trace->startsolid = startSolid ? true : false;
     if (flushWall) {
-        trace->startsolid = start[0] > 20 ? qtrue : qfalse;
+        trace->startsolid = start[0] > 20 ? true : false;
         trace->fraction = (20 - start[0]) / (end[0] - start[0]);
     }
     VectorCopy(wallNormal, trace->plane.normal);
@@ -46,8 +46,8 @@ bool CG_DoomFxAllowDecal(const vec3_t, const vec3_t) {
     return allowDecal;
 }
 void CG_ImpactMark(qhandle_t shader, const vec3_t origin, const vec3_t normal, float rotation,
-                   float red, float green, float blue, float alpha, qboolean alphaFade,
-                   float radius, qboolean temporary, int duration) {
+                   float red, float green, float blue, float alpha, bool alphaFade,
+                   float radius, bool temporary, int duration) {
     ++marks;
     lastRadius = radius;
     Check(shader == 17 && origin[0] > lastStart[0] && normal[0] == -1,
