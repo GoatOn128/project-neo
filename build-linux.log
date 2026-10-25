@@ -203,8 +203,8 @@ g++ -o build/release/botlib/code/game/botlib/be_aas_bspq3.o -c -std=c++17 -fexce
 g++ -o build/release/botlib/code/game/botlib/be_aas_cluster.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -DBOTLIB -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/game/botlib/be_aas_cluster.cpp
 g++ -o build/release/botlib/code/game/botlib/be_aas_debug.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -DBOTLIB -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/game/botlib/be_aas_debug.cpp
 g++ -o build/release/botlib/code/game/botlib/be_aas_entity.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -DBOTLIB -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/game/botlib/be_aas_entity.cpp
-g++ -o build/release/botlib/code/game/botlib/be_aas_file.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -DBOTLIB -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/game/botlib/be_aas_file.cpp
 g++ -o bin/base/uix64.so -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -shared build/release/ui/code/game/game/bg_misc.os build/release/ui/code/game/game/q_math.os build/release/ui/code/game/game/q_shared.os build/release/ui/code/game/ui/ui_atoms.os build/release/ui/code/game/ui/ui_gameinfo.os build/release/ui/code/game/ui/ui_main.os build/release/ui/code/game/ui/ui_players.os build/release/ui/code/game/ui/ui_shared.os build/release/ui/code/game/ui/ui_import.os build/release/ui/code/game/ui/ui_util.os build/release/ui/code/game/ui/ui_doom.os
+g++ -o build/release/botlib/code/game/botlib/be_aas_file.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -DBOTLIB -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/game/botlib/be_aas_file.cpp
 g++ -o build/release/botlib/code/game/botlib/be_aas_main.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -DBOTLIB -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/game/botlib/be_aas_main.cpp
 g++ -o build/release/botlib/code/game/botlib/be_aas_move.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -DBOTLIB -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/game/botlib/be_aas_move.cpp
 g++ -o build/release/botlib/code/game/botlib/be_aas_optimize.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -DBOTLIB -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/game/botlib/be_aas_optimize.cpp
@@ -237,14 +237,14 @@ g++ -o build/release/splines/code/splines/q_parse.o -c -std=c++17 -fexceptions -
 g++ -o build/release/splines/code/splines/q_shared.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/splines/q_shared.cpp
 g++ -o build/release/splines/code/splines/splines.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/splines/splines.cpp
 ar rc build/release/libbotlib.a build/release/botlib/code/game/botlib/be_aas_bspq3.o build/release/botlib/code/game/botlib/be_aas_cluster.o build/release/botlib/code/game/botlib/be_aas_debug.o build/release/botlib/code/game/botlib/be_aas_entity.o build/release/botlib/code/game/botlib/be_aas_file.o build/release/botlib/code/game/botlib/be_aas_main.o build/release/botlib/code/game/botlib/be_aas_move.o build/release/botlib/code/game/botlib/be_aas_optimize.o build/release/botlib/code/game/botlib/be_aas_reach.o build/release/botlib/code/game/botlib/be_aas_route.o build/release/botlib/code/game/botlib/be_aas_routealt.o build/release/botlib/code/game/botlib/be_aas_routetable.o build/release/botlib/code/game/botlib/be_aas_sample.o build/release/botlib/code/game/botlib/be_ai_char.o build/release/botlib/code/game/botlib/be_ai_chat.o build/release/botlib/code/game/botlib/be_ai_gen.o build/release/botlib/code/game/botlib/be_ai_goal.o build/release/botlib/code/game/botlib/be_ai_move.o build/release/botlib/code/game/botlib/be_ai_weap.o build/release/botlib/code/game/botlib/be_ai_weight.o build/release/botlib/code/game/botlib/be_ea.o build/release/botlib/code/game/botlib/be_interface.o build/release/botlib/code/game/botlib/l_crc.o build/release/botlib/code/game/botlib/l_libvar.o build/release/botlib/code/game/botlib/l_log.o build/release/botlib/code/game/botlib/l_memory.o build/release/botlib/code/game/botlib/l_precomp.o build/release/botlib/code/game/botlib/l_script.o build/release/botlib/code/game/botlib/l_struct.o
-ranlib build/release/libbotlib.a
+g++ -o build/release/splines/code/splines/util_str.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/splines/util_str.cpp
 In file included from code/splines/splines.h:39,
                  from code/splines/splines.cpp:30:
 code/splines/util_list.h:45:1: warning: template-id not allowed for destructor in C++20 [-Wtemplate-id-cdtor]
    45 | ~idList<type>();
       | ^
 code/splines/util_list.h:45:1: note: remove the '< >'
-g++ -o build/release/splines/code/splines/util_str.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/splines/util_str.cpp
+ranlib build/release/libbotlib.a
 g++ -o build/release/doom_opl/code/sound/snd_opl.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/sound/snd_opl.cpp
 g++ -o build/release/doom_opl/code/sound/opl/doom_opl.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/sound/opl/doom_opl.cpp
 gcc -o build/release/doom_opl/code/sound/opl/opl3.o -c -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party code/sound/opl/opl3.c
@@ -256,98 +256,4 @@ ranlib build/release/libsplines.a
 ar rc build/release/libdoom_miniz.a build/release/doom_miniz/code/third-party/miniz/miniz.o
 ranlib build/release/libdoom_miniz.a
 g++ -o bin/Doom -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags build/release/wolf/code/client/cl_cgame.o build/release/wolf/code/client/cl_cin.o build/release/wolf/code/client/cl_console.o build/release/wolf/code/client/cl_input.o build/release/wolf/code/client/cl_keys.o build/release/wolf/code/client/cl_main.o build/release/wolf/code/client/cl_net_chan.o build/release/wolf/code/client/cl_parse.o build/release/wolf/code/client/cl_scrn.o build/release/wolf/code/client/cl_ui.o build/release/wolf/code/qcommon/cm_load.o build/release/wolf/code/qcommon/cm_patch.o build/release/wolf/code/qcommon/cm_polylib.o build/release/wolf/code/qcommon/cm_test.o build/release/wolf/code/qcommon/cm_trace.o build/release/wolf/code/qcommon/cmd.o build/release/wolf/code/qcommon/common.o build/release/wolf/code/qcommon/cvar.o build/release/wolf/code/qcommon/files.o build/release/wolf/code/qcommon/huffman.o build/release/wolf/code/qcommon/md4.o build/release/wolf/code/qcommon/msg.o build/release/wolf/code/qcommon/net_chan.o build/release/wolf/code/game/game/q_math.o build/release/wolf/code/game/game/q_shared.o build/release/wolf/code/server/sv_bot.o build/release/wolf/code/server/sv_ccmds.o build/release/wolf/code/server/sv_client.o build/release/wolf/code/server/sv_game.o build/release/wolf/code/server/sv_init.o build/release/wolf/code/server/sv_main.o build/release/wolf/code/server/sv_net_chan.o build/release/wolf/code/server/sv_snapshot.o build/release/wolf/code/server/sv_world.o build/release/wolf/code/qcommon/unzip.o build/release/wolf/code/sys/sys_input.o build/release/wolf/code/sys/sys_events.o build/release/wolf/code/sys/sys_main.o build/release/wolf/code/sys/unix/unix_net.o build/release/wolf/code/sys/sys_shared.o build/release/wolf/code/sys/unix/unix_shared.o build/release/wolf/code/sys/unix/unix_syscon.o build/release/wolf/code/client/cl_console_font.o build/release/wolf/code/qcommon/doom_content.o build/release/wolf/code/sys/sys_editor.o build/release/wolf/code/sound/snd_openal.o build/release/wolf/code/sound/snd_music.o build/release/wolf/code/sound/snd_fluidsynth.o build/release/wolf/code/sound/snd_musicmix.o build/release/wolf/code/sound/snd_wave.o build/release/wolf/code/sound/snd_stream.o build/release/libbotlib.a build/release/libsplines.a -lopenal -lSDL3 build/release/libdoom_opl.a build/release/libdoom_miniz.a -ldl -lpthread -lm
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/client/cl_ui.o: in function `LAN_RemoveServer(int, char const*)':
-cl_ui.cpp:(.text+0x700): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/client/cl_cin.o: in function `RoQInterrupt()':
-cl_cin.cpp:(.text+0x1ba4): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/client/cl_cin.o: in function `CIN_PlayCinematic(char const*, int, int, int, int, int)':
-cl_cin.cpp:(.text+0x2e96): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/client/cl_keys.o: in function `Console_Key(int)':
-cl_keys.cpp:(.text+0xd51): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/client/cl_main.o: in function `CL_LocalServers_f()':
-cl_main.cpp:(.text+0xd52): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: cl_main.cpp:(.text+0xd76): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/client/cl_main.o: in function `CL_ServerStatus_f()':
-cl_main.cpp:(.text+0x4f95): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/cm_load.o: in function `CMod_LoadShaders(lump_t*)':
-cm_load.cpp:(.text+0x9b): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: cm_load.cpp:(.text+0x145): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/cm_load.o: in function `CM_LoadMap(char const*, bool, int*)':
-cm_load.cpp:(.text+0x1679): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/cm_load.o: in function `CMod_LoadEntityString(lump_t*)':
-cm_load.cpp:(.text+0xd0c): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/cm_load.o: in function `CMod_LoadVisibility(lump_t*)':
-cm_load.cpp:(.text+0xd84): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: cm_load.cpp:(.text+0xdcb): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/cm_patch.o: in function `CM_GeneratePatchCollide(int, int, float (*) [3])':
-cm_patch.cpp:(.text+0x240c): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: cm_patch.cpp:(.text+0x24b2): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: cm_patch.cpp:(.text+0x2be5): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: cm_patch.cpp:(.text+0x2c18): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/cm_polylib.o: in function `AllocWinding(int)':
-cm_polylib.cpp:(.text+0xc6): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/cm_polylib.o: in function `RemoveColinearPoints(winding_t*)':
-cm_polylib.cpp:(.text+0x29d): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/cm_polylib.o: in function `CopyWinding(winding_t*)':
-cm_polylib.cpp:(.text+0x8ee): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/cm_polylib.o: in function `AddWindingToConvexHull(winding_t*, winding_t**, float*)':
-cm_polylib.cpp:(.text+0x1590): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: cm_polylib.cpp:(.text+0x17ea): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: cm_polylib.cpp:(.text+0x18d3): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/cm_test.o: in function `CM_WriteAreaBits(unsigned char*, int)':
-cm_test.cpp:(.text+0x98a): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/cm_trace.o: in function `CM_Trace(trace_t*, float const*, float const*, float const*, float const*, int, float const*, int, int, sphere_t*)':
-cm_trace.cpp:(.text+0x2280): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/common.o: in function `Z_Malloc(int)':
-common.cpp:(.text+0x1512): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/common.o: in function `Com_ReadCDKey(char const*)':
-common.cpp:(.text+0x1d05): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/common.o: in function `Com_AppendCDKey(char const*)':
-common.cpp:(.text+0x1e15): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/common.o: in function `Field_CompleteCommand(field_t*)':
-common.cpp:(.text+0x3da2): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/files.o: in function `FS_FOpenFileRead(char const*, int*, bool)':
-files.cpp:(.text+0x2567): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/files.o: in function `FS_GetModList(char*, int)':
-files.cpp:(.text+0x42ce): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/files.o: in function `FS_SortFileList(char**, int)':
-files.cpp:(.text+0x4800): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/files.o: in function `FS_FCloseFile(int)':
-files.cpp:(.text+0x1b18): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/huffman.o: in function `Huff_Decompress(msg_t*, int)':
-huffman.cpp:(.text+0x949): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: huffman.cpp:(.text+0xae4): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/huffman.o: in function `Huff_Compress(msg_t*, int)':
-huffman.cpp:(.text+0xb97): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: huffman.cpp:(.text+0xc87): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/huffman.o: in function `Huff_Init(huffman_t*)':
-huffman.cpp:(.text+0xcd8): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: huffman.cpp:(.text+0xceb): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/md4.o: in function `MD4Transform(unsigned long*, unsigned char const*)':
-md4.cpp:(.text+0xb2b): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/md4.o: in function `MD4Update(MD4_CTX*, unsigned char const*, unsigned int)':
-md4.cpp:(.text+0xc1e): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/md4.o: in function `MD4Final(unsigned char*, MD4_CTX*)':
-md4.cpp:(.text+0xd10): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/md4.o: in function `MD4Update(MD4_CTX*, unsigned char const*, unsigned int)':
-md4.cpp:(.text+0xbfa): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/net_chan.o: in function `Netchan_Transmit(netchan_t*, int, unsigned char const*)':
-net_chan.cpp:(.text+0xc58): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/server/sv_init.o: in function `SV_InitReliableCommandsForClient(client_s*, int)':
-sv_init.cpp:(.text+0x61f): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/server/sv_init.o: in function `SV_ChangeMaxClients()':
-sv_init.cpp:(.text+0xbb0): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: sv_init.cpp:(.text+0xbf9): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/server/sv_init.o: in function `SV_FreeReliableCommandsForClient(client_s*)':
-sv_init.cpp:(.text+0x728): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/server/sv_init.o: in function `SV_ClearServer()':
-sv_init.cpp:(.text+0xed5): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/qcommon/unzip.o: in function `unzReOpen(char const*, void*)':
-unzip.cpp:(.text+0xb48): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/client/cl_console_font.o: in function `Con_FontInit()':
-cl_console_font.cpp:(.text+0x3df): undefined reference to `Com_Memset(void*, int, unsigned long)'
-/usr/bin/x86_64-linux-gnu-ld.bfd: build/release/wolf/code/client/cl_console_font.o: in function `Con_FontDrawString(int, int, char const*, float const*)':
-cl_console_font.cpp:(.text+0x61b): undefined reference to `Com_Memcpy(void*, void const*, unsigned long)'
-collect2: error: ld returned 1 exit status
-scons: *** [bin/Doom] Error 1
-scons: done building targets (errors occurred during build).
+scons: done building targets.

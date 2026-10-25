@@ -1,0 +1,24 @@
+scons: Reading SConscript files ...
+Config: release, arch: x64, editor: False
+Binaries go to bin/, the build files live in build/release/
+The game modules go to base/, bin/base links to it.
+scons: done reading SConscript files.
+scons: Building targets ...
+g++ -o test/dmap/format_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/dmap/format_tests.cpp
+g++ -o test/ui/doom_menu_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/ui/doom_menu_tests.cpp
+g++ -o test/qcommon/doom_content_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/qcommon/doom_content_tests.cpp
+g++ -o build/release/tests/doom_content_tests/code/qcommon/doom_content.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/qcommon/doom_content.cpp
+test/qcommon/doom_content_tests.cpp: In function 'int Q_stricmp(const char*, const char*)':
+test/qcommon/doom_content_tests.cpp:21:12: error: '_stricmp' was not declared in this scope; did you mean 'Q_stricmp'?
+   21 |     return _stricmp(a, b);
+      |            ^~~~~~~~
+      |            Q_stricmp
+test/ui/doom_menu_tests.cpp: In function 'int Q_stricmp(const char*, const char*)':
+test/ui/doom_menu_tests.cpp:25:53: error: '_stricmp' was not declared in this scope; did you mean 'Q_stricmp'?
+   25 | int Q_stricmp(const char *a,const char *b) { return _stricmp(a,b); }
+      |                                                     ^~~~~~~~
+      |                                                     Q_stricmp
+g++ -o test/cgame/doom_damage_view_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/cgame/doom_damage_view_tests.cpp
+scons: *** [test/qcommon/doom_content_tests.o] Error 1
+scons: *** [test/ui/doom_menu_tests.o] Error 1
+scons: building terminated because of errors.
