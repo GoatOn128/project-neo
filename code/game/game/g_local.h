@@ -338,7 +338,7 @@ struct gentity_s {
 
 	int key;                    // used by:  target_speaker->nopvs,
 
-	bool active;
+	int active;                // multi-state flag (0/1/2), the bats code stores 2
 	bool botDelayBegin;
 
 	// Rafael - mg42
@@ -1394,3 +1394,4 @@ void G_DoomDropPlayerWeapon(gentity_t *player);
 void G_DoomImpactBlood(gentity_t *impact, const trace_t *trace, const vec3_t travel);
 
 #include "g_doombots.h"
+
