@@ -23,6 +23,7 @@ unsigned int U32( const byte *p ) {
 unsigned int U16( const byte *p ) {
 	return static_cast<unsigned int>( p[0] ) | ( static_cast<unsigned int>( p[1] ) << 8 );
 }
+} // namespace
 
 idSoundSample::idSoundSample() {
 	name[0] = 0;
