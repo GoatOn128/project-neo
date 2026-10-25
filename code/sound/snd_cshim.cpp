@@ -14,7 +14,8 @@
 // deleted. Nothing else in the engine should call S_* from here on.
 // ---------------------------------------------------------------------------
 
-#include "../client/client.h"
+// client.h comes through idtech4/snd_local.h; it has no include guard
+// (the engine includes it once per file), so it must not be included twice
 #include "idtech4/snd_local.h"
 
 // the old engine's cinematic timing globals, kept in the 22050Hz sample
