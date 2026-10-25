@@ -15,6 +15,7 @@
 // (code/sound/snd_cshim.cpp) is deleted with it.
 
 #include "snd_local.h"
+#include "../../sys/sys_local.h"  // g_sv, the window focus state for the mute-when-unfocused check
 
 // the single system instance, like the original engine
 static idSoundSystemLocal soundSystemLocalImpl;

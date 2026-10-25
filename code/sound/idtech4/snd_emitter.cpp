@@ -95,7 +95,9 @@ int idSoundEmitterLocal::StartSound( const idSoundShader *shader, s_channelType 
 	ch->startTime = Sys_Milliseconds();
 	ch->diversity = static_cast<int>( diversity * shader->GetNumSounds() ) %
 					 ( shader->GetNumSounds() > 0 ? shader->GetNumSounds() : 1 );
-	idSoundSample *sample = shader->GetSample( ch->diversity );
+	// GetSample demand-loads the wav so it cannot be const on the shader;
+	// the shader itself stays const on the channel, the 2004 interface shape
+	idSoundSample *sample = const_cast<idSoundShader *>( shader )->GetSample( ch->diversity );
 	if ( !sample ) {
 		return 0;
 	}
