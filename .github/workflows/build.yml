@@ -1,9 +1,9 @@
 name: Build
 
-# Compiles the project and saves build.log as an artifact for every platform.
-# Only the Windows x86 build compiles today: the game module ABI is still
-# 32-bit (task 12 opens the 64-bit builds) and the build needs the MSVC tools
-# (other systems are task 12). The other jobs write a short note instead.
+# Compiles the project and saves the build logs as artifacts for every
+# platform. Windows x86 and Windows x64 compile today; the other platforms
+# write a short note instead (they are still task 12). The x64 build runs
+# after the matrix job so the two log commits never push at the same time.
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        arch: [x86, x64]
+        arch: [x86]
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
@@ -112,21 +112,13 @@ jobs:
           fi
 
       - name: Not built on this platform
-        if: ${{ !(runner.os == 'Windows' && matrix.arch == 'x86') }}
+        if: ${{ runner.os != 'Windows' }}
         shell: bash
         run: |
-          if [ "${{ runner.os }}" != "Windows" ]; then
-            {
-              echo "This platform does not build yet."
-              echo "The port builds on Windows only for now, see task 12 in TODO.md."
-            } | tee build.log
-          else
-            {
-              echo "This platform does not build yet."
-              echo "Only 32-bit builds work right now, the game module ABI is"
-              echo "still 32-bit. Task 12 in TODO.md opens the 64-bit builds."
-            } | tee build.log
-          fi
+          {
+            echo "This platform does not build yet."
+            echo "The port builds on Windows only for now, see task 12 in TODO.md."
+          } | tee build.log
 
       - name: Save build.log
         if: always()
@@ -142,4 +134,102 @@ jobs:
         with:
           name: test-log-${{ matrix.os }}-${{ matrix.arch }}
           path: test.log
+          if-no-files-found: ignore
+
+  build-x64:
+    name: windows-latest x64
+    # Runs after the matrix job so the log commit below never pushes at
+    # the same time as the Windows x86 log commit.
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install SCons
+        run: python -m pip install scons
+
+      - name: Set up MSVC (Windows x64)
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Make sure clang-cl exists (Windows x64)
+        shell: pwsh
+        run: |
+          if (-not (Get-Command clang-cl -ErrorAction SilentlyContinue)) {
+            choco install llvm -y --no-progress
+          }
+          clang-cl --version
+
+      - name: Build (Windows x64)
+        shell: bash
+        run: |
+          set -o pipefail
+          JOBS=$(nproc 2>/dev/null || echo 2)
+          scons arch=x64 -j "$JOBS" 2>&1 | tee build-x64.log
+
+      - name: Run the tests (Windows x64)
+        shell: bash
+        run: |
+          set -o pipefail
+          JOBS=$(nproc 2>/dev/null || echo 2)
+          scons test arch=x64 -j "$JOBS" 2>&1 | tee test-x64.log
+
+      - name: Report the build errors
+        # The full logs are only in the artifact, so the errors are
+        # copied into the job summary where they can be read on the run
+        # page without downloading anything.
+        if: failure()
+        shell: bash
+        run: |
+          {
+            echo '### Build errors (x64)'
+            echo ''
+            echo '```'
+            grep -i -E 'error|scons: \*\*\*' build-x64.log | head -40 || true
+            echo '```'
+            echo '### Test errors (x64)'
+            echo ''
+            echo '```'
+            grep -i -E 'error|scons: \*\*\*' test-x64.log | head -40 || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save the build log
+        # Same as the x86 job: the logs are committed to the repository
+        # root so they can be read without downloading the artifact.
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add build-x64.log test-x64.log
+          if git diff --cached --quiet; then
+            echo "build-x64.log did not change."
+          else
+            git commit -m "Save the Windows x64 build and test logs"
+            git pull --rebase
+            git push
+          fi
+
+      - name: Save build-x64.log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-windows-latest-x64
+          path: build-x64.log
+          if-no-files-found: ignore
+
+      - name: Save test-x64.log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-log-windows-latest-x64
+          path: test-x64.log
           if-no-files-found: ignore

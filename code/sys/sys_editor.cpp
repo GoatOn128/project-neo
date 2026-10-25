@@ -4,6 +4,14 @@
 #include "sys_editor.h"
 #include "../tools/editor/EditorAPI.h"
 
+// The editor DLL carries the CPU suffix like the game modules, so the
+// 64-bit engine loads toolsx64.dll.
+#ifdef _WIN64
+static const char EDITOR_MODULE_NAME[] = "toolsx64.dll";
+#else
+static const char EDITOR_MODULE_NAME[] = "toolsx86.dll";
+#endif
+
 namespace {
 SDL_SharedObject *editorModule = nullptr;
 const DoomEditorAPI *editor = nullptr;
@@ -59,14 +67,14 @@ bool loadEditor() {
     }
     Q_strncpyz(projectRoot, base, sizeof(projectRoot));
     char modulePath[32768];
-    const int needed = SDL_snprintf(modulePath, sizeof(modulePath), "%stoolsx86.dll", projectRoot);
+    const int needed = SDL_snprintf(modulePath, sizeof(modulePath), "%s%s", projectRoot, EDITOR_MODULE_NAME);
     SDL_free((void *)base);
     if (needed < 0 || needed >= static_cast<int>(sizeof(modulePath))) {
         return false;
     }
     editorModule = SDL_LoadObject(modulePath);
     if (!editorModule) {
-        Com_Printf("Cannot load toolsx86.dll (%s). Build DoomEditor.\n", SDL_GetError());
+        Com_Printf("Cannot load %s (%s). Build DoomEditor.\n", EDITOR_MODULE_NAME, SDL_GetError());
         return false;
     }
     const auto getAPI = reinterpret_cast<DoomEditorGetAPI>(

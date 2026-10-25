@@ -606,10 +606,17 @@ void * QDECL Sys_LoadDll( const char *name, void **dllHandle, const char *entryN
 	static int lastWarning = 0; // only the release DLL warning box reads this
 #endif
 
-#ifdef WOLF_SP_DEMO
-	Com_sprintf( filename, sizeof( filename ), "%sx86_d.dll", name );
+// The module DLL names end with the CPU suffix (cgamex86, cgamex64), so
+// the engine only ever loads modules built for its own word size.
+#ifdef _WIN64
+#define SYS_DLL_NAME_SUFFIX "x64"
 #else
-	Com_sprintf( filename, sizeof( filename ), "%sx86.dll", name );
+#define SYS_DLL_NAME_SUFFIX "x86"
+#endif
+#ifdef WOLF_SP_DEMO
+	Com_sprintf( filename, sizeof( filename ), "%s" SYS_DLL_NAME_SUFFIX "_d.dll", name );
+#else
+	Com_sprintf( filename, sizeof( filename ), "%s" SYS_DLL_NAME_SUFFIX ".dll", name );
 #endif
 
 

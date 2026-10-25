@@ -20,7 +20,6 @@ CLANG_FLAGS = [
 GLOBAL_DEFINES = [
     'WIN32',
     'C_ONLY',
-    '_USE_32BIT_TIME_T',
     '_CRT_SECURE_NO_WARNINGS',
     '_CRT_NONSTDC_NO_WARNINGS',
     'NOMINMAX',
@@ -43,7 +42,7 @@ LEGACY_INCLUDE_PATHS = [
     '#code/third-party',       # "openal/x.h", "fluidsynth/x.h", ...
 ]
 
-def make_base_env(config):
+def make_base_env(config, arch='x86'):
     """The starting point for every other environment in the build.
 
     The project builds with Clang through the MSVC command line (clang-cl).
@@ -51,13 +50,17 @@ def make_base_env(config):
     """
     from SCons.Script import Environment
 
-    env = Environment(tools=['default'], TARGET_ARCH='x86')
+    env = Environment(tools=['default'],
+                      TARGET_ARCH='amd64' if arch == 'x64' else 'x86')
 
     if shutil.which('clang-cl'):
         env['CC'] = 'clang-cl'
         env['CXX'] = 'clang-cl'
-        # clang-cl follows the host by default, so point it at 32-bit.
-        env['CCFLAGS'] = ['--target=i686-pc-windows-msvc'] + CLANG_FLAGS
+        # clang-cl follows the host by default, so point it at the word
+        # size the build asks for.
+        triple = ('x86_64-pc-windows-msvc' if arch == 'x64'
+                  else 'i686-pc-windows-msvc')
+        env['CCFLAGS'] = ['--target=' + triple] + CLANG_FLAGS
     else:
         print('clang-cl was not found, using the MSVC compiler instead.')
         print('The project normally builds with Clang, so expect problems.')
@@ -69,6 +72,10 @@ def make_base_env(config):
     env['CXXFLAGS'] = ['/std:c++17', '/EHsc']
     env['SHLIBPREFIX'] = ''
     env.Append(CPPDEFINES=GLOBAL_DEFINES)
+    if arch == 'x86':
+        # The 32-bit build keeps the historical 32-bit time_t. The 64-bit
+        # build has no such switch, its time_t is 64-bit.
+        env.Append(CPPDEFINES=['_USE_32BIT_TIME_T'])
     # Include folders that make the old include paths work, see above.
     env.Append(CPPPATH=LEGACY_INCLUDE_PATHS)
 
@@ -82,7 +89,7 @@ def make_base_env(config):
     return env
 
 
-def write_generated_files(build_root, code_dir='code'):
+def write_generated_files(build_root, arch='x86', code_dir='code'):
     """Write the small generated files the build needs.
 
     Returns the folder they end up in, as a real path.
@@ -91,9 +98,15 @@ def write_generated_files(build_root, code_dir='code'):
     os.makedirs(generated, exist_ok=True)
 
     # The editor DLL exports the compiler callback through this def file.
+    # 32-bit Windows decorates the stdcall callback name; 64-bit Windows has
+    # no stdcall decoration, so the plain symbol name is exported there.
+    if arch == 'x64':
+        callback_symbol = 'DoomTools_RunW'
+    else:
+        callback_symbol = '_DoomTools_RunW@16'
     with open(os.path.join(code_dir, 'tools', 'compilers', 'exports.def.in')) as f:
         template = f.read()
-    text = template.replace('@DOOM_COMPILER_CALLBACK_SYMBOL@', '_DoomTools_RunW@16')
+    text = template.replace('@DOOM_COMPILER_CALLBACK_SYMBOL@', callback_symbol)
     with open(os.path.join(generated, 'compiler-exports.def'), 'w') as f:
         f.write(text)
 

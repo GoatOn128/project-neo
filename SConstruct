@@ -44,10 +44,16 @@ if os.name != 'nt':
     print('Building on other systems is planned, see task 12 in TODO.md.')
     Exit(1)
 
-if arch != 'x86':
-    print('Only x86 builds work right now. The game module ABI is still')
-    print('32-bit. Task 12 in TODO.md opens the door to 64-bit.')
+if arch not in ('x86', 'x64'):
+    print('Unknown arch "%s". Use arch=x86 or arch=x64.' % arch)
     Exit(1)
+
+# Every module DLL name ends with the CPU suffix (cgamex86, cgamex64), so
+# a 32-bit and a 64-bit build can sit next to each other and the engine
+# always loads the modules built for its own word size. The prebuilt
+# dependency binaries follow the same split.
+module_suffix = arch
+bits = '64' if arch == 'x64' else '32'
 
 if config not in ('debug', 'release'):
     print('Unknown config "%s". Use config=debug or config=release.' % config)
@@ -60,8 +66,8 @@ if config not in ('debug', 'release'):
 build_root = os.path.join('build', config)
 build_target = '#build/' + config
 
-env = doom_build.make_base_env(config)
-doom_build.write_generated_files(build_root)
+env = doom_build.make_base_env(config, arch)
+doom_build.write_generated_files(build_root, arch)
 generated_target = build_target + '/generated'
 
 
@@ -120,12 +126,12 @@ doom_opl = opl_env.StaticLibrary(
 # engine links its import library and loads the matching DLL at runtime.
 # Non-Windows systems fetch the sources instead, see fetch_openal_soft()
 # in doom_build.py.
-OpenAL32 = env.File('#code/third-party/openal/libs/Win32/OpenAL32.lib')
+OpenAL32 = env.File('#code/third-party/openal/libs/Win%s/OpenAL32.lib' % bits)
 
 # SDL3: the window, GL context and input all go through the SDL3 library
 # that ships with the engine, so the import library is linked here and the
 # matching DLL is copied next to the engine and the tests below.
-SDL3 = env.File('#code/third-party/SDL3/lib/x86/SDL3.lib')
+SDL3 = env.File('#code/third-party/SDL3/lib/%s/SDL3.lib' % arch)
 
 # --- the engine parts ---
 
@@ -142,7 +148,7 @@ renderer_env.Append(
 # through its current folder search when the engine runs from bin/.
 # It links SDL3 (window and context code) and opengl32 directly.
 renderer = renderer_env.SharedLibrary(
-    '#bin/ref_trin_glx86',
+    '#bin/ref_trin_gl' + module_suffix,
     [renderer_variant + '/' + p for p in
      doom_sources.RENDERER_SOURCES + doom_sources.RENDERER_EXTRA_SOURCES],
     LIBS=[SDL3, 'opengl32'])
@@ -217,7 +223,7 @@ if build_editor:
                       editor_cpp + doom_sources.EDITOR_EXTRA_SOURCES]
     editor_sources.append(generated_target + '/compiler-exports.def')
     editor_dll = editor_env.SharedLibrary(
-        '#bin/toolsx86',
+        '#bin/tools' + module_suffix,
         editor_sources,
         LIBS=[doomed_core, doomed_imgui, dmap, aasbuild, doom_miniz, SDL3,
               'comdlg32', 'shell32', 'advapi32', 'windowscodecs', 'ole32',
@@ -236,7 +242,7 @@ if build_editor:
 cgame_env, cgame_variant = module_env('cgame')
 cgame_env.Append(CPPDEFINES=['CGAMEDLL'], CPPPATH=['#code', generated_target])
 cgame = cgame_env.SharedLibrary(
-    '#bin/base/cgamex86',
+    '#bin/base/cgame' + module_suffix,
     [cgame_variant + '/' + p for p in
      doom_sources.CGAME_SOURCES + doom_sources.CGAME_EXTRA_SOURCES
      + doom_sources.DOOM_FX_SOURCES])
@@ -246,7 +252,7 @@ qagame_env.Append(
     CPPDEFINES=['GAMEDLL', 'DOOM_SAVE_CALLBACKS'],
     CPPPATH=['#code', generated_target])
 qagame = qagame_env.SharedLibrary(
-    '#bin/base/qagamex86',
+    '#bin/base/qagame' + module_suffix,
     [qagame_variant + '/' + p for p in
      doom_sources.GAME_SOURCES + doom_sources.GAME_EXTRA_SOURCES],
     LIBS=['winmm'])
@@ -254,7 +260,7 @@ qagame = qagame_env.SharedLibrary(
 ui_env, ui_variant = module_env('ui')
 ui_env.Append(CPPDEFINES=['UI_EXPORTS'], CPPPATH=['#code', generated_target])
 ui_dll = ui_env.SharedLibrary(
-    '#bin/base/uix86',
+    '#bin/base/ui' + module_suffix,
     [ui_variant + '/' + p for p in
      doom_sources.UI_SOURCES + doom_sources.UI_EXTRA_SOURCES])
 
@@ -282,8 +288,12 @@ wolf_res = wolf_env.RES(
 # flags are appended to the environment on purpose: a LINKFLAGS argument
 # on the Program call would replace the whole list and drop the /DEBUG
 # flag the debug config sets for the linker.
-wolf_env.Append(
-    LINKFLAGS=['/STACK:8388608', '/LARGEADDRESSAWARE', '/SUBSYSTEM:WINDOWS'])
+# /LARGEADDRESSAWARE only means something on 32-bit, the 64-bit build has
+# the large address space by default.
+wolf_linkflags = ['/STACK:8388608', '/SUBSYSTEM:WINDOWS']
+if arch == 'x86':
+    wolf_linkflags.append('/LARGEADDRESSAWARE')
+wolf_env.Append(LINKFLAGS=wolf_linkflags)
 wolf = wolf_env.Program(
     '#bin/Doom',
     [wolf_variant + '/' + p for p in
@@ -295,16 +305,18 @@ wolf = wolf_env.Program(
 # The engine links the SDL3 import library, so the DLL that matches it is
 # copied next to the engine and the tests. libfluidsynth-3.dll needs the
 # same SDL3.dll next to it, and the copy below satisfies that too.
+sdl_dll = '#code/third-party/SDL3/lib/%s/SDL3.dll' % arch
 sdl_copies = [
-    env.InstallAs('#bin/SDL3.dll', '#code/third-party/SDL3/lib/x86/SDL3.dll'),
-    env.InstallAs('#bin/tests/SDL3.dll', '#code/third-party/SDL3/lib/x86/SDL3.dll'),
+    env.InstallAs('#bin/SDL3.dll', sdl_dll),
+    env.InstallAs('#bin/tests/SDL3.dll', sdl_dll),
 ]
 
 # The import library binds to OpenAL32.dll, so the bundled soft_oal.dll is
 # copied next to the engine and the tests under the name the linker expects.
+soft_oal = '#code/third-party/openal/bin/Win%s/soft_oal.dll' % bits
 openal_copies = [
-    env.InstallAs('#bin/OpenAL32.dll', '#code/third-party/openal/bin/Win32/soft_oal.dll'),
-    env.InstallAs('#bin/tests/OpenAL32.dll', '#code/third-party/openal/bin/Win32/soft_oal.dll'),
+    env.InstallAs('#bin/OpenAL32.dll', soft_oal),
+    env.InstallAs('#bin/tests/OpenAL32.dll', soft_oal),
 ]
 
 # FluidSynth is loaded at runtime, so its DLL ships next to the engine and
@@ -312,7 +324,7 @@ openal_copies = [
 # sndfile.dll and SDL3.dll next to it; SDL3.dll itself is the engine copy
 # installed above. The library itself is optional: the engine still boots
 # without it.
-fluidsynth_bin = 'code/third-party/fluidsynth/Win32/bin'
+fluidsynth_bin = 'code/third-party/fluidsynth/Win%s/bin' % bits
 fluidsynth_copies = []
 if os.path.exists(os.path.join(fluidsynth_bin, 'libfluidsynth-3.dll')):
     for dll in ('libfluidsynth-3.dll', 'sndfile.dll'):
@@ -394,7 +406,11 @@ env.Alias('tests', test_nodes)
 
 # "scons test" builds the tests, runs them and stops when one fails.
 # The tests stay optional for a plain build; the CI run always executes them.
-env['TEST_ARGS'] = {test['name']: test.get('args', [])
+# The doomed host test passes the editor DLL name on the command line, so
+# the CPU suffix of the DLL the build just made is swapped in here.
+env['TEST_ARGS'] = {test['name']:
+                    [arg.replace('toolsx86', 'tools' + module_suffix)
+                     for arg in test.get('args', [])]
                     for test in doom_sources.TESTS}
 test_run = env.Command(
     build_target + '/tests-run.stamp',
@@ -419,7 +435,7 @@ Targets:
 
 Options:
   config=debug|release   release is the default
-  arch=x86               only x86 builds work today
+  arch=x86|x64           x86 is the default
   editor=yes|no          yes is the default
 """)
 
