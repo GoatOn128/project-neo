@@ -1233,10 +1233,10 @@ int         trap_AAS_TraceAreas( vec3_t start, vec3_t end, int *areas, vec3_t *p
 
 int         trap_AAS_PointContents( vec3_t point );
 int         trap_AAS_NextBSPEntity( int ent );
-int         trap_AAS_ValueForBSPEpairKey( int ent, char *key, char *value, int size );
-int         trap_AAS_VectorForBSPEpairKey( int ent, char *key, vec3_t v );
-int         trap_AAS_FloatForBSPEpairKey( int ent, char *key, float *value );
-int         trap_AAS_IntForBSPEpairKey( int ent, char *key, int *value );
+bool        trap_AAS_ValueForBSPEpairKey( int ent, char *key, char *value, int size );
+bool        trap_AAS_VectorForBSPEpairKey( int ent, char *key, vec3_t v );
+bool        trap_AAS_FloatForBSPEpairKey( int ent, char *key, float *value );
+bool        trap_AAS_IntForBSPEpairKey( int ent, char *key, int *value );
 
 int         trap_AAS_AreaReachability( int areanum );
 

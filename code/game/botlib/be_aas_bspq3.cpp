@@ -79,7 +79,7 @@ typedef struct bsp_entity_s
 typedef struct bsp_s
 {
 	//true when bsp file is loaded
-	int loaded;
+	bool loaded;
 	//entity data
 	int entdatasize;
 	char *dentdata;
@@ -257,7 +257,7 @@ int AAS_NextBSPEntity( int ent ) {
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_BSPEntityInRange( int ent ) {
+bool AAS_BSPEntityInRange( int ent ) {
 	if ( ent <= 0 || ent >= bspworld.numentities ) {
 		botimport.Print( PRT_MESSAGE, "bsp entity out of range\n" );
 		return false;
@@ -270,7 +270,7 @@ int AAS_BSPEntityInRange( int ent ) {
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_ValueForBSPEpairKey( int ent, char *key, char *value, int size ) {
+bool AAS_ValueForBSPEpairKey( int ent, char *key, char *value, int size ) {
 	bsp_epair_t *epair;
 
 	value[0] = '\0';
@@ -293,7 +293,7 @@ int AAS_ValueForBSPEpairKey( int ent, char *key, char *value, int size ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_VectorForBSPEpairKey( int ent, char *key, vec3_t v ) {
+bool AAS_VectorForBSPEpairKey( int ent, char *key, vec3_t v ) {
 	char buf[MAX_EPAIRKEY];
 	double v1, v2, v3;
 
@@ -315,7 +315,7 @@ int AAS_VectorForBSPEpairKey( int ent, char *key, vec3_t v ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_FloatForBSPEpairKey( int ent, char *key, float *value ) {
+bool AAS_FloatForBSPEpairKey( int ent, char *key, float *value ) {
 	char buf[MAX_EPAIRKEY];
 
 	*value = 0;
@@ -331,7 +331,7 @@ int AAS_FloatForBSPEpairKey( int ent, char *key, float *value ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_IntForBSPEpairKey( int ent, char *key, int *value ) {
+bool AAS_IntForBSPEpairKey( int ent, char *key, int *value ) {
 	char buf[MAX_EPAIRKEY];
 
 	*value = 0;

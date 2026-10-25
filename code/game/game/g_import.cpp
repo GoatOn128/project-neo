@@ -381,22 +381,22 @@ int trap_AAS_NextBSPEntity( int ent ) {
 }
 DOOM_SAVE_CALLBACK("trap_AAS_NextBSPEntity", trap_AAS_NextBSPEntity);
 
-int trap_AAS_ValueForBSPEpairKey( int ent, char * key, char * value, int size ) {
+bool trap_AAS_ValueForBSPEpairKey( int ent, char * key, char * value, int size ) {
 	return gameImports->AAS_ValueForBSPEpairKey( ent, key, value, size );
 }
 DOOM_SAVE_CALLBACK("trap_AAS_ValueForBSPEpairKey", trap_AAS_ValueForBSPEpairKey);
 
-int trap_AAS_VectorForBSPEpairKey( int ent, char * key, vec3_t v ) {
+bool trap_AAS_VectorForBSPEpairKey( int ent, char * key, vec3_t v ) {
 	return gameImports->AAS_VectorForBSPEpairKey( ent, key, v );
 }
 DOOM_SAVE_CALLBACK("trap_AAS_VectorForBSPEpairKey", trap_AAS_VectorForBSPEpairKey);
 
-int trap_AAS_FloatForBSPEpairKey( int ent, char * key, float * value ) {
+bool trap_AAS_FloatForBSPEpairKey( int ent, char * key, float * value ) {
 	return gameImports->AAS_FloatForBSPEpairKey( ent, key, value );
 }
 DOOM_SAVE_CALLBACK("trap_AAS_FloatForBSPEpairKey", trap_AAS_FloatForBSPEpairKey);
 
-int trap_AAS_IntForBSPEpairKey( int ent, char * key, int * value ) {
+bool trap_AAS_IntForBSPEpairKey( int ent, char * key, int * value ) {
 	return gameImports->AAS_IntForBSPEpairKey( ent, key, value );
 }
 DOOM_SAVE_CALLBACK("trap_AAS_IntForBSPEpairKey", trap_AAS_IntForBSPEpairKey);

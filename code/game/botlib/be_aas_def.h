@@ -173,9 +173,9 @@ typedef struct aas_reversedreachability_s
 
 typedef struct aas_s
 {
-	int loaded;                                 //true when an AAS file is loaded
-	int initialized;                            //true when AAS has been initialized
-	int savefile;                               //set true when file should be saved
+	bool loaded;                                 //true when an AAS file is loaded
+	bool initialized;                            //true when AAS has been initialized
+	bool savefile;                               //set true when file should be saved
 	int bspchecksum;
 	//current time
 	float time;
@@ -239,7 +239,7 @@ typedef struct aas_s
 	aas_entity_t *entities;
 	//string indexes
 	char *configstrings[MAX_CONFIGSTRINGS];
-	int indexessetup;
+	bool indexessetup;
 	//index to retrieve travel flag for a travel type
 	int travelflagfortype[MAX_TRAVELTYPES];
 	//routing update

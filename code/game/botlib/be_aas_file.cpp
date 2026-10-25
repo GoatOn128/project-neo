@@ -550,7 +550,7 @@ int AAS_LoadAASFile( char *filename ) {
 //===========================================================================
 static int AAS_WriteAASLump_offset;
 
-int AAS_WriteAASLump( fileHandle_t fp, aas_header_t *h, int lumpnum, void *data, int length ) {
+bool AAS_WriteAASLump( fileHandle_t fp, aas_header_t *h, int lumpnum, void *data, int length ) {
 	aas_lump_t *lump;
 
 	lump = &h->lumps[lumpnum];

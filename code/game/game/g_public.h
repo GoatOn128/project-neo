@@ -190,10 +190,10 @@ typedef struct {
 	int (*AAS_TraceAreas)( vec3_t start, vec3_t end, int * areas, vec3_t * points, int maxareas );
 	int (*AAS_PointContents)( vec3_t point );
 	int (*AAS_NextBSPEntity)( int ent );
-	int (*AAS_ValueForBSPEpairKey)( int ent, char * key, char * value, int size );
-	int (*AAS_VectorForBSPEpairKey)( int ent, char * key, vec3_t v );
-	int (*AAS_FloatForBSPEpairKey)( int ent, char * key, float * value );
-	int (*AAS_IntForBSPEpairKey)( int ent, char * key, int * value );
+	bool (*AAS_ValueForBSPEpairKey)( int ent, char * key, char * value, int size );
+	bool (*AAS_VectorForBSPEpairKey)( int ent, char * key, vec3_t v );
+	bool (*AAS_FloatForBSPEpairKey)( int ent, char * key, float * value );
+	bool (*AAS_IntForBSPEpairKey)( int ent, char * key, int * value );
 	int (*AAS_AreaReachability)( int areanum );
 	int (*AAS_AreaTravelTimeToGoalArea)( int areanum, vec3_t origin, int goalareanum, int travelflags );
 	int (*AAS_Swimming)( vec3_t origin );
