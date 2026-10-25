@@ -94,8 +94,8 @@ g++ -o build/release/tests/doom_audio_tests/code/sound/snd_wave.o -c -std=c++17 
 g++ -o test/sound/music_stream_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/sound/music_stream_tests.cpp
 g++ -o build/release/tests/doom_music_stream_tests/code/sound/snd_music.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/sound/snd_music.cpp
 g++ -o bin/tests/doom_audio_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/sound/audio_tests.o build/release/tests/doom_audio_tests/code/sound/snd_fluidsynth.o build/release/tests/doom_audio_tests/code/sound/snd_wave.o -lopenal -lSDL3
-g++ -o bin/tests/doom_screen_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/cgame/doom_screen_tests.o build/release/tests/doom_screen_tests/code/game/cgame/cg_doomscreens.o build/release/tests/doom_screen_tests/code/game/game/q_shared.o build/release/tests/doom_screen_tests/code/game/game/q_math.o
 g++ -o build/release/tests/doom_music_stream_tests/code/sound/snd_fluidsynth.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/sound/snd_fluidsynth.cpp
+g++ -o bin/tests/doom_screen_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/cgame/doom_screen_tests.o build/release/tests/doom_screen_tests/code/game/cgame/cg_doomscreens.o build/release/tests/doom_screen_tests/code/game/game/q_shared.o build/release/tests/doom_screen_tests/code/game/game/q_math.o
 g++ -o build/release/tests/doom_music_stream_tests/code/sound/snd_musicmix.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/sound/snd_musicmix.cpp
 g++ -o build/release/tests/doom_music_stream_tests/code/sound/snd_stream.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/sound/snd_stream.cpp
 g++ -o build/release/tests/doom_music_stream_tests/code/sound/snd_wave.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/sound/snd_wave.cpp
@@ -105,8 +105,8 @@ g++ -o test/sound/opl_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wa
 g++ -o build/release/tests/doom_opl_tests/code/sound/snd_musicmix.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/sound/snd_musicmix.cpp
 g++ -o test/cgame/doom_fx_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/cgame/doom_fx_tests.cpp
 g++ -o build/release/tests/doom_fx_tests/code/game/cgame/cg_marks.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/game/cgame/cg_marks.cpp
-g++ -o bin/tests/doom_music_stream_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/sound/music_stream_tests.o build/release/tests/doom_music_stream_tests/code/sound/snd_music.o build/release/tests/doom_music_stream_tests/code/sound/snd_fluidsynth.o build/release/tests/doom_music_stream_tests/code/sound/snd_musicmix.o build/release/tests/doom_music_stream_tests/code/sound/snd_stream.o build/release/tests/doom_music_stream_tests/code/sound/snd_wave.o build/release/tests/doom_music_stream_tests/code/game/game/q_shared.o build/release/tests/doom_music_stream_tests/code/game/game/q_math.o -lopenal -lSDL3 build/release/libdoom_opl.a
 g++ -o bin/tests/doom_opl_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/sound/opl_tests.o build/release/tests/doom_opl_tests/code/sound/snd_musicmix.o build/release/libdoom_opl.a
+g++ -o bin/tests/doom_music_stream_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/sound/music_stream_tests.o build/release/tests/doom_music_stream_tests/code/sound/snd_music.o build/release/tests/doom_music_stream_tests/code/sound/snd_fluidsynth.o build/release/tests/doom_music_stream_tests/code/sound/snd_musicmix.o build/release/tests/doom_music_stream_tests/code/sound/snd_stream.o build/release/tests/doom_music_stream_tests/code/sound/snd_wave.o build/release/tests/doom_music_stream_tests/code/game/game/q_shared.o build/release/tests/doom_music_stream_tests/code/game/game/q_math.o -lopenal -lSDL3 build/release/libdoom_opl.a
 g++ -o build/release/tests/doom_fx_tests/code/game/cgame/fx/genericparser2.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/game/cgame/fx/genericparser2.cpp
 g++ -o build/release/tests/doom_fx_tests/code/game/cgame/fx/FxTemplate.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/game/cgame/fx/FxTemplate.cpp
 g++ -o build/release/tests/doom_fx_tests/code/game/cgame/fx/FxFlame.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/game/cgame/fx/FxFlame.cpp
@@ -152,7 +152,7 @@ run_tests(["build/release/tests-run.stamp"], ["bin/tests/doommap_format_tests", 
 Running doommap_format_tests
 PASS: valid BSP plus 14 malformed-format cases
 Running doom_menu_tests
-FAIL: Widescreen must retain Doom's 4:3 pixel aspect: ox=240 oy=-9.53674316e-06 sx=4.5 sy=5.4000001
+Doom menu integration checks passed (title, aspect, episodes/skills, pause/resume, options, sound, save/load, prompts, shortcuts, errors).
 Running doom_content_tests
 Doom filesystem detection, handle lifetime and episode access checks passed.
 Running doom_damage_view_tests
@@ -192,15 +192,15 @@ Doom loading and intermission screen rendering passed using the real cgame imple
 Running doom_audio_tests
 fluidsynth: warning: SDL3 not initialized, SDL3 audio driver won't be usable. Have you called SDL_Init(SDL_INIT_AUDIO) ?
 
-(process:16629): GLib-GObject-CRITICAL **: 21:22:48.177: g_param_spec_enum: assertion 'g_enum_get_value (enum_class, default_value) != NULL' failed
+(process:16976): GLib-GObject-CRITICAL **: 21:39:43.232: g_param_spec_enum: assertion 'g_enum_get_value (enum_class, default_value) != NULL' failed
 
-(process:16629): GLib-GObject-CRITICAL **: 21:22:48.177: validate_pspec_to_install: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:16976): GLib-GObject-CRITICAL **: 21:39:43.232: validate_pspec_to_install: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 
-(process:16629): GLib-GObject-CRITICAL **: 21:22:48.177: g_param_spec_ref_sink: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:16976): GLib-GObject-CRITICAL **: 21:39:43.232: g_param_spec_ref_sink: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 
-(process:16629): GLib-GObject-CRITICAL **: 21:22:48.177: g_param_spec_unref: assertion 'G_IS_PARAM_SPEC (pspec)' failed
-[W][21:23:06.387823] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
-[E][21:23:06.387897] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+(process:16976): GLib-GObject-CRITICAL **: 21:39:43.232: g_param_spec_unref: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+[W][21:40:02.517386] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][21:40:02.517468] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
 score 1: d_e3m7.mid
 score 2: d_e2m3.mid
 score 3: d_e2m2.mid
@@ -236,18 +236,18 @@ score 32: d_e3m3.mid
 [ALSOFT] (EE) Failed to create PipeWire event context (errno: 2)
 Audio passed: WAV bounds/PCM decoding, 32 FluidSynth scores and static OpenAL spatial output.
 Running doom_music_stream_tests
-[W][21:23:06.402081] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
-[E][21:23:06.402139] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+[W][21:40:02.537540] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][21:40:02.537662] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
 [ALSOFT] (EE) Failed to create PipeWire event context (errno: 2)
 fluidsynth: warning: SDL3 not initialized, SDL3 audio driver won't be usable. Have you called SDL_Init(SDL_INIT_AUDIO) ?
 
-(process:16641): GLib-GObject-CRITICAL **: 21:23:06.408: g_param_spec_enum: assertion 'g_enum_get_value (enum_class, default_value) != NULL' failed
+(process:16986): GLib-GObject-CRITICAL **: 21:40:02.545: g_param_spec_enum: assertion 'g_enum_get_value (enum_class, default_value) != NULL' failed
 
-(process:16641): GLib-GObject-CRITICAL **: 21:23:06.408: validate_pspec_to_install: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:16986): GLib-GObject-CRITICAL **: 21:40:02.545: validate_pspec_to_install: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 
-(process:16641): GLib-GObject-CRITICAL **: 21:23:06.408: g_param_spec_ref_sink: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:16986): GLib-GObject-CRITICAL **: 21:40:02.545: g_param_spec_ref_sink: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 
-(process:16641): GLib-GObject-CRITICAL **: 21:23:06.408: g_param_spec_unref: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:16986): GLib-GObject-CRITICAL **: 21:40:02.545: g_param_spec_unref: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 Real music backend passed: sustained playback, repeated requests, complete loops, starvation recovery, stop and level-track replacement.
 Running doom_opl_tests
 OPL tone 33: 55.140 Hz, crossings=218, max=2428
@@ -278,5 +278,4 @@ Running doom_save_clients_tests
 Saved actor roster: exact sparse slots, orphan cleanup, species publication and malformed identities passed.
 Running doom_bot_tests
 Doom bot teams, visibility, ammo, weapon ranges and friendly splash passed.
-scons: *** [build/release/tests-run.stamp] Failed tests: doom_menu_tests
-scons: building terminated because of errors.
+scons: done building targets.
