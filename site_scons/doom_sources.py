@@ -633,6 +633,7 @@ TESTS = [
             'sound/snd_fluidsynth.cpp',
             'sound/snd_cache.cpp',
             'sound/snd_hardware.cpp',
+            'sound/snd_voice.cpp',
             'game/q_shared.cpp',
             'game/q_math.cpp',
         ],
