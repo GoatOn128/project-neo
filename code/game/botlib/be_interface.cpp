@@ -358,7 +358,7 @@ bool AAS_Route(vec3_t origin, vec3_t goal, int flags, vec3_t point);
 bool AAS_DoomPlayerRoute(vec3_t origin, vec3_t goal, int flags, doomAasRoute_t *route);
 bool AAS_GetRouteFirstVisPos( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos );
 
-void AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, bool blocking );
+void AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, int blocking );
 
 int BotExportTest( int parm0, char *parm1, vec3_t parm2, vec3_t parm3 ) {
 
