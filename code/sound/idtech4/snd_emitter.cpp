@@ -234,6 +234,10 @@ void idSoundEmitterLocal::MarkChannel( s_channelType channelNum ) {
 	}
 }
 
+idSoundChannel::idSoundChannel() {
+	Reset();
+}
+
 void idSoundChannel::Reset() {
 	shader = nullptr;
 	parms = soundShaderParms_t();
