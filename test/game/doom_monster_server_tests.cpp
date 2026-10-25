@@ -117,8 +117,8 @@ int trap_BotLibLoadMap(const char *) {
 }
 void trap_AAS_SetCurrentWorld(int) {
 }
-int trap_AAS_Initialized() {
-    return 0;
+bool trap_AAS_Initialized() {
+    return false;
 }
 int trap_AAS_PointAreaNum(vec3_t) {
     return 0;

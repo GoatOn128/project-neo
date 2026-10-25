@@ -797,7 +797,7 @@ int BotGetLevelItemGoal( int index, char *name, bot_goal_t *goal ) {
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotGetMapLocationGoal( char *name, bot_goal_t *goal ) {
+bool BotGetMapLocationGoal( char *name, bot_goal_t *goal ) {
 	maplocation_t *ml;
 	vec3_t mins = {-8, -8, -8}, maxs = {8, 8, 8};
 
@@ -1061,7 +1061,7 @@ void BotEmptyGoalStack( int goalstate ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotGetTopGoal( int goalstate, bot_goal_t *goal ) {
+bool BotGetTopGoal( int goalstate, bot_goal_t *goal ) {
 	bot_goalstate_t *gs;
 
 	gs = BotGoalStateFromHandle( goalstate );
@@ -1080,7 +1080,7 @@ int BotGetTopGoal( int goalstate, bot_goal_t *goal ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotGetSecondGoal( int goalstate, bot_goal_t *goal ) {
+bool BotGetSecondGoal( int goalstate, bot_goal_t *goal ) {
 	bot_goalstate_t *gs;
 
 	gs = BotGoalStateFromHandle( goalstate );
@@ -1100,7 +1100,7 @@ int BotGetSecondGoal( int goalstate, bot_goal_t *goal ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotChooseLTGItem( int goalstate, vec3_t origin, int *inventory, int travelflags ) {
+bool BotChooseLTGItem( int goalstate, vec3_t origin, int *inventory, int travelflags ) {
 	int areanum, t, weightnum;
 	float weight, bestweight, avoidtime;
 	iteminfo_t *iteminfo;
@@ -1258,7 +1258,7 @@ int BotChooseLTGItem( int goalstate, vec3_t origin, int *inventory, int travelfl
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotChooseNBGItem( int goalstate, vec3_t origin, int *inventory, int travelflags,
+bool BotChooseNBGItem( int goalstate, vec3_t origin, int *inventory, int travelflags,
 					  bot_goal_t *ltg, float maxtime ) {
 	int areanum, t, weightnum, ltg_time;
 	float weight, bestweight, avoidtime;
@@ -1407,7 +1407,7 @@ int BotChooseNBGItem( int goalstate, vec3_t origin, int *inventory, int travelfl
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotTouchingGoal( vec3_t origin, bot_goal_t *goal ) {
+bool BotTouchingGoal( vec3_t origin, bot_goal_t *goal ) {
 	int i;
 	vec3_t boxmins, boxmaxs;
 	vec3_t absmins, absmaxs;
@@ -1437,7 +1437,7 @@ int BotTouchingGoal( vec3_t origin, bot_goal_t *goal ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotItemGoalInVisButNotVisible( int viewer, vec3_t eye, vec3_t viewangles, bot_goal_t *goal ) {
+bool BotItemGoalInVisButNotVisible( int viewer, vec3_t eye, vec3_t viewangles, bot_goal_t *goal ) {
 	aas_entityinfo_t entinfo;
 	bsp_trace_t trace;
 	vec3_t middle;

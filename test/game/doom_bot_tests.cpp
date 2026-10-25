@@ -15,8 +15,8 @@ void QDECL Com_Printf(const char *, ...) {
 void QDECL Com_Error(int, const char *why, ...) {
     throw std::runtime_error(why);
 }
-int trap_AAS_Initialized() {
-    return 1;
+bool trap_AAS_Initialized() {
+    return true;
 }
 bool DoomBotRoute(gentity_t *, const vec3_t goal, doomAasRoute_t &route) {
     route = {};

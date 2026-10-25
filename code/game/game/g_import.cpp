@@ -766,32 +766,32 @@ void trap_BotGoalName( int number, char * name, int size ) {
 }
 DOOM_SAVE_CALLBACK("trap_BotGoalName", trap_BotGoalName);
 
-int trap_BotGetTopGoal( int goalstate, void * goal ) {
+bool trap_BotGetTopGoal( int goalstate, void * goal ) {
 	return gameImports->BotGetTopGoal( goalstate, goal );
 }
 DOOM_SAVE_CALLBACK("trap_BotGetTopGoal", trap_BotGetTopGoal);
 
-int trap_BotGetSecondGoal( int goalstate, void * goal ) {
+bool trap_BotGetSecondGoal( int goalstate, void * goal ) {
 	return gameImports->BotGetSecondGoal( goalstate, goal );
 }
 DOOM_SAVE_CALLBACK("trap_BotGetSecondGoal", trap_BotGetSecondGoal);
 
-int trap_BotChooseLTGItem( int goalstate, vec3_t origin, int * inventory, int travelflags ) {
+bool trap_BotChooseLTGItem( int goalstate, vec3_t origin, int * inventory, int travelflags ) {
 	return gameImports->BotChooseLTGItem( goalstate, origin, inventory, travelflags );
 }
 DOOM_SAVE_CALLBACK("trap_BotChooseLTGItem", trap_BotChooseLTGItem);
 
-int trap_BotChooseNBGItem( int goalstate, vec3_t origin, int * inventory, int travelflags, void * ltg, float maxtime ) {
+bool trap_BotChooseNBGItem( int goalstate, vec3_t origin, int * inventory, int travelflags, void * ltg, float maxtime ) {
 	return gameImports->BotChooseNBGItem( goalstate, origin, inventory, travelflags, ltg, maxtime );
 }
 DOOM_SAVE_CALLBACK("trap_BotChooseNBGItem", trap_BotChooseNBGItem);
 
-int trap_BotTouchingGoal( vec3_t origin, void * goal ) {
+bool trap_BotTouchingGoal( vec3_t origin, void * goal ) {
 	return gameImports->BotTouchingGoal( origin, goal );
 }
 DOOM_SAVE_CALLBACK("trap_BotTouchingGoal", trap_BotTouchingGoal);
 
-int trap_BotItemGoalInVisButNotVisible( int viewer, vec3_t eye, vec3_t viewangles, void * goal ) {
+bool trap_BotItemGoalInVisButNotVisible( int viewer, vec3_t eye, vec3_t viewangles, void * goal ) {
 	return gameImports->BotItemGoalInVisButNotVisible( viewer, eye, viewangles, goal );
 }
 DOOM_SAVE_CALLBACK("trap_BotItemGoalInVisButNotVisible", trap_BotItemGoalInVisButNotVisible);
@@ -806,7 +806,7 @@ int trap_BotGetNextCampSpotGoal( int num, void * goal ) {
 }
 DOOM_SAVE_CALLBACK("trap_BotGetNextCampSpotGoal", trap_BotGetNextCampSpotGoal);
 
-int trap_BotGetMapLocationGoal( char * name, void * goal ) {
+bool trap_BotGetMapLocationGoal( char * name, void * goal ) {
 	return gameImports->BotGetMapLocationGoal( name, goal );
 }
 DOOM_SAVE_CALLBACK("trap_BotGetMapLocationGoal", trap_BotGetMapLocationGoal);

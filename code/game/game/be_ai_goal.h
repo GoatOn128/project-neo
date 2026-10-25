@@ -74,23 +74,23 @@ void BotDumpGoalStack( int goalstate );
 //name of the goal
 void BotGoalName( int number, char *name, int size );
 //get goal from top of stack
-int BotGetTopGoal( int goalstate, bot_goal_t *goal );
-int BotGetSecondGoal( int goalstate, bot_goal_t *goal );
+bool BotGetTopGoal( int goalstate, bot_goal_t *goal );
+bool BotGetSecondGoal( int goalstate, bot_goal_t *goal );
 //choose the best long term goal item for the bot
-int BotChooseLTGItem( int goalstate, vec3_t origin, int *inventory, int travelflags );
+bool BotChooseLTGItem( int goalstate, vec3_t origin, int *inventory, int travelflags );
 //choose the best nearby goal item for the bot
-int BotChooseNBGItem( int goalstate, vec3_t origin, int *inventory, int travelflags,
+bool BotChooseNBGItem( int goalstate, vec3_t origin, int *inventory, int travelflags,
 					  bot_goal_t *ltg, float maxtime );
 //returns true if the bot touches the goal
-int BotTouchingGoal( vec3_t origin, bot_goal_t *goal );
+bool BotTouchingGoal( vec3_t origin, bot_goal_t *goal );
 //returns true if the goal should be visible but isn't
-int BotItemGoalInVisButNotVisible( int viewer, vec3_t eye, vec3_t viewangles, bot_goal_t *goal );
+bool BotItemGoalInVisButNotVisible( int viewer, vec3_t eye, vec3_t viewangles, bot_goal_t *goal );
 //get some info about a level item
 int BotGetLevelItemGoal( int index, char *classname, bot_goal_t *goal );
 //get the next camp spot in the map
 int BotGetNextCampSpotGoal( int num, bot_goal_t *goal );
 //get the map location with the given name
-int BotGetMapLocationGoal( char *name, bot_goal_t *goal );
+bool BotGetMapLocationGoal( char *name, bot_goal_t *goal );
 //returns the avoid goal time
 float BotAvoidGoalTime( int goalstate, int number );
 //initializes the items in the level
