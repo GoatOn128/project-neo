@@ -1339,11 +1339,6 @@ void CG_RegisterItemVisuals( int itemNum ) {
 
 
 	itemInfo->icons[0] = trap_R_RegisterShader( item->icon );
-	if ( item->giType == IT_HOLDABLE ) {
-		// (SA) register alternate icons (since holdables can have multiple uses, they might have different icons to represent how many uses are left)
-		for ( i = 1; i < MAX_ITEM_ICONS; i++ )
-			itemInfo->icons[i] = trap_R_RegisterShader( va( "%s%i", item->icon, i + 1 ) );
-	}
 
 	if ( item->giType == IT_WEAPON ) {
 		CG_RegisterWeapon( item->giTag );

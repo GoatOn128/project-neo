@@ -3417,26 +3417,6 @@ gitem_t *BG_FindItemForPowerup( powerup_t pw ) {
 DOOM_SAVE_CALLBACK("BG_FindItemForPowerup", BG_FindItemForPowerup);
 
 /*
-==============
-BG_FindItemForHoldable
-==============
-*/
-gitem_t *BG_FindItemForHoldable( holdable_t pw ) {
-	int i;
-
-	for ( i = 0 ; i < bg_numItems ; i++ ) {
-		if ( bg_itemlist[i].giType == IT_HOLDABLE && bg_itemlist[i].giTag == pw ) {
-			return &bg_itemlist[i];
-		}
-	}
-
-//	Com_Error( ERR_DROP, "HoldableItem not found" );
-
-	return NULL;
-}
-DOOM_SAVE_CALLBACK("BG_FindItemForHoldable", BG_FindItemForHoldable);
-
-/*
 ===============
 BG_FindItemForWeapon
 
@@ -3911,8 +3891,6 @@ bool    BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *ps )
 		return false;
 
 
-	case IT_HOLDABLE:
-		return true;
 
 	case IT_TREASURE:       // treasure always picked up
 		return true;
@@ -4171,7 +4149,6 @@ char *eventnames[] = {
 	"EV_ITEM_PICKUP",            // normal item pickups are predictable
 	"EV_ITEM_PICKUP_QUIET",  // (SA) same, but don't play the default pickup sound as it was specified in the ent
 	"EV_GLOBAL_ITEM_PICKUP", // powerup / team sounds are broadcast to everyone
-	"EV_NOITEM",
 	"EV_NOAMMO",
 	"EV_EMPTYCLIP",
 	"EV_FILL_CLIP",
@@ -4183,22 +4160,6 @@ char *eventnames[] = {
 	"EV_FIRE_WEAPON_MG42",
 	"EV_SUGGESTWEAP",        //----(SA)	added
 	"EV_GRENADE_SUICIDE",    //----(SA)	added
-	"EV_USE_ITEM0",
-	"EV_USE_ITEM1",
-	"EV_USE_ITEM2",
-	"EV_USE_ITEM3",
-	"EV_USE_ITEM4",
-	"EV_USE_ITEM5",
-	"EV_USE_ITEM6",
-	"EV_USE_ITEM7",
-	"EV_USE_ITEM8",
-	"EV_USE_ITEM9",
-	"EV_USE_ITEM10",
-	"EV_USE_ITEM11",
-	"EV_USE_ITEM12",
-	"EV_USE_ITEM13",
-	"EV_USE_ITEM14",
-	"EV_USE_ITEM15",
 	"EV_ITEM_RESPAWN",
 	"EV_ITEM_POP",
 	"EV_PLAYER_TELEPORT_IN",

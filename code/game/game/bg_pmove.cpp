@@ -2786,32 +2786,6 @@ static void PM_Weapon( void ) {
 		}
 	}
 
-	if ( pm->cmd.buttons & BUTTON_USE_HOLDABLE ) {
-		if ( !( pm->ps->pm_flags & PMF_USE_ITEM_HELD ) ) {
-			gitem_t *item;
-
-			pm->ps->pm_flags |= PMF_USE_ITEM_HELD;
-
-			if ( pm->cmd.holdable ) {
-				item = BG_FindItemForHoldable((holdable_t)( pm->cmd.holdable ));
-
-				if ( item && ( pm->ps->holdable[pm->cmd.holdable] >= item->quantity ) ) { // ->quantity being how much 'ammo' is taken per use
-					PM_AddEvent( EV_USE_ITEM0 + pm->cmd.holdable );
-					pm->ps->holdable[ pm->cmd.holdable ] -= item->quantity;
-
-					if ( pm->ps->holdable[pm->cmd.holdable] <= 0 ) {   // empty
-						PM_AddEvent( EV_NOITEM );
-					}
-				}
-			} else {
-				PM_AddEvent( EV_USE_ITEM0 );     // send "using nothing"
-			}
-			return;
-		}
-	} else
-	{
-		pm->ps->pm_flags &= ~PMF_USE_ITEM_HELD;
-	}
 
 
 	delayedFire = false;
@@ -3874,7 +3848,7 @@ void PmoveSingle( pmove_t *pmove ) {
 
 	// clear the respawned flag if attack and use are cleared
 	if ( pm->ps->stats[STAT_HEALTH] > 0 &&
-		 !( pm->cmd.buttons & ( BUTTON_ATTACK | BUTTON_USE_HOLDABLE ) ) ) {
+		 !( pm->cmd.buttons & BUTTON_ATTACK ) ) {
 		pm->ps->pm_flags &= ~PMF_RESPAWNED;
 	}
 

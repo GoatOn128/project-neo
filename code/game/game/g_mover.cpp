@@ -68,7 +68,6 @@ char *hintStrings[] = {
 	"HINT_AMMO",
 	"HINT_ARMOR",
 	"HINT_POWERUP",
-	"HINT_HOLDABLE",
 	"HINT_INVENTORY",
 	"HINT_SCENARIC",
 	"HINT_EXIT",

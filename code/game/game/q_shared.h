@@ -1072,7 +1072,6 @@ typedef enum
 #define MAX_PERSISTANT          16
 #define MAX_POWERUPS            16
 #define MAX_WEAPONS             64  // (SA) and yet more!
-#define MAX_HOLDABLE            16
 
 // Ridah, increased this
 //#define	MAX_PS_EVENTS			2
@@ -1163,8 +1162,6 @@ typedef struct playerState_s {
 	int powerups[MAX_POWERUPS];         // level.time that the powerup runs out
 	int ammo[MAX_WEAPONS];              // total amount of ammo
 	int ammoclip[MAX_WEAPONS];          // ammo in clip
-	int holdable[MAX_HOLDABLE];
-	int holding;                        // the current item in holdable[] that is selected (held)
 	int weapons[MAX_WEAPONS / ( sizeof( int ) * 8 )];   // 64 bits for weapons held
 
 	// Ridah, allow for individual bounding boxes
@@ -1251,7 +1248,6 @@ typedef struct playerState_s {
 //
 #define BUTTON_ATTACK       1
 #define BUTTON_TALK         2           // displays talk balloon and disables actions
-#define BUTTON_USE_HOLDABLE 4
 #define BUTTON_GESTURE      8
 #define BUTTON_WALKING      16          // walking can't just be infered from MOVE_RUN
 										// because a key pressed late in the frame will
@@ -1284,7 +1280,6 @@ typedef struct usercmd_s {
 	byte buttons;
 	byte wbuttons;
 	byte weapon;
-	byte holdable;          //----(SA)	added
 	int angles[3];
 
 
