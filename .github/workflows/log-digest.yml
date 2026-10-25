@@ -91,11 +91,11 @@ jobs:
                   warnings.append(annotate(line.strip()))
 
           def group(messages):
-          # The same message with the numbers swapped out counts as one. Quoted
-                        # tokens are kept so different identifiers stay different errors.
+              # The same message with the numbers swapped out counts as one. Quoted
+              # tokens are kept so different identifiers stay different errors.
               grouped = Counter()
               for message in messages:
-                        grouped[re.sub(r'\d+', 'N', message)] += 1
+                  grouped[re.sub(r'\d+', 'N', message)] += 1
                   grouped[key] += 1
               return grouped
 
