@@ -75,10 +75,10 @@ and from mod folders set with fs_game.
   pkgconfig files and the prebuilt Win32 DLLs (libfluidsynth-3.dll with its
   sndfile.dll and SDL3.dll dependencies). The engine links no import
   library; snd_fluidsynth.cpp loads libfluidsynth-3.dll at runtime with
-  LoadLibrary and resolves the entry points with GetProcAddress, the same
+  SDL_LoadObject and resolves the entry points with SDL_LoadFunction, the same
   pattern as the optional OpenAL extension entry points. scons copies the
-  three DLLs next to the engine and the tests. Missing DLLs mean no synth:
-  the engine still boots and plays OPL2 and PCM music. Non-Windows systems
+  three DLLs next to the engine and the tests. Missing DLLs mean no MIDI
+  playback: the engine still boots and plays PCM music. Non-Windows systems
   fetch the 2.6.1 sources into build/downloads/ like OpenAL Soft.
 - Useful commands: scons, scons config=debug, scons editor=no, scons tests,
   scons test, scons -c.
@@ -111,17 +111,20 @@ and from mod folders set with fs_game.
   fs_basepath and fs_cdpath with the game dir, so mod folders set with
   fs_game work too. The build puts the modules into base/.
 
-## How the music playback works (after the FluidSynth swap)
+## How the music playback works (after the id Tech 4 audio port)
 
-- TiMidity is gone. snd_music.cpp drives FluidSynth through the runtime
-  loader in snd_fluidsynth.cpp.
-- The SoundFont is base/sound/timidity/TimGM6mb.sf2, read from fs_basepath.
-- The player timing source is "sample", so rendering audio pulls the MIDI
-  timeline along; the streaming logic keeps working the way it did with
-  TiMidity's offline rendering.
-- s_musicBackend picks the backend: "opl" (default) plays the original OPL2
-  GENMIDI tunes, "fluidsynth" plays the MIDI files through FluidSynth.
-  WAV-like PCM tracks decode the same way on both backends.
+- The id Tech 4 port is the only sound system now: the old OPL2 emulator,
+  the music mixer and the wav/stream helpers are gone, and only the
+  temporary C shim (snd_cshim.cpp) remains until the idLib merge.
+- The wav decoder lives in snd_cache.cpp and the OpenAL PCM queue helpers
+  (NewStreamSource, ClearStream, QueuePCM) in snd_hardware.cpp.
+- snd_music.cpp is the port's music module: FluidSynth MIDI scores and WAV
+  PCM tracks play on one OpenAL source.
+- The sound pump thread renders the music (MusicUpdatePump); the loop file
+  reads it cannot do are posted to the main thread (MusicLoadPending /
+  MusicLoadQueued), the same split the wav file streams use.
+- s_musicBackend, s_musicGain and s_musicBass are gone with the old
+  backends; s_musicvolume stays.
 
 ## How the Doom automap and the weapon sprite work
 
@@ -170,9 +173,10 @@ and from mod folders set with fs_game.
 6. extractfuncs: nothing in the repository yet. In the old id / Raven tools it
    scans the game source and generates a source file the game DLL needs for save
    games. It has to be brought in and run as a build step before the game DLL.
-7. Audio: the Doom 3 sound system from references/doom3.gpl (its OpenAL support is
-   better than the BFG version). It lands in code/sound and replaces snd_openal,
-   snd_wave, snd_stream, snd_music, snd_musicmix and the opl code over time.
+7. Audio: done on the engine side. The Doom 3 sound system from
+   references/doom3.gpl, mixed with the BFG voice pump, is the only sound system in
+   code/sound; the temporary C shim stays until task 5 merges idLib and the game
+   code talks to the idSoundSystem interface directly.
 8. C++: flat C functions and structs become classes that own their data, with
    inheritance where it actually fits. Step by step, not one big rewrite.
 9. Dependencies: stop bundling. The build downloads pinned versions and compiles

@@ -10,8 +10,6 @@ static const char FLUIDSYNTH_MODULE[] = "libfluidsynth-3.dll";
 static const char FLUIDSYNTH_MODULE[] = "libfluidsynth.so.3";
 #endif
 
-namespace doomaudio {
-
 bool FluidSynth::Load() {
     if (module) {
         return true;
@@ -77,5 +75,3 @@ void FluidSynth::Unload() {
 }
 
 FluidSynth fluidsynth;
-
-} // namespace doomaudio

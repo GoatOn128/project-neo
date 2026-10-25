@@ -4,12 +4,10 @@
 
 #include "fluidsynth.h"
 
-namespace doomaudio {
-
 // FluidSynth entry points resolved at runtime from libfluidsynth-3.dll, the
 // same idea as the optional OpenAL extension entry points. The build links
 // no import library, so the DLL stays optional and the engine still boots
-// (and plays OPL2 and PCM music) when it is missing.
+// (and plays WAV music) when it is missing.
 struct FluidSynth {
     void *module = nullptr;
 
@@ -37,7 +35,5 @@ struct FluidSynth {
 
 // The one shared loader instance, used by the engine and the audio tests.
 extern FluidSynth fluidsynth;
-
-} // namespace doomaudio
 
 #endif

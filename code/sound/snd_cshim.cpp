@@ -5,7 +5,8 @@
 //
 // The engine and the game modules still speak the id Tech 3 C API (the S_*
 // functions of snd_public.h), but the sound system underneath is the id
-// Tech 4 port in idtech4/ (Doom 3 2004 system with the BFG voice pump).
+// Tech 4 port that lives in this folder next to the shim (the Doom 3
+// 2004 system with the BFG voice pump).
 // Every function below is a thin translation between the two.
 //
 // Once idLib is truly merged into the entire engine (TODO task 5), the
@@ -14,9 +15,9 @@
 // deleted. Nothing else in the engine should call S_* from here on.
 // ---------------------------------------------------------------------------
 
-// client.h comes through idtech4/snd_local.h; it has no include guard
+// client.h comes through snd_local.h; it has no include guard
 // (the engine includes it once per file), so it must not be included twice
-#include "idtech4/snd_local.h"
+#include "snd_local.h"
 
 // the old engine's cinematic timing globals, kept in the 22050Hz sample
 // units the client code expects (cl_cin.cpp reads them)
@@ -120,14 +121,14 @@ void S_StartLocalSound( sfxHandle_t sfx, int channelNum ) {
 void S_StartBackgroundTrack( const char *intro, const char *loop, int fadeupTime ) {
 	( void )fadeupTime;
 	if ( Ready() ) {
-		doomaudio::MusicStart( intro, loop );
+		MusicStart( intro, loop );
 	}
 }
 
 // TEMPORARY C SHIM
 void S_StopBackgroundTrack() {
 	if ( Ready() ) {
-		doomaudio::MusicStop();
+		MusicStop();
 	}
 }
 

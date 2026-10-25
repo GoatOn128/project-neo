@@ -80,19 +80,16 @@ WOLF_EXTRA_SOURCES = fix_paths([
     'client/cl_console_font.cpp',
     'qcommon/doom_content.cpp',
     'sys/sys_editor.cpp',
-    'sound/idtech4/snd_system.cpp',
-    'sound/idtech4/snd_world.cpp',
-    'sound/idtech4/snd_emitter.cpp',
-    'sound/idtech4/snd_shader.cpp',
-    'sound/idtech4/snd_cache.cpp',
-    'sound/idtech4/snd_voice.cpp',
-    'sound/idtech4/snd_hardware.cpp',
-    'sound/snd_cshim.cpp',
+    'sound/snd_system.cpp',
+    'sound/snd_world.cpp',
+    'sound/snd_emitter.cpp',
+    'sound/snd_shader.cpp',
+    'sound/snd_cache.cpp',
+    'sound/snd_voice.cpp',
+    'sound/snd_hardware.cpp',
     'sound/snd_music.cpp',
     'sound/snd_fluidsynth.cpp',
-    'sound/snd_musicmix.cpp',
-    'sound/snd_wave.cpp',
-    'sound/snd_stream.cpp',
+    'sound/snd_cshim.cpp',
 ])
 
 BOTLIB_SOURCES = fix_paths([
@@ -313,12 +310,6 @@ SPLINES_SOURCES = fix_paths([
     'splines/q_shared.cpp',
     'splines/splines.cpp',
     'splines/util_str.cpp',
-])
-
-OPL_SOURCES = fix_paths([
-    'sound/snd_opl.cpp',
-    'sound/opl/doom_opl.cpp',
-    'sound/opl/opl3.c',
 ])
 
 # miniz replaces the old zlib: one C file, built as a small static library.
@@ -628,7 +619,8 @@ TESTS = [
         'sources': [
             'test/sound/audio_tests.cpp',
             'sound/snd_fluidsynth.cpp',
-            'sound/snd_wave.cpp',
+            'sound/snd_cache.cpp',
+            'game/q_shared.cpp',
         ],
         'libs': ['OpenAL', 'SDL3'],
         'syslibs': ['winmm', 'ole32', 'oleaut32'],
@@ -639,20 +631,14 @@ TESTS = [
             'test/sound/music_stream_tests.cpp',
             'sound/snd_music.cpp',
             'sound/snd_fluidsynth.cpp',
-            'sound/snd_musicmix.cpp',
-            'sound/snd_stream.cpp',
-            'sound/snd_wave.cpp',
+            'sound/snd_cache.cpp',
+            'sound/snd_hardware.cpp',
             'game/q_shared.cpp',
             'game/q_math.cpp',
         ],
-        'libs': ['OpenAL', 'SDL3', 'doom_opl'],
+        'libs': ['OpenAL', 'SDL3'],
         'syslibs': ['winmm', 'ole32', 'oleaut32'],
         'sections': True,
-    },
-    {
-        'name': 'doom_opl_tests',
-        'sources': ['test/sound/opl_tests.cpp', 'sound/snd_musicmix.cpp'],
-        'libs': ['doom_opl'],
     },
     {
         'name': 'doom_fx_tests',

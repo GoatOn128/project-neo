@@ -124,11 +124,6 @@ doom_miniz = miniz_env.StaticLibrary(
     build_target + '/doom_miniz',
     [miniz_variant + '/' + p for p in doom_sources.MINIZ_SOURCES])
 
-opl_env, opl_variant = module_env('doom_opl')
-doom_opl = opl_env.StaticLibrary(
-    build_target + '/doom_opl',
-    [opl_variant + '/' + p for p in doom_sources.OPL_SOURCES])
-
 # OpenAL Soft: the bundled copy is the prebuilt Windows package, so the
 # engine links its import library and loads the matching DLL at runtime.
 # Linux links the system OpenAL instead.
@@ -314,7 +309,7 @@ wolf = wolf_env.Program(
      platform_sources(doom_sources.WOLF_SOURCES + doom_sources.WOLF_EXTRA_SOURCES)]
     + wolf_extra,
     LIBS=[botlib, splines] + OpenAL32 + SDL3
-         + [doom_opl, doom_miniz] + wolf_syslibs)
+         + [doom_miniz] + wolf_syslibs)
 
 # The engine links the SDL3 import library, so the DLL that matches it is
 # copied next to the engine and the tests. libfluidsynth-3.dll needs the
@@ -365,7 +360,6 @@ env.Depends(wolf, engine_extra)
 
 BUILT_LIBS = {
     'doom_miniz': doom_miniz,
-    'doom_opl': doom_opl,
     'OpenAL': OpenAL32,
     'SDL3': SDL3,
 }

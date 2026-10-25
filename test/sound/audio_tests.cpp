@@ -8,9 +8,11 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdio>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <stdexcept>
+#include <string>
 #include <thread>
 #include <vector>
 namespace {
@@ -25,11 +27,38 @@ std::vector<uint8_t> Read(const std::filesystem::path &path) {
     return std::vector<uint8_t>(std::istreambuf_iterator<char>(input), {});
 }
 } // namespace
+
+// The port's snd_cache.cpp goes through the engine C API for files and
+// printing; the test provides the three functions it references.
+int FS_ReadFile(const char *name, void **buffer) {
+    std::ifstream input(std::string("base/") + name, std::ios::binary | std::ios::ate);
+    if (!input.good()) {
+        *buffer = nullptr;
+        return -1;
+    }
+    const int length = static_cast<int>(input.tellg());
+    input.seekg(0);
+    *buffer = malloc(length);
+    input.read(static_cast<char *>(*buffer), length);
+    return length;
+}
+void FS_FreeFile(void *buffer) {
+    free(buffer);
+}
+void QDECL Com_Printf(const char *format, ...) {
+    char text[1024];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(text, sizeof(text), format, args);
+    va_end(args);
+    std::printf("%s", text);
+}
+
 int main() {
     try {
         auto bytes = Read("base/sound/doom/weapons/pistol.wav");
-        doomaudio::Wave wave;
-        Check(doomaudio::DecodeWave(bytes.data(), bytes.size(), wave),
+        sndWave_t wave;
+        Check(DecodeWave(bytes.data(), bytes.size(), wave),
               "Original odd-sized PCM8 WAV decodes");
         Check(wave.channels == 1 && wave.rate == 11025 && wave.samples.size() == 5661,
               "Original PCM metadata");
@@ -38,12 +67,12 @@ int main() {
         invalid[41] = 0xFF;
         invalid[42] = 0xFF;
         invalid[43] = 0x7F;
-        Check(!doomaudio::DecodeWave(invalid.data(), invalid.size(), wave),
+        Check(!DecodeWave(invalid.data(), invalid.size(), wave),
               "Oversized chunk rejects");
-        Check(!doomaudio::DecodeWave(bytes.data(), 20, wave) &&
-                  !doomaudio::DecodeWave(nullptr, 0, wave),
+        Check(!DecodeWave(bytes.data(), 20, wave) &&
+                  !DecodeWave(nullptr, 0, wave),
               "Truncated input rejects");
-        auto &fs = doomaudio::fluidsynth;
+        auto &fs = fluidsynth;
         Check(fs.Load(), "FluidSynth loads from libfluidsynth-3.dll");
         auto *settings = fs.new_settings();
         Check(settings && fs.settings_setnum(settings, "synth.sample-rate", 44100.0) == FLUID_OK &&
