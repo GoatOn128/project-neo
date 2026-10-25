@@ -627,8 +627,8 @@ Call Stack (most recent call first):
 -- were installed, then make sure you have set the
 -- CMAKE_C_FLAGS and CMAKE_PREFIX_PATH CMake variables correctly.
 -- 
--- Configuring done (16.7s)
--- Generating done (0.0s)
+-- Configuring done (19.0s)
+-- Generating done (0.1s)
 -- Build files have been written to: /home/runner/work/project-neo/project-neo/sdl3-build
 [  0%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_assert.c.o
 [  0%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_common.c.o
@@ -638,18 +638,18 @@ Call Stack (most recent call first):
 [  2%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_font.c.o
 [  2%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_exp.c.o
 [  2%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_fmod.c.o
-[  2%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_fuzzer.c.o
 [  3%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_log.c.o
+[  3%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_fuzzer.c.o
 [  3%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_harness.c.o
-[  3%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_log10.c.o
-[  3%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_pow.c.o
 [  4%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_log.c.o
+[  4%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_log10.c.o
+[  4%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_pow.c.o
 [  4%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_md5.c.o
 [  4%] Building C object CMakeFiles/SDL3_test.dir/src/test/SDL_test_memory.c.o
 [  4%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_rem_pio2.c.o
 [  4%] Linking C static library libSDL3_test.a
+[  4%] Built target SDL3_test
 [  5%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_sqrt.c.o
-[  5%] Built target SDL3_test
 [  5%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/k_cos.c.o
 [  5%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/k_rem_pio2.c.o
 [  5%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/k_sin.c.o
@@ -683,8 +683,8 @@ Call Stack (most recent call first):
 *                                                     *
 *******************************************************
 [ 11%] Generating wayland-generated-protocols/fractional-scale-v1-client-protocol.h
+[ 11%] Generating wayland-generated-protocols/frog-color-management-v1-client-protocol.h
 [ 12%] Generating wayland-generated-protocols/idle-inhibit-unstable-v1-client-protocol.h
-[ 12%] Generating wayland-generated-protocols/frog-color-management-v1-client-protocol.h
 [ 12%] Generating wayland-generated-protocols/input-timestamps-unstable-v1-client-protocol.h
 [ 12%] Generating wayland-generated-protocols/keyboard-shortcuts-inhibit-unstable-v1-client-protocol.h
 [ 12%] Generating wayland-generated-protocols/pointer-constraints-unstable-v1-client-protocol.h
@@ -698,11 +698,11 @@ Call Stack (most recent call first):
 [ 15%] Generating wayland-generated-protocols/wayland-client-protocol.h
 [ 15%] Generating wayland-generated-protocols/xdg-activation-v1-client-protocol.h
 [ 15%] Generating wayland-generated-protocols/xdg-decoration-unstable-v1-client-protocol.h
+[ 15%] Generating wayland-generated-protocols/xdg-dialog-v1-client-protocol.h
 /home/runner/work/project-neo/project-neo/SDL3-3.4.18/wayland-protocols/wayland.xml:180: element interface: validity error : No declaration for attribute frozen of element interface
 /home/runner/work/project-neo/project-neo/SDL3-3.4.18/wayland-protocols/wayland.xml:312: element entry: validity error : No declaration for attribute deprecated-since of element entry
 /home/runner/work/project-neo/project-neo/SDL3-3.4.18/wayland-protocols/wayland.xml:523: element interface: validity error : No declaration for attribute frozen of element interface
 /home/runner/work/project-neo/project-neo/SDL3-3.4.18/wayland-protocols/wayland.xml:2429: element event: validity error : No declaration for attribute deprecated-since of element event
-[ 15%] Generating wayland-generated-protocols/xdg-dialog-v1-client-protocol.h
 *******************************************************
 *                                                     *
 * WARNING: XML failed validation against built-in DTD *
@@ -710,8 +710,8 @@ Call Stack (most recent call first):
 *******************************************************
 [ 16%] Generating wayland-generated-protocols/xdg-foreign-unstable-v2-client-protocol.h
 [ 16%] Generating wayland-generated-protocols/xdg-output-unstable-v1-client-protocol.h
-[ 16%] Generating wayland-generated-protocols/xdg-toplevel-icon-v1-protocol.c
 [ 16%] Generating wayland-generated-protocols/xdg-shell-client-protocol.h
+[ 16%] Generating wayland-generated-protocols/xdg-toplevel-icon-v1-protocol.c
 [ 16%] Generating wayland-generated-protocols/alpha-modifier-v1-protocol.c
 [ 16%] Generating wayland-generated-protocols/color-management-v1-protocol.c
 [ 16%] Generating wayland-generated-protocols/cursor-shape-v1-protocol.c
@@ -726,20 +726,22 @@ Call Stack (most recent call first):
 *                                                     *
 *******************************************************
 [ 17%] Generating wayland-generated-protocols/frog-color-management-v1-protocol.c
-[ 17%] Generating wayland-generated-protocols/idle-inhibit-unstable-v1-protocol.c
 [ 17%] Generating wayland-generated-protocols/input-timestamps-unstable-v1-protocol.c
-[ 17%] Generating wayland-generated-protocols/pointer-constraints-unstable-v1-protocol.c
+[ 17%] Generating wayland-generated-protocols/idle-inhibit-unstable-v1-protocol.c
 [ 18%] Generating wayland-generated-protocols/keyboard-shortcuts-inhibit-unstable-v1-protocol.c
+[ 18%] Generating wayland-generated-protocols/pointer-constraints-unstable-v1-protocol.c
 [ 18%] Generating wayland-generated-protocols/pointer-gestures-unstable-v1-protocol.c
 [ 18%] Generating wayland-generated-protocols/pointer-warp-v1-protocol.c
-[ 19%] Generating wayland-generated-protocols/primary-selection-unstable-v1-protocol.c
 [ 19%] Generating wayland-generated-protocols/relative-pointer-unstable-v1-protocol.c
+[ 19%] Generating wayland-generated-protocols/primary-selection-unstable-v1-protocol.c
 [ 19%] Generating wayland-generated-protocols/tablet-v2-protocol.c
 [ 20%] Generating wayland-generated-protocols/text-input-unstable-v3-protocol.c
 [ 20%] Generating wayland-generated-protocols/viewporter-protocol.c
 [ 20%] Generating wayland-generated-protocols/wayland-protocol.c
 [ 20%] Generating wayland-generated-protocols/xdg-activation-v1-protocol.c
-/home/runner/work/project-neo/project-neo/SDL3-3.4.18/wayland-protocols/wayland.xml:180: element interface: validity error : No declaration for attribute frozen of element interface
+[ 21%] Generating wayland-generated-protocols/xdg-decoration-unstable-v1-protocol.c
+/home/runner/work/project-neo/project-neo/SDL3-3.4.18/wayland-protocols/wayland.xml:180: [ 21%] Generating wayland-generated-protocols/xdg-dialog-v1-protocol.c
+element interface: validity error : No declaration for attribute frozen of element interface
 /home/runner/work/project-neo/project-neo/SDL3-3.4.18/wayland-protocols/wayland.xml:312: element entry: validity error : No declaration for attribute deprecated-since of element entry
 /home/runner/work/project-neo/project-neo/SDL3-3.4.18/wayland-protocols/wayland.xml:523: element interface: validity error : No declaration for attribute frozen of element interface
 /home/runner/work/project-neo/project-neo/SDL3-3.4.18/wayland-protocols/wayland.xml:2429: element event: validity error : No declaration for attribute deprecated-since of element event
@@ -748,11 +750,9 @@ Call Stack (most recent call first):
 * WARNING: XML failed validation against built-in DTD *
 *                                                     *
 *******************************************************
-[ 21%] Generating wayland-generated-protocols/xdg-decoration-unstable-v1-protocol.c
-[ 21%] Generating wayland-generated-protocols/xdg-dialog-v1-protocol.c
-[ 21%] Generating wayland-generated-protocols/xdg-foreign-unstable-v2-protocol.c
 [ 21%] Generating wayland-generated-protocols/xdg-output-unstable-v1-protocol.c
 [ 22%] Generating wayland-generated-protocols/xdg-shell-protocol.c
+[ 22%] Generating wayland-generated-protocols/xdg-foreign-unstable-v2-protocol.c
 [ 23%] Building C object CMakeFiles/SDL3-shared.dir/cmake_pch.h.gch
 [ 23%] Building C object CMakeFiles/SDL3-shared.dir/src/dynapi/SDL_dynapi.c.o
 [ 23%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL.c.o
@@ -843,8 +843,8 @@ Call Stack (most recent call first):
 [ 46%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vitagxm/SDL_render_vita_gxm_tools.c.o
 [ 46%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vulkan/SDL_render_vulkan.c.o
 [ 47%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vulkan/SDL_shaders_vulkan.c.o
-[ 47%] Building C object CMakeFiles/SDL3-shared.dir/src/sensor/SDL_sensor.c.o
 [ 47%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_crc16.c.o
+[ 47%] Building C object CMakeFiles/SDL3-shared.dir/src/sensor/SDL_sensor.c.o
 [ 48%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_crc32.c.o
 [ 48%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_getenv.c.o
 [ 48%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_iconv.c.o
@@ -952,8 +952,8 @@ Call Stack (most recent call first):
 [ 76%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/wayland-protocol.c.o
 [ 76%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-activation-v1-protocol.c.o
 [ 76%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-decoration-unstable-v1-protocol.c.o
+[ 76%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-dialog-v1-protocol.c.o
 [ 77%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-foreign-unstable-v2-protocol.c.o
-[ 77%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-dialog-v1-protocol.c.o
 [ 77%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-output-unstable-v1-protocol.c.o
 [ 77%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-toplevel-icon-v1-protocol.c.o
 [ 77%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-shell-protocol.c.o
@@ -1034,8 +1034,8 @@ Call Stack (most recent call first):
 [ 98%] Building C object CMakeFiles/SDL3-shared.dir/src/video/offscreen/SDL_offscreenvideo.c.o
 [ 98%] Building C object CMakeFiles/SDL3-shared.dir/src/video/offscreen/SDL_offscreenvulkan.c.o
 [ 98%] Building C object CMakeFiles/SDL3-shared.dir/src/video/offscreen/SDL_offscreenwindow.c.o
+[ 98%] Building C object CMakeFiles/SDL3-shared.dir/src/tray/SDL_tray_utils.c.o
 [ 99%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/dummy/SDL_dummyaudio.c.o
-[ 99%] Building C object CMakeFiles/SDL3-shared.dir/src/tray/SDL_tray_utils.c.o
 [ 99%] Building C object CMakeFiles/SDL3-shared.dir/src/sensor/dummy/SDL_dummysensor.c.o
 [ 99%] Building C object CMakeFiles/SDL3-shared.dir/src/main/generic/SDL_sysmain_callbacks.c.o
 [100%] Linking C shared library libSDL3.so
