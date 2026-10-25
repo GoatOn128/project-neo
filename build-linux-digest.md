@@ -1,7 +1,7 @@
 # Build log digest
 
 - Log: `build-linux.log`
-- Lines: 253
+- Lines: 260
 - Errors: 0
 - Warnings: 0
 
