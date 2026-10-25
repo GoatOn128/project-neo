@@ -47,13 +47,13 @@ int AAS_PredictClientMovement( struct aas_clientmove_s *move,
 							   int maxframes, float frametime,
 							   int stopevent, int stopareanum, int visualize );
 //returns true if on the ground at the given origin
-int AAS_OnGround( vec3_t origin, int presencetype, int passent );
+bool AAS_OnGround( vec3_t origin, int presencetype, int passent );
 //returns true if swimming at the given origin
 int AAS_Swimming( vec3_t origin );
 //returns the jump reachability run start point
 void AAS_JumpReachRunStart( struct aas_reachability_s *reach, vec3_t runstart );
 //returns true if against a ladder at the given origin
-int AAS_AgainstLadder( vec3_t origin, int ms_areanum );
+bool AAS_AgainstLadder( vec3_t origin, int ms_areanum );
 //rocket jump Z velocity when rocket-jumping at origin
 float AAS_RocketJumpZVelocity( vec3_t origin );
 //bfg jump Z velocity when bfg-jumping at origin
@@ -63,6 +63,6 @@ int AAS_HorizontalVelocityForJump( float zvel, vec3_t start, vec3_t end, float *
 //
 void AAS_SetMovedir( vec3_t angles, vec3_t movedir );
 //
-int AAS_DropToFloor( vec3_t origin, vec3_t mins, vec3_t maxs );
+bool AAS_DropToFloor( vec3_t origin, vec3_t mins, vec3_t maxs );
 //
 void AAS_InitSettings( void );

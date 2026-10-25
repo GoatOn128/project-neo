@@ -59,7 +59,7 @@ aas_settings_t aassettings;
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_DropToFloor( vec3_t origin, vec3_t mins, vec3_t maxs ) {
+bool AAS_DropToFloor( vec3_t origin, vec3_t mins, vec3_t maxs ) {
 	vec3_t end;
 	bsp_trace_t trace;
 
@@ -107,7 +107,7 @@ void AAS_InitSettings( void ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_AgainstLadder( vec3_t origin, int ms_areanum ) {
+bool AAS_AgainstLadder( vec3_t origin, int ms_areanum ) {
 	int areanum, i, facenum, side;
 	vec3_t org;
 	aas_plane_t *plane;
@@ -175,7 +175,7 @@ int AAS_AgainstLadder( vec3_t origin, int ms_areanum ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_OnGround( vec3_t origin, int presencetype, int passent ) {
+bool AAS_OnGround( vec3_t origin, int presencetype, int passent ) {
 	aas_trace_t trace;
 	vec3_t end, up = {0, 0, 1};
 	aas_plane_t *plane;
