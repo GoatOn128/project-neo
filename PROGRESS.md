@@ -9,7 +9,7 @@ Plain English only. Update this file as work moves forward.
   qtrue } typedef int) is gone from every module. All 265 files that used
   qtrue/qfalse/qboolean (botlib, cgame, ui, aas compiler, tests, engine core,
   renderer, game) now use plain C++ bool, and the master declaration was
-  removed from q_shared.h last. Waiting on CI to confirm the build is green.
+  removed from q_shared.h last. CI is green with no warnings.
 - Task 2 (Q3VM removal): done. The engine and the game modules talk through
   plain C import and export tables (GetGameAPI, GetCGameAPI, GetUIAPI) and
   CI compiles everything warning-free.
@@ -75,3 +75,12 @@ Plain English only. Update this file as work moves forward.
   trap_R_LightForPoint. The invisibility powerup keeps its 0.3 shadow
   tint on top. Monster and item sprites were already lit and did not
   change.
+
+- C++ bool conversion: qboolean, qtrue and qfalse removed from all 265
+  files. The botlib files truncated by the first conversion push
+  (be_aas_reach, be_aas_route, be_ai_chat and be_ai_move) were restored in
+  full from the pre-conversion commit. Real multi-state values
+  (gentity_t.active, UI_BuildServerDisplayList force, anykeydown and the
+  AAS_SetAASBlockingEntity blocking flag) were widened to int, and the
+  aasbuild VectorCompare went back to int so the tool links with the game
+  version. CI is green with no warnings.
