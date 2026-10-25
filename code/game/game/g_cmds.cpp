@@ -1540,7 +1540,6 @@ void Cmd_Activate_f( gentity_t *ent ) {
 						break;
 					}
 
-					if ( !( cl->ps.grenadeTimeLeft ) ) { // make sure the client isn't holding a hot potato
 						traceEnt->active = true;
 						ent->active = true;
 						traceEnt->r.ownerNum = ent->s.number;
@@ -1552,20 +1551,15 @@ void Cmd_Activate_f( gentity_t *ent ) {
                                 ent); //----(SA)	added for Mike so mounting an MG42 can be a trigger event (let me know if there's any issues with this)
                         }
                         return; // avoid dropping down to below, where we get thrown straight off again (AI)
-                    }
 				}
 			}
 		} else if ( ( Q_stricmp( traceEnt->classname, "misc_flak" ) == 0 ) /*&& activatetime > oldactivatetime + 1000*/ && traceEnt->active == false )         {
 			if ( !infront( traceEnt, ent ) ) {     // make sure the client isn't holding a hot potato
-				gclient_t   *cl;
-				cl = &level.clients[ ent->s.clientNum ];
-				if ( !( cl->ps.grenadeTimeLeft ) ) {
 					traceEnt->active = true;
 					ent->active = true;
 					traceEnt->r.ownerNum = ent->s.number;
 					// Rafael fix for wierd mg42 movement
 					VectorCopy( traceEnt->s.angles, traceEnt->TargetAngles );
-				}
 			}
 		}
 		// chairs

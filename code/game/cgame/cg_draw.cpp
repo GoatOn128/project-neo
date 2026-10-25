@@ -735,36 +735,7 @@ static void CG_DrawStatusBar( void ) {
 			}
 			trap_R_SetColor( colors[color] );
 
-			// pulsing grenade icon to help the player 'count' in their head
-			if ( ps->grenadeTimeLeft ) {
-				if ( ps->weapon == WP_DYNAMITE ) {
-
-				} else {
-					if ( ( ( cg.grenLastTime ) % 1000 ) < ( ( ps->grenadeTimeLeft ) % 1000 ) ) {
-						switch ( ps->grenadeTimeLeft / 1000 ) {
-						case 3:
-							trap_S_StartLocalSound( cgs.media.grenadePulseSound4, CHAN_LOCAL_SOUND );
-							break;
-						case 2:
-							trap_S_StartLocalSound( cgs.media.grenadePulseSound3, CHAN_LOCAL_SOUND );
-							break;
-						case 1:
-							trap_S_StartLocalSound( cgs.media.grenadePulseSound2, CHAN_LOCAL_SOUND );
-							break;
-						case 0:
-							trap_S_StartLocalSound( cgs.media.grenadePulseSound1, CHAN_LOCAL_SOUND );
-							break;
-						}
-					}
-				}
-
-				scale = (float)( ( ps->grenadeTimeLeft ) % 1000 ) / 100.0f;
-				halfScale = scale * 0.5f;
-
-				cg.grenLastTime = ps->grenadeTimeLeft;
-			} else {
-				scale = halfScale = 0;
-			}
+			scale = halfScale = 0;
 
 
 			switch ( cg.predictedPlayerState.weapon ) {
@@ -2413,52 +2384,6 @@ static void CG_ScanForCrosshairEntity( void ) {
 
 
 
-/*
-==============
-CG_DrawDynamiteStatus
-==============
-*/
-static void CG_DrawDynamiteStatus( void ) {
-	float color[4];
-	char        *name;
-	int timeleft;
-	float w;
-
-	if ( cg.snap->ps.weapon != WP_DYNAMITE ) {
-		return;
-	}
-
-	if ( cg.snap->ps.grenadeTimeLeft <= 0 ) {
-		return;
-	}
-
-	timeleft = cg.snap->ps.grenadeTimeLeft;
-
-//	color = g_color_table[ColorIndex(COLOR_RED)];
-	color[0] = color[3] = 1.0f;
-
-	// fade red as it pulses past seconds
-	color[1] = color[2] = 1.0f - ( (float)( timeleft % 1000 ) * 0.001f );
-
-	if ( timeleft < 300 ) {        // fade up the text
-		color[3] = (float)timeleft / 300.0f;
-	}
-
-	trap_R_SetColor( color );
-
-	timeleft *= 5;
-	timeleft -= ( timeleft % 5000 );
-	timeleft += 5000;
-	timeleft /= 1000;
-
-	name = va( "Timer: %d", timeleft );
-	w = CG_DrawStrlen( name ) * BIGCHAR_WIDTH;
-
-	color[3] *= cg_hudAlpha.value;
-	CG_DrawBigStringColor( 320 - w / 2, 170, name, color );
-
-	trap_R_SetColor( NULL );
-}
 
 
 
@@ -3404,7 +3329,6 @@ static void CG_Draw2D( void ) {
 
 //			CG_DrawStatusBar();
 			CG_DrawAmmoWarning();
-			CG_DrawDynamiteStatus();
 			CG_DrawCrosshairNames();
 			CG_DrawWeaponSelect();
 			CG_DrawHoldableSelect();

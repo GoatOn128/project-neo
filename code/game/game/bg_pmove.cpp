@@ -2075,10 +2075,6 @@ static void PM_BeginWeaponChange( int oldweapon, int newweapon, bool reload ) { 
 		return;
 	}
 
-	if ( pm->ps->grenadeTimeLeft > 0 ) {   // don't allow switch if you're holding a hot potato or dynamite
-		return;
-	}
-
 	if ( !pm->ps->aiChar && !oldweapon ) {    // go straight to the new weapon
 		pm->ps->weaponDelay = 0;
 		pm->ps->weaponTime = 0;
@@ -2108,11 +2104,6 @@ static void PM_BeginWeaponChange( int oldweapon, int newweapon, bool reload ) { 
 	case WP_MONSTER_ATTACK2:
 	case WP_MONSTER_ATTACK3:
 		break;
-
-	case WP_DYNAMITE:
-	case WP_GRENADE_LAUNCHER:
-	case WP_GRENADE_PINEAPPLE:
-		pm->ps->grenadeTimeLeft = 0;        // initialize the timer on the potato you're switching to
 
 	default:
 		//----(SA)	only play the weapon switch sound for the player
@@ -2825,58 +2816,6 @@ static void PM_Weapon( void ) {
 
 	delayedFire = false;
 
-	if ( pm->ps->weapon == WP_GRENADE_LAUNCHER || pm->ps->weapon == WP_GRENADE_PINEAPPLE || pm->ps->weapon == WP_DYNAMITE ) {
-		// (SA) AI's don't set grenadeTimeLeft on +attack, so I don't check for (pm->ps->aiChar) here
-		if ( pm->ps->grenadeTimeLeft > 0 ) {
-			if ( pm->ps->weapon == WP_DYNAMITE ) {
-				pm->ps->grenadeTimeLeft += pml.msec;
-// JPW NERVE -- in multiplayer, dynamite becomes strategic, so start timer @ 30 seconds
-#ifdef CGAMEDLL
-				if ( cg_gameType.integer != GT_SINGLE_PLAYER ) {
-#endif
-#ifdef GAMEDLL
-				if ( g_gametype.integer != GT_SINGLE_PLAYER ) {
-#endif
-				if ( pm->ps->grenadeTimeLeft < 5000 ) {
-					pm->ps->grenadeTimeLeft = 5000;
-				}
-			}
-// jpw
-
-			if ( pm->ps->grenadeTimeLeft > 8000 ) {
-				PM_AddEvent( EV_FIRE_WEAPON );
-				pm->ps->weaponTime = 1600;
-				PM_WeaponUseAmmo( pm->ps->weapon, 1 );      //----(SA)	take ammo
-				return;
-			}
-
-//				Com_Printf("Dynamite Timer: %d\n", pm->ps->grenadeTimeLeft);
-		} else {
-			pm->ps->grenadeTimeLeft -= pml.msec;
-//				Com_Printf("Grenade Timer: %d\n", pm->ps->grenadeTimeLeft);
-
-			if ( pm->ps->grenadeTimeLeft <= 0 ) {   // give two frames advance notice so there's time to launch and detonate
-//					pm->ps->grenadeTimeLeft = 100;
-//					PM_AddEvent( EV_FIRE_WEAPON );
-				PM_WeaponUseAmmo( pm->ps->weapon, 1 );      //----(SA)	take ammo
-//					pm->ps->weaponTime = 1600;
-
-				PM_AddEvent( EV_GRENADE_SUICIDE );      //----(SA)	die, dumbass
-
-				return;
-			}
-		}
-
-		if ( !( pm->cmd.buttons & BUTTON_ATTACK ) ) { //----(SA)	modified
-			if ( pm->ps->weaponDelay == ammoTable[pm->ps->weapon].fireDelayTime ) {
-				// released fire button.  Fire!!!
-				BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, false, true );
-			}
-		} else {
-			return;
-		}
-	}
-}
 
 if ( pm->ps->weaponDelay > 0 ) {
 	pm->ps->weaponDelay -= pml.msec;
@@ -3144,19 +3083,7 @@ case WP_DYNAMITE:
 case WP_GRENADE_LAUNCHER:
 case WP_GRENADE_PINEAPPLE:
 	if ( !delayedFire ) {
-		if ( pm->ps->aiChar ) {         // ai characters go into their regular animation setup
 			BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, true, true );
-		} else {                    // the player pulls the fuse and holds the hot potato
-			if ( PM_WeaponAmmoAvailable( pm->ps->weapon ) ) {
-				if ( pm->ps->weapon == WP_DYNAMITE ) {
-					pm->ps->grenadeTimeLeft = 50;
-				} else {
-					pm->ps->grenadeTimeLeft = 4000;         // start at four seconds and count down
-
-				}
-				PM_StartWeaponAnim( WEAP_ATTACK1 );
-			}
-		}
 
 		pm->ps->weaponDelay = ammoTable[pm->ps->weapon].fireDelayTime;
 
@@ -3926,10 +3853,6 @@ void PmoveSingle( pmove_t *pmove ) {
 				}
 			}
 
-			// don't allow binocs if in the middle of throwing grenade
-			if ( ( pm->ps->weapon == WP_GRENADE_LAUNCHER || pm->ps->weapon == WP_GRENADE_PINEAPPLE || pm->ps->weapon == WP_DYNAMITE ) && pm->ps->grenadeTimeLeft > 0 ) {
-				pm->ps->eFlags &= ~EF_ZOOMING;
-			}
 		}
 	}
 

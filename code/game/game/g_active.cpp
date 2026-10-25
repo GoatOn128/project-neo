@@ -1612,8 +1612,6 @@ void ClientEndFrame( gentity_t *ent ) {
             break;
         case WP_GRENADE_PINEAPPLE:
 		case WP_GRENADE_LAUNCHER:   // if they are wearing down a grenade fuse, we should be very afraid
-			if ( ent->client->ps.grenadeTimeLeft && ent->client->ps.grenadeTimeLeft < 3000 ) {
-            }
             break;
 		}
 	}

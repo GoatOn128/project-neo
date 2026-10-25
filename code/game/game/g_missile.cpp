@@ -917,34 +917,13 @@ gentity_t *fire_grenade( gentity_t *self, vec3_t start, vec3_t dir, int grenadeW
 
 	bolt = G_Spawn();
 
-	// no self->client for shooter_grenade's
-	if ( self->client && self->client->ps.grenadeTimeLeft ) {
-		if ( grenadeWPID == WP_DYNAMITE ) {   // remove any fraction of a 5 second 'click'
-			self->client->ps.grenadeTimeLeft *= 5;
-			self->client->ps.grenadeTimeLeft -= ( self->client->ps.grenadeTimeLeft % 5000 );
-			self->client->ps.grenadeTimeLeft += 5000;
-//			if(self->client->ps.grenadeTimeLeft < 5000)	// allow dropping of dynamite that won't explode (for shooting)
-//				noExplode = true;
-		}
-
-		if ( !noExplode ) {
-			bolt->nextthink = level.time + self->client->ps.grenadeTimeLeft;
-		}
-	} else {
-		// let non-players throw the default duration
+	// everyone throws the default duration now that the fuse timer is gone
+	if ( !noExplode ) {
 		if ( grenadeWPID == WP_DYNAMITE ) {
-			if ( !noExplode ) {
-				bolt->nextthink = level.time + 5000;
-			}
+			bolt->nextthink = level.time + 5000;
 		} else {
 			bolt->nextthink = level.time + 2500;
 		}
-	}
-
-	// no self->client for shooter_grenade's
-	if ( self->client ) {
-		self->client->ps.grenadeTimeLeft = 0;       // reset grenade timer
-
 	}
 	if ( !noExplode ) {
 		bolt->think         = G_ExplodeMissile;

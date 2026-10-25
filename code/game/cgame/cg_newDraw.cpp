@@ -305,40 +305,7 @@ static void CG_DrawPlayerWeaponIcon( rectDef_t *rect, bool drawHighlighted, int 
 
 
 
-	// pulsing grenade icon to help the player 'count' in their head
-	if ( cg.predictedPlayerState.grenadeTimeLeft ) {   // grenades and dynamite set this
-
-		// these time differently
-		if ( realweap == WP_DYNAMITE ) {
-			if ( ( ( cg.grenLastTime ) % 1000 ) > ( ( cg.predictedPlayerState.grenadeTimeLeft ) % 1000 ) ) {
-				trap_S_StartLocalSound( cgs.media.grenadePulseSound4, CHAN_LOCAL_SOUND );
-			}
-		} else {
-			if ( ( ( cg.grenLastTime ) % 1000 ) < ( ( cg.predictedPlayerState.grenadeTimeLeft ) % 1000 ) ) {
-				switch ( cg.predictedPlayerState.grenadeTimeLeft / 1000 ) {
-				case 3:
-					trap_S_StartLocalSound( cgs.media.grenadePulseSound4, CHAN_LOCAL_SOUND );
-					break;
-				case 2:
-					trap_S_StartLocalSound( cgs.media.grenadePulseSound3, CHAN_LOCAL_SOUND );
-					break;
-				case 1:
-					trap_S_StartLocalSound( cgs.media.grenadePulseSound2, CHAN_LOCAL_SOUND );
-					break;
-				case 0:
-					trap_S_StartLocalSound( cgs.media.grenadePulseSound1, CHAN_LOCAL_SOUND );
-					break;
-				}
-			}
-		}
-
-		scale = (float)( ( cg.predictedPlayerState.grenadeTimeLeft ) % 1000 ) / 100.0f;
-		halfScale = scale * 0.5f;
-
-		cg.grenLastTime = cg.predictedPlayerState.grenadeTimeLeft;
-	} else {
 		scale = halfScale = 0;
-	}
 
 
 	if ( icon ) {

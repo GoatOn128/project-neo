@@ -1382,7 +1382,6 @@ netField_t playerStateFields[] = {
     {PSF(velocity[2]), 0},
     {PSF(weaponTime), -16},
     {PSF(weaponDelay), -16},
-    {PSF(grenadeTimeLeft), -16},
     {PSF(gravity), 16},
     {PSF(speed), 16},
     {PSF(delta_angles[0]), 16},

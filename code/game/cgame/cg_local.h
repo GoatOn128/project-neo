@@ -931,9 +931,6 @@ typedef struct {
 	int damageIndex;            // slot that was filled in
 	float damageX, damageY, damageValue;
 	float viewFade;
-
-	int grenLastTime;
-
 	int switchbackWeapon;
 	int lastFiredWeapon;
 	int lastWeapSelInBank[MAX_WEAP_BANKS];          // remember which weapon was last selected in a bank for 'weaponbank' commands //----(SA)	added
@@ -1393,12 +1390,6 @@ typedef struct {
 	sfxHandle_t debBounce3Sound;
 	//----(SA) end
 
-	//----(SA)	added
-	sfxHandle_t grenadePulseSound4;
-	sfxHandle_t grenadePulseSound3;
-	sfxHandle_t grenadePulseSound2;
-	sfxHandle_t grenadePulseSound1;
-	//----(SA)
 
 //----(SA)	added
 	sfxHandle_t sparkSounds[2];

@@ -979,12 +979,6 @@ void CG_RegisterSounds( void ) {
 		}
 	}
 
-	//----(SA)	added
-	cgs.media.grenadePulseSound4 = trap_S_RegisterSound( "sound/weapons/grenade/grenpulse4.wav" );
-	cgs.media.grenadePulseSound3 = trap_S_RegisterSound( "sound/weapons/grenade/grenpulse3.wav" );
-	cgs.media.grenadePulseSound2 = trap_S_RegisterSound( "sound/weapons/grenade/grenpulse2.wav" );
-	cgs.media.grenadePulseSound1 = trap_S_RegisterSound( "sound/weapons/grenade/grenpulse1.wav" );
-	//----(SA)	end
 
 	//----(SA) added
 	cgs.media.debBounce1Sound = trap_S_RegisterSound( "sound/world/block.wav" );
