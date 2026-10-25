@@ -176,10 +176,12 @@ jobs:
 
       - name: Build (Windows x64)
         shell: bash
+        # -k keeps compiling after an error, so one run reports every
+        # broken file while the x64 port is being finished.
         run: |
           set -o pipefail
           JOBS=$(nproc 2>/dev/null || echo 2)
-          scons arch=x64 -j "$JOBS" 2>&1 | tee build-x64.log
+          scons -k arch=x64 -j "$JOBS" 2>&1 | tee build-x64.log
 
       - name: Run the tests (Windows x64)
         shell: bash
