@@ -71,7 +71,7 @@ enum {
 // Changes Globals:		-
 //===========================================================================
 int AAS_UpdateEntity( int entnum, bot_entitystate_t *state ) {
-	int relink;
+	bool relink;
 	aas_entity_t *ent;
 	vec3_t absmins, absmaxs;
 

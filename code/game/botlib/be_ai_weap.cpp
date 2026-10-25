@@ -139,7 +139,7 @@ weaponconfig_t *weaponconfig;
 // Returns:					-
 // Changes Globals:		-
 //========================================================================
-int BotValidWeaponNumber( int weaponnum ) {
+bool BotValidWeaponNumber( int weaponnum ) {
 	if ( weaponnum <= 0 || weaponnum > weaponconfig->numweapons ) {
 		botimport.Print( PRT_ERROR, "weapon number out of range\n" );
 		return false;

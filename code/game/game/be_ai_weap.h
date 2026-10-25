@@ -65,7 +65,7 @@ typedef struct projectileinfo_s
 
 typedef struct weaponinfo_s
 {
-	int valid;                  //true if the weapon info is valid
+	bool valid;                  //true if the weapon info is valid
 	int number;                                 //number of the weapon
 	char name[MAX_STRINGFIELD];
 	char model[MAX_STRINGFIELD];

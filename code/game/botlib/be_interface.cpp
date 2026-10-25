@@ -65,7 +65,7 @@ botlib_import_t botimport;
 //
 int bot_developer;
 //true if the library is setup
-int botlibsetup = false;
+bool botlibsetup = false;
 
 //===========================================================================
 //

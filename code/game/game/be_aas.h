@@ -130,7 +130,7 @@ typedef struct bsp_trace_s
 //entity info
 typedef struct aas_entityinfo_s
 {
-	int valid;              // true if updated this frame
+	bool valid;              // true if updated this frame
 	int type;               // entity type
 	int flags;              // entity flags
 	float ltime;            // local time

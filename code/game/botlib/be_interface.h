@@ -65,7 +65,7 @@ If you have questions concerning this license or the applicable additional terms
 //FIXME: get rid of this global structure
 typedef struct botlib_globals_s
 {
-	int botlibsetup;                        //true when the bot library has been setup
+	bool botlibsetup;                        //true when the bot library has been setup
 	int maxentities;                        //maximum number of entities
 	int maxclients;                         //maximum number of clients
 	float time;                             //the global time
