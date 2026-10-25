@@ -90,6 +90,12 @@ If you have questions concerning this license or the applicable additional terms
 #define true   true
 #define false  false
 #define Q_stricmp   strcasecmp
+// The BSP converter is not linked against q_shared.cpp, so the engine
+// string helpers map to the C library versions here, the same way
+// Q_stricmp above does. The strncpy version always ends the string,
+// like the engine one does.
+#define Q_strncpyz( dest, src, size ) ( strncpy( (dest), (src), (size) ), (dest)[(size) - 1] = '\0' )
+#define Q_strcat( dest, size, src ) ( strncat( (dest), (src), (size) - strlen( (dest) ) - 1 ) )
 
 #define MAX_TOKENLENGTH     1024
 
