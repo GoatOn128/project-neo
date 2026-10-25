@@ -465,7 +465,7 @@ char *BG_CopyStringIntoBuffer( char *string, char *buffer, int bufSize, int *off
 	char *pch;
 
 	// check for overloaded buffer
-	if ( *offset + strlen( string ) + 1 >= bufSize ) {
+	if ( *offset + (int)strlen( string ) + 1 >= bufSize ) {
 		BG_AnimParseError( "BG_CopyStringIntoBuffer: out of buffer space" );
 	}
 
@@ -2011,7 +2011,7 @@ int BG_GetConditionValue( int client, int condition, bool checkConversion ) {
 		if ( animConditionsTable[condition].type == ANIM_CONDTYPE_BITFLAGS ) {
 			//if (!value)
 			//	return 0;
-			for ( i = 0; i < 8 * sizeof( globalScriptData->clientConditions[0][0] ); i++ ) {
+			for ( i = 0; i < (int)( 8 * sizeof( globalScriptData->clientConditions[0][0] ) ); i++ ) {
 				if ( COM_BitCheck( globalScriptData->clientConditions[client][condition], i ) ) {
 					return i;
 				}

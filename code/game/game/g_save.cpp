@@ -573,7 +573,7 @@ void ReadClient(fileHandle_t f, gclient_t *client, int size, int slot) {
 	} else {
 		// read the encoded chunk
 		trap_FS_Read( &decodedSize, sizeof( int ), f );
-        if (decodedSize <= 0 || decodedSize > sizeof(clientBuf) || size != sizeof(gclient_t)) {
+        if (decodedSize <= 0 || decodedSize > (int)sizeof(clientBuf) || size != sizeof(gclient_t)) {
             G_Error("G_LoadGame: encoded chunk is greater than buffer");
         }
         trap_FS_Read(clientBuf, decodedSize, f); // decode it
@@ -737,7 +737,7 @@ void ReadEntity( fileHandle_t f, gentity_t *ent, int size ) {
 	} else {
 		// read the encoded chunk
 		trap_FS_Read( &decodedSize, sizeof( int ), f );
-        if (decodedSize <= 0 || decodedSize > sizeof(entityBuf) || size != sizeof(gentity_t)) {
+        if (decodedSize <= 0 || decodedSize > (int)sizeof(entityBuf) || size != sizeof(gentity_t)) {
             G_Error("G_LoadGame: encoded chunk is greater than buffer");
         }
         trap_FS_Read(entityBuf, decodedSize, f);
@@ -825,7 +825,7 @@ void ReadEntity( fileHandle_t f, gentity_t *ent, int size ) {
 		trap_Cvar_Set( "cg_yougotMail", "0" );
 
 		// set up met objectives
-		for ( i = 0; i < sizeof( ent->missionObjectives ) * 8; i++ ) {
+		for ( i = 0; i < (int)( sizeof( ent->missionObjectives ) * 8 ); i++ ) {
 			if ( ent->missionObjectives & ( 1 << i ) ) {
 				trap_Cvar_Register( &cvar, va( "g_objective%i", i + 1 ), "1", CVAR_ROM ); //set g_objective<n> cvar
 				trap_Cvar_Set( va( "g_objective%i", i + 1 ), "1" );                           // set it to make sure
@@ -982,7 +982,7 @@ bool G_SaveGame( char *username ) {
     }
 
     // validate the filename
-	for ( i = 0; i < strlen( username ); i++ ) {
+	for ( i = 0; i < (int)strlen( username ); i++ ) {
 		if ( !Q_isforfilename( username[i] ) && username[i] != '\\' ) { // (allow '\\' so games can be saved in subdirs)
 			G_Printf( "G_SaveGame: '%s'.  Invalid character (%c) in filename. Must use alphanumeric characters only.\n", username, username[i] );
 			return true;
@@ -1049,7 +1049,7 @@ bool G_SaveGame( char *username ) {
     // create and write the info string
 	// (SA) I made another cvar so there's no confusion
 	Q_strncpyz( mapstr, mapname.string, sizeof( mapstr ) );
-	for ( i = 0; i < strlen( mapstr ); i++ ) mapstr[i] = toupper( mapstr[i] );
+	for ( i = 0; i < (int)strlen( mapstr ); i++ ) mapstr[i] = toupper( mapstr[i] );
 	memset( infoString, 0, sizeof( infoString ) );
 
 	trap_Cvar_VariableStringBuffer( "svg_timestring", leveltime, sizeof( leveltime ) );

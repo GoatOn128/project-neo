@@ -1290,7 +1290,7 @@ bool G_ParseAnimationFiles( char *modelname, gclient_t *cl ) {
 		G_Printf( "G_ParseAnimationFiles(): file '%s' not found\n", filename );       //----(SA)	added
 		return false;
 	}
-	if ( len >= sizeof( text ) - 1 ) {
+	if ( len >= (int)sizeof( text ) - 1 ) {
 		G_Printf( "File %s too long\n", filename );
 		return false;
 	}
@@ -1315,7 +1315,7 @@ bool G_ParseAnimationFiles( char *modelname, gclient_t *cl ) {
 			return false;
 		}
 	}
-	if ( len >= sizeof( text ) - 1 ) {
+	if ( len >= (int)sizeof( text ) - 1 ) {
 		G_Printf( "File %s too long\n", filename );
 		return false;
 	}

@@ -180,7 +180,6 @@ LookAtKiller
 */
 void LookAtKiller( gentity_t *self, gentity_t *inflictor, gentity_t *attacker ) {
 	vec3_t dir;
-	vec3_t angles;
 
 	if ( attacker && attacker != self ) {
 		VectorSubtract( attacker->s.pos.trBase, self->s.pos.trBase, dir );
@@ -193,9 +192,6 @@ void LookAtKiller( gentity_t *self, gentity_t *inflictor, gentity_t *attacker ) 
 
 	self->client->ps.stats[STAT_DEAD_YAW] = vectoyaw( dir );
 
-	angles[YAW] = vectoyaw( dir );
-	angles[PITCH] = 0;
-	angles[ROLL] = 0;
 }
 DOOM_SAVE_CALLBACK("LookAtKiller", LookAtKiller);
 
@@ -384,7 +380,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		killerName = "<world>";
 	}
 
-	if ( meansOfDeath < 0 || meansOfDeath >= sizeof( modNames ) / sizeof( modNames[0] ) ) {
+	if ( meansOfDeath < 0 || meansOfDeath >= (int)( sizeof( modNames ) / sizeof( modNames[0] ) ) ) {
 		obit = "<bad obituary>";
 	} else {
 		obit = modNames[ meansOfDeath ];

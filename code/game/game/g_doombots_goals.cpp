@@ -43,7 +43,7 @@ static float ItemNeed(gentity_t *self, gentity_t *item) {
 bool DoomBotFindItem(doomBot_t &bot, gentity_t *self, float range) {
     float best = 0;
     int chosen = -1;
-    vec3_t destination;
+    vec3_t destination = { 0, 0, 0 };
     for (int i = level.maxclients; i < level.num_entities; ++i) {
         gentity_t *item = &g_entities[i];
         if (!item->inuse || !item->touch || !(item->r.contents & CONTENTS_TRIGGER) ||

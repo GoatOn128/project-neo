@@ -961,6 +961,14 @@ int AAS_Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num, int area
 	vec3_t normal, ort, edgevec, start, end, dir;
 	vec3_t ground_beststart, ground_bestend, ground_bestnormal;
 	vec3_t water_beststart, water_bestend, water_bestnormal;
+	// GCC cannot prove the loops below always fill these before the reach
+	// vectors are used, so start them at zero.
+	VectorClear( ground_beststart );
+	VectorClear( ground_bestend );
+	VectorClear( ground_bestnormal );
+	VectorClear( water_beststart );
+	VectorClear( water_bestend );
+	VectorClear( water_bestnormal );
 	vec3_t invgravity = {0, 0, 1};
 	vec3_t testpoint;
 	aas_plane_t *plane;
@@ -2246,7 +2254,7 @@ int AAS_Reachability_Ladder( int area1num, int area2num ) {
 	float face1area, face2area, bestface1area, bestface2area;
 	float sv_jumpvel, maxjumpheight;
 	vec3_t area1point, area2point, v1, v2, up = {0, 0, 1};
-	vec3_t mid, lowestpoint, start, end, sharededgevec, dir;
+	vec3_t mid, lowestpoint = { 0, 0, 0 }, start, end, sharededgevec, dir;
 	aas_area_t *area1, *area2;
 	aas_face_t *face1, *face2, *ladderface1, *ladderface2;
 	aas_plane_t *plane1, *plane2;

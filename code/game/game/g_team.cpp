@@ -97,7 +97,7 @@ void QDECL PrintMsg( gentity_t *ent, const char *fmt, ... ) {
 	char        *p;
 
 	va_start( argptr,fmt );
-	if ( vsprintf( msg, fmt, argptr ) > sizeof( msg ) ) {
+	if ( vsprintf( msg, fmt, argptr ) > (int)sizeof( msg ) ) {
 		G_Error( "PrintMsg overrun" );
 	}
 	va_end( argptr );
@@ -820,7 +820,7 @@ void TeamplayInfoMessage( gentity_t *ent ) {
 						 level.sortedClients[i], player->client->pers.teamState.location, h, a,
 						 player->client->ps.weapon, player->s.powerups );
 			j = strlen( entry );
-			if ( stringlength + j > sizeof( string ) ) {
+			if ( stringlength + j > (int)sizeof( string ) ) {
 				break;
 			}
 			strcpy( string + stringlength, entry );
