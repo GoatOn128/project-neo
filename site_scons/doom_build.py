@@ -47,6 +47,14 @@ LEGACY_INCLUDE_PATHS = [
 GCC_FLAGS = [
     '-Wall',
     '-Wno-unused-function',
+    # The engine code uses and, or and not as identifiers, so the
+    # alternative operator names have to stay off. The Windows build passes
+    # the same thing to Clang.
+    '-fno-operator-names',
+    # GCC warns about assigning string constants to plain char pointers,
+    # MSVC and Clang do not. The Windows build turns the Clang version of
+    # the warning off, this matches it.
+    '-Wno-write-strings',
     '-fno-strict-aliasing',
     '-fwrapv',
 ]
