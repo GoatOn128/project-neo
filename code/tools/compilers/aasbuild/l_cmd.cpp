@@ -58,9 +58,9 @@ int myargc;
 char **myargv;
 
 char com_token[1024];
-qboolean com_eof;
+bool com_eof;
 
-qboolean archive;
+bool archive;
 char archivedir[1024];
 
 
@@ -192,7 +192,7 @@ void Warning( char *warning, ... ) {
 #endif
 
 //only printf if in verbose mode
-qboolean verbose = true;
+bool verbose = true;
 
 void qprintf( char *format, ... ) {
 	va_list argptr;
@@ -636,7 +636,7 @@ void SafeWrite( FILE *f, void *buffer, int count ) {
 FileExists
 ==============
 */
-qboolean    FileExists( char *filename ) {
+bool    FileExists( char *filename ) {
 	FILE    *f;
 
 	f = compilerOpenFile( filename, "r" );
@@ -1159,7 +1159,7 @@ int FS_ReadFileAndCache( const char *qpath, void **buffer ) {
 	return LoadFile( (char *) qpath, buffer, 0, 0 );
 } //end of the function FS_ReadFileAndCache
 
-int FS_FOpenFileRead( const char *filename, FILE **file, qboolean uniqueFILE ) {
+int FS_FOpenFileRead( const char *filename, FILE **file, bool uniqueFILE ) {
 	*file = compilerOpenFile( filename, "rb" );
 	return ( *file != NULL );
 } //end of the function FS_FOpenFileRead

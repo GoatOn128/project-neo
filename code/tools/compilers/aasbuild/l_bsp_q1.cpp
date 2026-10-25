@@ -230,7 +230,7 @@ Q1_SwapBSPFile
 Byte swaps all data in a bsp file.
 =============
 */
-void Q1_SwapBSPFile( qboolean todisk ) {
+void Q1_SwapBSPFile( bool todisk ) {
 	int i, j, c;
 	q1_dmodel_t *d;
 	q1_dmiptexlump_t *mtl;

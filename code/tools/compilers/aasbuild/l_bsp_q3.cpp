@@ -107,7 +107,7 @@ q3_dfog_t       *q3_dfogs; //[Q3_MAX_MAP_FOGS];
 
 char q3_dbrushsidetextured[Q3_MAX_MAP_BRUSHSIDES];
 
-extern qboolean forcesidesvisible;
+extern bool forcesidesvisible;
 
 
 //===========================================================================
@@ -399,7 +399,7 @@ winding_t *Q3_BrushSideWinding( q3_dbrush_t *brush, q3_dbrushside_t *baseside ) 
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean WindingIsTiny( winding_t *w );
+bool WindingIsTiny( winding_t *w );
 
 void Q3_FindVisibleBrushSides( void ) {
 	int i, j, k, we, numtextured, numsides;

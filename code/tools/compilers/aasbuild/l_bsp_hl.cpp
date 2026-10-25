@@ -343,7 +343,7 @@ HL_SwapBSPFile
 Byte swaps all data in a bsp file.
 =============
 */
-void HL_SwapBSPFile( qboolean todisk ) {
+void HL_SwapBSPFile( bool todisk ) {
 	int i, j, c;
 	hl_dmodel_t *d;
 	hl_dmiptexlump_t *mtl;
@@ -736,7 +736,7 @@ epair_t *ParseEpair (void)
 ParseEntity
 ================
 * /
-qboolean	ParseEntity (void)
+bool	ParseEntity (void)
 {
 	epair_t		*e;
 	entity_t	*mapent;

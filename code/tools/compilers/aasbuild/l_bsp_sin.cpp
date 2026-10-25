@@ -386,7 +386,7 @@ int Sin_HintSkipBrush( sin_dbrush_t *brush ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean WindingIsTiny( winding_t *w );
+bool WindingIsTiny( winding_t *w );
 
 void Sin_FixTextureReferences( void ) {
 	int i, j, k, we;
@@ -540,7 +540,7 @@ Sin_SwapBSPFile
 Byte swaps all data in a bsp file.
 =============
 */
-void Sin_SwapBSPFile( qboolean todisk ) {
+void Sin_SwapBSPFile( bool todisk ) {
 	int i, j;
 	sin_dmodel_t        *d;
 

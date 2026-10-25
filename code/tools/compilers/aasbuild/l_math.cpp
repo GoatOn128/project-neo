@@ -138,7 +138,7 @@ float VectorLengthSquared(const vec3_t v) {
     return DotProduct(v, v);
 }
 
-qboolean VectorCompare(const vec3_t v1, const vec3_t v2) {
+bool VectorCompare(const vec3_t v1, const vec3_t v2) {
     int i;
 
     for ( i = 0 ; i < 3 ; i++ )

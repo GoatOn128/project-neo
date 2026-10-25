@@ -47,8 +47,8 @@ If you have questions concerning this license or the applicable additional terms
 int dispatch;
 int workcount;
 int oldf;
-qboolean pacifier;
-qboolean threaded;
+bool pacifier;
+bool threaded;
 void ( *workfunction )( int );
 
 //===========================================================================
@@ -107,7 +107,7 @@ void ThreadWorkerFunction( int threadnum ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void RunThreadsOnIndividual( int workcnt, qboolean showpacifier, void ( *func )(int) ) {
+void RunThreadsOnIndividual( int workcnt, bool showpacifier, void ( *func )(int) ) {
 	if ( numthreads == -1 ) {
 		ThreadSetDefault();
 	}
@@ -297,7 +297,7 @@ void ThreadSemaphoreIncrease( int count ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void RunThreadsOn( int workcnt, qboolean showpacifier, void ( *func )(int) ) {
+void RunThreadsOn( int workcnt, bool showpacifier, void ( *func )(int) ) {
     DWORD threadid[MAX_THREADS];
     HANDLE threadhandle[MAX_THREADS];
     int i;
@@ -645,7 +645,7 @@ void ThreadShutdownLock( void ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void RunThreadsOn( int workcnt, qboolean showpacifier, void ( *func )(int) ) {
+void RunThreadsOn( int workcnt, bool showpacifier, void ( *func )(int) ) {
 	int i;
 	pthread_t work_threads[MAX_THREADS];
 	pthread_addr_t status;
@@ -1015,7 +1015,7 @@ void ThreadSemaphoreIncrease( int count ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void RunThreadsOn( int workcnt, qboolean showpacifier, void ( *func )(int) ) {
+void RunThreadsOn( int workcnt, bool showpacifier, void ( *func )(int) ) {
 	int i;
 	pthread_t work_threads[MAX_THREADS];
 	void *pthread_return;
@@ -1310,7 +1310,7 @@ void ThreadShutdownLock( void ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void RunThreadsOn( int workcnt, qboolean showpacifier, void ( *func )(int) ) {
+void RunThreadsOn( int workcnt, bool showpacifier, void ( *func )(int) ) {
 	int i;
 	int pid[MAX_THREADS];
 	int start, end;
@@ -1573,7 +1573,7 @@ void ThreadSemaphoreIncrease( int count ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void RunThreadsOn( int workcnt, qboolean showpacifier, void ( *func )(int) ) {
+void RunThreadsOn( int workcnt, bool showpacifier, void ( *func )(int) ) {
 	int start, end;
 
 	Log_Print( "no multi-threading\n" );

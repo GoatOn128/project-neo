@@ -673,7 +673,7 @@ WindingOnPlaneSide
 ============
 */
 int WindingOnPlaneSide( winding_t *w, vec3_t normal, vec_t dist ) {
-	qboolean front, back;
+	bool front, back;
 	int i;
 	vec_t d;
 
@@ -731,7 +731,7 @@ winding_t *TryMergeWinding( winding_t *f1, winding_t *f2, vec3_t planenormal ) {
 	int i, j, k, l;
 	vec3_t normal, delta;
 	vec_t dot;
-	qboolean keep1, keep2;
+	bool keep1, keep2;
 
 
 	//
@@ -785,7 +785,7 @@ winding_t *TryMergeWinding( winding_t *f1, winding_t *f2, vec3_t planenormal ) {
 	if ( dot > CONTINUOUS_EPSILON ) {
 		return NULL;            // not a convex polygon
 	}
-	keep1 = (qboolean)( dot < -CONTINUOUS_EPSILON );
+	keep1 = (bool)( dot < -CONTINUOUS_EPSILON );
 
 	back = f1->p[( i + 2 ) % f1->numpoints];
 	VectorSubtract( back, p2, delta );
@@ -798,7 +798,7 @@ winding_t *TryMergeWinding( winding_t *f1, winding_t *f2, vec3_t planenormal ) {
 	if ( dot > CONTINUOUS_EPSILON ) {
 		return NULL;            // not a convex polygon
 	}
-	keep2 = (qboolean)( dot < -CONTINUOUS_EPSILON );
+	keep2 = (bool)( dot < -CONTINUOUS_EPSILON );
 
 	//
 	// build the new polygon
@@ -1293,7 +1293,7 @@ int WindingsNonConvex( winding_t *w1, winding_t *w2,
 /*
 #define VERTEX_EPSILON		0.5
 
-qboolean EqualVertexes(vec3_t v1, vec3_t v2)
+bool EqualVertexes(vec3_t v1, vec3_t v2)
 {
 	float diff;
 
@@ -1380,7 +1380,7 @@ winding_t *AAS_MergeWindings(winding_t *w1, winding_t *w2, vec3_t windingnormal)
 	VectorSubtract(w2->p[p2], w2->p[p1], delta);
 	dot = DotProduct(delta, normal);
 	if (dot > CONTINUOUS_EPSILON) return NULL; //merging would create a non-convex polygon
-	keep[0] = (qboolean)(dot < -CONTINUOUS_EPSILON);
+	keep[0] = (bool)(dot < -CONTINUOUS_EPSILON);
 
 	//first point of winding2 which is on the seperating plane
 	p1 = points[1][0];
@@ -1397,7 +1397,7 @@ winding_t *AAS_MergeWindings(winding_t *w1, winding_t *w2, vec3_t windingnormal)
 	VectorSubtract(w1->p[p2], w1->p[p1], delta);
 	dot = DotProduct(delta, normal);
 	if (dot > CONTINUOUS_EPSILON) return NULL; //merging would create a non-convex polygon
-	keep[1] = (qboolean)(dot < -CONTINUOUS_EPSILON);
+	keep[1] = (bool)(dot < -CONTINUOUS_EPSILON);
 
 	//number of points on the new winding
 	newnumpoints = w1->numpoints - numpoints[0] + w2->numpoints - numpoints[1] + 2;

@@ -487,7 +487,7 @@ int Q2_HintSkipBrush( dbrush_t *brush ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean WindingIsTiny( winding_t *w );
+bool WindingIsTiny( winding_t *w );
 
 void Q2_FixTextureReferences( void ) {
 	int i, j, k, we;
@@ -644,7 +644,7 @@ SwapBSPFile
 Byte swaps all data in a bsp file.
 =============
 */
-void Q2_SwapBSPFile( qboolean todisk ) {
+void Q2_SwapBSPFile( bool todisk ) {
 	int i, j;
 	dmodel_t        *d;
 
