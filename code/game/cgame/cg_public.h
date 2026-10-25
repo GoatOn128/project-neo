@@ -154,7 +154,7 @@ typedef struct {
 	bool (*GetServerCommand)( int serverCommandNumber );
 	int (*GetCurrentCmdNumber)(  );
 	bool (*GetUserCmd)( int cmdNumber, usercmd_t * ucmd );
-	void (*SetUserCmdValue)( int stateValue, int holdableValue, float sensitivityScale, int cld );
+	void (*SetUserCmdValue)( int stateValue, float sensitivityScale, int cld );
 	int (*MemoryRemaining)(  );
 	bool (*loadCamera)( int camNum, const char * name );
 	void (*startCamera)( int camNum, int time );

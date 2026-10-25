@@ -4,7 +4,7 @@
 Return to Castle Wolfenstein single player GPL Source Code
 Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
 
-This file is part of the Return to Castle Wolfenstein single player GPL Source Code (RTCW SP Source Code).  
+This file is part of the Return to Castle Wolfenstein single player GPL Source Code ("RTCW SP Source Code").  
 
 RTCW SP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -269,7 +269,6 @@ typedef enum {
 #define PMF_TIME_TELEPORT 128      // Doom teleport reaction delay; movement only
 #define PMF_TIME_WATERJUMP  256     // pm_time is waterjump
 #define PMF_RESPAWNED       512     // clear after attack and jump buttons come up
-#define PMF_USE_ITEM_HELD   1024
 // RF, removed since it's not used
 //#define PMF_GRAPPLE_PULL	2048	// pull towards grapple location
 #define PMF_IGNORE_INPUT    2048    // no movement/firing commands allowed
@@ -331,7 +330,6 @@ int Pmove( pmove_t *pmove );
 // player_state->stats[] indexes
 typedef enum {
     STAT_HEALTH,
-    STAT_HOLDABLE_ITEM,
     //	STAT_WEAPONS,					// 16 bit fields
     STAT_ARMOR,
     //----(SA) Keys for Wolf
@@ -475,27 +473,6 @@ typedef enum {
 	KEY_LOCKED_TRIGGERED    // locked by a target_lock
 } wkey_t;                   // key_t conflicted with <types.h>
 
-typedef enum {
-	HI_NONE,
-
-//	HI_TELEPORTER,
-//	HI_MEDKIT,
-
-	// new for Wolf
-	HI_WINE,
-//	HI_SKULL,
-//	HI_WATER,
-//	HI_ELECTRIC,
-//	HI_FIRE,
-	HI_STAMINA,
-	HI_11,
-	HI_12,
-	HI_13,
-	HI_14,
-//	HI_15,	// ?
-
-	HI_NUM_HOLDABLE
-} holdable_t;
 
 // Ridah
 //
@@ -577,7 +554,7 @@ typedef enum {
     // JPW NERVE -- swapped mortar & antitank (unused?) and added class_special
     WP_CLASS_SPECIAL, // 21	// class-specific multiplayer weapon (airstrike, engineer, or medpack)
     // (SA) go ahead and take the 'freezeray' spot.  it ain't happenin
-    //      (I checked for instances of WP_CLASS_SPECIAL and I don't think this'll cause you a problem.  however, if it does, move it where you need to. ) (SA)
+    //      (I checked for instances of WP_CLASS_SPECIAL and I don't think this'll cause you a problem.  however, if it does, move it where you need it to. ) (SA)
     // jpw
     //	WP_CROSS,				// 29
     WP_DYNAMITE, // 22
@@ -687,8 +664,8 @@ typedef enum {
 
 // two bits at the top of the entityState->event field
 // will be incremented with each change in the event so
-// that an identical event started twice in a row can
-// be distinguished.  And off the value with ~EV_EVENT_BITS
+// that an identical event started twice in a row can be
+// distinguished.  And off the value with ~EV_EVENT_BITS
 // to retrieve the actual event number
 #define EV_EVENT_BIT1       0x00000100
 #define EV_EVENT_BIT2       0x00000200
@@ -728,7 +705,6 @@ typedef enum {
 	EV_ITEM_PICKUP,         // normal item pickups are predictable
 	EV_ITEM_PICKUP_QUIET,   // (SA) same, but don't play the default pickup sound as it was specified in the ent
 	EV_GLOBAL_ITEM_PICKUP,  // powerup / team sounds are broadcast to everyone
-	EV_NOITEM,
 	EV_NOAMMO,
 	EV_EMPTYCLIP,
 	EV_FILL_CLIP,
@@ -740,22 +716,6 @@ typedef enum {
 	EV_FIRE_WEAPON_MG42,
 	EV_SUGGESTWEAP,     //----(SA)	added
 	EV_GRENADE_SUICIDE, //----(SA)	added
-	EV_USE_ITEM0,
-	EV_USE_ITEM1,
-	EV_USE_ITEM2,
-	EV_USE_ITEM3,
-	EV_USE_ITEM4,
-	EV_USE_ITEM5,
-	EV_USE_ITEM6,
-	EV_USE_ITEM7,
-	EV_USE_ITEM8,
-	EV_USE_ITEM9,
-	EV_USE_ITEM10,
-	EV_USE_ITEM11,
-	EV_USE_ITEM12,
-	EV_USE_ITEM13,
-	EV_USE_ITEM14,
-	EV_USE_ITEM15,
 	EV_ITEM_RESPAWN,
 	EV_ITEM_POP,
 	EV_PLAYER_TELEPORT_IN,
@@ -1066,8 +1026,8 @@ typedef enum {
 typedef struct animation_s {
 	char name[MAX_QPATH];
 	int firstFrame;
-	int numFrames;
-	int loopFrames;             // 0 to numFrames
+	int numFrames;               // 0 to numFrames
+	int loopFrames;
 	int frameLerp;              // msec between frames
 	int initialLerp;            // msec to get to first frame
 	int moveSpeed;
@@ -1222,8 +1182,6 @@ typedef enum {
 	IT_HEALTH,              // EFX: static external sphere + rotating internal
 	IT_POWERUP,             // instant on, timer based
 							// EFX: rotate + external ring that rotates
-	IT_HOLDABLE,            // single use, holdable item
-							// EFX: rotate + bob
 	IT_KEY,
 	IT_TREASURE,            // gold bars, etc.  things that can be picked up and counted for a tally at end-level
 	IT_CLIPBOARD,           // 'clipboard' used as a general term for 'popup' items where you pick up the item and it pauses and opens a menu
@@ -1266,7 +1224,6 @@ gitem_t *BG_FindItem( const char *pickupName );
 gitem_t *BG_FindItem2( const char *name );  //----(SA)	added
 gitem_t *BG_FindItemForWeapon( weapon_t weapon );
 gitem_t *BG_FindItemForPowerup( powerup_t pw );
-gitem_t *BG_FindItemForHoldable( holdable_t pw );
 gitem_t *BG_FindItemForAmmo( int ammo );        //----(SA)	modified
 gitem_t *BG_FindItemForKey( wkey_t k, int *index );
 weapon_t BG_FindAmmoForWeapon( weapon_t weapon );
@@ -1398,7 +1355,6 @@ typedef enum {
 	HINT_AMMO,
 	HINT_ARMOR,
 	HINT_POWERUP,
-	HINT_HOLDABLE,          // 30
 	HINT_INVENTORY,
 	HINT_SCENARIC,
 	HINT_EXIT,
@@ -1509,8 +1465,8 @@ typedef enum {
 #define MAX_ANIMSCRIPT_MODELS               32      // allocated dynamically, so limit is scalable
 #define MAX_ANIMSCRIPT_ITEMS_PER_MODEL      256
 #define MAX_MODEL_ANIMATIONS                256     // animations per model
-#define MAX_ANIMSCRIPT_ANIMCOMMANDS         8
-#define MAX_ANIMSCRIPT_ITEMS                32
+#define MAX_ANIMSCRIPT_ANIMCOMMANDS          8
+#define MAX_ANIMSCRIPT_ITEMS                 32
 
 // NOTE: these must all be in sync with string tables in bg_animation.cpp
 
@@ -1621,7 +1577,7 @@ typedef struct
 typedef struct
 {
 	short int bodyPart[2];      // play this animation on legs/torso/both
-	short int animIndex[2];     // animation index in our list of animations
+	short int animIndex[2];     // animation index in our script items
 	short int animDuration[2];
 	short int soundIndex;
 	short int accShowBits;      //----(SA)	added

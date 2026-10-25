@@ -114,7 +114,6 @@ typedef struct {
 
 	// cgame communicates a few values to the client system
 	int cgameUserCmdValue;              // current weapon to add to usercmd_t
-	int cgameUserHoldableValue;         // current holdable item to add to usercmd_t	//----(SA)	added
 	float cgameSensitivity;
 	int cgameCld;                       // NERVE - SMF
 

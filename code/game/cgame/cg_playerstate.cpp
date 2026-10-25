@@ -251,7 +251,6 @@ void CG_Respawn( void ) {
 	// display weapons available
 	cg.weaponSelectTime = cg.time;
 
-	cg.holdableSelectTime = 0;  //----(SA) reset holdable timer
 	cg.centerPrintTime = 0;     //----(SA)	reset centerprint counter so previous messages don't re-appear
 	cg.cursorHintIcon = 0;
 	cg.cursorHintTime = 0;

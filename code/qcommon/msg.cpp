@@ -654,7 +654,6 @@ void MSG_WriteDeltaUsercmd( msg_t *msg, usercmd_t *from, usercmd_t *to ) {
 	MSG_WriteDelta( msg, from->buttons, to->buttons, 8 );
 	MSG_WriteDelta( msg, from->wbuttons, to->wbuttons, 8 );
 	MSG_WriteDelta( msg, from->weapon, to->weapon, 8 );
-	MSG_WriteDelta( msg, from->holdable, to->holdable, 8 );         //----(SA)	modified
 	MSG_WriteDelta( msg, from->cld, to->cld, 16 );          // NERVE - SMF
 }
 
@@ -679,7 +678,6 @@ void MSG_ReadDeltaUsercmd( msg_t *msg, usercmd_t *from, usercmd_t *to ) {
 	to->buttons = MSG_ReadDelta( msg, from->buttons, 8 );
 	to->wbuttons = MSG_ReadDelta( msg, from->wbuttons, 8 );
 	to->weapon = MSG_ReadDelta( msg, from->weapon, 8 );
-	to->holdable = MSG_ReadDelta( msg, from->holdable, 8 );  //----(SA)	modified
 	to->cld = MSG_ReadDelta( msg, from->cld, 16 );       // NERVE - SMF
 }
 
@@ -705,7 +703,6 @@ void MSG_WriteDeltaUsercmdKey( msg_t *msg, int key, usercmd_t *from, usercmd_t *
 		 from->buttons == to->buttons &&
 		 from->wbuttons == to->wbuttons &&
 		 from->weapon == to->weapon &&
-		 from->holdable == to->holdable &&
 		 from->cld == to->cld ) {                   // NERVE - SMF
 		MSG_WriteBits( msg, 0, 1 );                 // no change
 		oldsize += 7;
@@ -722,7 +719,6 @@ void MSG_WriteDeltaUsercmdKey( msg_t *msg, int key, usercmd_t *from, usercmd_t *
 	MSG_WriteDeltaKey( msg, key, from->buttons, to->buttons, 8 );
 	MSG_WriteDeltaKey( msg, key, from->wbuttons, to->wbuttons, 8 );
 	MSG_WriteDeltaKey( msg, key, from->weapon, to->weapon, 8 );
-	MSG_WriteDeltaKey( msg, key, from->holdable, to->holdable, 8 );
 
 	MSG_WriteDeltaKey( msg, key, from->cld, to->cld, 16 );      // NERVE - SMF - for multiplayer clientDamage
 }
@@ -750,7 +746,6 @@ void MSG_ReadDeltaUsercmdKey( msg_t *msg, int key, usercmd_t *from, usercmd_t *t
 		to->buttons = MSG_ReadDeltaKey( msg, key, from->buttons, 8 );
 		to->wbuttons = MSG_ReadDeltaKey( msg, key, from->wbuttons, 8 );
 		to->weapon = MSG_ReadDeltaKey( msg, key, from->weapon, 8 );
-		to->holdable = MSG_ReadDeltaKey( msg, key, from->holdable, 8 );
 
 		to->cld = MSG_ReadDeltaKey( msg, key, from->cld, 16 );           // NERVE - SMF - for multiplayer clientDamage
 	} else {
@@ -763,7 +758,6 @@ void MSG_ReadDeltaUsercmdKey( msg_t *msg, int key, usercmd_t *from, usercmd_t *t
 		to->buttons = from->buttons;
 		to->wbuttons = from->wbuttons;
 		to->weapon = from->weapon;
-		to->holdable = from->holdable;
 
 		to->cld = from->cld;                    // NERVE - SMF
 	}
@@ -1462,7 +1456,6 @@ void MSG_WriteDeltaPlayerstate( msg_t *msg, struct playerState_s *from, struct p
 	int ammobits[4];                //----(SA)	modified
 	int clipbits;                   //----(SA)	added
 	int powerupbits;
-	int holdablebits;
 	int numFields;
 	int c;
 	netField_t      *field;
@@ -1553,12 +1546,6 @@ void MSG_WriteDeltaPlayerstate( msg_t *msg, struct playerState_s *from, struct p
 			persistantbits |= 1 << i;
 		}
 	}
-	holdablebits = 0;
-	for ( i = 0 ; i < 16 ; i++ ) {
-		if ( to->holdable[i] != from->holdable[i] ) {
-			holdablebits |= 1 << i;
-		}
-	}
 	powerupbits = 0;
 	for ( i = 0 ; i < 16 ; i++ ) {
 		if ( to->powerups[i] != from->powerups[i] ) {
@@ -1567,7 +1554,7 @@ void MSG_WriteDeltaPlayerstate( msg_t *msg, struct playerState_s *from, struct p
 	}
 
 
-	if ( statsbits || persistantbits || holdablebits || powerupbits ) {
+	if ( statsbits || persistantbits || powerupbits ) {
 
 		MSG_WriteBits( msg, 1, 1 ); // something changed
 
@@ -1596,17 +1583,6 @@ void MSG_WriteDeltaPlayerstate( msg_t *msg, struct playerState_s *from, struct p
 			MSG_WriteBits( msg, 0, 1 ); // no change to persistant
 		}
 
-
-		if ( holdablebits ) {
-			MSG_WriteBits( msg, 1, 1 ); // changed
-			MSG_WriteShort( msg, holdablebits );
-			for ( i = 0 ; i < 16 ; i++ )
-				if ( holdablebits & ( 1 << i ) ) {
-					MSG_WriteShort( msg, to->holdable[i] );
-				}
-		} else {
-			MSG_WriteBits( msg, 0, 1 ); // no change to holdables
-		}
 
 
 		if ( powerupbits ) {
@@ -1875,16 +1851,6 @@ void MSG_ReadDeltaPlayerstate( msg_t *msg, playerState_t *from, playerState_t *t
 			}
 		}
 
-		// parse holdable stats
-		if ( MSG_ReadBits( msg, 1 ) ) {
-			LOG( "PS_HOLDABLE" );
-			bits = MSG_ReadShort( msg );
-			for ( i = 0 ; i < 16 ; i++ ) {
-				if ( bits & ( 1 << i ) ) {
-					to->holdable[i] = MSG_ReadShort( msg );
-				}
-			}
-		}
 
 		// parse powerups
 		if ( MSG_ReadBits( msg, 1 ) ) {

@@ -178,9 +178,8 @@ bool    CL_GetSnapshot( int snapshotNumber, snapshot_t *snapshot ) {
 CL_SetUserCmdValue
 ==============
 */
-void CL_SetUserCmdValue( int userCmdValue, int holdableValue, float sensitivityScale, int cld ) {
+void CL_SetUserCmdValue( int userCmdValue, float sensitivityScale, int cld ) {
 	cl.cgameUserCmdValue        = userCmdValue;
-	cl.cgameUserHoldableValue   = holdableValue;
 	cl.cgameSensitivity         = sensitivityScale;
 	cl.cgameCld                 = cld;
 }

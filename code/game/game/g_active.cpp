@@ -563,7 +563,7 @@ void ClientIntermissionThink( gclient_t *client ) {
 	client->oldwbuttons = client->wbuttons;
 	client->wbuttons = client->pers.cmd.wbuttons;
 
-	if ( ( client->buttons & ( BUTTON_ATTACK | BUTTON_USE_HOLDABLE ) & ( client->oldbuttons ^ client->buttons ) ) ||
+	if ( ( client->buttons & BUTTON_ATTACK & ( client->oldbuttons ^ client->buttons ) ) ||
 		 ( client->wbuttons & WBUTTON_ATTACK2 & ( client->oldwbuttons ^ client->wbuttons ) ) ) {
 		client->readyToExit ^= 1;
 	}
@@ -681,18 +681,6 @@ void ClientEvents( gentity_t *ent, int oldEventSequence ) {
 			ent->client->ps.stats[STAT_HEALTH] = ent->health = 0;
 			player_die( ent, ent, ent, 100000, MOD_SUICIDE );
 			break;
-
-//----(SA)	modified
-		case EV_USE_ITEM1:      // ( HI_MEDKIT )	medkit
-		case EV_USE_ITEM2:      // ( HI_WINE )		wine
-		case EV_USE_ITEM3:      // ( HI_SKULL )		skull of invulnerable
-		case EV_USE_ITEM4:      // ( HI_WATER )		protection from drowning
-		case EV_USE_ITEM5:      // ( HI_ELECTRIC )	protection from electric attacks
-		case EV_USE_ITEM6:      // ( HI_FIRE )		protection from fire attacks
-		case EV_USE_ITEM7:      // ( HI_STAMINA )	restores fatigue bar and sets "nofatigue" for a time period
-			UseHoldableItem( ent, event - EV_USE_ITEM0 );
-			break;
-//----(SA)	end
 
 		default:
 			if ( g_gametype.integer == GT_SINGLE_PLAYER ) {
@@ -1330,7 +1318,7 @@ void ClientThink_real( gentity_t *ent ) {
 					respawn( ent );
 				}
 				// pressing attack or use is the normal respawn method
-				else if ( ( ucmd->buttons & ( BUTTON_ATTACK | BUTTON_USE_HOLDABLE ) ) &&
+				else if ( ( ucmd->buttons & BUTTON_ATTACK ) &&
 						  ( !( ent->client->ps.pm_flags & PMF_LIMBO ) ) ) { // JPW NERVE
 					// JPW NERVE
 					if ( g_gametype.integer >= GT_WOLF ) {

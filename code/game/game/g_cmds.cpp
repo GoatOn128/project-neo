@@ -352,16 +352,6 @@ void Cmd_Give_f( gentity_t *ent ) {
 		}
 	}
 
-	if ( give_all || Q_stricmp( name, "holdable" ) == 0 ) {
-		ent->client->ps.stats[STAT_HOLDABLE_ITEM] = ( 1 << ( HI_STAMINA - 1 ) ) - 1 - ( 1 << HI_NONE );
-		for ( i = 1 ; i <= HI_STAMINA ; i++ ) {
-			ent->client->ps.holdable[i] = 10;
-		}
-
-		if ( !give_all ) {
-			return;
-		}
-	}
 
 	if ( give_all || Q_stricmpn( name, "ammo", 4 ) == 0 ) {
 		if ( amount ) {

@@ -783,7 +783,6 @@ void G_CheckTeamItems( void );
 void G_RunItem( gentity_t *ent );
 void RespawnItem( gentity_t *ent );
 
-void UseHoldableItem( gentity_t *ent, int item );
 void PrecacheItem( gitem_t *it );
 gentity_t *Drop_Item( gentity_t *ent, gitem_t *item, float angle, bool novelocity );
 gentity_t *LaunchItem( gitem_t *item, vec3_t origin, vec3_t velocity );

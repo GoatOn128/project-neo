@@ -161,7 +161,7 @@ bool G_DoomLevelFrame() {
     auto *player = G_FindActor("player");
     const int buttons = player && player->client ? player->client->pers.cmd.buttons : 0;
     const bool pressed =
-        (buttons & ~previousButtons & (BUTTON_ATTACK | BUTTON_ACTIVATE | BUTTON_USE_HOLDABLE)) != 0;
+        (buttons & ~previousButtons & (BUTTON_ATTACK | BUTTON_ACTIVATE)) != 0;
     previousButtons = buttons;
     if (summary.phase == doomlevel::Counting &&
         (level.time - frozenAt >= 10000 || (pressed && level.time - summary.started >= 500))) {

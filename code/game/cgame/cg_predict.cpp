@@ -394,11 +394,6 @@ static void CG_TouchItem( centity_t *cent ) {
 		}
 	}
 
-//----(SA)
-	if ( item->giType == IT_HOLDABLE ) {
-		cg.predictedPlayerState.stats[ STAT_HOLDABLE_ITEM ] |= 1 << item->giTag;
-	}
-//----(SA)	end
 }
 
 

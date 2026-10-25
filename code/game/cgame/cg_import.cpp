@@ -342,8 +342,8 @@ bool trap_GetUserCmd( int cmdNumber, usercmd_t * ucmd ) {
 	return cgameImports->GetUserCmd( cmdNumber, ucmd );
 }
 
-void trap_SetUserCmdValue( int stateValue, int holdableValue, float sensitivityScale, int cld ) {
-	cgameImports->SetUserCmdValue( stateValue, holdableValue, sensitivityScale, cld );
+void trap_SetUserCmdValue( int stateValue, float sensitivityScale, int cld ) {
+	cgameImports->SetUserCmdValue( stateValue, sensitivityScale, cld );
 }
 
 int trap_MemoryRemaining(  ) {

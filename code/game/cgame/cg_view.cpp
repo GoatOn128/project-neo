@@ -1539,8 +1539,8 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, bool demoPlay
 
 	DEBUGTIME
 
-	// let the client system know what our weapon, holdable item and zoom settings are
-	trap_SetUserCmdValue( cg.weaponSelect, cg.holdableSelect, cg.zoomSensitivity, cg.cld );
+	// let the client system know what our weapon and zoom settings are
+	trap_SetUserCmdValue( cg.weaponSelect, cg.zoomSensitivity, cg.cld );
 
 	// actually issue the rendering calls
 	CG_DrawActive( stereoView );

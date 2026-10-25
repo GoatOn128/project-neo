@@ -48,7 +48,6 @@ If you have questions concerning this license or the applicable additional terms
 #define RESPAWN_TEAM_WEAPON 30
 #define RESPAWN_HEALTH      35
 #define RESPAWN_AMMO        40
-#define RESPAWN_HOLDABLE    60
 #define RESPAWN_MEGAHEALTH  120
 #define RESPAWN_POWERUP     120
 #define RESPAWN_PARTIAL     998     // for multi-stage ammo/health
@@ -208,58 +207,6 @@ int Pickup_Treasure( gentity_t *ent, gentity_t *other ) {
 }
 DOOM_SAVE_CALLBACK("Pickup_Treasure", Pickup_Treasure);
 
-/*
-==============
-UseHoldableItem
-	server side handling of holdable item use
-==============
-*/
-void UseHoldableItem( gentity_t *ent, int item ) {
-	switch ( item ) {
-	case HI_WINE:           // 1921 Chateu Lafite - gives 25 pts health up to max health
-		ent->health += 25;
-		if ( ent->health > ent->client->ps.stats[STAT_MAX_HEALTH] ) {
-			ent->health = ent->client->ps.stats[STAT_MAX_HEALTH];
-		}
-		break;
-
-	case HI_STAMINA:        // restores fatigue bar and sets "nofatigue" for a time period (currently forced to 60 sec)
-		//----(SA)	NOTE:	currently only gives free nofatigue time, doesn't reset fatigue bar.
-		//					(this is because I'd like the restore to be visually gradual (on the HUD item representing
-		//					current status of your fatigue) rather than snapping back to 'full')
-		ent->client->ps.powerups[PW_NOFATIGUE] = 60000;
-		break;
-	}
-}
-DOOM_SAVE_CALLBACK("UseHoldableItem", UseHoldableItem);
-
-//======================================================================
-
-int Pickup_Holdable( gentity_t *ent, gentity_t *other ) {
-	gitem_t *item;
-
-//	item = BG_FindItemForHoldable(ent->item);
-	item = ent->item;
-
-	if ( item->gameskillnumber[0] ) {  // if the item specifies an amount, give it
-		other->client->ps.holdable[item->giTag] += item->gameskillnumber[0];
-	} else {
-		other->client->ps.holdable[item->giTag] += 1;   // add default of 1
-
-	}
-	other->client->ps.holding = item->giTag;
-
-	other->client->ps.stats[STAT_HOLDABLE_ITEM] |= ( 1 << ent->item->giTag );   //----(SA)	added
-
-	if ( g_gametype.integer == GT_SINGLE_PLAYER ) {
-		if ( !( ent->spawnflags & 8 ) ) {
-			return RESPAWN_SP;
-		}
-	}
-
-	return RESPAWN_HOLDABLE;
-}
-DOOM_SAVE_CALLBACK("Pickup_Holdable", Pickup_Holdable);
 
 //======================================================================
 
@@ -690,9 +637,6 @@ void Touch_Item( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 	case IT_TEAM:
 		respawn = Pickup_Team( ent, other );
 		break;
-	case IT_HOLDABLE:
-		respawn = Pickup_Holdable( ent, other );
-		break;
 	case IT_KEY:
 		respawn = Pickup_Key( ent, other );
 		break;
@@ -966,9 +910,6 @@ void FinishSpawningItem( gentity_t *ent ) {
 		}
 
 		ent->touch = Touch_Item;    // no auto-pickup, only activate
-	} else if ( ent->item->giType == IT_HOLDABLE )      {
-//		ent->touch = Touch_Item;	// no auto-pickup, only activate
-	}
 
 
 	// using an item causes it to respawn
