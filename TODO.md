@@ -107,6 +107,11 @@ the folder gets renamed.
 - Get the engine to compile and run in 64-bit and on Linux, the game module
   ABI included.
 - Turn warnings into errors in the build once every platform is warning-free.
+- Done so far (x64): the engine compiles, links and passes the tests in
+  64-bit Windows with clang-cl (scons arch=x64), the modules load through
+  the x64 name suffix, CI builds and tests it right after the x86 job, and
+  both architectures are warning-free. Left: the Linux build and the
+  warnings-as-errors switch.
 
 ## 13. Draw the menu and HUD into their own framebuffer
 

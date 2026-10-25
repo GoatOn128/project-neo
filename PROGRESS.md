@@ -33,7 +33,7 @@ Plain English only. Update this file as work moves forward.
 1. Auto download and replacement of dependencies (tasks 9 and 10).
 2. Botlib as a DLL with the parser in the engine (task 3).
 3. Full C++ with idLib (tasks 5 and 8).
-4. The x64 and Linux builds (task 12).
+4. The Linux build (task 12).
 
 ## Not started yet
 
@@ -41,7 +41,7 @@ Plain English only. Update this file as work moves forward.
 - Task 6 (extractfuncs as a pre-step for the game DLL)
 - Task 7 (Doom 3 audio system)
 - Task 11 (QuakeC driving the game modules)
-- Task 12 (x64 and Linux builds)
+- Task 12 (the Linux build, the Windows x64 half is done)
 
 ## Done
 
@@ -50,6 +50,14 @@ Plain English only. Update this file as work moves forward.
 - Task 4: the Windows x86 build is warning-free with clang-cl and CI keeps
   it green. The x64 and Linux builds and the warnings-as-errors switch are
   task 12 now.
+- Task 12 (x64 half): the engine builds and the tests pass in 64-bit Windows.
+  scons arch=x64 compiles the engine, the renderer, the game, cgame, ui and
+  the editor tools with clang-cl, the modules get the x64 name suffix and
+  the engine loads them through it, and CI runs the x64 build and tests
+  after the x86 job. Every pointer-size warning found on the way was fixed
+  (offset macros and save fields widened, the console window and the null
+  pointer casts cleaned up), so both architectures build warning-free.
+  The Linux half of task 12 is next.
 - Task 2: Q3VM removed, plain C import/export between the engine and the
   modules (vm.cpp, vm_interpreted.cpp, vm_x86.cpp, vm_local.h, vm_args.h,
   the syscall tables and bg_lib.cpp deleted; GetGameAPI / GetCGameAPI /
