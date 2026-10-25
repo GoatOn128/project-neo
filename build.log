@@ -53,33 +53,18 @@ clang-cl /Fobuild\release\wolf\code\sys\sys_editor.obj /c code\sys\sys_editor.cp
 clang-cl /Fobuild\release\wolf\code\sound\idtech4\snd_system.obj /c code\sound\idtech4\snd_system.cpp /std:c++17 /EHsc --target=i686-pc-windows-msvc /W3 /clang:-ferror-limit=0 /clang:-Wno-writable-strings /clang:-Wno-deprecated-declarations /clang:-Wno-microsoft-enum-value /clang:-fno-operator-names /clang:-fno-strict-aliasing /clang:-fwrapv /MT /O2 /DWIN32 /DC_ONLY /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /DNOMINMAX /D_USE_32BIT_TIME_T /DNDEBUG /D__USEA3D /D__A3D_GEOM /D_WINDOWS /Icode\game /Icode\game\cgame /Icode\game\game /Icode\game\game\tests /Icode\client /Icode\sys /Icode\third-party\SDL3\include /Icode\third-party /Icode /Icode\third-party\openal\include /Icode\third-party\fluidsynth\include /Icode\third-party\stb /Icode\third-party\miniz /Ibuild\release\generated
 clang-cl /Fobuild\release\wolf\code\sound\idtech4\snd_world.obj /c code\sound\idtech4\snd_world.cpp /std:c++17 /EHsc --target=i686-pc-windows-msvc /W3 /clang:-ferror-limit=0 /clang:-Wno-writable-strings /clang:-Wno-deprecated-declarations /clang:-Wno-microsoft-enum-value /clang:-fno-operator-names /clang:-fno-strict-aliasing /clang:-fwrapv /MT /O2 /DWIN32 /DC_ONLY /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /DNOMINMAX /D_USE_32BIT_TIME_T /DNDEBUG /D__USEA3D /D__A3D_GEOM /D_WINDOWS /Icode\game /Icode\game\cgame /Icode\game\game /Icode\game\game\tests /Icode\client /Icode\sys /Icode\third-party\SDL3\include /Icode\third-party /Icode /Icode\third-party\openal\include /Icode\third-party\fluidsynth\include /Icode\third-party\stb /Icode\third-party\miniz /Ibuild\release\generated
 clang-cl /Fobuild\release\wolf\code\sound\idtech4\snd_emitter.obj /c code\sound\idtech4\snd_emitter.cpp /std:c++17 /EHsc --target=i686-pc-windows-msvc /W3 /clang:-ferror-limit=0 /clang:-Wno-writable-strings /clang:-Wno-deprecated-declarations /clang:-Wno-microsoft-enum-value /clang:-fno-operator-names /clang:-fno-strict-aliasing /clang:-fwrapv /MT /O2 /DWIN32 /DC_ONLY /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /DNOMINMAX /D_USE_32BIT_TIME_T /DNDEBUG /D__USEA3D /D__A3D_GEOM /D_WINDOWS /Icode\game /Icode\game\cgame /Icode\game\game /Icode\game\game\tests /Icode\client /Icode\sys /Icode\third-party\SDL3\include /Icode\third-party /Icode /Icode\third-party\openal\include /Icode\third-party\fluidsynth\include /Icode\third-party\stb /Icode\third-party\miniz /Ibuild\release\generated
+code\sound\idtech4\snd_system.cpp(188,36): error: use of undeclared identifier 'g_sv'
+  188 |                                                          ( ( mutedCvar->integer && !g_sv.activeApp ) ? 0.0f : 1.0f );
+      |                                                                                     ^~~~
+1 error generated.
 clang-cl /Fobuild\release\wolf\code\sound\idtech4\snd_shader.obj /c code\sound\idtech4\snd_shader.cpp /std:c++17 /EHsc --target=i686-pc-windows-msvc /W3 /clang:-ferror-limit=0 /clang:-Wno-writable-strings /clang:-Wno-deprecated-declarations /clang:-Wno-microsoft-enum-value /clang:-fno-operator-names /clang:-fno-strict-aliasing /clang:-fwrapv /MT /O2 /DWIN32 /DC_ONLY /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /DNOMINMAX /D_USE_32BIT_TIME_T /DNDEBUG /D__USEA3D /D__A3D_GEOM /D_WINDOWS /Icode\game /Icode\game\cgame /Icode\game\game /Icode\game\game\tests /Icode\client /Icode\sys /Icode\third-party\SDL3\include /Icode\third-party /Icode /Icode\third-party\openal\include /Icode\third-party\fluidsynth\include /Icode\third-party\stb /Icode\third-party\miniz /Ibuild\release\generated
-In file included from code\sound\idtech4\snd_system.cpp:17:
-In file included from code\sound\idtech4\snd_local.h:23:
-code\sound\idtech4\sound.h(19,10): fatal error: '../../qcommon/q_shared.h' file not found
-   19 | #include "../../qcommon/q_shared.h"
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
-1 error generated.
 scons: *** [build\release\wolf\code\sound\idtech4\snd_system.obj] Error 1
-In file included from code\sound\idtech4\snd_world.cpp:11:
-In file included from code\sound\idtech4\snd_local.h:23:
-code\sound\idtech4\sound.h(19,10): fatal error: '../../qcommon/q_shared.h' file not found
-   19 | #include "../../qcommon/q_shared.h"
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
-1 error generated.
-scons: *** [build\release\wolf\code\sound\idtech4\snd_world.obj] Error 1
-In file included from code\sound\idtech4\snd_emitter.cpp:7:
-In file included from code\sound\idtech4\snd_local.h:23:
-code\sound\idtech4\sound.h(19,10): fatal error: '../../qcommon/q_shared.h' file not found
-   19 | #include "../../qcommon/q_shared.h"
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
+code\sound\idtech4\snd_emitter.cpp(98,26): error: 'this' argument to member function 'GetSample' has type 'const idSoundShader', but function is not marked const
+   98 |         idSoundSample *sample = shader->GetSample( ch->diversity );
+      |                                 ^~~~~~
+code\sound\idtech4\sound.h(77,17): note: 'GetSample' declared here
+   77 |         idSoundSample *GetSample( int index );
+      |                        ^
 1 error generated.
 scons: *** [build\release\wolf\code\sound\idtech4\snd_emitter.obj] Error 1
-In file included from code\sound\idtech4\snd_shader.cpp:9:
-In file included from code\sound\idtech4\snd_local.h:23:
-code\sound\idtech4\sound.h(19,10): fatal error: '../../qcommon/q_shared.h' file not found
-   19 | #include "../../qcommon/q_shared.h"
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
-1 error generated.
-scons: *** [build\release\wolf\code\sound\idtech4\snd_shader.obj] Error 1
 scons: building terminated because of errors.
