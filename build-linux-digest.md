@@ -57,13 +57,58 @@ scons: *** [bin/base/uix64.so] Error 1
 | 5 | code/game/cgame/fx/genericparser2.cpp |
 | 1 | code/renderer/tr_model.cpp |
 
+## Warnings, first 40
+
+```
+code/game/cgame/../game/q_shared.h:605:43: warning: value computed is not used [-Wunused-value]
+code/qcommon/cm_load.cpp:663:25: warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+code/qcommon/cm_patch.cpp:1400:25: warning: 'bestplane[0]' may be used uninitialized [-Wmaybe-uninitialized]
+code/qcommon/cm_patch.cpp:1400:25: warning: 'bestplane[1]' may be used uninitialized [-Wmaybe-uninitialized]
+code/qcommon/cm_patch.cpp:1400:25: warning: 'bestplane[2]' may be used uninitialized [-Wmaybe-uninitialized]
+code/qcommon/cm_patch.cpp:1400:25: warning: 'bestplane[3]' may be used uninitialized [-Wmaybe-uninitialized]
+code/qcommon/cm_trace.cpp:152:14: warning: 'y' is used uninitialized [-Wuninitialized]
+code/qcommon/cm_trace.cpp:152:14: warning: array subscript 'long int[0]' is partly outside array bounds of 'float [1]' [-Warray-bounds=]
+code/qcommon/cmd.cpp:342:28: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+code/qcommon/common.cpp:150:62: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+code/qcommon/common.cpp:1357:25: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+code/qcommon/common.cpp:1700:52: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+code/qcommon/cvar.cpp:858:39: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+code/qcommon/files.cpp:553:38: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+code/qcommon/files.cpp:566:39: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+code/qcommon/files.cpp:600:38: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+code/qcommon/files.cpp:613:39: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+code/qcommon/files.cpp:1057:39: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+code/qcommon/files.cpp:1063:39: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+code/qcommon/files.cpp:1869:24: warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+code/qcommon/files.cpp:1886:24: warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+code/qcommon/files.cpp:1910:24: warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+code/qcommon/msg.cpp:448:21: warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+code/qcommon/msg.cpp:472:21: warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+code/qcommon/msg.cpp:495:21: warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+code/qcommon/net_chan.cpp:418:64: warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+code/game/game/q_math.cpp:512:14: warning: 'y' is used uninitialized [-Wuninitialized]
+code/game/game/q_math.cpp:512:14: warning: array subscript 'long int[0]' is partly outside array bounds of 'float [1]' [-Warray-bounds=]
+code/game/game/q_shared.cpp:997:18: warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+code/server/sv_main.cpp:86:26: warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+code/server/sv_main.cpp:369:58: warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+code/qcommon/unzip.cpp:179:14: warning: ignoring return value of 'size_t fread(void*, size_t, size_t, FILE*)' declared with attribute 'warn_unused_result' [-Wunused-result]
+code/qcommon/unzip.cpp:150:14: warning: ignoring return value of 'size_t fread(void*, size_t, size_t, FILE*)' declared with attribute 'warn_unused_result' [-Wunused-result]
+code/renderer/tr_backend.cpp:933:37: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+code/renderer/tr_bsp.cpp:1821:57: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+code/renderer/tr_bsp.cpp:1828:42: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+code/renderer/tr_bsp.cpp:2217:25: warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+code/renderer/tr_bsp.cpp:197:59: warning: 'out[0]' may be used uninitialized [-Wmaybe-uninitialized]
+code/renderer/tr_bsp.cpp:198:59: warning: 'out[1]' may be used uninitialized [-Wmaybe-uninitialized]
+code/renderer/tr_bsp.cpp:199:59: warning: 'out[2]' may be used uninitialized [-Wmaybe-uninitialized]
+```
+
 ## Warnings that repeat, top 30
 
 | Count | Warning |
 | --- | --- |
-| 34 | code/game/cgame/cg_local.h:N: warning: "CHAR_WIDTH" redefined |
+| 34 | code/game/cgame/cg_local.h:N: warning: "CHAR_WIDTH" redefined   [previously defined at /usr/include/limits.h] |
 | 14 | code/game/botlib/be_aas_main.h:N:N: warning: unnecessary parentheses in declaration of 'aasworld' [-Wparentheses] |
-| 8 | code/game/cgame/fx/../cg_local.h:N: warning: "CHAR_WIDTH" redefined |
+| 8 | code/game/cgame/fx/../cg_local.h:N: warning: "CHAR_WIDTH" redefined   [previously defined at /usr/include/limits.h] |
 | 8 | code/game/cgame/fx/genericparserN.h:N: warning: ignoring '#pragma warning ' [-Wunknown-pragmas] |
 | 6 | code/qcommon/files.cpp:N:N: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare] |
 | 6 | code/splines/math_matrix.h:N:N: warning: 'void* memcpy(void*, const void*, size_t)' writing to an object of type 'class idVecN' with no trivial copy-assignment; use copy-assignment or copy-initialization instead [-Wclass-memaccess] |
