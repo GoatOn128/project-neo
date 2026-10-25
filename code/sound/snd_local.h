@@ -12,6 +12,12 @@ bool DecodeWave(const uint8_t *data, size_t length, Wave &wave);
 void MusicInit();
 void MusicShutdown();
 void MusicUpdate(float volume);
+// Renders the next music chunks on the sound pump thread. It never
+// touches the filesystem: a loop reload it cannot perform is posted to
+// the main thread through MusicLoadPending / MusicLoadQueued.
+void MusicUpdatePump(float volume);
+bool MusicLoadPending();
+void MusicLoadQueued(float volume);
 void MusicStart(const char *intro, const char *loop);
 void MusicStop();
 void MusicInfo();

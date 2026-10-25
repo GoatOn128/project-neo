@@ -5,6 +5,7 @@
 #include "snd_musicmix.h"
 #include "snd_fluidsynth.h"
 #include "../openal/include/AL/al.h"
+#include <mutex>
 #include <vector>
 namespace doomaudio {
 namespace {
@@ -19,6 +20,13 @@ Wave wave;
 size_t wavePosition;
 int loops, chunks;
 MusicMix musicMix;
+// The music state is shared between the main thread (starts, stops, file
+// loads) and the sound pump thread (rendering), so every entry point
+// locks this recursive mutex (recursive because MusicUpdate re-enters it
+// while MusicLoadQueued runs a full update on the main thread).
+std::recursive_mutex musicMutex;
+bool loadPending;
+
 bool Load(const char *name) {
     OPLStop();
     if (player) {
@@ -83,8 +91,84 @@ bool Load(const char *name) {
     }
     return decoded;
 }
+
+void MusicUpdateInternal(float volume, bool allowLoad) {
+    std::lock_guard<std::recursive_mutex> guard(musicMutex);
+    if (!source) {
+        return;
+    }
+    alSourcef(source, AL_GAIN, volume);
+    ALint queued = 0, processed = 0;
+    alGetSourcei(source, AL_BUFFERS_QUEUED, &queued);
+    alGetSourcei(source, AL_BUFFERS_PROCESSED, &processed);
+    int emptyLoops = 0;
+    for (int count = queued - processed;
+         count < 4 && (player || OPLLoaded() || !wave.samples.empty()); ++count) {
+        int16_t pcm[8192];
+        size_t size = 0;
+        int rate = 44100, channels = 2;
+        if (OPLLoaded()) {
+            size = OPLRender(pcm, sizeof(pcm) / (sizeof(pcm[0]) * 2)) * sizeof(pcm[0]) * 2;
+        } else if (player) {
+            if (fluidsynth.player_get_status(player) != FLUID_PLAYER_PLAYING) {
+                size = 0;
+            } else {
+                // Render interleaved stereo straight into the buffer.
+                fluidsynth.write_s16(synth, sizeof(pcm) / (sizeof(pcm[0]) * 2), pcm, 0, 2, pcm, 1,
+                                     2);
+                size = sizeof(pcm);
+            }
+        } else {
+            rate = wave.rate;
+            channels = wave.channels;
+            const size_t samples = min(size_t(8192), wave.samples.size() - wavePosition);
+            memcpy(pcm, wave.samples.data() + wavePosition, samples * 2);
+            wavePosition += samples;
+            size = samples * 2;
+        }
+        if (!size) {
+            if (!loopName[0]) {
+                break;
+            }
+            // The pump thread never reads files: it posts the loop reload
+            // to the main thread and keeps the last chunk queued.
+            if (!allowLoad) {
+                loadPending = true;
+                break;
+            }
+            char next[MAX_QPATH];
+            Q_strncpyz(next, loopName, sizeof(next));
+            if (!Load(next)) {
+                loopName[0] = 0;
+                break;
+            }
+            ++loops;
+            if (++emptyLoops > 1) {
+                Com_Printf("Music: empty loop rejected: %s\n", next);
+                MusicStop();
+                break;
+            }
+            --count;
+            continue;
+        }
+        musicMix.Configure(rate, OPLLoaded() ? Cvar_VariableValue("s_musicGain") : 0,
+                           OPLLoaded() ? Cvar_VariableValue("s_musicBass") : 0);
+        musicMix.Process(pcm, size / (sizeof(pcm[0]) * channels), channels);
+        QueuePCM(source, pcm, static_cast<int>(size), rate, channels, 2);
+        ++chunks;
+    }
+    if ((player || OPLLoaded() || !wave.samples.empty()) && queued > 0) {
+        ALint state;
+        alGetSourcei(source, AL_SOURCE_STATE, &state);
+        if (state != AL_PLAYING) {
+            alSourcePlay(source);
+        }
+    }
+}
 } // namespace
+
 void MusicInit() {
+    std::lock_guard<std::recursive_mutex> guard(musicMutex);
     Cvar_Get("s_musicBackend", "opl", CVAR_ARCHIVE);
     Cvar_Get("s_musicGain", "6", CVAR_ARCHIVE);
     Cvar_Get("s_musicBass", "4", CVAR_ARCHIVE);
@@ -122,6 +206,7 @@ void MusicInit() {
     }
 }
 void MusicStop() {
+    std::lock_guard<std::recursive_mutex> guard(musicMutex);
     OPLStop();
     musicMix.Reset();
     ClearStream(source);
@@ -134,8 +219,10 @@ void MusicStop() {
     wavePosition = 0;
     loopName[0] = 0;
     introName[0] = 0;
+    loadPending = false;
 }
 void MusicShutdown() {
+    std::lock_guard<std::recursive_mutex> guard(musicMutex);
     MusicStop();
     if (source) {
         alDeleteSources(1, &source);
@@ -153,6 +240,7 @@ void MusicShutdown() {
     synthesizer = false;
 }
 void MusicStart(const char *intro, const char *loop) {
+    std::lock_guard<std::recursive_mutex> guard(musicMutex);
     const char *repeat = loop && *loop ? loop : intro;
     const bool wantsOPL = Q_stricmp(Cvar_VariableString("s_musicBackend"), "fluidsynth") != 0;
     const bool sameBackend = wantsOPL ? OPLLoaded() : player != nullptr;
@@ -170,6 +258,7 @@ void MusicStart(const char *intro, const char *loop) {
     Load(intro);
 }
 void MusicInfo() {
+    std::lock_guard<std::recursive_mutex> guard(musicMutex);
     ALint queued = 0, state = AL_STOPPED;
     if (source) {
         alGetSourcei(source, AL_BUFFERS_QUEUED, &queued);
@@ -186,69 +275,27 @@ void MusicInfo() {
                OPLLoaded() ? Cvar_VariableValue("s_musicBass") : 0);
 }
 void MusicUpdate(float volume) {
-    if (!source) {
-        return;
-    }
-    alSourcef(source, AL_GAIN, volume);
-    ALint queued = 0, processed = 0;
-    alGetSourcei(source, AL_BUFFERS_QUEUED, &queued);
-    alGetSourcei(source, AL_BUFFERS_PROCESSED, &processed);
-    int emptyLoops = 0;
-    for (int count = queued - processed;
-         count < 4 && (player || OPLLoaded() || !wave.samples.empty()); ++count) {
-        int16_t pcm[8192];
-        size_t size = 0;
-        int rate = 44100, channels = 2;
-        if (OPLLoaded()) {
-            size = OPLRender(pcm, sizeof(pcm) / (sizeof(pcm[0]) * 2)) * sizeof(pcm[0]) * 2;
-        } else if (player) {
-            if (fluidsynth.player_get_status(player) != FLUID_PLAYER_PLAYING) {
-                size = 0;
-            } else {
-                // Render interleaved stereo straight into the buffer.
-                fluidsynth.write_s16(synth, sizeof(pcm) / (sizeof(pcm[0]) * 2), pcm, 0, 2, pcm, 1,
-                                     2);
-                size = sizeof(pcm);
-            }
-        } else {
-            rate = wave.rate;
-            channels = wave.channels;
-            const size_t samples = min(size_t(8192), wave.samples.size() - wavePosition);
-            memcpy(pcm, wave.samples.data() + wavePosition, samples * 2);
-            wavePosition += samples;
-            size = samples * 2;
+    // Full behavior with file loads allowed: the old single threaded call.
+    MusicUpdateInternal(volume, true);
+}
+void MusicUpdatePump(float volume) {
+    // The sound pump thread half: renders chunks, posts loop reloads.
+    MusicUpdateInternal(volume, false);
+}
+bool MusicLoadPending() {
+    std::lock_guard<std::recursive_mutex> guard(musicMutex);
+    return loadPending;
+}
+void MusicLoadQueued(float volume) {
+    {
+        std::lock_guard<std::recursive_mutex> guard(musicMutex);
+        if (!loadPending) {
+            return;
         }
-        if (!size) {
-            if (!loopName[0]) {
-                break;
-            }
-            char next[MAX_QPATH];
-            Q_strncpyz(next, loopName, sizeof(next));
-            if (!Load(next)) {
-                loopName[0] = 0;
-                break;
-            }
-            ++loops;
-            if (++emptyLoops > 1) {
-                Com_Printf("Music: empty loop rejected: %s\n", next);
-                MusicStop();
-                break;
-            }
-            --count;
-            continue;
-        }
-        musicMix.Configure(rate, OPLLoaded() ? Cvar_VariableValue("s_musicGain") : 0,
-                           OPLLoaded() ? Cvar_VariableValue("s_musicBass") : 0);
-        musicMix.Process(pcm, size / (sizeof(pcm[0]) * channels), channels);
-        QueuePCM(source, pcm, static_cast<int>(size), rate, channels, 2);
-        ++chunks;
+        loadPending = false;
     }
-    if ((player || OPLLoaded() || !wave.samples.empty()) && queued > 0) {
-        ALint state;
-        alGetSourcei(source, AL_SOURCE_STATE, &state);
-        if (state != AL_PLAYING) {
-            alSourcePlay(source);
-        }
-    }
+    // The main thread performs the posted file load and keeps rendering
+    // until the next chunk boundary.
+    MusicUpdateInternal(volume, true);
 }
 } // namespace doomaudio
