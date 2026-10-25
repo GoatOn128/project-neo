@@ -872,7 +872,6 @@ void CG_RegisterSounds( void ) {
 	cgs.media.tracerSound = trap_S_RegisterSound( "sound/weapons/machinegun/buletby1.wav" );
 	cgs.media.selectSound = trap_S_RegisterSound( "sound/weapons/change.wav" );
 	cgs.media.wearOffSound = trap_S_RegisterSound( "sound/items/wearoff.wav" );
-	cgs.media.useNothingSound = trap_S_RegisterSound( "sound/items/use_nothing.wav" );
 	cgs.media.gibSound = trap_S_RegisterSound( "sound/player/gibsplt1.wav" );
 	cgs.media.gibBounce1Sound = trap_S_RegisterSound( "sound/player/gibimp1.wav" );
 	cgs.media.gibBounce2Sound = trap_S_RegisterSound( "sound/player/gibimp2.wav" );
@@ -1009,12 +1008,6 @@ void CG_RegisterSounds( void ) {
 
 	// FIXME: only needed with item
 //	cgs.media.flightSound = trap_S_RegisterSound( "sound/items/flight.wav" );
-//	cgs.media.medkitSound = trap_S_RegisterSound ("sound/items/use_medkit.wav");
-	cgs.media.elecSound = trap_S_RegisterSound( "sound/items/use_elec.wav" );
-	cgs.media.fireSound = trap_S_RegisterSound( "sound/items/use_fire.wav" );
-	cgs.media.waterSound = trap_S_RegisterSound( "sound/items/use_water.wav" );
-	cgs.media.wineSound = trap_S_RegisterSound( "sound/pickup/holdable/use_wine.wav" );       //----(SA)	modified
-	cgs.media.staminaSound = trap_S_RegisterSound( "sound/pickup/holdable/use_stamina.wav" ); //----(SA)	added
 	cgs.media.quadSound = trap_S_RegisterSound( "sound/items/damage3.wav" );
 	cgs.media.sfx_ric1 = trap_S_RegisterSound( "sound/weapons/machinegun/ric1.wav" );
 	cgs.media.sfx_ric2 = trap_S_RegisterSound( "sound/weapons/machinegun/ric2.wav" );
@@ -1213,7 +1206,6 @@ void CG_RegisterGraphics( void ) {
 	cgs.media.hintShaders[HINT_AMMO]                = trap_R_RegisterShader( "gfx/2d/ammoHint" );
 	cgs.media.hintShaders[HINT_ARMOR]               = trap_R_RegisterShader( "gfx/2d/armorHint" );
 	cgs.media.hintShaders[HINT_POWERUP]             = trap_R_RegisterShader( "gfx/2d/powerupHint" );
-	cgs.media.hintShaders[HINT_HOLDABLE]            = trap_R_RegisterShader( "gfx/2d/holdableHint" );
 	cgs.media.hintShaders[HINT_INVENTORY]           = trap_R_RegisterShader( "gfx/2d/inventoryHint" );
 	cgs.media.hintShaders[HINT_EXIT]                = trap_R_RegisterShader( "gfx/2d/exitHint" );
 	cgs.media.hintShaders[HINT_NOEXIT]              = cgs.media.hintShaders[HINT_EXIT];
@@ -1374,7 +1366,6 @@ void CG_RegisterGraphics( void ) {
 	cgs.media.railCoreShader = trap_R_RegisterShader( "railCore" );  // (SA) for debugging server traces
 
 
-	cgs.media.thirdPersonBinocModel = trap_R_RegisterModel( "models/powerups/holdable/binocs_thirdperson.md3" ); //----(SA)	added
 	cgs.media.cigModel = trap_R_RegisterModel( "models/players/infantryss/acc/cig.md3" );    //----(SA)	added
 
 	// RF, not used anymore

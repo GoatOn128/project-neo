@@ -347,64 +347,6 @@ static void CG_Obituary( entityState_t *ent ) {
 
 //==========================================================================
 
-/*
-===============
-CG_UseItem
-===============
-*/
-static void CG_UseItem( centity_t *cent ) {
-	int itemNum;
-	gitem_t     *item;
-	entityState_t *es;
-
-	es = &cent->currentState;
-
-	// itemNum = es->event - EV_USE_ITEM0;
-	// JCash bluesnews reported fix
-	itemNum = ( es->event & ~EV_EVENT_BITS ) - EV_USE_ITEM0;
-
-	if ( itemNum < 0 || itemNum > HI_NUM_HOLDABLE ) {
-		itemNum = 0;
-	}
-
-	// print a message if the local player
-	if ( es->number == cg.snap->ps.clientNum ) {
-		if ( !itemNum ) {
-			CG_CenterPrint( "noitem", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH ); //----(SA)	modified
-		} else {
-			item = BG_FindItemForHoldable((holdable_t)( itemNum ));
-
-			if ( item ) {
-				cg.holdableSelectTime = cg.time;    // show remaining items
-
-				switch ( itemNum ) {
-				case HI_WINE:
-					CG_CenterPrint( "drankwine", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
-					break;
-				default:
-					CG_CenterPrint( va( "Use %s", cgs.itemPrintNames[item - bg_itemlist] ), SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
-					break;
-				}
-			}
-		}
-	}
-
-	switch ( itemNum ) {
-	default:
-	case HI_NONE:
-		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.useNothingSound );
-		break;
-
-	case HI_WINE:
-		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.wineSound );
-		break;
-
-	case HI_STAMINA:
-		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.staminaSound );
-		break;
-	}
-
-}
 
 // from cg_weapons.cpp
 extern bool CG_WeaponIndex( int weapnum, int *bank, int *cycle );
@@ -520,10 +462,6 @@ static void CG_ItemPickup( int itemNum ) {
 	}   // end bg_itemlist[itemNum].giType == IT_WEAPON
 
 
-	if ( bg_itemlist[itemNum].giType == IT_HOLDABLE ) {
-		cg.holdableSelectTime   = cg.time;  // show holdables when a new one is picked up
-		cg.holdableSelect       = itemid;   // and select the new one
-	}
 
 }
 
@@ -1896,12 +1834,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		CG_VenomFire( es, true );
 		break;
 
-	case EV_NOITEM:
-		DEBUGNAME( "EV_NOITEM" );
-		if ( es->number == cg.snap->ps.clientNum ) {
-			CG_HoldableUsedupChange();
-		}
-		break;
 
 // JPW NERVE
 	case EV_SPINUP:
@@ -2015,66 +1947,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		}
 		break;
 //----(SA)	end
-	case EV_USE_ITEM0:
-		DEBUGNAME( "EV_USE_ITEM0" );
-		CG_UseItem( cent );
-		break;
-	case EV_USE_ITEM1:
-		DEBUGNAME( "EV_USE_ITEM1" );
-		CG_UseItem( cent );
-		break;
-	case EV_USE_ITEM2:
-		DEBUGNAME( "EV_USE_ITEM2" );
-		CG_UseItem( cent );
-		break;
-	case EV_USE_ITEM3:
-		DEBUGNAME( "EV_USE_ITEM3" );
-		CG_UseItem( cent );
-		break;
-	case EV_USE_ITEM4:
-		DEBUGNAME( "EV_USE_ITEM4" );
-		CG_UseItem( cent );
-		break;
-	case EV_USE_ITEM5:
-		DEBUGNAME( "EV_USE_ITEM5" );
-		CG_UseItem( cent );
-		break;
-	case EV_USE_ITEM6:
-		DEBUGNAME( "EV_USE_ITEM6" );
-		CG_UseItem( cent );
-		break;
-	case EV_USE_ITEM7:
-		DEBUGNAME( "EV_USE_ITEM7" );
-		CG_UseItem( cent );
-		break;
-	case EV_USE_ITEM8:
-		DEBUGNAME( "EV_USE_ITEM8" );
-		CG_UseItem( cent );
-		break;
-	case EV_USE_ITEM9:
-		DEBUGNAME( "EV_USE_ITEM9" );
-		CG_UseItem( cent );
-		break;
-	case EV_USE_ITEM10:
-		DEBUGNAME( "EV_USE_ITEM10" );
-		CG_UseItem( cent );
-		break;
-	case EV_USE_ITEM11:
-		DEBUGNAME( "EV_USE_ITEM11" );
-		CG_UseItem( cent );
-		break;
-	case EV_USE_ITEM12:
-		DEBUGNAME( "EV_USE_ITEM12" );
-		CG_UseItem( cent );
-		break;
-	case EV_USE_ITEM13:
-		DEBUGNAME( "EV_USE_ITEM13" );
-		CG_UseItem( cent );
-		break;
-	case EV_USE_ITEM14:
-		DEBUGNAME( "EV_USE_ITEM14" );
-		CG_UseItem( cent );
-		break;
 
 		//=================================================================
 

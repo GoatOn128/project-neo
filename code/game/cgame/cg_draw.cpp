@@ -1591,66 +1591,6 @@ static void CG_DrawPickupItem( void ) {
 //----(SA)	end
 
 
-/*
-===================
-CG_DrawHoldableItem
-===================
-*/
-void CG_DrawHoldableItem_old( void ) {
-	int value;
-	gitem_t *item;
-
-	if ( !cg.holdableSelect ) {
-		return;
-	}
-
-	item    = BG_FindItemForHoldable((holdable_t)( cg.holdableSelect ));
-
-	if ( !item ) {
-		return;
-	}
-
-	value   = cg.predictedPlayerState.holdable[cg.holdableSelect];
-
-	if ( value ) {
-
-		trap_R_SetColor( NULL );
-
-		CG_RegisterItemVisuals( item - bg_itemlist );
-
-		if ( cg.holdableSelect == HI_WINE ) {
-			if ( value > 3 ) {
-				value = 3;  // 3 stages to icon, just draw full if beyond 'full'
-
-			}
-			//----(SA)	trying smaller text
-			//----(SA)	and off to the right side of the HUD
-//			CG_DrawPic( 100, (SCREEN_HEIGHT-ICON_SIZE)-8, ICON_SIZE/2, ICON_SIZE, cg_items[item - bg_itemlist].icons[2-(value-1)] );
-			CG_DrawPic( 606, 366, 24, 48, cg_items[item - bg_itemlist].icons[2 - ( value - 1 )] );
-
-		} else {
-//			CG_DrawPic( 100, (SCREEN_HEIGHT-ICON_SIZE)-8, ICON_SIZE/2, ICON_SIZE, cg_items[item - bg_itemlist].icons[0] );
-			CG_DrawPic( 606, 366, 24, 48, cg_items[item - bg_itemlist].icons[0] );
-
-		}
-
-		// draw the selection box so it's not just floating in space
-		CG_DrawPic( 606 - 4, 366 - 4, 32, 56, cgs.media.selectShader );
-	}
-}
-/*
-		if(cg.holdableSelect == HI_WINE) {
-			if(value > 3)
-				value = 3;	// 3 stages to icon, just draw full if beyond 'full'
-
-			CG_DrawPic( 598 + 16, 366, 16, 32, cg_items[item - bg_itemlist].icons[2-(value-1)] );
-			CG_DrawPic( (598 + 16)-4, 366-4, 24, 40, cgs.media.selectShader );
-
-		} else {
-			CG_DrawPic( 598, 366, 32, 32, cg_items[item - bg_itemlist].icons[0] );
-			CG_DrawPic( 598-4, 366-4, 40, 40, cgs.media.selectShader );
-		}
-*/
 
 /*
 ===================
@@ -3331,7 +3271,6 @@ static void CG_Draw2D( void ) {
 			CG_DrawAmmoWarning();
 			CG_DrawCrosshairNames();
 			CG_DrawWeaponSelect();
-			CG_DrawHoldableSelect();
 			CG_DrawPickupItem();
 			CG_DrawReward();
 		}

@@ -740,9 +740,6 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 						hintType = HINT_POWERUP;
 					}
 					break;
-				case IT_HOLDABLE:
-					hintType = HINT_HOLDABLE;
-					break;
 				case IT_KEY:
 					hintType = HINT_INVENTORY;
 					break;

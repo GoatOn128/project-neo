@@ -830,102 +830,10 @@ static void CG_DrawPlayerScore( rectDef_t *rect, int font, float scale, vec4_t c
 }
 
 
-static void CG_DrawHoldableItem( rectDef_t *rect, int font, float scale, bool draw2D ) {
-	int value;
-	gitem_t *item;
-
-	item    = BG_FindItemForHoldable((holdable_t)( cg.holdableSelect ));
-
-	if ( !item ) {
-		return;
-	}
-
-	value   = cg.predictedPlayerState.holdable[cg.holdableSelect];
-
-	if ( value ) {
-//		CG_RegisterItemVisuals( value );
-		CG_RegisterItemVisuals( item - bg_itemlist );
-
-		if ( cg.holdableSelect == HI_WINE ) {
-			if ( value > 3 ) {
-				value = 3;  // 3 stages to icon, just draw full if beyond 'full'
-			}
-//			CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[ value ].icons[2-(value-1)] );
-			CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[item - bg_itemlist].icons[2 - ( value - 1 )] );
-		} else {
-//			CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[ value ].icons[0] );
-			CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[item - bg_itemlist].icons[0] );
-		}
-	}
-}
-
-void flubfoo() {
-	int value;
-	gitem_t *item;
-
-	if ( !cg.holdableSelect ) {
-		return;
-	}
-
-	item    = BG_FindItemForHoldable((holdable_t)( cg.holdableSelect ));
-
-	if ( !item ) {
-		return;
-	}
-
-	value   = cg.predictedPlayerState.holdable[cg.holdableSelect];
-
-	if ( value ) {
-
-		trap_R_SetColor( NULL );
-
-		CG_RegisterItemVisuals( item - bg_itemlist );
-
-		if ( cg.holdableSelect == HI_WINE ) {
-			if ( value > 3 ) {
-				value = 3;  // 3 stages to icon, just draw full if beyond 'full'
-
-			}
-			//----(SA)	trying smaller text
-			//----(SA)	and off to the right side of the HUD
-//			CG_DrawPic( 100, (SCREEN_HEIGHT-ICON_SIZE)-8, ICON_SIZE/2, ICON_SIZE, cg_items[item - bg_itemlist].icons[2-(value-1)] );
-			CG_DrawPic( 606, 366, 24, 48, cg_items[item - bg_itemlist].icons[2 - ( value - 1 )] );
-
-		} else {
-//			CG_DrawPic( 100, (SCREEN_HEIGHT-ICON_SIZE)-8, ICON_SIZE/2, ICON_SIZE, cg_items[item - bg_itemlist].icons[0] );
-			CG_DrawPic( 606, 366, 24, 48, cg_items[item - bg_itemlist].icons[0] );
-
-		}
-
-		// draw the selection box so it's not just floating in space
-		CG_DrawPic( 606 - 4, 366 - 4, 32, 56, cgs.media.selectShader );
-	}
-}
 
 
 
-static void CG_DrawPlayerItem( rectDef_t *rect, int font, float scale, bool draw2D ) {
-	int value;
-	vec3_t origin, angles;
 
-	value = cg.snap->ps.stats[STAT_HOLDABLE_ITEM];
-
-	if ( value ) {
-		CG_RegisterItemVisuals( value );
-
-		if ( true ) {
-			CG_RegisterItemVisuals( value );
-			CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[ value ].icons[0] );
-		} else {
-			VectorClear( angles );
-			origin[0] = 90;
-			origin[1] = 0;
-			origin[2] = -10;
-			angles[YAW] = ( cg.time & 2047 ) * 360 / 2048.0;
-			CG_Draw3DModel( rect->x, rect->y, rect->w, rect->h, cg_items[ value ].models[0], 0, origin, angles );
-		}
-	}
-}
 
 
 static void CG_DrawSelectedPlayerPowerup( rectDef_t *rect, bool draw2D ) {
@@ -1264,8 +1172,6 @@ static void CG_DrawTeamColor( rectDef_t *rect, vec4_t color ) {
 	CG_DrawTeamBackground( rect->x, rect->y, rect->w, rect->h, color[3], cg.snap->ps.persistant[PERS_TEAM] );
 }
 
-
-static void CG_DrawAreaHoldable( rectDef_t *rect, int align, float spacing, int font, float scale, vec4_t color ) {
 }
 
 static void CG_DrawAreaWeapons( rectDef_t *rect, int align, float spacing, int font, float scale, vec4_t color ) {
@@ -2241,12 +2147,6 @@ void CG_OwnerDraw( float x, float y, float w, float h, float text_x, float text_
 	case CG_PLAYER_HEAD:
 		CG_DrawPlayerHead( &rect, ownerDrawFlags & CG_SHOW_2DONLY );
 		break;
-	case CG_PLAYER_HOLDABLE:
-		CG_DrawHoldableItem( &rect, font, scale, ownerDrawFlags & CG_SHOW_2DONLY );
-		break;
-	case CG_PLAYER_ITEM:
-		CG_DrawPlayerItem( &rect, font, scale, ownerDrawFlags & CG_SHOW_2DONLY );
-		break;
 	case CG_PLAYER_SCORE:
 		CG_DrawPlayerScore( &rect, font, scale, color, shader, textStyle );
 		break;
@@ -2303,9 +2203,6 @@ void CG_OwnerDraw( float x, float y, float w, float h, float text_x, float text_
 		break;
 	case CG_AREA_WEAPON:
 		CG_DrawAreaWeapons( &rect, align, special, font, scale, color );
-		break;
-	case CG_AREA_HOLDABLE:
-		CG_DrawAreaHoldable( &rect, align, special, font, scale, color );
 		break;
 	case CG_AREA_POWERUP:
 		CG_DrawAreaPowerUp( &rect, align, special, font, scale, color );

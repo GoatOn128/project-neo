@@ -57,7 +57,6 @@ If you have questions concerning this license or the applicable additional terms
 #define DUCK_TIME           100
 #define PAIN_TWITCH_TIME    200
 #define WEAPON_SELECT_TIME  1400
-#define HOLDABLE_SELECT_TIME 1400   //----(SA)	for drawing holdable icons
 #define ITEM_SCALEUP_TIME   1000
 #define ZOOM_TIME           150
 #define ITEM_BLOB_TIME      200
@@ -788,7 +787,6 @@ typedef struct {
 
 	// input state sent to server
 	int weaponSelect;
-	int holdableSelect;                 // (SA) which holdable item is currently held ("selected").  When the client is ready to use it, send "use item <holdableSelect>"
 
 	// auto rotating items
 	vec3_t autoAnglesSlow;
@@ -919,7 +917,6 @@ typedef struct {
 	int itemPickupTime;
 	int itemPickupBlendTime;            // the pulse around the crosshair is timed seperately
 
-	int holdableSelectTime;             //----(SA)	for holdable item icon drawing
 
 	int weaponSelectTime;
 	int weaponAnimation;
@@ -1201,7 +1198,6 @@ typedef struct {
 	qhandle_t waterSplashModel;
 	qhandle_t waterSplashShader;
 
-	qhandle_t thirdPersonBinocModel;    //----(SA)	added
 	qhandle_t cigModel;     //----(SA)	added
 
 	qhandle_t batModel;
@@ -1307,7 +1303,6 @@ typedef struct {
 	sfxHandle_t quadSound;
 	sfxHandle_t tracerSound;
 	sfxHandle_t selectSound;
-	sfxHandle_t useNothingSound;
 	sfxHandle_t wearOffSound;
 	sfxHandle_t footsteps[FOOTSTEP_TOTAL][4];
 	sfxHandle_t sfx_lghit1;
@@ -1365,12 +1360,6 @@ typedef struct {
 
 //	sfxHandle_t flightSound;
 	sfxHandle_t underWaterSound;
-	sfxHandle_t medkitSound;
-	sfxHandle_t wineSound;
-	sfxHandle_t staminaSound;   //----(SA)	added
-	sfxHandle_t elecSound;
-	sfxHandle_t fireSound;
-	sfxHandle_t waterSound;
 
 	// teamplay sounds
 	sfxHandle_t redLeadsSound;
@@ -1954,9 +1943,6 @@ void CG_PositionRotatedEntityOnTag( refEntity_t *entity, const refEntity_t *pare
 
 //----(SA)
 void CG_AttachedPartChange( centity_t *cent );
-void CG_NextItem_f( void );
-void CG_PrevItem_f( void );
-void CG_Item_f( void );
 //----(SA)	end
 
 
@@ -2010,10 +1996,8 @@ void CG_GrappleTrail( centity_t *ent, const weaponInfo_t *wi );
 void CG_AddViewWeapon( playerState_t *ps );
 void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent );
 void CG_DrawWeaponSelect( void );
-void CG_DrawHoldableSelect( void );
 
 void CG_OutOfAmmoChange( void );
-void CG_HoldableUsedupChange( void ); //----(SA)	added
 
 //----(SA) added to header to access from outside cg_weapons.cpp
 void CG_AddDebris( vec3_t origin, vec3_t dir, int speed, int duration, int count );
@@ -2388,8 +2372,8 @@ int         trap_GetCurrentCmdNumber( void );
 
 bool    trap_GetUserCmd( int cmdNumber, usercmd_t *ucmd );
 
-// used for the weapon/holdable select and zoom
-void        trap_SetUserCmdValue( int stateValue, int holdValue, float sensitivityScale, int cld );     // NERVE - SMF - added cld
+// used for the weapon select and zoom
+void        trap_SetUserCmdValue( int stateValue, float sensitivityScale, int cld );     // NERVE - SMF - added cld
 
 // aids for VM testing
 void        testPrintInt( char *string, int i );
