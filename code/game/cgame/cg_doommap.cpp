@@ -71,9 +71,9 @@ void CG_DoomMapInit() {
     }
     const char *error = dbsp::validate(data, length);
     const auto &header = *reinterpret_cast<const dbsp::Header *>(data);
-    if (error || header.lumps[dbsp::Lines].length > sizeof(lines) ||
-        header.lumps[dbsp::Sides].length > sizeof(sides) ||
-        header.lumps[dbsp::Sectors].length > sizeof(sectors)) {
+    if (error || (size_t)header.lumps[dbsp::Lines].length > sizeof(lines) ||
+        (size_t)header.lumps[dbsp::Sides].length > sizeof(sides) ||
+        (size_t)header.lumps[dbsp::Sectors].length > sizeof(sectors)) {
         std::free(data);
         CG_Error("Invalid or oversized Doom automap: %s", error ? error : cgs.mapname);
         return;

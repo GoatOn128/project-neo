@@ -12,7 +12,7 @@ CFxScheduler theFxScheduler;
 void CMediaHandles::operator=(const CMediaHandles &that) {
     mMediaList.clear();
 
-    for (int i = 0; i < that.mMediaList.size(); i++) {
+    for (int i = 0; i < (int)that.mMediaList.size(); i++) {
         mMediaList.push_back(that.mMediaList[i]);
     }
 }

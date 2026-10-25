@@ -157,7 +157,7 @@ static bool CG_ParseGibModels( const char *filename, clientInfo_t *ci ) {
 	if ( len <= 0 ) {
 		return false;
 	}
-	if ( len >= sizeof( text ) - 1 ) {
+	if ( len >= (int)sizeof( text ) - 1 ) {
 		CG_Printf( "File %s too long\n", filename );
 		return false;
 	}

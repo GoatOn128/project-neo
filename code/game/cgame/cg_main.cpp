@@ -677,7 +677,7 @@ void CG_SetupDlightstyles( void ) {
 		token = COM_Parse( &str );   // attenuation
 		cent->dl_atten = atoi( token );
 
-		for ( j = 0; j < strlen( cent->dl_stylestring ); j++ ) {
+		for ( j = 0; j < (int)strlen( cent->dl_stylestring ); j++ ) {
 
 			cent->dl_stylestring[j] += cent->dl_atten;  // adjust character for attenuation/amplification
 

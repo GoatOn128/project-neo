@@ -263,7 +263,7 @@ void CG_Respawn( void ) {
 	//cg.weaponSelect = cg.snap->ps.weapon;
 	// DHM - Nerve :: Clear even more things on respawn
 	cg.zoomedBinoc = false;
-	cg.zoomedBinoc = cg.zoomedScope = false;
+	cg.zoomedScope = false;
 	cg.zoomTime = 0;
 	cg.zoomval = 0;
 

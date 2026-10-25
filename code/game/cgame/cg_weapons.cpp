@@ -5640,7 +5640,6 @@ CG_Tracer
 void CG_Tracer( vec3_t source, vec3_t dest, int sparks ) {
 	float len, begin, end;
 	vec3_t start, finish;
-	vec3_t midpoint;
 	vec3_t forward;
 
 	// tracer
@@ -5660,10 +5659,6 @@ void CG_Tracer( vec3_t source, vec3_t dest, int sparks ) {
 	VectorMA( source, end, forward, finish );
 
 	CG_DrawTracer( start, finish );
-
-	midpoint[0] = ( start[0] + finish[0] ) * 0.5;
-	midpoint[1] = ( start[1] + finish[1] ) * 0.5;
-	midpoint[2] = ( start[2] + finish[2] ) * 0.5;
 
 	// add the tracer sound
 	// trap_S_StartSound( midpoint, ENTITYNUM_WORLD, CHAN_AUTO, cgs.media.tracerSound );
