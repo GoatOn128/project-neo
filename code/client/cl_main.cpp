@@ -31,7 +31,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "client.h"
 #include "console_font.h"
 #include "../sys/sys_editor.h"
+#ifdef _WIN32
 #include "../sys/win32/win_local.h"
+#endif
 #include <limits.h>
 
 cvar_t  *cl_nodelta;
@@ -2358,7 +2360,12 @@ int CL_ScaledMilliseconds( void ) {
 // the renderer publishes the native window handle through the import
 // table; the editor bridge reads it
 static void CL_RefSetGameWindow( void *window ) {
+#ifdef _WIN32
 	Win_SetGameWindow( (HWND)window );
+#else
+	// The Windows helper is not built on Linux, keep the parameter used.
+	(void)window;
+#endif
 }
 
 /*
