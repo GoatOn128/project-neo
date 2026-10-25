@@ -96,7 +96,6 @@ jobs:
               grouped = Counter()
               for message in messages:
                   grouped[re.sub(r'\d+', 'N', message)] += 1
-                  grouped[key] += 1
               return grouped
 
           warn_groups = group(warnings)
