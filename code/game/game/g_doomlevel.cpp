@@ -147,7 +147,7 @@ bool G_DoomBeginIntermission(gentity_t *player, bool secret) {
         entity.client->ps.pm_type = PM_INTERMISSION;
         entity.client->ps.eFlags &= ~EF_FIRING;
         VectorClear(entity.client->ps.velocity);
-        entity.takedamage = qfalse;
+        entity.takedamage = false;
     }
     Publish();
     return true;

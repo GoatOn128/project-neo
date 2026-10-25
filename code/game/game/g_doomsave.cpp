@@ -22,7 +22,7 @@ void G_DoomSaveBeginRestore() {
             trap_UnlinkEntity(&entity);
         }
         trap_BotFreeClient(slot);
-        entity.inuse = qfalse;
+        entity.inuse = false;
         memset(&level.clients[slot], 0, sizeof(gclient_t));
     }
 }

@@ -74,7 +74,7 @@ inline void Initialize(playerState_t &ps) {
     ps.weaponstate = WEAPON_RAISING;
     ps.weaponTime = Milliseconds(16);
     ps.weaponDelay = ps.weapAnimTimer = 0;
-    ps.releasedFire = qtrue;
+    ps.releasedFire = true;
     Animate(ps, WEAP_RAISE);
 }
 inline bool AddAmmo(playerState_t &ps, int weapon, int amount) {
@@ -142,7 +142,7 @@ inline bool Collect(playerState_t &ps, int index, bool doubleAmmo = false, bool 
 inline int Step(playerState_t &ps, const usercmd_t &cmd, int msec) {
     ps.eFlags &= ~EF_FIRING;
     if (!(cmd.buttons & BUTTON_ATTACK)) {
-        ps.releasedFire = qtrue;
+        ps.releasedFire = true;
     }
     if (ps.stats[STAT_HEALTH] <= 0 || ps.pm_type >= PM_DEAD ||
         ps.persistant[PERS_TEAM] == TEAM_SPECTATOR) {
@@ -213,7 +213,7 @@ inline int Step(playerState_t &ps, const usercmd_t &cmd, int msec) {
     }
     const bool repeat = ps.weaponstate == WEAPON_FIRING && !ps.releasedFire;
     ps.stats[STAT_DOOM_REFIRE] = repeat ? 1 : 0;
-    ps.releasedFire = qfalse;
+    ps.releasedFire = false;
     const int previous = ps.weapAnim & ~ANIM_TOGGLEBIT;
     const bool alternate = (ps.weapon == WP_DOOM_CHAINGUN || ps.weapon == WP_DOOM_CHAINSAW) &&
                            repeat && previous == WEAP_ATTACK1;

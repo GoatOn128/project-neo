@@ -3,7 +3,7 @@
 #include "g_local.h"
 
 doomProgress_t doomProgress;
-qboolean saveGamePending;
+bool saveGamePending;
 
 gentity_t *G_FindActor(const char *name) {
     if (!name || !*name) {
@@ -55,7 +55,7 @@ void G_DoomCheckLoadGame() {
             return;
         }
     }
-    saveGamePending = qfalse;
+    saveGamePending = false;
     if (trap_Cvar_VariableIntegerValue("savegame_loading")) {
         trap_Cvar_Set("savegame_loading", "0");
         G_LoadGame(nullptr);
@@ -72,7 +72,7 @@ void G_DoomCheckLoadGame() {
 }
 DOOM_SAVE_CALLBACK("G_DoomCheckLoadGame", G_DoomCheckLoadGame);
 
-void G_SetAASBlockingEntity(gentity_t *entity, qboolean blocking) {
+void G_SetAASBlockingEntity(gentity_t *entity, bool blocking) {
     entity->AASblocking = blocking;
     for (int world = 0; world < 4; ++world) {
         trap_AAS_SetCurrentWorld(world);
@@ -125,17 +125,17 @@ void G_DoomAIRestore(int savedTime) {
 }
 DOOM_SAVE_CALLBACK("G_DoomAIRestore", G_DoomAIRestore);
 
-qboolean G_ActorVisibleFromPos(vec3_t source, int sourceNum, vec3_t target, int targetNum) {
+bool G_ActorVisibleFromPos(vec3_t source, int sourceNum, vec3_t target, int targetNum) {
     trace_t trace;
     trap_Trace(&trace, source, nullptr, nullptr, target, sourceNum, MASK_SHOT);
-    return trace.fraction == 1 || trace.entityNum == targetNum ? qtrue : qfalse;
+    return trace.fraction == 1 || trace.entityNum == targetNum ? true : false;
 }
 DOOM_SAVE_CALLBACK("G_ActorVisibleFromPos", G_ActorVisibleFromPos);
 
-qboolean G_ActorCanAttackFromPos(int entityNum, int enemyNum, vec3_t origin) {
+bool G_ActorCanAttackFromPos(int entityNum, int enemyNum, vec3_t origin) {
     if (entityNum < 0 || entityNum >= level.num_entities || enemyNum < 0 ||
         enemyNum >= level.num_entities) {
-        return qfalse;
+        return false;
     }
     vec3_t source, target;
     VectorCopy(origin, source);

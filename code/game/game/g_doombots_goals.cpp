@@ -40,7 +40,7 @@ static float ItemNeed(gentity_t *self, gentity_t *item) {
     }
     return 40;
 }
-qboolean DoomBotFindItem(doomBot_t &bot, gentity_t *self, float range) {
+bool DoomBotFindItem(doomBot_t &bot, gentity_t *self, float range) {
     float best = 0;
     int chosen = -1;
     vec3_t destination;
@@ -80,15 +80,15 @@ qboolean DoomBotFindItem(doomBot_t &bot, gentity_t *self, float range) {
         VectorCopy(goal, destination);
     }
     if (chosen < 0) {
-        return qfalse;
+        return false;
     }
-    bot.hasGoal = qtrue;
+    bot.hasGoal = true;
     bot.goalType = DOOM_BOT_ITEM;
     bot.goalNum = chosen;
     bot.goalUntil = level.time + 10000;
     bot.nextRoute = level.time;
     VectorCopy(destination, bot.goal);
-    return qtrue;
+    return true;
 }
 void DoomBotGoals(doomBot_t &bot, gentity_t *self) {
     const bool reachedRoam = bot.hasGoal && bot.goalType == DOOM_BOT_ROAM &&
@@ -101,7 +101,7 @@ void DoomBotGoals(doomBot_t &bot, gentity_t *self) {
         const int recent = bot.recentIndex++ % 8;
         bot.recentGoals[recent] = bot.goalNum;
         bot.recentTimes[recent] = level.time;
-        bot.hasGoal = qfalse;
+        bot.hasGoal = false;
     }
     // Reaching the neighborhood of a pickup is not collecting it. Stay on the
     // item goal until the normal trigger touch succeeds, rather than turning
@@ -122,7 +122,7 @@ void DoomBotGoals(doomBot_t &bot, gentity_t *self) {
     // Low health can outweigh pursuit; combat still fires at visible enemies.
     if (bot.visible && !(bot.enemyNum == bot.avoidGoalNum && level.time < bot.avoidUntil) &&
         self->health >= self->client->ps.stats[STAT_MAX_HEALTH] / 3) {
-        bot.hasGoal = qtrue;
+        bot.hasGoal = true;
         bot.goalType = DOOM_BOT_ENEMY;
         bot.goalNum = bot.enemyNum;
         VectorCopy(bot.lastEnemy, bot.goal);
@@ -134,7 +134,7 @@ void DoomBotGoals(doomBot_t &bot, gentity_t *self) {
         if (item->inuse && item->touch && item->r.contents && ItemNeed(self, item) > 0) {
             return;
         }
-        bot.hasGoal = qfalse;
+        bot.hasGoal = false;
     }
     if (bot.hasGoal && bot.goalType == DOOM_BOT_ROAM && level.time < bot.goalUntil &&
         Distance(self->r.currentOrigin, bot.goal) > 48) {
@@ -145,7 +145,7 @@ void DoomBotGoals(doomBot_t &bot, gentity_t *self) {
     }
     if (bot.enemyNum >= 0 && !(bot.enemyNum == bot.avoidGoalNum && level.time < bot.avoidUntil) &&
         level.time - bot.lastSeen < 2500) {
-        bot.hasGoal = qtrue;
+        bot.hasGoal = true;
         bot.goalType = DOOM_BOT_ENEMY;
         bot.goalNum = bot.enemyNum;
         VectorCopy(bot.lastEnemy, bot.goal);
@@ -187,7 +187,7 @@ void DoomBotGoals(doomBot_t &bot, gentity_t *self) {
             chosen = spot;
         }
     }
-    bot.hasGoal = chosen ? qtrue : qfalse;
+    bot.hasGoal = chosen ? true : false;
     bot.goalType = chosen ? DOOM_BOT_ROAM : DOOM_BOT_IDLE;
     if (chosen) {
         bot.goalNum = chosen->s.number;

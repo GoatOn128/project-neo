@@ -7,4 +7,4 @@ void G_DoomBotsShutdown();
 void G_DoomBotsFrame();
 void G_DoomBotsMakeRoom();
 void G_DoomBotDisconnect(int clientNum);
-qboolean G_DoomBotCommand(const char *command);
+bool G_DoomBotCommand(const char *command);

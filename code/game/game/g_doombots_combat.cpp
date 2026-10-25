@@ -2,28 +2,28 @@
 // Adapted from Hexen2 player bots; Doom combat and item rules.
 #include "g_doombots_local.h"
 
-qboolean DoomBotEnemy(gentity_t *self, gentity_t *other) {
+bool DoomBotEnemy(gentity_t *self, gentity_t *other) {
     if (other == self || !other->inuse || !other->client || !other->takedamage ||
         other->health <= 0 || (other->flags & FL_NOTARGET)) {
-        return qfalse;
+        return false;
     }
     return !other->doomNpc.type && other->client->pers.connected == CON_CONNECTED &&
                    other->client->sess.sessionTeam != TEAM_SPECTATOR && !OnSameTeam(self, other)
-               ? qtrue
-               : qfalse;
+               ? true
+               : false;
 }
-qboolean DoomBotVisible(gentity_t *self, gentity_t *other) {
+bool DoomBotVisible(gentity_t *self, gentity_t *other) {
     vec3_t eye, target;
     VectorCopy(self->r.currentOrigin, eye);
     eye[2] += self->client->ps.viewheight;
     VectorCopy(other->r.currentOrigin, target);
     target[2] += other->client->ps.viewheight * .65f;
     if (!trap_InPVS(eye, target)) {
-        return qfalse;
+        return false;
     }
     trace_t trace;
     trap_Trace(&trace, eye, NULL, NULL, target, self->s.number, MASK_SHOT);
-    return trace.fraction == 1 || trace.entityNum == other->s.number ? qtrue : qfalse;
+    return trace.fraction == 1 || trace.entityNum == other->s.number ? true : false;
 }
 void DoomBotSense(doomBot_t &bot, gentity_t *self) {
     int selected = -1;
@@ -52,7 +52,7 @@ void DoomBotSense(doomBot_t &bot, gentity_t *self) {
         best = score;
         selected = i;
     }
-    bot.visible = selected >= 0 ? qtrue : qfalse;
+    bot.visible = selected >= 0 ? true : false;
     if (selected >= 0) {
         if (selected != bot.enemyNum) {
             bot.attackReady = level.time + 650 - bot.skill * 100;
@@ -65,11 +65,11 @@ void DoomBotSense(doomBot_t &bot, gentity_t *self) {
         bot.enemyNum = -1;
     }
 }
-static qboolean CanFire(const playerState_t *ps, int weapon) {
-    return doomweapon::Selectable(*ps, weapon) ? qtrue : qfalse;
+static bool CanFire(const playerState_t *ps, int weapon) {
+    return doomweapon::Selectable(*ps, weapon) ? true : false;
 }
-static qboolean Melee(const playerState_t *, int weapon) {
-    return weapon == WP_DOOM_FIST || weapon == WP_DOOM_CHAINSAW ? qtrue : qfalse;
+static bool Melee(const playerState_t *, int weapon) {
+    return weapon == WP_DOOM_FIST || weapon == WP_DOOM_CHAINSAW ? true : false;
 }
 static float ProjectileSpeed(const playerState_t *, int weapon) {
     return weapon == WP_DOOM_ROCKET                            ? 700.0f
@@ -169,12 +169,12 @@ void DoomBotCombat(doomBot_t &bot, gentity_t *self, usercmd_t &cmd, int msec) {
         // A combat dodge needs a clear corridor and a safe floor.
         vec3_t dodge;
         VectorScale(right, bot.strafeSign, dodge);
-        if (DoomBotSafeStep(self, dodge, qfalse, qfalse)) {
+        if (DoomBotSafeStep(self, dodge, false, false)) {
             cmd.rightmove = bot.strafeSign * 90;
             // Backpedalling must pass the same floor and slope checks.
             vec3_t back;
             VectorScale(forward, -1, back);
-            cmd.forwardmove = distance < 160 && DoomBotSafeStep(self, back, qfalse, qfalse) ? -60
+            cmd.forwardmove = distance < 160 && DoomBotSafeStep(self, back, false, false) ? -60
                               : distance < 300 ? 0
                                                : cmd.forwardmove;
         }

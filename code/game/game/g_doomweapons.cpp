@@ -51,7 +51,7 @@ void DoomWeaponRay(gentity_t *player, float yawSpread, float pitchSpread, float 
     VectorMA(start, range, direction, end);
     trace_t trace;
     trap_Trace(&trace, start, nullptr, nullptr, end, player->s.number, MASK_SHOT);
-    G_DoomTraceLine(player, start, trace.endpos, qtrue);
+    G_DoomTraceLine(player, start, trace.endpos, true);
     const bool damageable = trace.entityNum >= 0 && trace.entityNum < ENTITYNUM_WORLD &&
                             g_entities[trace.entityNum].takedamage;
     const bool flesh = damageable && g_entities[trace.entityNum].client;
@@ -110,12 +110,12 @@ void G_DoomBfgSpray(gentity_t *missile) {
 }
 DOOM_SAVE_CALLBACK("G_DoomBfgSpray", G_DoomBfgSpray);
 
-qboolean G_DoomFireWeapon(gentity_t *player) {
+bool G_DoomFireWeapon(gentity_t *player) {
     G_DoomAIHear(player->s.number, player->r.currentOrigin, 2048);
     const int weapon = player->client->ps.weapon;
     const auto *definition = doomweapon::Get(weapon);
     if (!definition || !player->client->ps.stats[STAT_DOOM_WEAPONS]) {
-        return qfalse;
+        return false;
     }
     if (weapon == WP_DOOM_FIST || weapon == WP_DOOM_CHAINSAW) {
         DoomWeaponRay(
@@ -168,7 +168,7 @@ qboolean G_DoomFireWeapon(gentity_t *player) {
         VectorSet(bolt->r.maxs, 3, 3, 3);
         trap_LinkEntity(bolt);
     }
-    return qtrue;
+    return true;
 }
 DOOM_SAVE_CALLBACK("G_DoomFireWeapon", G_DoomFireWeapon);
 

@@ -16,7 +16,7 @@ int DoomBotArea(const vec3_t point) {
     trap_AAS_SetCurrentWorld(0);
     return trap_AAS_PointAreaNum(origin);
 }
-qboolean DoomBotRoute(gentity_t *self, const vec3_t goal, doomAasRoute_t &route) {
+bool DoomBotRoute(gentity_t *self, const vec3_t goal, doomAasRoute_t &route) {
     vec3_t start, end;
     VectorCopy(self->r.currentOrigin, start);
     start[2] += self->r.mins[2] + 1;
@@ -25,8 +25,8 @@ qboolean DoomBotRoute(gentity_t *self, const vec3_t goal, doomAasRoute_t &route)
     trap_AAS_SetCurrentWorld(0);
     return trap_AAS_Initialized() &&
                    trap_AAS_DoomPlayerRoute(start, end, DoomBotTravelFlags(), &route)
-               ? qtrue
-               : qfalse;
+               ? true
+               : false;
 }
 void DoomBotView(gentity_t *self, usercmd_t &cmd, const vec3_t desired, float turn) {
     for (int i = 0; i < 3; ++i) {
@@ -41,8 +41,8 @@ void DoomBotView(gentity_t *self, usercmd_t &cmd, const vec3_t desired, float tu
         cmd.angles[i] = ANGLE2SHORT(angle) - self->client->ps.delta_angles[i];
     }
 }
-qboolean DoomBotSafeStep(gentity_t *self, const vec3_t direction, qboolean crossing,
-                         qboolean water) {
+bool DoomBotSafeStep(gentity_t *self, const vec3_t direction, bool crossing,
+                         bool water) {
     vec3_t start, end;
     VectorCopy(self->r.currentOrigin, start);
     start[2] += .25f;
@@ -52,7 +52,7 @@ qboolean DoomBotSafeStep(gentity_t *self, const vec3_t direction, qboolean cross
         trap_Trace(&trace, start, self->r.mins, self->r.maxs, end, self->s.number,
                    MASK_PLAYERSOLID);
         if (trace.startsolid || trace.allsolid) {
-            return qfalse;
+            return false;
         }
         if (trace.fraction == 1) {
             break;
@@ -66,14 +66,14 @@ qboolean DoomBotSafeStep(gentity_t *self, const vec3_t direction, qboolean cross
             trap_Trace(&trace, start, self->r.mins, self->r.maxs, raised, self->s.number,
                        MASK_PLAYERSOLID);
             if (trace.startsolid || trace.fraction != 1) {
-                return qfalse;
+                return false;
             }
             VectorCopy(end, destination);
             destination[2] += 24;
             trap_Trace(&trace, raised, self->r.mins, self->r.maxs, destination, self->s.number,
                        MASK_PLAYERSOLID);
             if (trace.startsolid || trace.fraction != 1) {
-                return qfalse;
+                return false;
             }
             VectorCopy(destination, end);
             break;
@@ -86,7 +86,7 @@ qboolean DoomBotSafeStep(gentity_t *self, const vec3_t direction, qboolean cross
         VectorMA(trace.endpos, .125f, trace.plane.normal, start);
         VectorAdd(start, remaining, end);
         if (bump == 2) {
-            return qfalse;
+            return false;
         }
     }
     vec3_t floor;
@@ -94,16 +94,16 @@ qboolean DoomBotSafeStep(gentity_t *self, const vec3_t direction, qboolean cross
     floor[2] -= crossing ? 184 : 88;
     trap_Trace(&trace, end, self->r.mins, self->r.maxs, floor, self->s.number, MASK_PLAYERSOLID);
     if (trace.startsolid || trace.allsolid) {
-        return qfalse;
+        return false;
     }
     vec3_t contentsPoint;
     VectorCopy(trace.endpos, contentsPoint);
     contentsPoint[2] += self->r.mins[2] + 2;
     if (trap_PointContents(contentsPoint, self->s.number) & (CONTENTS_LAVA | CONTENTS_SLIME)) {
-        return qfalse;
+        return false;
     }
-    return water || crossing || (trace.fraction < 1 && trace.plane.normal[2] >= .7f) ? qtrue
-                                                                                     : qfalse;
+    return water || crossing || (trace.fraction < 1 && trace.plane.normal[2] >= .7f) ? true
+                                                                                     : false;
 }
 
 static void MoveDirection(gentity_t *self, usercmd_t &cmd, const vec3_t direction) {
@@ -125,7 +125,7 @@ static void Escape(doomBot_t &bot, gentity_t *self, usercmd_t &cmd) {
     for (int i = 0; i < 8; ++i) {
         vec3_t test = {0, angles[YAW] + offsets[i ^ (self->s.number & 1)], 0}, candidate;
         AngleVectors(test, candidate, NULL, NULL);
-        if (!DoomBotSafeStep(self, candidate, qfalse, self->waterlevel >= 2 ? qtrue : qfalse)) {
+        if (!DoomBotSafeStep(self, candidate, false, self->waterlevel >= 2 ? true : false)) {
             continue;
         }
         VectorCopy(candidate, bot.escapeDirection);
@@ -135,7 +135,7 @@ static void Escape(doomBot_t &bot, gentity_t *self, usercmd_t &cmd) {
     bot.escapeUntil = level.time + 900;
     bot.avoidGoalNum = bot.goalNum;
     bot.avoidUntil = level.time + 4000;
-    bot.hasGoal = qfalse;
+    bot.hasGoal = false;
     bot.nextDecision = bot.escapeUntil;
     bot.nextRoute = bot.escapeUntil;
     bot.progressTime = level.time;
@@ -144,8 +144,8 @@ static void Escape(doomBot_t &bot, gentity_t *self, usercmd_t &cmd) {
 }
 void DoomBotNavigate(doomBot_t &bot, gentity_t *self, usercmd_t &cmd, int msec) {
     if (level.time < bot.escapeUntil) {
-        if (DoomBotSafeStep(self, bot.escapeDirection, qfalse,
-                            self->waterlevel >= 2 ? qtrue : qfalse)) {
+        if (DoomBotSafeStep(self, bot.escapeDirection, false,
+                            self->waterlevel >= 2 ? true : false)) {
             MoveDirection(self, cmd, bot.escapeDirection);
         }
         return;
@@ -155,11 +155,11 @@ void DoomBotNavigate(doomBot_t &bot, gentity_t *self, usercmd_t &cmd, int msec) 
         return;
     }
     int ground = self->client->ps.groundEntityNum;
-    qboolean riding = ground >= 0 && ground < ENTITYNUM_WORLD && bot.routed &&
+    bool riding = ground >= 0 && ground < ENTITYNUM_WORLD && bot.routed &&
                               bot.route.moverModel &&
                               g_entities[ground].s.modelindex == bot.route.moverModel
-                          ? qtrue
-                          : qfalse;
+                          ? true
+                          : false;
     if (level.time >= bot.nextRoute && !riding) {
         bot.nextRoute = level.time + 150;
         vec3_t origin, goal;
@@ -173,8 +173,8 @@ void DoomBotNavigate(doomBot_t &bot, gentity_t *self, usercmd_t &cmd, int msec) 
         ++bot.routeAttempts;
         bot.routed = trap_AAS_Initialized() && trap_AAS_DoomPlayerRoute(
                                                    origin, goal, DoomBotTravelFlags(), &bot.route)
-                         ? qtrue
-                         : qfalse;
+                         ? true
+                         : false;
         if (bot.routed) {
             ++bot.routes;
         } else {
@@ -216,7 +216,7 @@ void DoomBotNavigate(doomBot_t &bot, gentity_t *self, usercmd_t &cmd, int msec) 
             trace_t sight;
             trap_Trace(&sight, eye, NULL, NULL, target, self->s.number, MASK_SOLID);
             if (rise <= run && sight.fraction == 1 &&
-                DoomBotSafeStep(self, direct, qfalse, qfalse)) {
+                DoomBotSafeStep(self, direct, false, false)) {
                 VectorCopy(bot.goal, bot.route.point);
             }
         }
@@ -227,16 +227,16 @@ void DoomBotNavigate(doomBot_t &bot, gentity_t *self, usercmd_t &cmd, int msec) 
     direction[2] = 0;
     float distance = VectorNormalize(direction);
     int travel = bot.route.travelType;
-    qboolean jump = bot.routed && (travel == TRAVEL_JUMP || travel == TRAVEL_BARRIERJUMP ||
+    bool jump = bot.routed && (travel == TRAVEL_JUMP || travel == TRAVEL_BARRIERJUMP ||
                                    travel == TRAVEL_WATERJUMP)
-                        ? qtrue
-                        : qfalse;
-    qboolean crossing =
-        bot.routed && (jump || travel == TRAVEL_WALKOFFLEDGE || travel == TRAVEL_JUMPPAD) ? qtrue
-                                                                                          : qfalse;
-    qboolean water = self->waterlevel >= 2 ? qtrue : qfalse;
-    qboolean lift =
-        bot.routed && (travel == TRAVEL_ELEVATOR || travel == TRAVEL_FUNCBOB) ? qtrue : qfalse;
+                        ? true
+                        : false;
+    bool crossing =
+        bot.routed && (jump || travel == TRAVEL_WALKOFFLEDGE || travel == TRAVEL_JUMPPAD) ? true
+                                                                                          : false;
+    bool water = self->waterlevel >= 2 ? true : false;
+    bool lift =
+        bot.routed && (travel == TRAVEL_ELEVATOR || travel == TRAVEL_FUNCBOB) ? true : false;
     vec3_t progress;
     VectorSubtract(self->r.currentOrigin, bot.progressOrigin, progress);
     // Sideways oscillation at a wall is not progress. Count approach to the
@@ -268,7 +268,7 @@ void DoomBotNavigate(doomBot_t &bot, gentity_t *self, usercmd_t &cmd, int msec) 
         // Combat aim can point away from the route. Use the obstructing Doom
         // line along travel direction, with the same key checks as human use.
         if ((level.time / 250 + self->s.number) % 2) {
-            G_DoomTraceLine(self, useStart, useEnd, qfalse);
+            G_DoomTraceLine(self, useStart, useEnd, false);
         }
         if ((level.time / 250) % 2) {
             cmd.buttons |= BUTTON_ACTIVATE;
@@ -276,20 +276,20 @@ void DoomBotNavigate(doomBot_t &bot, gentity_t *self, usercmd_t &cmd, int msec) 
     }
     // Airborne route execution must keep its direction rather than steer away
     // because a floor probe is temporarily empty during a jump.
-    qboolean airborne = self->client->ps.groundEntityNum == ENTITYNUM_NONE ? qtrue : qfalse;
+    bool airborne = self->client->ps.groundEntityNum == ENTITYNUM_NONE ? true : false;
     if (!airborne && !DoomBotSafeStep(self, direction, crossing, water)) {
         vec3_t angles, candidate;
         vectoangles(direction, angles);
-        qboolean found = qfalse;
+        bool found = false;
         const float offsets[] = {35, -35, 70, -70, 110, -110};
         for (int i = 0; i < 6; ++i) {
             vec3_t test = {0, angles[YAW] + offsets[(i + self->s.number % 2) % 6], 0};
             AngleVectors(test, candidate, NULL, NULL);
-            if (!DoomBotSafeStep(self, candidate, qfalse, water)) {
+            if (!DoomBotSafeStep(self, candidate, false, water)) {
                 continue;
             }
             VectorCopy(candidate, direction);
-            found = qtrue;
+            found = true;
             break;
         }
         if (!found) {
@@ -314,7 +314,7 @@ void DoomBotNavigate(doomBot_t &bot, gentity_t *self, usercmd_t &cmd, int msec) 
                 trap_PointContents(probe, self->s.number) & (CONTENTS_LAVA | CONTENTS_SLIME)) {
                 return;
             }
-            jump = qtrue;
+            jump = true;
         }
     }
     vec3_t desired;

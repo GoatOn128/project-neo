@@ -14,12 +14,12 @@ struct doomProgress_t {
     int totalPlayTime, lastLoadTime, attempts;
 };
 extern doomProgress_t doomProgress;
-extern qboolean saveGamePending;
+extern bool saveGamePending;
 void G_DoomAIInit();
 void G_DoomAIShutdown();
 void G_DoomAIBeginFrame();
 void G_DoomAISpawnThings(const void *mapData);
-qboolean G_DoomAIConfigure(gentity_t *entity);
+bool G_DoomAIConfigure(gentity_t *entity);
 void G_DoomAISpawnThink(gentity_t *source);
 void G_DoomAIRun(gentity_t *entity);
 void G_DoomAIReplicate(gentity_t *entity);
@@ -33,11 +33,11 @@ void G_DoomCheckLoadGame();
 void G_DoomAgePlayTime();
 gentity_t *G_FindActor(const char *name);
 void G_ActorScriptEvent(gentity_t *entity, const char *event, const char *params);
-void G_SetAASBlockingEntity(gentity_t *entity, qboolean blocking);
-qboolean trap_AAS_Route(vec3_t origin, vec3_t goal, int flags, vec3_t point);
+void G_SetAASBlockingEntity(gentity_t *entity, bool blocking);
+bool trap_AAS_Route(vec3_t origin, vec3_t goal, int flags, vec3_t point);
 
 int G_DoomSkill();
 void G_DoomAIRestore(int savedTime);
 
-qboolean G_ActorVisibleFromPos(vec3_t source, int sourceNum, vec3_t target, int targetNum);
-qboolean G_ActorCanAttackFromPos(int entityNum, int enemyNum, vec3_t origin);
+bool G_ActorVisibleFromPos(vec3_t source, int sourceNum, vec3_t target, int targetNum);
+bool G_ActorCanAttackFromPos(int entityNum, int enemyNum, vec3_t origin);
