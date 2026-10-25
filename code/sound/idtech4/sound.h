@@ -16,7 +16,7 @@
 #ifndef __SOUND_IDTECH4_PUBLIC_H__
 #define __SOUND_IDTECH4_PUBLIC_H__
 
-#include "../../qcommon/q_shared.h"
+#include "../../game/game/q_shared.h"
 
 // sound shader flags, values identical to the Doom 3 source
 static const int SSF_PRIVATE_SOUND      = (1 << 0);  // only plays for the current listenerId
