@@ -11,7 +11,14 @@ on:
     # Changing only the logs does not need a new build.
     paths-ignore:
       - 'build.log'
+      - 'build-x64.log'
+      - 'build-linux.log'
+      - 'test.log'
+      - 'test-x64.log'
+      - 'test-linux.log'
+      - 'sdl3-build.log'
       - 'build-digest.md'
+      - 'build-linux-digest.md'
   pull_request:
   workflow_dispatch:
 
@@ -115,8 +122,17 @@ jobs:
             echo "build.log did not change."
           else
             git commit -m "Save the Windows x86 build and test logs"
-            git pull --rebase
-            git push
+            # Another run can push its logs while this job builds, so
+            # the rebase and push is retried before the step gives up.
+            for attempt in 1 2 3 4 5; do
+              if git pull --rebase && git push; then
+                exit 0
+              fi
+              git rebase --abort 2>/dev/null || true
+              sleep 5
+            done
+            echo "Could not push the logs after several attempts."
+            exit 1
           fi
 
       - name: Save build.log
@@ -222,8 +238,17 @@ jobs:
             echo "build-x64.log did not change."
           else
             git commit -m "Save the Windows x64 build and test logs"
-            git pull --rebase
-            git push
+            # Another run can push its logs while this job builds, so
+            # the rebase and push is retried before the step gives up.
+            for attempt in 1 2 3 4 5; do
+              if git pull --rebase && git push; then
+                exit 0
+              fi
+              git rebase --abort 2>/dev/null || true
+              sleep 5
+            done
+            echo "Could not push the logs after several attempts."
+            exit 1
           fi
 
       - name: Save build-x64.log
@@ -345,8 +370,17 @@ jobs:
             echo "build-linux.log did not change."
           else
             git commit -m "Save the Linux x64 build and test logs"
-            git pull --rebase
-            git push
+            # Another run can push its logs while this job builds, so
+            # the rebase and push is retried before the step gives up.
+            for attempt in 1 2 3 4 5; do
+              if git pull --rebase && git push; then
+                exit 0
+              fi
+              git rebase --abort 2>/dev/null || true
+              sleep 5
+            done
+            echo "Could not push the logs after several attempts."
+            exit 1
           fi
 
       - name: Save build-linux.log
