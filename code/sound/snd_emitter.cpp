@@ -118,10 +118,13 @@ int idSoundEmitterLocal::StartSound( const idSoundShader *shader, s_channelType 
 	// old one, so reuse the voice the (emitter, channel) pair already has
 	idSoundVoice *voice = hardware.VoiceFor( index, static_cast<int>( channelNum ) % SOUND_MAX_CHANNELS );
 	if ( !voice ) {
-		voice = hardware.AllocateVoice();
+		// the world steals the least audible playing voice when the pool runs
+		// out, instead of dropping the new sound
+		idSoundWorldLocal *world = soundSystemLocalPtr->World();
+		voice = world ? world->AllocateVoiceOrSteal() : hardware.AllocateVoice();
 	}
 	if ( !voice ) {
-		// the source pool is exhausted, the same silent drop the old code did
+		// nothing is playing anywhere, so there is no voice to take either
 		return 0;
 	}
 	voice->SetOwner( index, static_cast<int>( channelNum ) % SOUND_MAX_CHANNELS );

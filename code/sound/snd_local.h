@@ -226,6 +226,10 @@ public:
 	void ReapLoopingSounds() override;
 	void Update( int gameTime, float masterVolume ) override;
 
+	// hands out a free voice, or steals the least audible playing one when
+	// the pool is exhausted, so busy scenes keep the loudest sounds
+	idSoundVoice *AllocateVoiceOrSteal();
+
 	const vec3_t &ListenerOrigin() const { return listenerOrigin; }
 	const vec3_t *ListenerAxis() const { return listenerAxis; }
 	int ListenerId() const { return listenerId; }

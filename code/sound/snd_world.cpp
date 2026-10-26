@@ -170,6 +170,46 @@ void idSoundWorldLocal::ReapLoopingSounds() {
 	}
 }
 
+idSoundVoice *idSoundWorldLocal::AllocateVoiceOrSteal() {
+	idSoundHardware &hardware = soundSystemLocalPtr->hardware;
+	idSoundVoice *voice = hardware.AllocateVoice();
+	if ( voice ) {
+		return voice;
+	}
+	// the pool is exhausted: stop the least audible playing channel and
+	// reuse its voice, so a busy scene keeps its loudest sounds instead of
+	// silently dropping every new one
+	idSoundChannel *best = nullptr;
+	float bestGain = 1.01f;
+	for ( int i = 0; i < SOUND_MAX_EMITTERS; ++i ) {
+		if ( !emitters[i].active ) {
+			continue;
+		}
+		for ( int j = 0; j < SOUND_MAX_CHANNELS; ++j ) {
+			idSoundChannel &ch = emitters[i].channels[j];
+			if ( ch.IsActive() && ch.voice && ch.currentGain < bestGain ) {
+				best = &ch;
+				bestGain = ch.currentGain;
+			}
+		}
+	}
+	for ( int j = 0; j < SOUND_MAX_CHANNELS; ++j ) {
+		idSoundChannel &ch = directEmitter.channels[j];
+		if ( ch.IsActive() && ch.voice && ch.currentGain < bestGain ) {
+			best = &ch;
+			bestGain = ch.currentGain;
+		}
+	}
+	if ( !best ) {
+		return nullptr;
+	}
+	voice = best->voice;
+	best->voice = nullptr;
+	best->playing = false;
+	hardware.FreeVoice( voice );
+	return voice;
+}
+
 void idSoundWorldLocal::Update( int time, float masterVolume ) {
 	// the sound class fades (cinematic ducking), the 2004 FadeSoundClasses
 	for ( int i = 0; i < SOUND_MAX_CLASSES; ++i ) {
