@@ -109,10 +109,15 @@ sfxHandle_t CG_CustomSound( int clientNum, const char *soundName ) {
 	}
 	ci = &cgs.clientinfo[ clientNum ];
     if (!Q_stricmp(ci->modelName, "doomguy")) {
-        const char *sound = strstr(soundName, "death")  ? "pldeth"
-                            : strstr(soundName, "pain") ? "plpain"
-                                                        : "oof";
-        return trap_S_RegisterSound(va("sound/doom/monsters/%s.wav", sound));
+        // Doom's player only has death and pain grunts; the other custom
+        // events (jump, exert, taunt...) stay silent, handle 0 plays nothing
+        if (strstr(soundName, "death")) {
+            return trap_S_RegisterSound("sound/doom/monsters/pldeth.wav");
+        }
+        if (strstr(soundName, "pain")) {
+            return trap_S_RegisterSound("sound/doom/monsters/plpain.wav");
+        }
+        return 0;
     }
 
     for (i = 0; i < MAX_CUSTOM_SOUNDS && cg_customSoundNames[i]; i++) {

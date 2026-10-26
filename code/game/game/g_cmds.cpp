@@ -1443,6 +1443,11 @@ void Cmd_Activate_f( gentity_t *ent ) {
 
 	if (G_DoomTraceLine(ent, offset, tr.endpos, false)) return;
 
+	// Doom players play the oof grunt when use finds nothing, like P_UseLines
+	if (ent->client->ps.stats[STAT_DOOM_WEAPONS]) {
+		G_Sound(ent, G_SoundIndex("sound/doom/monsters/oof.wav"));
+	}
+
 	//----(SA)	removed erroneous code
 
 	if ( tr.surfaceFlags & SURF_NOIMPACT ) {
