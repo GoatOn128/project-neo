@@ -205,7 +205,9 @@ void HostGame() {
         return;
     }
     trap_Cvar_Set("g_gametype", CvarInt("ui_doomMpTeam") ? "3" : "0");
-    trap_Cvar_Set("sv_maxclients", "16");
+    // queue the new limit in the console buffer so it latches instead of
+    // forcing sv_maxclients down while the running map still needs its slots
+    trap_Cmd_ExecuteText(EXEC_APPEND, "sets sv_maxclients 16\n");
     trap_Cvar_Set("g_maxGameClients", "16");
     trap_Cvar_Set("bot_enable", "1");
     trap_Cvar_Set("g_doWarmup", "0");
