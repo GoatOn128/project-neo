@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise the menu against a fake engine boundary: input, drawing, files, commands.
+#include <algorithm>
 #include <map>
 #include <string>
 #include <vector>
@@ -133,8 +134,11 @@ int main() {
         Require(cvars["ui_doomMpTeam"] == "1", "Mode must toggle to team deathmatch");
         cvars["ui_doomMpMap"] = "13"; cvars["ui_doomMpBots"] = "5";
         selected[Multiplayer] = 6; Key(K_ENTER);
+        // the client limit is queued as a console command so it latches when the new map starts
+        const auto limit = std::find(commands.begin(), commands.end(), "sets sv_maxclients 16\n");
+        const auto startMatch = std::find(commands.begin(), commands.end(), "map e2m5\n");
         Require(commands.back() == "map e2m5\n" && cvars["g_gametype"] == "3" &&
-            cvars["doom_botCount"] == "5" && cvars["sv_maxclients"] == "16" &&
+            cvars["doom_botCount"] == "5" && limit != commands.end() && limit < startMatch &&
             cvars["doom_botSkill"] == "3", "Host must set compatible Doom team and bot settings");
         Open(UIMENU_INGAME);
         Require(cvars["cl_paused"] == "0", "Multiplayer menu must leave the match running");
