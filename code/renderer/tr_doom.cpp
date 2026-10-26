@@ -85,7 +85,8 @@ void R_InitDoomSurfaces(world_t *world) {
             for (int x = 0; x < doomlight::Width; ++x) {
                 byte *pixel = pixels + (row * doomlight::Width + x) * 4;
                 pixel[0] = pixel[1] = pixel[2] = 0;
-                pixel[3] = doomlight::Alpha(row * 16, x * doomlight::DistanceStep);
+                // Sample the top of each 16-light band so bright sectors stay fullbright.
+                pixel[3] = doomlight::Alpha(row * 16 + 15, x * doomlight::DistanceStep);
             }
         }
         tr.doomFogImage = R_CreateImage("*doomDistance", pixels, doomlight::Width,
