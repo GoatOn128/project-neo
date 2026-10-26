@@ -165,7 +165,9 @@ void StartGame() {
     trap_Cvar_Set("doom_carry", "");
     trap_Cvar_Set("doom_visited", "0");
     trap_Cvar_Set("doom_visited_episode", "0");
-    trap_Cmd_ExecuteText(EXEC_APPEND,va("spmap e%dm1\n",chosenEpisode));
+    // map no longer forces single player; the gametype cvar carries it
+    trap_Cvar_Set("g_gametype",va("%d",GT_SINGLE_PLAYER));
+    trap_Cmd_ExecuteText(EXEC_APPEND,va("map e%dm1\n",chosenEpisode));
 }
 void SaveSlot() {
     int slot=selected[Save];

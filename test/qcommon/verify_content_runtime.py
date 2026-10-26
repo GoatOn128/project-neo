@@ -40,7 +40,7 @@ def launch(home, install, commands, start_map, *, demo):
     }
     for name, value in settings.items():
         command.extend(("+set", name, str(value)))
-    command.extend(("+spdevmap", start_map, "+exec", "verify.cfg"))
+    command.extend(("+set", "g_gametype", "2", "+devmap", start_map, "+exec", "verify.cfg"))
     process = subprocess.Popen(
         command,
         cwd=install,
@@ -116,12 +116,12 @@ def main():
         full_install,
         [
             "wait 600",
-            "spdevmap e2m1",
+            "devmap e2m1",
             "wait 600",
             "doom_demo",
             "savegame content_e2",
             "wait 10",
-            "spdevmap e3m1",
+            "devmap e3m1",
             "wait 600",
             "savegame content_e3",
             "wait 10",
@@ -150,16 +150,16 @@ def main():
             "wait 600",
             "doom_demo",
             "set doom_demo 0",
-            "spmap e2m1",
+            "map e2m1",
             "map e3m1",
             "devmap E2M5",
-            "spdevmap e3m9",
+            "devmap e3m9",
             "loadgame content_e2",
-            "spmap save/content_e3.svg",
+            "map save/content_e3.svg",
             "doom_demo",
             "savegame content_e1",
             "wait 10",
-            "spmap e1m9",
+            "map e1m9",
             "wait 600",
             "loadgame content_e1",
             "wait 600",

@@ -16,7 +16,7 @@ def main():
     home = ROOT / f"out/level-flow-{args.label}"
     base = home / "base"
     base.mkdir(parents=True, exist_ok=True)
-    # The exit inserts spmap ahead of the pending cfg; verify that later
+    # The exit inserts map ahead of the pending cfg; verify that later
     # commands resume inside the destination rather than blocking its load.
     (base / "start.cfg").write_text(
         "\n".join(
@@ -58,9 +58,9 @@ def main():
                 "screenshot level_e1m2",
                 "s_info",
                 "s_musicinfo",
-                "spdevmap e1m3",
+                "devmap e1m3",
                 "wait 250",
-                "spmap e1m2",
+                "map e1m2",
                 "wait 250",
                 "screenshot level_e1m2_again",
                 "quit",
@@ -86,7 +86,7 @@ def main():
         ("net_port", 27976),
     ):
         command.extend(("+set", name, str(value)))
-    command.extend(("+spdevmap", "e1m1", "+exec", "start.cfg"))
+    command.extend(("+set", "g_gametype", "2", "+devmap", "e1m1", "+exec", "start.cfg"))
     startup = subprocess.STARTUPINFO()
     startup.dwFlags = subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow = 0

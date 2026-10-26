@@ -349,7 +349,7 @@ void CG_DoomFxCommand() {
     char cheats[8];
     trap_Cvar_VariableStringBuffer("sv_cheats", cheats, sizeof(cheats));
     if (!atoi(cheats)) {
-        CG_Printf("doomfx preview/reload requires spdevmap\n");
+        CG_Printf("doomfx preview/reload requires devmap\n");
         return;
     }
     if (!Q_stricmp(name, "reload")) {

@@ -266,30 +266,21 @@ static void SV_Map_f( void ) {
 
 	Cvar_SetValue( "g_episode", 0 ); //----(SA) added
 
+	// The gamemode comes from g_gametype, not from the command name;
+	// only devmap turns cheats on.
 	cmd = Cmd_Argv( 0 );
-	if ( Q_stricmpn( cmd, "sp", 2 ) == 0 ) {
-		Cvar_SetValue( "g_gametype", GT_SINGLE_PLAYER );
+	if ( !Q_stricmp( cmd, "devmap" ) ) {
+		cheat = true;
+	} else {
+		cheat = false;
+	}
+	if ( sv_gametype->integer == GT_SINGLE_PLAYER ) {
 		Cvar_SetValue( "g_doWarmup", 0 );
 		// may not set sv_maxclients directly, always set latched
-		Cvar_SetLatched( "sv_maxclients", "32" ); // Ridah, modified this
-		cmd += 2;
+		Cvar_SetLatched( "sv_maxclients", "32" );
 		killBots = true;
-		if ( !Q_stricmp( cmd, "devmap" ) ) {
-			cheat = true;
-		} else {
-			cheat = false;
-		}
 	} else {
-		if ( !Q_stricmp( cmd, "devmap" ) ) {
-			cheat = true;
-			killBots = true;
-		} else {
-			cheat = false;
-			killBots = false;
-		}
-		if ( sv_gametype->integer == GT_SINGLE_PLAYER ) {
-			Cvar_SetValue( "g_gametype", GT_FFA );
-		}
+		killBots = cheat;
 	}
 
 
@@ -526,10 +517,12 @@ void    SV_LoadGame_f( void ) {
 	Hunk_FreeTempMemory( buffer );
 
 	// otherwise, do a slow load
+	// savegames are always single player; map no longer forces the gametype
+	Cvar_SetValue( "g_gametype", GT_SINGLE_PLAYER );
 	if ( Cvar_VariableIntegerValue( "sv_cheats" ) ) {
-        Cbuf_ExecuteText(EXEC_INSERT, va("spdevmap %s\n", filename));
+        Cbuf_ExecuteText(EXEC_INSERT, va("devmap %s\n", filename));
     } else {    // no cheats
-        Cbuf_ExecuteText(EXEC_INSERT, va("spmap %s\n", filename));
+        Cbuf_ExecuteText(EXEC_INSERT, va("map %s\n", filename));
     }
 }
 
@@ -939,11 +932,11 @@ void SV_AddOperatorCommands( void ) {
 	Cmd_AddCommand( "dumpuser", SV_DumpUser_f );
 	Cmd_AddCommand( "map_restart", SV_MapRestart_f );
 	Cmd_AddCommand( "sectorlist", SV_SectorList_f );
-	Cmd_AddCommand( "spmap", SV_Map_f );
 #ifndef WOLF_SP_DEMO
 	Cmd_AddCommand( "map", SV_Map_f );
 	Cmd_AddCommand( "devmap", SV_Map_f );
-	Cmd_AddCommand( "spdevmap", SV_Map_f );
+#else
+	Cmd_AddCommand( "map", SV_Map_f );
 #endif
 	Cmd_AddCommand( "loadgame", SV_LoadGame_f );
 	Cmd_AddCommand( "killserver", SV_KillServer_f );

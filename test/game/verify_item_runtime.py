@@ -93,7 +93,7 @@ def main():
             "loadgame items",
             "wait 200",
             "doomai player",
-            "spdevmap hazard",
+            "devmap hazard",
             "wait 250",
             "doomai player",
             "setviewpos 128 128 24.125 180",
@@ -121,7 +121,7 @@ def main():
         ("net_port", 27974),
     ):
         command.extend(("+set", name, str(value)))
-    command.extend(("+spdevmap", "items", "+exec", "verify.cfg"))
+    command.extend(("+set", "g_gametype", "2", "+devmap", "items", "+exec", "verify.cfg"))
     startup = subprocess.STARTUPINFO()
     startup.dwFlags = subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow = 0

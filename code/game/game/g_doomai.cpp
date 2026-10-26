@@ -1033,7 +1033,7 @@ bool G_DoomAICommand(gentity_t *player, const char *command) {
         return false;
     }
     if (!g_cheats.integer) {
-        trap_SendServerCommand(player->s.number, "print \"doomai requires spdevmap.\n\"");
+        trap_SendServerCommand(player->s.number, "print \"doomai requires devmap.\n\"");
         return true;
     }
     char option[64];

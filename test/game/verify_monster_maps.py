@@ -42,7 +42,7 @@ def main():
             (sum(t[3] in item_types and bool(t[4] & bit) and not t[4] & 16 for t in things), skill)
         )
         commands.extend(
-            (f"set doom_skill {skill}", f"spdevmap {name}", "wait 180", "doomai nav", "doomai")
+            (f"set doom_skill {skill}", f"devmap {name}", "wait 180", "doomai nav", "doomai")
         )
     commands.append("quit")
     (base / "verify.cfg").write_text("\n".join(commands) + "\n")
@@ -58,7 +58,7 @@ def main():
         ("net_port", 27972),
     ):
         command.extend(("+set", name, str(value)))
-    command.extend(("+spdevmap", "e1m1", "+exec", "verify.cfg"))
+    command.extend(("+set", "g_gametype", "2", "+devmap", "e1m1", "+exec", "verify.cfg"))
     startup = subprocess.STARTUPINFO()
     startup.dwFlags = subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow = 0
@@ -83,7 +83,7 @@ def main():
             re.S,
         )
     ]
-    # The initial +spdevmap precedes the verification config.
+    # The initial +devmap precedes the verification config.
     if records[-len(expected) :] != expected:
         raise RuntimeError(f"Map spawn verification differs: expected {expected}, found {records}")
     if "WARNING: No clear Doom spawn hull" in text:

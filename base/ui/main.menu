@@ -46,7 +46,7 @@
             textscale .4
             forecolor 1 1 1 1
             visible 1
-            action { close main ; exec "spmap e1m1" }
+            action { close main ; exec "set g_gametype 2 ; map e1m1" }
         }
         itemDef {
             name options

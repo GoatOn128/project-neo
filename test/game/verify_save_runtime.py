@@ -45,7 +45,7 @@ def launch(home, map_name, commands, *, allow_error=False, skill=3):
         "net_port": 27971,
     }.items():
         command.extend(("+set", name, str(value)))
-    command.extend(("+spdevmap", map_name, "+exec", "verify.cfg"))
+    command.extend(("+set", "g_gametype", "2", "+devmap", map_name, "+exec", "verify.cfg"))
     startup = subprocess.STARTUPINFO()
     startup.dwFlags = subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow = 0
@@ -94,7 +94,7 @@ def main():
             "screenshot e1m5_loaded",
             "savegame callback_resaved",
             "wait 10",
-            "spdevmap e1m1",
+            "devmap e1m1",
             "wait 180",
             "loadgame callback_e1m5",
             "wait 180",

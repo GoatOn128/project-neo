@@ -50,7 +50,7 @@ void Advance() {
     Publish();
     // Start the destination before any pending console script resumes.
     trap_SendConsoleCommand(EXEC_INSERT,
-                            va("spmap e%dm%d\n", summary.nextEpisode, summary.nextMission));
+                            va("map e%dm%d\n", summary.nextEpisode, summary.nextMission));
 }
 } // namespace
 void G_DoomLevelInit(const void *data) {

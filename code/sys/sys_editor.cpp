@@ -222,7 +222,7 @@ void Sys_EditorFrame() {
         // Run only after the DLL has returned. VM errors may longjmp; no editor
         // allocations, stack objects or exception scopes span that boundary.
         char command[128];
-        Com_sprintf(command, sizeof(command), "spdevmap %s\n", pendingMap);
+        Com_sprintf(command, sizeof(command), "devmap %s\n", pendingMap);
         pendingMap[0] = 0;
         Cbuf_AddText(command);
     }

@@ -91,7 +91,7 @@ def main():
                 "-attack",
                 "wait 100",
                 "screenshot barrels_after",
-                "spdevmap door",
+                "devmap door",
                 "wait 250",
                 "set developer 1",
                 "setviewpos 88 64 24.125 0",
@@ -100,7 +100,7 @@ def main():
                 "wait 30",
                 "-activate",
                 "wait 2000",
-                "spdevmap e1m1",
+                "devmap e1m1",
                 "wait 250",
                 "set doom_ai_disable 1",
                 "give all",
@@ -136,7 +136,7 @@ def main():
         ("in_joystick", 0),
     ):
         command.extend(("+set", name, str(value)))
-    command.extend(("+spdevmap", "barrels", "+exec", "verify.cfg"))
+    command.extend(("+set", "g_gametype", "2", "+devmap", "barrels", "+exec", "verify.cfg"))
     startup = subprocess.STARTUPINFO()
     startup.dwFlags = subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow = 0

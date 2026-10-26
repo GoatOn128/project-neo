@@ -107,7 +107,7 @@ def main():
         "net_port": 27972,
     }.items():
         command += ["+set", key, str(value)]
-    command += ["+spdevmap", "projectilefx", "+exec", "verify.cfg"]
+    command += ["+set", "g_gametype", "2", "+devmap", "projectilefx", "+exec", "verify.cfg"]
     startup = subprocess.STARTUPINFO()
     startup.dwFlags = subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow = 0

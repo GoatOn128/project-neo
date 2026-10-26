@@ -1,6 +1,6 @@
 """Build a native pursuit fixture and verify original chase through real AAS.
 
-Runs a hidden project-root game with isolated home data, using spdevmap. The installed WAD,
+Runs a hidden project-root game with isolated home data, using devmap. The installed WAD,
 campaign maps, user saves and running game are unchanged. Diagnostics stay in out.
 """
 
@@ -84,7 +84,7 @@ def main():
         "doomai 1 route\ndoomai 1 wake\ndoomai\nwait 500\ndoomai\nwait 500\ndoomai\n"
         "wait 500\ndoomai\ndoomai nav\nscreenshot monsters_pursuit\n"
         "savegame monster_pursuit\nwait 50\nloadgame monster_pursuit\nwait 400\n"
-        "doomai\nspdevmap e1m1\nwait 300\nset doom_ai_disable 1\n"
+        "doomai\ndevmap e1m1\nwait 300\nset doom_ai_disable 1\n"
         "setviewpos 400 -3232 25 180\nwait 150\nscreenshot monsters_armor_pillars\n"
         "+forward\nwait 300\n-forward\nwait 50\ndoomai player\n"
         "screenshot monsters_stairs\nquit\n"
@@ -106,7 +106,7 @@ def main():
         ("net_port", 27970),
     ):
         command.extend(("+set", name, str(value)))
-    command.extend(("+spdevmap", "chase", "+exec", "verify.cfg"))
+    command.extend(("+set", "g_gametype", "2", "+devmap", "chase", "+exec", "verify.cfg"))
     # STARTF_USESHOWWINDOW also hides the native window when the engine starts.
     startup = subprocess.STARTUPINFO()
     startup.dwFlags = subprocess.STARTF_USESHOWWINDOW

@@ -36,8 +36,8 @@ def main():
     if config.is_file():
         shutil.copy2(config, base / config.name)
     (base / "verify.cfg").write_text(
-        "wait 40\nspmap e1m1\nwait 160\nscreenshot e1m1_pk3\n"
-        "spmap __missing_pk3_test__\nwait 10\nquit\n",
+        "wait 40\nset g_gametype 2\nmap e1m1\nwait 160\nscreenshot e1m1_pk3\n"
+        "map __missing_pk3_test__\nwait 10\nquit\n",
         encoding="ascii",
     )
     command = [str(install / "Doom.exe")]

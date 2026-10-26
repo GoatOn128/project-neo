@@ -38,7 +38,7 @@ def main():
             "wait 180",
             "doomai player",
             "doomai",
-            "spdevmap e2m1",
+            "devmap e2m1",
             "wait 180",
             "loadgame copied_roundtrip",
             "wait 180",

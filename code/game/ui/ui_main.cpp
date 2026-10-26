@@ -3889,7 +3889,7 @@ static void UI_StartSkirmish( bool next ) {
 
 	g = uiInfo.gameTypes[ui_gameType.integer].gtEnum;
 	trap_Cvar_SetValue( "g_gametype", g );
-    trap_Cmd_ExecuteText(EXEC_APPEND, va("wait ; wait ; spmap %s\n",
+    trap_Cmd_ExecuteText(EXEC_APPEND, va("wait ; wait ; map %s\n",
                                          uiInfo.mapList[ui_currentMap.integer].mapLoadName));
     skill = trap_Cvar_VariableValue("g_spSkill");
     trap_Cvar_Set( "ui_scoreMap", uiInfo.mapList[ui_currentMap.integer].mapName );

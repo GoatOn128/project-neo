@@ -97,7 +97,7 @@ int main() {
         Key(K_ESCAPE); Draw(); Require(Drawn("ui/doom/titlepic") && !Drawn("ui/doom/m_doom"),"Escape must dismiss title menu");
         Key(K_ENTER); Key(K_ENTER); Draw(); Require(Drawn("ui/doom/m_episod") && Drawn("ui/doom/m_epi3"),"New Game must offer compiled episodes");
         Key(K_DOWNARROW); Key(K_ENTER); Draw(); Require(Drawn("ui/doom/m_skill"),"Episode must open skill menu");
-        Key(K_ENTER); Require(commands.back()=="spmap e2m1\n" && !UI_DoomActive(),"Selected episode must start and release UI");
+        Key(K_ENTER); Require(commands.back()=="map e2m1\n" && cvars["g_gametype"]=="2" && !UI_DoomActive(),"Selected episode must start in single player and release UI");
         Require(cvars["doom_skill"]=="2" && cvars["g_gameskill"]=="1","Skill must reach game cvars");
         Open(UIMENU_INGAME); Draw();
         Require(!UI_DoomFullscreen() && !Drawn("ui/doom/titlepic") && Drawn("ui/doom/m_doom"),"Pause must overlay original menu onto gameplay");
@@ -123,7 +123,7 @@ int main() {
         Key(K_F10); Key('y'); Require(commands.back()=="quit\n","Quit confirmation must invoke quit");
         Open(); Key('n'); Key(K_ENTER); Key(K_ENTER); Key('n'); Key(K_ENTER); Key('n');
         Require(UI_DoomActive(),"Nightmare cancellation must keep menu open");
-        Key(K_ENTER); Key('y'); Require(commands.back()=="spmap e2m1\n","Nightmare confirmation must start selected episode");
+        Key(K_ENTER); Key('y'); Require(commands.back()=="map e2m1\n","Nightmare confirmation must start selected episode");
         argument="save"; connection=CA_ACTIVE; Require(UI_DoomCommand("doommenu"),"Function-key menu command must be handled"); Draw();
         Require(Drawn("ui/doom/m_saveg") && cvars["cl_paused"]=="1","Function key must open appropriate in-game screen");
         Open(); selected[Main] = 0; Key(K_DOWNARROW);
@@ -179,7 +179,7 @@ int main() {
         Require(screen == Skill, "Demo episode 1 must open skill selection");
         selected[Skill] = 2;
         Key(K_ENTER);
-        Require(commands.back() == "spmap e1m1\n", "Demo episode 1 must start normally");
+        Require(commands.back() == "map e1m1\n", "Demo episode 1 must start normally");
         Open();
         episode = 3;
         Go(Skill);
@@ -214,7 +214,7 @@ int main() {
         Key(K_ENTER);
         selected[Skill] = 2;
         Key(K_ENTER);
-        Require(commands.back() == "spmap e3m1\n", "Registered mode must retain episode 3 access");
+        Require(commands.back() == "map e3m1\n", "Registered mode must retain episode 3 access");
         cvars["com_errorMessage"] = "engine error";
         Open();
         Require(UI_DoomActive() && prompt == Notice && std::string(message) == "engine error" &&

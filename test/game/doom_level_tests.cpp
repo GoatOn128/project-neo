@@ -130,9 +130,9 @@ int main() {
               "Second press shows the destination map");
         level.time += 4100;
         G_DoomLevelFrame();
-        Check(command == "spmap e1m2\n", "Next level uses single-player spmap once");
+        Check(command == "map e1m2\n", "Next level uses single-player map once");
         G_DoomLevelFrame();
-        Check(command == "spmap e1m2\n", "Transition is not queued twice");
+        Check(command == "map e1m2\n", "Transition is not queued twice");
         cvars["mapname"] = "e1m2";
         human = {};
         doomweapon::Initialize(human.ps);
@@ -150,10 +150,10 @@ int main() {
             bool secret;
             const char *expected;
         };
-        const Route routes[] = {{"1", "e1m1", false, "spmap e1m2\n"},
-                                {"1", "e1m3", true, "spmap e1m9\n"},
-                                {"1", "e1m9", false, "spmap e1m4\n"},
-                                {"0", "e1m8", false, "spmap e2m1\n"},
+        const Route routes[] = {{"1", "e1m1", false, "map e1m2\n"},
+                                {"1", "e1m3", true, "map e1m9\n"},
+                                {"1", "e1m9", false, "map e1m4\n"},
+                                {"0", "e1m8", false, "map e2m1\n"},
                                 {"1", "e1m8", false, "disconnect\ndoommenu help\n"}};
         for (const auto &route : routes) {
             command.clear();

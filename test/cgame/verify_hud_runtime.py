@@ -43,7 +43,7 @@ def main():
         ("in_joystick", 0),
     ):
         command.extend(("+set", name, str(value)))
-    command.extend(("+spdevmap", "e1m1", "+exec", "verify.cfg"))
+    command.extend(("+set", "g_gametype", "2", "+devmap", "e1m1", "+exec", "verify.cfg"))
     startup = subprocess.STARTUPINFO()
     startup.dwFlags = subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow = 0
