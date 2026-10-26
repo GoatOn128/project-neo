@@ -20,6 +20,7 @@ struct FluidSynth {
     int (*sfload)(fluid_synth_t *, const char *filename, int reset_presets) = nullptr;
     int (*write_s16)(fluid_synth_t *, int frames, void *left, int leftOffset, int leftStep,
                      void *right, int rightOffset, int rightStep) = nullptr;
+    int (*system_reset)(fluid_synth_t *) = nullptr;
     fluid_player_t *(*new_player)(fluid_synth_t *) = nullptr;
     void (*delete_player)(fluid_player_t *) = nullptr;
     int (*player_add_mem)(fluid_player_t *, const void *buffer, size_t len) = nullptr;

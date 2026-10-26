@@ -66,6 +66,9 @@ bool Load( const char *name ) {
 			Com_Printf( "FluidSynth: cannot decode %s\n", name );
 			return false;
 		}
+		// a fresh track must not inherit the previous track's pitch
+		// bend and controllers; reset the synth channels before playing
+		fluidsynth.system_reset( synth );
 		fluidsynth.player_play( player );
 		Com_Printf( "FluidSynth music: %s (%d ticks)\n", name,
 					fluidsynth.player_get_total_ticks( player ) );

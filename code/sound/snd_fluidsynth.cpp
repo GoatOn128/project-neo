@@ -31,6 +31,7 @@ bool FluidSynth::Load() {
         {"delete_fluid_synth", (void **)&delete_synth},
         {"fluid_synth_sfload", (void **)&sfload},
         {"fluid_synth_write_s16", (void **)&write_s16},
+        {"fluid_synth_system_reset", (void **)&system_reset},
         {"new_fluid_player", (void **)&new_player},
         {"delete_fluid_player", (void **)&delete_player},
         {"fluid_player_add_mem", (void **)&player_add_mem},
@@ -64,6 +65,7 @@ void FluidSynth::Unload() {
     delete_synth = nullptr;
     sfload = nullptr;
     write_s16 = nullptr;
+    system_reset = nullptr;
     new_player = nullptr;
     delete_player = nullptr;
     player_add_mem = nullptr;
