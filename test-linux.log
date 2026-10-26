@@ -17,9 +17,9 @@ g++ -o bin/tests/doom_content_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -
 g++ -o test/game/doom_weapon_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/game/doom_weapon_tests.cpp
 g++ -o bin/tests/doom_damage_view_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/cgame/doom_damage_view_tests.o
 g++ -o test/renderer/png_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/renderer/png_tests.cpp
+g++ -o bin/tests/doom_weapon_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/game/doom_weapon_tests.o
 g++ -o bin/tests/doom_menu_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/ui/doom_menu_tests.o
 g++ -o build/release/tests/doom_png_tests/code/renderer/tr_png.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/renderer/tr_png.cpp
-g++ -o bin/tests/doom_weapon_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/game/doom_weapon_tests.o
 g++ -o test/cgame/doom_sprite_animation_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/cgame/doom_sprite_animation_tests.cpp
 g++ -o bin/tests/doom_hud_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/cgame/doom_hud_tests.o
 g++ -o build/release/tests/doom_sprite_animation_tests/code/game/cgame/cg_weaponanim.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/game/cgame/cg_weaponanim.cpp
@@ -198,15 +198,15 @@ Doom loading and intermission screen rendering passed using the real cgame imple
 Running doom_audio_tests
 fluidsynth: warning: SDL3 not initialized, SDL3 audio driver won't be usable. Have you called SDL_Init(SDL_INIT_AUDIO) ?
 
-(process:16740): GLib-GObject-CRITICAL **: 00:39:34.768: g_param_spec_enum: assertion 'g_enum_get_value (enum_class, default_value) != NULL' failed
+(process:16908): GLib-GObject-CRITICAL **: 01:28:11.333: g_param_spec_enum: assertion 'g_enum_get_value (enum_class, default_value) != NULL' failed
 
-(process:16740): GLib-GObject-CRITICAL **: 00:39:34.768: validate_pspec_to_install: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:16908): GLib-GObject-CRITICAL **: 01:28:11.333: validate_pspec_to_install: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 
-(process:16740): GLib-GObject-CRITICAL **: 00:39:34.768: g_param_spec_ref_sink: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:16908): GLib-GObject-CRITICAL **: 01:28:11.333: g_param_spec_ref_sink: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 
-(process:16740): GLib-GObject-CRITICAL **: 00:39:34.768: g_param_spec_unref: assertion 'G_IS_PARAM_SPEC (pspec)' failed
-[W][00:39:52.983218] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
-[E][00:39:52.983295] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+(process:16908): GLib-GObject-CRITICAL **: 01:28:11.333: g_param_spec_unref: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+[W][01:28:30.501928] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][01:28:30.501986] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
 score 1: d_e3m7.mid
 score 2: d_e2m3.mid
 score 3: d_e2m2.mid
@@ -242,18 +242,18 @@ score 32: d_e3m3.mid
 [ALSOFT] (EE) Failed to create PipeWire event context (errno: 2)
 Audio passed: WAV bounds/PCM decoding, 32 FluidSynth scores and static OpenAL spatial output.
 Running doom_music_stream_tests
-[W][00:39:52.993448] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
-[E][00:39:52.993508] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+[W][01:28:30.515377] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][01:28:30.515450] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
 [ALSOFT] (EE) Failed to create PipeWire event context (errno: 2)
 fluidsynth: warning: SDL3 not initialized, SDL3 audio driver won't be usable. Have you called SDL_Init(SDL_INIT_AUDIO) ?
 
-(process:16749): GLib-GObject-CRITICAL **: 00:39:52.999: g_param_spec_enum: assertion 'g_enum_get_value (enum_class, default_value) != NULL' failed
+(process:16941): GLib-GObject-CRITICAL **: 01:28:30.522: g_param_spec_enum: assertion 'g_enum_get_value (enum_class, default_value) != NULL' failed
 
-(process:16749): GLib-GObject-CRITICAL **: 00:39:52.999: validate_pspec_to_install: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:16941): GLib-GObject-CRITICAL **: 01:28:30.522: validate_pspec_to_install: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 
-(process:16749): GLib-GObject-CRITICAL **: 00:39:52.999: g_param_spec_ref_sink: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:16941): GLib-GObject-CRITICAL **: 01:28:30.522: g_param_spec_ref_sink: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 
-(process:16749): GLib-GObject-CRITICAL **: 00:39:52.999: g_param_spec_unref: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:16941): GLib-GObject-CRITICAL **: 01:28:30.522: g_param_spec_unref: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 Music module passed: sustained playback, repeated requests, complete loops, starvation recovery, stop, track replacement and WAV fallback.
 Running doom_fx_tests
 Invalid effect path
