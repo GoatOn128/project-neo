@@ -995,6 +995,27 @@ void RB_StageIteratorSky( void ) {
 		qglPopMatrix();
 	}
 
+	// Doom levels close the visible volume of an outdoor sector with tall
+	// sky surfaces. Write their depth here, after the skybox painted the sky
+	// and before the world draws, so the sky hides the level behind it like
+	// the original game's sky columns did
+	if ( tr.world && tr.world->doomNumSectors && !r_showsky->integer ) {
+		qglDepthRange( 0.0, 1.0 );
+		GL_State( GLS_DEPTHMASK_TRUE );
+		GL_Cull( CT_TWO_SIDED );
+		qglColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
+		qglDisableClientState( GL_COLOR_ARRAY );
+		qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+		qglBegin( GL_TRIANGLES );
+		for ( int i = 0; i < tess.numIndexes; i += 3 ) {
+			qglVertex3fv( tess.xyz[tess.indexes[i]] );
+			qglVertex3fv( tess.xyz[tess.indexes[i + 1]] );
+			qglVertex3fv( tess.xyz[tess.indexes[i + 2]] );
+		}
+		qglEnd();
+		qglColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+	}
+
 	// generate the vertexes for all the clouds, which will be drawn
 	// by the generic shader routine
 	R_BuildCloudData( &tess );
