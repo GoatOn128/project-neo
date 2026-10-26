@@ -115,6 +115,8 @@ void Message(Prompt kind, const char *text) {
 }
 void Close() {
     active = editing = false; prompt = NoPrompt;
+    // release the pause taken when the menu opened so play can resume
+    trap_Cvar_Set("cl_paused", "0");
     _UI_SetActiveMenu(UIMENU_NONE);
 }
 void ReadSlots() {
@@ -363,7 +365,10 @@ void UI_DoomInit() {
     Geometry();
 }
 bool UI_DoomOpen(uiMenuCommand_t menu) {
-    if (menu==UIMENU_NONE) { active=editing=false; prompt=NoPrompt; return false; }
+    if (menu==UIMENU_NONE) {
+        if (active) { trap_Cvar_Set("cl_paused", "0"); }
+        active=editing=false; prompt=NoPrompt; return false;
+    }
     if (menu!=UIMENU_MAIN && menu!=UIMENU_INGAME) { active=false; return false; }
     // Leave engine error dialogs on their existing path.
     char error[256]; trap_Cvar_VariableStringBuffer("com_errorMessage",error,sizeof(error));

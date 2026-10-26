@@ -723,11 +723,16 @@ bool SV_CheckPaused(void) {
 
     // Editor mode freezes this process's world, including listen servers.
     if (Cvar_VariableIntegerValue("editor_active")) {
-        Cvar_Set("sv_paused", "1");
+        if (!sv_paused->integer) {
+            Cvar_Set("sv_paused", "1");
+        }
         return true;
     }
     if (!cl_paused->integer) {
-        Cvar_Set("sv_paused", "0");
+        // only write when the value changes so the console isn't spammed
+        if (sv_paused->integer) {
+            Cvar_Set("sv_paused", "0");
+        }
         return false;
     }
 
@@ -741,11 +746,15 @@ bool SV_CheckPaused(void) {
 
     if (count > 1) {
         // don't pause
-        Cvar_Set("sv_paused", "0");
+        if (sv_paused->integer) {
+            Cvar_Set("sv_paused", "0");
+        }
         return false;
     }
 
-    Cvar_Set("sv_paused", "1");
+    if (!sv_paused->integer) {
+        Cvar_Set("sv_paused", "1");
+    }
     return true;
 }
 

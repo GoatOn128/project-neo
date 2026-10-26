@@ -125,6 +125,10 @@ void CG_DoomMapUpdate() {
     }
 }
 bool CG_DoomMapVisible() {
+    // the automap is a single player feature; multiplayer keeps the scoreboard
+    if (cgs.gametype != GT_SINGLE_PLAYER) {
+        return false;
+    }
     if (!cg.showScores || !cg.snap || !cg.snap->ps.stats[STAT_DOOM_WEAPONS] || !lineCount) {
         return false;
     }
