@@ -1203,7 +1203,7 @@ G_LoadGame
   Always loads in "current.svg". So if loading a specific savegame, first copy it to that.
 ===============
 */
-void G_LoadGame( char *filename ) {
+bool G_LoadGame( char *filename ) {
 	char mapname[MAX_QPATH];
 	fileHandle_t f;
 	int i, leveltime, size, last;
@@ -1213,13 +1213,14 @@ void G_LoadGame( char *filename ) {
 
     qtime_t tm;
     bool serverEntityUpdate = false;
+	vmCvar_t cvar_mapname;
 
 	if ( g_gametype.integer != GT_SINGLE_PLAYER ) {    // don't allow loads in MP
-		return;
+		return false;
 	}
 
 	if ( saveGamePending ) {
-		return;
+		return false;
 	}
 
 	G_DPrintf( "G_LoadGame '%s'\n", filename );
@@ -1249,8 +1250,14 @@ void G_LoadGame( char *filename ) {
 				  "some version 17 saved games may cause crashes during play.\n" );
 	}
 
-	// read the mapname (this is only used in the sever exe, so just discard it)
+	// read the mapname and make sure the savegame belongs to the map we are running
 	trap_FS_Read( mapname, MAX_QPATH, f );
+	trap_Cvar_Register( &cvar_mapname, "mapname", "", CVAR_SERVERINFO | CVAR_ROM );
+	if ( Q_strcasecmp( cvar_mapname.string, mapname ) ) {
+		trap_FS_FCloseFile( f );
+		G_Printf( "G_LoadGame: savegame is for '%s', not for '%s' - starting fresh\n", mapname, cvar_mapname.string );
+		return false;
+	}
 
 	// read the level time
 	trap_FS_Read( &i, sizeof( i ), f );
@@ -1503,6 +1510,7 @@ void G_LoadGame( char *filename ) {
 	// restore the correct level.time
 	level.time = last;
 */
+	return true;
 }
 DOOM_SAVE_CALLBACK("G_LoadGame", G_LoadGame);
 
@@ -1695,3 +1703,4 @@ void G_LoadPersistant( void ) {
 	trap_Cvar_Set( "persid", "0" );
 }
 DOOM_SAVE_CALLBACK("G_LoadPersistant", G_LoadPersistant);
+

@@ -1044,7 +1044,7 @@ void Cmd_Activate_f( gentity_t *ent );
 
 // g_save.cpp
 bool G_SaveGame( char *username );
-void G_LoadGame( char *username );
+bool G_LoadGame( char *username );
 bool G_SavePersistant( char *nextmap );
 void G_LoadPersistant( void );
 
@@ -1394,4 +1394,5 @@ void G_DoomDropPlayerWeapon(gentity_t *player);
 void G_DoomImpactBlood(gentity_t *impact, const trace_t *trace, const vec3_t travel);
 
 #include "g_doombots.h"
+
 

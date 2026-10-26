@@ -56,12 +56,16 @@ void G_DoomCheckLoadGame() {
         }
     }
     saveGamePending = false;
+    bool restored = false;
     if (trap_Cvar_VariableIntegerValue("savegame_loading")) {
         trap_Cvar_Set("savegame_loading", "0");
-        G_LoadGame(nullptr);
+        restored = G_LoadGame(nullptr);
+    }
+    if (restored) {
         level.reloadPauseTime = level.time + 1100;
         trap_SendServerCommand(-1, "snd_fade 1 0\n");
     } else {
+        // stale or absent save: start the map fresh
         G_LoadPersistant();
         doomProgress.lastLoadTime = level.time;
         G_SaveGame(nullptr);
@@ -145,3 +149,4 @@ bool G_ActorCanAttackFromPos(int entityNum, int enemyNum, vec3_t origin) {
     return G_ActorVisibleFromPos(source, entityNum, target, enemyNum);
 }
 DOOM_SAVE_CALLBACK("G_ActorCanAttackFromPos", G_ActorCanAttackFromPos);
+
