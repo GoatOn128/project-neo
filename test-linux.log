@@ -12,13 +12,13 @@ g++ -o bin/tests/doommap_format_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib
 g++ -o test/cgame/doom_damage_view_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/cgame/doom_damage_view_tests.cpp
 g++ -o test/ui/display_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/ui/display_tests.cpp
 g++ -o bin/tests/doom_display_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/ui/display_tests.o
-g++ -o test/cgame/doom_hud_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/cgame/doom_hud_tests.cpp
 g++ -o bin/tests/doom_content_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/qcommon/doom_content_tests.o build/release/tests/doom_content_tests/code/qcommon/doom_content.o
+g++ -o test/cgame/doom_hud_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/cgame/doom_hud_tests.cpp
 g++ -o test/game/doom_weapon_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/game/doom_weapon_tests.cpp
 g++ -o bin/tests/doom_damage_view_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/cgame/doom_damage_view_tests.o
 g++ -o test/renderer/png_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/renderer/png_tests.cpp
-g++ -o bin/tests/doom_menu_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/ui/doom_menu_tests.o
 g++ -o bin/tests/doom_weapon_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/game/doom_weapon_tests.o
+g++ -o bin/tests/doom_menu_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/ui/doom_menu_tests.o
 g++ -o build/release/tests/doom_png_tests/code/renderer/tr_png.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/renderer/tr_png.cpp
 g++ -o test/cgame/doom_sprite_animation_tests.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated test/cgame/doom_sprite_animation_tests.cpp
 g++ -o bin/tests/doom_hud_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/cgame/doom_hud_tests.o
@@ -39,8 +39,8 @@ g++ -o test/game/doom_monster_server_tests.o -c -std=c++17 -fexceptions -fno-ope
 g++ -o bin/tests/doom_png_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/renderer/png_tests.o build/release/tests/doom_png_tests/code/renderer/tr_png.o
 g++ -o build/release/tests/doom_monster_server_tests/code/game/game/g_doomai.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -DGAMEDLL -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/game/game/g_doomai.cpp
 g++ -o build/release/tests/doom_monster_server_tests/code/game/game/bg_doommonsters.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -DGAMEDLL -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/game/game/bg_doommonsters.cpp
-g++ -o bin/tests/doom_monster_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/game/doom_monster_tests.o build/release/tests/doom_monster_tests/code/game/game/bg_doommonsters.o build/release/tests/doom_monster_tests/code/game/game/q_shared.o build/release/tests/doom_monster_tests/code/game/game/q_math.o
 g++ -o build/release/tests/doom_monster_server_tests/code/game/game/q_shared.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -DGAMEDLL -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/game/game/q_shared.cpp
+g++ -o bin/tests/doom_monster_tests -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags test/game/doom_monster_tests.o build/release/tests/doom_monster_tests/code/game/game/bg_doommonsters.o build/release/tests/doom_monster_tests/code/game/game/q_shared.o build/release/tests/doom_monster_tests/code/game/game/q_math.o
 g++ -o build/release/tests/doom_monster_server_tests/code/game/game/q_math.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -DGAMEDLL -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/game/game/q_math.cpp
 g++ -o build/release/tests/doom_monster_server_tests/code/game/game/bg_pmove.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -DGAMEDLL -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/game/game/bg_pmove.cpp
 g++ -o build/release/tests/doom_monster_server_tests/code/game/game/bg_slidemove.o -c -std=c++17 -fexceptions -fno-operator-names -Wall -Wno-unused-function -Wno-write-strings -fno-strict-aliasing -fwrapv -fPIC -O2 -I/usr/local/include -DC_ONLY -DNOMINMAX -DNDEBUG -DGAMEDLL -Icode/game -Icode/game/cgame -Icode/game/game -Icode/game/game/tests -Icode/client -Icode/sys -Icode/third-party/SDL3/include -Icode/third-party -Icode -Icode/tools/editor -Icode/third-party/openal/include -Icode/third-party/fluidsynth/include -Icode/third-party/stb -Icode/third-party/miniz -Icode/third-party/imgui -Icode/third-party/imgui/backends -Icode/third-party/SDL3/include -Ibuild/release/generated code/game/game/bg_slidemove.cpp
@@ -198,62 +198,62 @@ Doom loading and intermission screen rendering passed using the real cgame imple
 Running doom_audio_tests
 fluidsynth: warning: SDL3 not initialized, SDL3 audio driver won't be usable. Have you called SDL_Init(SDL_INIT_AUDIO) ?
 
-(process:16631): GLib-GObject-CRITICAL **: 03:45:28.419: g_param_spec_enum: assertion 'g_enum_get_value (enum_class, default_value) != NULL' failed
+(process:9926): GLib-GObject-CRITICAL **: 13:37:13.437: g_param_spec_enum: assertion 'g_enum_get_value (enum_class, default_value) != NULL' failed
 
-(process:16631): GLib-GObject-CRITICAL **: 03:45:28.419: validate_pspec_to_install: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:9926): GLib-GObject-CRITICAL **: 13:37:13.437: validate_pspec_to_install: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 
-(process:16631): GLib-GObject-CRITICAL **: 03:45:28.419: g_param_spec_ref_sink: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:9926): GLib-GObject-CRITICAL **: 13:37:13.437: g_param_spec_ref_sink: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 
-(process:16631): GLib-GObject-CRITICAL **: 03:45:28.419: g_param_spec_unref: assertion 'G_IS_PARAM_SPEC (pspec)' failed
-[W][03:45:46.971577] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
-[E][03:45:46.971644] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
-score 1: d_e3m7.mid
-score 2: d_e2m3.mid
-score 3: d_e2m2.mid
-score 4: d_e3m2.mid
-score 5: d_e2m6.mid
-score 6: d_victor.mid
-score 7: d_inter.mid
-score 8: d_e1m2.mid
-score 9: d_e3m6.mid
-score 10: d_introa.mid
-score 11: d_e2m1.mid
-score 12: d_e1m8.mid
-score 13: d_e3m1.mid
-score 14: d_e3m8.mid
-score 15: d_e1m7.mid
-score 16: d_e1m3.mid
-score 17: d_e2m8.mid
-score 18: d_e2m7.mid
-score 19: d_e1m4.mid
-score 20: d_e1m9.mid
-score 21: d_bunny.mid
-score 22: d_e1m1.mid
-score 23: d_e1m5.mid
-score 24: d_e3m9.mid
-score 25: d_e2m9.mid
-score 26: d_intro.mid
-score 27: d_e2m4.mid
-score 28: d_e2m5.mid
-score 29: d_e3m4.mid
-score 30: d_e3m5.mid
-score 31: d_e1m6.mid
-score 32: d_e3m3.mid
+(process:9926): GLib-GObject-CRITICAL **: 13:37:13.437: g_param_spec_unref: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+[W][13:37:32.772749] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][13:37:32.772827] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+score 1: d_e1m8.mid
+score 2: d_e3m3.mid
+score 3: d_e1m2.mid
+score 4: d_e1m9.mid
+score 5: d_e1m5.mid
+score 6: d_e3m8.mid
+score 7: d_e1m3.mid
+score 8: d_e3m1.mid
+score 9: d_e2m1.mid
+score 10: d_e2m6.mid
+score 11: d_e3m6.mid
+score 12: d_e3m5.mid
+score 13: d_bunny.mid
+score 14: d_e1m1.mid
+score 15: d_e2m9.mid
+score 16: d_intro.mid
+score 17: d_e2m2.mid
+score 18: d_introa.mid
+score 19: d_e2m8.mid
+score 20: d_e3m9.mid
+score 21: d_inter.mid
+score 22: d_e2m7.mid
+score 23: d_e2m4.mid
+score 24: d_e3m2.mid
+score 25: d_e2m5.mid
+score 26: d_e3m7.mid
+score 27: d_e1m7.mid
+score 28: d_e1m4.mid
+score 29: d_victor.mid
+score 30: d_e1m6.mid
+score 31: d_e3m4.mid
+score 32: d_e2m3.mid
 [ALSOFT] (EE) Failed to create PipeWire event context (errno: 2)
 Audio passed: WAV bounds/PCM decoding, 32 FluidSynth scores and static OpenAL spatial output.
 Running doom_music_stream_tests
-[W][03:45:46.983066] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
-[E][03:45:46.983130] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+[W][13:37:32.785768] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][13:37:32.785861] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
 [ALSOFT] (EE) Failed to create PipeWire event context (errno: 2)
 fluidsynth: warning: SDL3 not initialized, SDL3 audio driver won't be usable. Have you called SDL_Init(SDL_INIT_AUDIO) ?
 
-(process:16641): GLib-GObject-CRITICAL **: 03:45:46.989: g_param_spec_enum: assertion 'g_enum_get_value (enum_class, default_value) != NULL' failed
+(process:9944): GLib-GObject-CRITICAL **: 13:37:32.793: g_param_spec_enum: assertion 'g_enum_get_value (enum_class, default_value) != NULL' failed
 
-(process:16641): GLib-GObject-CRITICAL **: 03:45:46.989: validate_pspec_to_install: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:9944): GLib-GObject-CRITICAL **: 13:37:32.793: validate_pspec_to_install: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 
-(process:16641): GLib-GObject-CRITICAL **: 03:45:46.989: g_param_spec_ref_sink: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:9944): GLib-GObject-CRITICAL **: 13:37:32.793: g_param_spec_ref_sink: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 
-(process:16641): GLib-GObject-CRITICAL **: 03:45:46.989: g_param_spec_unref: assertion 'G_IS_PARAM_SPEC (pspec)' failed
+(process:9944): GLib-GObject-CRITICAL **: 13:37:32.793: g_param_spec_unref: assertion 'G_IS_PARAM_SPEC (pspec)' failed
 Music module passed: sustained playback, repeated requests, complete loops, starvation recovery, stop, track replacement and WAV fallback.
 Running doom_fx_tests
 Invalid effect path
@@ -261,7 +261,7 @@ Invalid effect path
 RegisterEffect: failed to load: effects/__test_missing.efx
 RegisterEffect: INVALID file: effects/__test_empty.efx
 RegisterEffect: failed to load: effects/__test_oversized.efx
-FX counters: sprites=52969 polys=0 lights=73 traces=11951 decals=26870 active=0
+FX counters: sprites=52862 polys=0 lights=73 traces=12126 decals=26861 active=0
 BFG blast maximum sprite radius: 429.0
 Doom FX: 72 weapon/material templates, screen particles, moving GPU emitters, freeze, bounded effects, depth-projector bases/lifetimes/fades/recycling and reload passed.
 Running doom_fx_material_tests
